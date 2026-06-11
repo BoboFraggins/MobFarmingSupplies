@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "mobfarmingsupplies:wither_proof_glass",
+    "minecraft:rotten_flesh"
+  ],
+  "result": {
+    "id": "mobfarmingsupplies:mob_exclusion_glass",
+    "count": 1
+  },
+  "category": "building"
+}

@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "facing=north,powered=false": { "model": "mobfarmingsupplies:block/fan_case" },
+    "facing=north,powered=true":  { "model": "mobfarmingsupplies:block/fan_case" },
+    "facing=east,powered=false":  { "model": "mobfarmingsupplies:block/fan_case", "y": 90 },
+    "facing=east,powered=true":   { "model": "mobfarmingsupplies:block/fan_case", "y": 90 },
+    "facing=south,powered=false": { "model": "mobfarmingsupplies:block/fan_case", "y": 180 },
+    "facing=south,powered=true":  { "model": "mobfarmingsupplies:block/fan_case", "y": 180 },
+    "facing=west,powered=false":  { "model": "mobfarmingsupplies:block/fan_case", "y": 270 },
+    "facing=west,powered=true":   { "model": "mobfarmingsupplies:block/fan_case", "y": 270 },
+    "facing=up,powered=false":    { "model": "mobfarmingsupplies:block/fan_case", "x": 270 },
+    "facing=up,powered=true":     { "model": "mobfarmingsupplies:block/fan_case", "x": 270 },
+    "facing=down,powered=false":  { "model": "mobfarmingsupplies:block/fan_case", "x": 90 },
+    "facing=down,powered=true":   { "model": "mobfarmingsupplies:block/fan_case", "x": 90 }
+  }
+}

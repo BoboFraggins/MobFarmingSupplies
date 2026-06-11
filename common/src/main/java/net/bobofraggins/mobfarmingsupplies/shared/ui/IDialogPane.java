@@ -1,0 +1,53 @@
+package net.bobofraggins.mobfarmingsupplies.shared.ui;
+
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+
+/**
+ * A self-contained rendered panel within a {@link Dialog}.
+ *
+ * <p>All rendering and mouse coordinates are <em>pane-local</em>: (0, 0) is the top-left corner
+ * of the pane. The {@link Dialog} translates the {@link GuiGraphicsExtractor} pose stack to the
+ * pane's screen-space origin before calling {@link #render}.
+ */
+public interface IDialogPane {
+
+    /** Preferred width of this pane in pixels. Used by {@link Dialog} to auto-size itself. */
+    int preferredWidth();
+
+    /** Preferred height of this pane in pixels. */
+    int preferredHeight();
+
+    /**
+     * Render this pane.
+     *
+     * @param graphics    rendering context, pose stack already translated to pane origin
+     * @param font        font for text rendering
+     * @param width       available width of the pane in pixels
+     * @param localMouseX mouse X relative to pane origin
+     * @param localMouseY mouse Y relative to pane origin
+     * @param partialTick partial tick for animations
+     */
+    void render(
+            GuiGraphicsExtractor graphics, Font font, int width, int localMouseX, int localMouseY, float partialTick);
+
+    /** Handle a mouse click in pane-local coordinates. Returns true if consumed. */
+    default boolean mouseClicked(double localX, double localY, int button) {
+        return false;
+    }
+
+    /** Handle a mouse scroll in pane-local coordinates. Returns true if consumed. */
+    default boolean mouseScrolled(double localX, double localY, double dx, double dy) {
+        return false;
+    }
+
+    /** Handle a mouse drag in pane-local coordinates. Returns true if consumed. */
+    default boolean mouseDragged(double localX, double localY, int button, double dragX, double dragY) {
+        return false;
+    }
+
+    /** Handle a mouse button release in pane-local coordinates. Returns true if consumed. */
+    default boolean mouseReleased(double localX, double localY, int button) {
+        return false;
+    }
+}

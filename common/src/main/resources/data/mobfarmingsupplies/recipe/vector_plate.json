@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "III",
+    "IRI",
+    "III"
+  ],
+  "key": {
+    "I": "#c:ingots/iron",
+    "R": "minecraft:redstone"
+  },
+  "result": {
+    "id": "mobfarmingsupplies:vector_plate",
+    "count": 16
+  },
+  "category": "misc"
+}

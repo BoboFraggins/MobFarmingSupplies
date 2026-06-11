@@ -1,0 +1,92 @@
+{
+  "ambientocclusion": false,
+  "render_type": "minecraft:translucent",
+  "textures": {
+    "particle": "mobfarmingsupplies:block/wither_proof/glass",
+    "north": "mobfarmingsupplies:block/wither_proof/glass_corner",
+    "south": "mobfarmingsupplies:block/wither_proof/glass_corner",
+    "east": "mobfarmingsupplies:block/wither_proof/glass_t",
+    "west": "mobfarmingsupplies:block/wither_proof/glass_t",
+    "up": "mobfarmingsupplies:block/wither_proof/glass_t",
+    "down": "mobfarmingsupplies:block/wither_proof/glass_t"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#north",
+          "cullface": "north"
+        },
+        "south": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#south",
+          "cullface": "south",
+          "rotation": 270
+        },
+        "east": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#east",
+          "cullface": "east"
+        },
+        "west": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#west",
+          "cullface": "west"
+        },
+        "up": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#up",
+          "cullface": "up",
+          "rotation": 270
+        },
+        "down": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#down",
+          "cullface": "down",
+          "rotation": 270
+        }
+      }
+    }
+  ]
+}

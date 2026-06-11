@@ -1,0 +1,95 @@
+{
+  "ambientocclusion": false,
+  "render_type": "minecraft:translucent",
+  "textures": {
+    "particle": "mobfarmingsupplies:block/mob_exclusion/glass",
+    "north": "mobfarmingsupplies:block/mob_exclusion/glass_t",
+    "south": "mobfarmingsupplies:block/mob_exclusion/glass_t",
+    "east": "mobfarmingsupplies:block/mob_exclusion/glass_t",
+    "west": "mobfarmingsupplies:block/mob_exclusion/glass_t",
+    "up": "mobfarmingsupplies:block/mob_exclusion/glass_corner",
+    "down": "mobfarmingsupplies:block/mob_exclusion/glass_corner"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#north",
+          "cullface": "north",
+          "rotation": 90
+        },
+        "south": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#south",
+          "cullface": "south",
+          "rotation": 270
+        },
+        "east": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#east",
+          "cullface": "east",
+          "rotation": 90
+        },
+        "west": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#west",
+          "cullface": "west",
+          "rotation": 270
+        },
+        "up": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#up",
+          "cullface": "up",
+          "rotation": 270
+        },
+        "down": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#down",
+          "cullface": "down",
+          "rotation": 180
+        }
+      }
+    }
+  ]
+}

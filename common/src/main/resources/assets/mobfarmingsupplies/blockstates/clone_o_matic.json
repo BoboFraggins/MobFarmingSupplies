@@ -1,0 +1,6 @@
+{
+  "variants": {
+    "powered=false": { "model": "mobfarmingsupplies:block/clone_o_matic" },
+    "powered=true":  { "model": "mobfarmingsupplies:block/clone_o_matic" }
+  }
+}

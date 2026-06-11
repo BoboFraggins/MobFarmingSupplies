@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "GGG",
+    "GBG",
+    "GGG"
+  ],
+  "key": {
+    "G": "minecraft:glass",
+    "B": "minecraft:bucket"
+  },
+  "result": {
+    "id": "mobfarmingsupplies:tank",
+    "count": 1
+  },
+  "category": "misc"
+}

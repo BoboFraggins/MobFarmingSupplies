@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "FIF",
+    "IRI",
+    "FIF"
+  ],
+  "key": {
+    "I": "#c:ingots/iron",
+    "F": "#c:feathers",
+    "R": "#c:dusts/redstone"
+  },
+  "result": {
+    "id": "mobfarmingsupplies:fan_upgrade_distance",
+    "count": 1
+  },
+  "category": "misc"
+}

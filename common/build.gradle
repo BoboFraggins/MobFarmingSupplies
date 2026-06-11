@@ -1,0 +1,26 @@
+architectury {
+    common('neoforge', 'fabric')
+}
+
+dependencies {
+    // Compile common code against the Fabric loader so Architectury's abstraction layer resolves
+    implementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
+
+    api "dev.architectury:architectury:${architectury_version}"
+
+    // Jade optional-dependency API — NeoForge artifact used for compilation; API is cross-platform.
+    // Fabric uses 26.1.0+fabric (see fabric/build.gradle).
+    compileOnly "maven.modrinth:jade:26.1.1+neoforge"
+}
+
+publishing {
+    publications {
+        register('mavenCommon', MavenPublication) {
+            artifactId = "${mod_id}-common"
+            from components.java
+        }
+    }
+    repositories {
+        maven { url "file://${project.projectDir}/../repo" }
+    }
+}

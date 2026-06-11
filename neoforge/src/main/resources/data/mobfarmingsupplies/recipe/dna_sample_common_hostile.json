@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "neoforge:ingredient_type": "mobfarmingsupplies:fluid_container",
+      "fluid_tag": "c:experience",
+      "amount": 1000
+    },
+    "E": "minecraft:spider_eye",
+    "G": "#c:gunpowders",
+    "R": "minecraft:rotten_flesh",
+    "D": "mobfarmingsupplies:dna_collector",
+    "X": "#c:bones"
+  },
+  "pattern": [
+    "BEB",
+    "RDX",
+    "BGB"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mobfarmingsupplies:dna_sample_common_hostile"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "type": "mobfarmingsupplies:dna_sample_pack_chest",
+  "item": "mobfarmingsupplies:dna_booster_pack_aether_passive",
+  "conditions": [
+    {
+      "condition": "minecraft:any_of",
+      "terms": [
+        {
+          "condition": "minecraft:all_of",
+          "terms": [
+            { "condition": "neoforge:loot_table_id", "loot_table_id": "aether_ii:chests/dungeons/sentry_ruins/common" },
+            { "condition": "minecraft:random_chance", "chance": 0.01 }
+          ]
+        },
+        {
+          "condition": "minecraft:all_of",
+          "terms": [
+            { "condition": "neoforge:loot_table_id", "loot_table_id": "aether_ii:chests/dungeons/sentry_ruins/rare" },
+            { "condition": "minecraft:random_chance", "chance": 0.03 }
+          ]
+        },
+        {
+          "condition": "minecraft:all_of",
+          "terms": [
+            { "condition": "neoforge:loot_table_id", "loot_table_id": "aether_ii:chests/dungeons/sentry_ruins/boss" },
+            { "condition": "minecraft:random_chance", "chance": 0.05 }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "neoforge:ingredient_type": "mobfarmingsupplies:fluid_container",
+      "fluid_tag": "c:experience",
+      "amount": 1000
+    },
+    "C": "minecraft:carrot",
+    "P": "minecraft:potato",
+    "D": "mobfarmingsupplies:dna_collector",
+    "X": "minecraft:beetroot",
+    "W": "minecraft:wheat"
+  },
+  "pattern": [
+    "BCB",
+    "PDX",
+    "BWB"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mobfarmingsupplies:dna_sample_common_passive"
+  }
+}

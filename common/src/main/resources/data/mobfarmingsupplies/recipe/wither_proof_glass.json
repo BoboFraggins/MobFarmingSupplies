@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "GGG",
+    "GOG",
+    "GGG"
+  ],
+  "key": {
+    "G": "minecraft:glass",
+    "O": "#c:obsidians"
+  },
+  "result": {
+    "id": "mobfarmingsupplies:wither_proof_glass",
+    "count": 8
+  },
+  "category": "building"
+}

@@ -1,0 +1,96 @@
+apply plugin: 'io.github.goooler.shadow'
+
+architectury {
+    neoForge()
+}
+
+configurations {
+    common
+    shadowCommon
+    compileClasspath.extendsFrom common
+    runtimeClasspath.extendsFrom common
+    developmentNeoForge.extendsFrom common
+
+    // Local mods added here show up in dev runs without being a compile dependency
+    localRuntime
+    runtimeClasspath.extendsFrom localRuntime
+}
+
+loom {
+    runs {
+        client {
+            client()
+            property 'neoforge.enabledGameTestNamespaces', mod_id
+        }
+        server {
+            server()
+            programArg '--nogui'
+            property 'neoforge.enabledGameTestNamespaces', mod_id
+        }
+        configureEach {
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+        }
+    }
+}
+
+sourceSets.main.resources { srcDir 'src/generated/resources' }
+
+dependencies {
+    add('neoForge', "net.neoforged:neoforge:${neo_version}")
+
+    api "dev.architectury:architectury-neoforge:${architectury_version}"
+
+    compileOnly "maven.modrinth:jade:26.1.1+neoforge"
+
+    common(project(path: ':common')) { transitive false }
+    shadowCommon(project(path: ':common', configuration: 'transformProductionNeoForge')) { transitive false }
+}
+
+tasks.withType(ProcessResources).configureEach {
+    var replaceProperties = [
+        minecraft_version      : minecraft_version,
+        minecraft_version_range: minecraft_version_range,
+        neo_version            : neo_version,
+        loader_version_range   : neoforge_loader_version_range,
+        mod_id                 : mod_id,
+        mod_name               : mod_name,
+        mod_license            : mod_license,
+        mod_version            : mod_version,
+    ]
+    inputs.properties replaceProperties
+    filesMatching('META-INF/neoforge.mods.toml') {
+        expand replaceProperties
+    }
+}
+
+shadowJar {
+    exclude 'fabric.mod.json'
+    exclude 'architectury.common.json'
+    configurations = [project.configurations.shadowCommon]
+    archiveBaseName = mod_id
+    archiveClassifier = 'neoforge'
+}
+
+jar {
+    archiveClassifier = 'dev'
+}
+
+sourcesJar {
+    def commonSources = project(':common').sourcesJar
+    dependsOn commonSources
+    from commonSources.archiveFile.map { zipTree(it) }
+}
+
+publishing {
+    publications {
+        register('mavenNeoForge', MavenPublication) {
+            artifactId = "${mod_id}-neoforge"
+            artifact(shadowJar) { classifier null }
+            artifact(sourcesJar) { classifier 'sources' }
+        }
+    }
+    repositories {
+        maven { url "file://${project.projectDir}/../repo" }
+    }
+}

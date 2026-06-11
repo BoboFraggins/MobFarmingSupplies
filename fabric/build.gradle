@@ -1,0 +1,81 @@
+apply plugin: 'io.github.goooler.shadow'
+
+architectury {
+    fabric()
+}
+
+configurations {
+    common
+    shadowCommon
+    compileClasspath.extendsFrom common
+    runtimeClasspath.extendsFrom common
+    developmentFabric.extendsFrom common
+}
+
+loom {
+    runs {
+        client { client() }
+        server {
+            server()
+            programArg '--nogui'
+        }
+    }
+}
+
+dependencies {
+    implementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
+    api "net.fabricmc.fabric-api:fabric-api:${fabric_api_version}"
+    api "dev.architectury:architectury-fabric:${architectury_version}"
+
+    compileOnly "maven.modrinth:jade:26.1.0+fabric"
+
+    common(project(path: ':common')) { transitive false }
+    shadowCommon(project(path: ':common', configuration: 'transformProductionFabric')) { transitive false }
+}
+
+tasks.withType(ProcessResources).configureEach {
+    var replaceProperties = [
+        mod_id                 : mod_id,
+        mod_name               : mod_name,
+        mod_version            : mod_version,
+        mod_license            : mod_license,
+        fabric_loader_version  : fabric_loader_version,
+        minecraft_version      : minecraft_version,
+        architectury_version   : architectury_version,
+    ]
+    inputs.properties replaceProperties
+    filesMatching('fabric.mod.json') {
+        expand replaceProperties
+    }
+}
+
+shadowJar {
+    exclude 'META-INF/neoforge.mods.toml'
+    exclude 'architectury.common.json'
+    configurations = [project.configurations.shadowCommon]
+    archiveBaseName = mod_id
+    archiveClassifier = 'fabric'
+}
+
+jar {
+    archiveClassifier = 'dev'
+}
+
+sourcesJar {
+    def commonSources = project(':common').sourcesJar
+    dependsOn commonSources
+    from commonSources.archiveFile.map { zipTree(it) }
+}
+
+publishing {
+    publications {
+        register('mavenFabric', MavenPublication) {
+            artifactId = "${mod_id}-fabric"
+            artifact(shadowJar) { classifier null }
+            artifact(sourcesJar) { classifier 'sources' }
+        }
+    }
+    repositories {
+        maven { url "file://${project.projectDir}/../repo" }
+    }
+}

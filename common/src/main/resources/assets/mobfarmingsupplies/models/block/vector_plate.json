@@ -1,0 +1,21 @@
+{
+  "elements": [
+    {
+      "from": [0, 0, 0],
+      "to":   [16, 2, 16],
+      "faces": {
+        "up":    { "texture": "#top",  "cullface": "up"    },
+        "down":  { "texture": "#top",  "cullface": "down", "rotation": 180 },
+        "north": { "texture": "#side", "cullface": "north" },
+        "south": { "texture": "#side", "cullface": "south" },
+        "east":  { "texture": "#side", "cullface": "east"  },
+        "west":  { "texture": "#side", "cullface": "west"  }
+      }
+    }
+  ],
+  "textures": {
+    "top":  "mobfarmingsupplies:block/vector_plate_top",
+    "side": "mobfarmingsupplies:block/vector_plate_side",
+    "particle": "mobfarmingsupplies:block/vector_plate_side"
+  }
+}

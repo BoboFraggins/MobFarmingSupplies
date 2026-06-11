@@ -1,0 +1,36 @@
+{
+  "parent": "minecraft:block/block",
+  "texture_size": [32, 32],
+  "textures": {
+    "0": "mobfarmingsupplies:block/absorption_hopper_texture",
+    "particle": "mobfarmingsupplies:block/absorption_hopper_texture"
+  },
+  "elements": [
+    {
+      "from": [6, 6, 12],
+      "to": [10, 10, 13],
+      "rotation": {"angle": 0, "axis": "y", "origin": [8, 6, 11]},
+      "faces": {
+        "north": {"uv": [4, 8, 6, 10],        "texture": "#0"},
+        "east":  {"uv": [1, 13, 1.5, 15],     "texture": "#0"},
+        "south": {"uv": [8, 4, 10, 6],        "texture": "#0"},
+        "west":  {"uv": [3.5, 13, 4, 15],     "texture": "#0"},
+        "up":    {"uv": [15, 4, 13, 3.5],     "texture": "#0"},
+        "down":  {"uv": [15, 4, 13, 4.5],     "texture": "#0"}
+      }
+    },
+    {
+      "from": [7, 7, 13],
+      "to": [9, 9, 16],
+      "rotation": {"angle": 0, "axis": "y", "origin": [0, 0, 13]},
+      "faces": {
+        "north": {"uv": [12.5, 13, 13.5, 14],   "texture": "#0"},
+        "east":  {"uv": [2.5, 12, 4, 13],       "texture": "#0"},
+        "south": {"uv": [13.5, 0, 14.5, 1],     "texture": "#0"},
+        "west":  {"uv": [12, 2.5, 13.5, 3.5],   "texture": "#0"},
+        "up":    {"uv": [13, 5, 12, 3.5],       "texture": "#0"},
+        "down":  {"uv": [5, 12, 4, 13.5],       "texture": "#0"}
+      }
+    }
+  ]
+}

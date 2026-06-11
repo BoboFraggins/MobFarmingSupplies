@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "entries": [
+    "mobfarmingsupplies:loot_modifiers/dna_sample_rare",
+    "mobfarmingsupplies:loot_modifiers/dna_sample_baby",
+    "mobfarmingsupplies:loot_modifiers/dna_sample_passive_rare",
+    "mobfarmingsupplies:loot_modifiers/dna_sample_wrong",
+    "mobfarmingsupplies:loot_modifiers/dna_booster_pack_aquaculture",
+    "mobfarmingsupplies:loot_modifiers/dna_booster_pack_aether_passive",
+    "mobfarmingsupplies:loot_modifiers/dna_booster_pack_aether_hostile",
+    "mobfarmingsupplies:loot_modifiers/dna_booster_pack_evilcraft"
+  ]
+}

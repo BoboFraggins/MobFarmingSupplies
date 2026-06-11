@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "fabric:type": "mobfarmingsupplies:fluid_container",
+      "fluid_tag": "c:experience",
+      "amount": 1000
+    },
+    "Z": "minecraft:blaze_powder",
+    "P": "minecraft:porkchop",
+    "D": "mobfarmingsupplies:dna_collector",
+    "N": "#c:bones",
+    "C": "minecraft:coal"
+  },
+  "pattern": [
+    "BZB",
+    "PDN",
+    "BCB"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mobfarmingsupplies:dna_sample_nether"
+  }
+}

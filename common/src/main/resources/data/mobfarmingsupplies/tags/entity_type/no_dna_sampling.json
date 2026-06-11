@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:wither",
+    "minecraft:ender_dragon",
+    { "id": "#mob_farming_supplies:no_swab", "required": false }
+  ]
+}

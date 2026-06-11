@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "mobfarmingsupplies:block/vector_plate_top"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "face":     "mobfarmingsupplies:block/mob_harvester_head_face",
+    "side":     "mobfarmingsupplies:block/mob_harvester_head_side",
+    "top":      "mobfarmingsupplies:block/mob_harvester_head_top",
+    "particle": "mobfarmingsupplies:block/mob_harvester_head_face"
+  },
+  "elements": [
+    {
+      "from": [0, 0, 0],
+      "to":   [16, 16, 16],
+      "faces": {
+        "north": { "uv": [0, 0, 16, 16], "texture": "#side" },
+        "south": { "uv": [0, 0, 16, 16], "texture": "#face" },
+        "east":  { "uv": [0, 0, 16, 16], "texture": "#side" },
+        "west":  { "uv": [0, 0, 16, 16], "texture": "#side" },
+        "up":    { "uv": [0, 0, 16, 16], "texture": "#top"  },
+        "down":  { "uv": [0, 0, 16, 16], "texture": "#top"  }
+      }
+    }
+  ]
+}

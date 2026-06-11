@@ -1,0 +1,11 @@
+{
+  "multipart": [
+    { "apply": { "model": "mobfarmingsupplies:block/absorption_hopper_base" } },
+    { "when": { "push_north": "true" }, "apply": { "model": "mobfarmingsupplies:block/absorption_hopper_north" } },
+    { "when": { "push_south": "true" }, "apply": { "model": "mobfarmingsupplies:block/absorption_hopper_south" } },
+    { "when": { "push_east":  "true" }, "apply": { "model": "mobfarmingsupplies:block/absorption_hopper_east"  } },
+    { "when": { "push_west":  "true" }, "apply": { "model": "mobfarmingsupplies:block/absorption_hopper_west"  } },
+    { "when": { "push_up":    "true" }, "apply": { "model": "mobfarmingsupplies:block/absorption_hopper_up"    } },
+    { "when": { "push_down":  "true" }, "apply": { "model": "mobfarmingsupplies:block/absorption_hopper_down"  } }
+  ]
+}

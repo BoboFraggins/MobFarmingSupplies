@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "net.bobofraggins.mobfarmingsupplies.enderinhibitor.fabric.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "EnderManMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

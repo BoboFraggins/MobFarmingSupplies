@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "id": "${mod_id}",
+  "version": "${mod_version}",
+  "name": "${mod_name}",
+  "license": "${mod_license}",
+  "icon": "assets/mobfarmingsupplies/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "net.bobofraggins.mobfarmingsupplies.fabric.MobFarmingSuppliesFabric"
+    ],
+    "client": [
+      "net.bobofraggins.mobfarmingsupplies.fabric.MobFarmingSuppliesFabricClient"
+    ]
+  },
+  "mixins": [
+    "mobfarmingsupplies.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${fabric_loader_version}",
+    "fabric-api": "*",
+    "minecraft": "${minecraft_version}",
+    "architectury": ">=${architectury_version}"
+  },
+  "suggests": {
+    "jade": "*",
+    "aquaculture": "*",
+    "aether_ii": "*",
+    "evilcraft": "*"
+  }
+}

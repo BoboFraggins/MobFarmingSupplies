@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "IFI",
+    " F ",
+    "IFI"
+  ],
+  "key": {
+    "I": "#c:ingots/iron",
+    "F": "#c:feathers"
+  },
+  "result": {
+    "id": "mobfarmingsupplies:fan_upgrade_height",
+    "count": 1
+  },
+  "category": "misc"
+}

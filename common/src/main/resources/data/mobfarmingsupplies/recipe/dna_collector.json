@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "minecraft:glass_bottle",
+    "#minecraft:wooden_buttons"
+  ],
+  "result": {
+    "id": "mobfarmingsupplies:dna_collector",
+    "count": 1
+  },
+  "category": "misc"
+}

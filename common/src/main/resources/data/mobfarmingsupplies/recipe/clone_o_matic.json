@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "IGI",
+    "GEG",
+    "IGI"
+  ],
+  "key": {
+    "I": "#c:ingots/iron",
+    "G": "minecraft:glass",
+    "E": "minecraft:ender_pearl"
+  },
+  "result": {
+    "id": "mobfarmingsupplies:clone_o_matic",
+    "count": 1
+  },
+  "category": "misc"
+}

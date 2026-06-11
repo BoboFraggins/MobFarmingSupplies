@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "fabric:type": "mobfarmingsupplies:fluid_container",
+      "fluid_tag": "c:experience",
+      "amount": 1000
+    },
+    "P": "minecraft:prismarine_shard",
+    "C": "minecraft:cod",
+    "D": "mobfarmingsupplies:dna_collector",
+    "F": "minecraft:salmon",
+    "I": "minecraft:ink_sac"
+  },
+  "pattern": [
+    "BPB",
+    "CDF",
+    "BIB"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mobfarmingsupplies:dna_sample_aquatic"
+  }
+}

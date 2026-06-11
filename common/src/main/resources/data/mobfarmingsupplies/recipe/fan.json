@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "GIG",
+    "ICI",
+    "GRG"
+  ],
+  "key": {
+    "G": "#c:nuggets/gold",
+    "I": "#c:ingots/iron",
+    "C": "#c:ingots/copper",
+    "R": "minecraft:redstone"
+  },
+  "result": {
+    "id": "mobfarmingsupplies:fan",
+    "count": 1
+  },
+  "category": "misc"
+}

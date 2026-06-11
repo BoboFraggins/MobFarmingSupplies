@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "IHI",
+    "HCH",
+    "IHI"
+  ],
+  "key": {
+    "I": "#c:ingots/iron",
+    "H": "minecraft:hopper",
+    "C": "minecraft:chest"
+  },
+  "result": {
+    "id": "mobfarmingsupplies:absorption_hopper",
+    "count": 1
+  },
+  "category": "misc"
+}

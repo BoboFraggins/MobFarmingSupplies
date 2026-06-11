@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "mobfarmingsupplies:block/vector_plate" },
+    "facing=east":  { "model": "mobfarmingsupplies:block/vector_plate", "y": 90  },
+    "facing=south": { "model": "mobfarmingsupplies:block/vector_plate", "y": 180 },
+    "facing=west":  { "model": "mobfarmingsupplies:block/vector_plate", "y": 270 }
+  }
+}

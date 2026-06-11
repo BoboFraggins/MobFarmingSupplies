@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "mobfarmingsupplies:item/harvester_upgrade_looting"
+  }
+}
