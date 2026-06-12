@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "minecraft:stone_button",
+    "minecraft:stone_pressure_plate",
+    "minecraft:purple_dye"
+  ],
+  "result": {
+    "id": "mobfarmingsupplies:wilhelm_button",
+    "count": 1
+  },
+  "category": "redstone"
+}

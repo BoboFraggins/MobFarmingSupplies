@@ -1,0 +1,6 @@
+{
+  "variants": {
+    "powered=false": { "model": "mobfarmingsupplies:block/red_alert_button_off" },
+    "powered=true":  { "model": "mobfarmingsupplies:block/red_alert_button_on" }
+  }
+}

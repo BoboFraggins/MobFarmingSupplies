@@ -1,0 +1,7 @@
+{
+  "parent": "mobfarmingsupplies:block/button",
+  "textures": {
+    "0": "mobfarmingsupplies:block/buttons/purple_off",
+    "particle": "mobfarmingsupplies:block/buttons/purple_off"
+  }
+}

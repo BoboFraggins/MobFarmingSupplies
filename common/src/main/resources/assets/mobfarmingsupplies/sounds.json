@@ -1,0 +1,18 @@
+{
+  "red_alert": {
+    "subtitle": "subtitle.mobfarmingsupplies.red_alert",
+    "sounds": ["mobfarmingsupplies:red_alert"]
+  },
+  "dramatic": {
+    "subtitle": "subtitle.mobfarmingsupplies.dramatic",
+    "sounds": ["mobfarmingsupplies:dramatic"]
+  },
+  "rimshot": {
+    "subtitle": "subtitle.mobfarmingsupplies.rimshot",
+    "sounds": ["mobfarmingsupplies:rimshot"]
+  },
+  "wilhelm": {
+    "subtitle": "subtitle.mobfarmingsupplies.wilhelm",
+    "sounds": ["mobfarmingsupplies:wilhelm"]
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "variants": {
+    "powered=false": { "model": "mobfarmingsupplies:block/rimshot_button_off" },
+    "powered=true":  { "model": "mobfarmingsupplies:block/rimshot_button_on" }
+  }
+}

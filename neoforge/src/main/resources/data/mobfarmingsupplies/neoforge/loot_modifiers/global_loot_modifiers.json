@@ -8,6 +8,10 @@
     "mobfarmingsupplies:loot_modifiers/dna_booster_pack_aquaculture",
     "mobfarmingsupplies:loot_modifiers/dna_booster_pack_aether_passive",
     "mobfarmingsupplies:loot_modifiers/dna_booster_pack_aether_hostile",
-    "mobfarmingsupplies:loot_modifiers/dna_booster_pack_evilcraft"
+    "mobfarmingsupplies:loot_modifiers/dna_booster_pack_evilcraft",
+    "mobfarmingsupplies:loot_modifiers/red_alert_button",
+    "mobfarmingsupplies:loot_modifiers/dramatic_button",
+    "mobfarmingsupplies:loot_modifiers/rimshot_button",
+    "mobfarmingsupplies:loot_modifiers/wilhelm_button"
   ]
 }

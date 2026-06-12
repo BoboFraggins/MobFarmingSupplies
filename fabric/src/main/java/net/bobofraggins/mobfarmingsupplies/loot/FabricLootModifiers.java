@@ -76,6 +76,13 @@ public final class FabricLootModifiers {
                     addItem(tableBuilder, "mobfarmingsupplies:dna_booster_pack_evilcraft", 0.05f);
             }
 
+            if (OVERWORLD_CHESTS.contains(tableId) || NETHER_END_CHESTS.contains(tableId)) {
+                addItem(tableBuilder, "mobfarmingsupplies:red_alert_button", 0.05f);
+                addItem(tableBuilder, "mobfarmingsupplies:dramatic_button", 0.05f);
+                addItem(tableBuilder, "mobfarmingsupplies:rimshot_button", 0.05f);
+                addItem(tableBuilder, "mobfarmingsupplies:wilhelm_button", 0.05f);
+            }
+
             if (Platform.isModLoaded("aether_ii")) {
                 switch (tableId) {
                     case "aether_ii:chests/dungeons/sentry_ruins/common":

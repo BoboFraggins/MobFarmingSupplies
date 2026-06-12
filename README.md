@@ -1,4 +1,4 @@
-# MobFarmingSupplies
+# Mob Farming Supplies
 
 Mob processing utilities for Minecraft — a toolkit of machines and items for building
 automated mob farms: harvest mobs for drops and XP, vacuum up the loot, clone mobs from
@@ -10,8 +10,7 @@ Built with [Architectury](https://docs.architectury.dev/) for **NeoForge** and *
 
 ### Mob Harvester
 
-Place inside a mob grinder. When powered by redstone, it attacks every
-[`LivingEntity`](https://minecraft.wiki) (excluding players) in a 3×3×3 area.
+Place inside a mob grinder. When powered by redstone, it attacks everything in a 3×3×3 area.
 Killed mobs drop items and XP orbs as normal — pair with an Absorption Hopper to collect
 everything automatically.
 
@@ -41,7 +40,7 @@ keeps working even in a crowded farm.
 - **DNA Sample Packs / DNA Booster Packs** — pre-rolled collections of common mobs
   (Common Hostile, Common Passive, Aquatic, Nether, Baby, Rare Hostile/Passive, "Wrong
   Mobs Only", and packs for supported mod-compat mobs) that can be found in dungeon
-  loot or used directly in the Clone-O-Matic. Mob lists are configurable.
+  loot. Mob lists are configurable.
 
 ### Absorption Hopper
 
@@ -96,6 +95,10 @@ other entity.
 ## Credits
 
 Inspired by "Mob Grinding Utils": https://github.com/vadis365/Mob-Grinding-Utils
+Dramatic Chipmunk Sound: https://notification-sounds.com/2298-dramatic-chipmunk.html -- License: Creative Commons
+Red Alert Sound: Red Alert_Nuclear_Buzzer.mp3 by imagery2 -- https://freesound.org/s/458570/ -- License: Creative Commons 0
+Rimshot Sound: Rimshot Joke Funny by deleted_user_7146007 -- https://freesound.org/s/383898/ -- License: Creative Commons 0
+Wilhelm Scream: https://notification-sounds.com/784-wilhelm-scream.html -- License: Creative Commons
 
 ## License
 

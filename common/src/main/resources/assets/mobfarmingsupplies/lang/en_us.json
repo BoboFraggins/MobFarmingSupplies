@@ -42,6 +42,15 @@
   "block.mobfarmingsupplies.mob_exclusion_glass": "Mob Exclusion Glass",
   "item.mobfarmingsupplies.mob_exclusion_glass": "Mob Exclusion Glass",
 
+  "block.mobfarmingsupplies.red_alert_button": "Red Alert Button",
+  "item.mobfarmingsupplies.red_alert_button": "Red Alert Button",
+  "block.mobfarmingsupplies.dramatic_button": "Dramatic Button",
+  "item.mobfarmingsupplies.dramatic_button": "Dramatic Button",
+  "block.mobfarmingsupplies.rimshot_button": "Rimshot Button",
+  "item.mobfarmingsupplies.rimshot_button": "Rimshot Button",
+  "block.mobfarmingsupplies.wilhelm_button": "Wilhelm Button",
+  "item.mobfarmingsupplies.wilhelm_button": "Wilhelm Button",
+
   "screen.mobfarmingsupplies.push_sides_label": "Push Sides",
   "container.mobfarmingsupplies.dna_slots_label": "DNA Samples to Clone:",
 
@@ -63,5 +72,10 @@
   "itemGroup.mobfarmingsupplies": "Mob Farming Supplies",
 
   "jade.mobfarmingsupplies.tank.empty": "Empty",
-  "jade.mobfarmingsupplies.tank.contents": "%1$s / %2$s mB (%3$s)"
+  "jade.mobfarmingsupplies.tank.contents": "%1$s / %2$s mB (%3$s)",
+
+  "subtitle.mobfarmingsupplies.red_alert": "Alarm blares",
+  "subtitle.mobfarmingsupplies.dramatic": "Dramatic sting",
+  "subtitle.mobfarmingsupplies.rimshot": "Rimshot",
+  "subtitle.mobfarmingsupplies.wilhelm": "Scream"
 }

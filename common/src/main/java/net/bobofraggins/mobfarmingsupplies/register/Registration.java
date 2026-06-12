@@ -36,6 +36,7 @@ import net.bobofraggins.mobfarmingsupplies.tank.TankMenu;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
 import net.bobofraggins.mobfarmingsupplies.mobexclusionglass.MobExclusionGlassBlock;
+import net.bobofraggins.mobfarmingsupplies.togglebutton.ToggleButtonBlock;
 import net.bobofraggins.mobfarmingsupplies.vectorplate.VectorPlateBlock;
 import net.bobofraggins.mobfarmingsupplies.witherproofglass.WitherProofGlassBlock;
 import net.bobofraggins.mobfarmingsupplies.xpjuice.XpJuicePlatformHelper;
@@ -44,6 +45,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
@@ -102,6 +104,31 @@ public final class Registration {
 
     public static final DeferredRegister<CreativeModeTab> CREATIVE_TABS =
             DeferredRegister.create(MobFarmingSuppliesCommon.MODID, Registries.CREATIVE_MODE_TAB);
+
+    public static final DeferredRegister<SoundEvent> SOUND_EVENTS =
+            DeferredRegister.create(MobFarmingSuppliesCommon.MODID, Registries.SOUND_EVENT);
+
+    // ── Sound events ─────────────────────────────────────────────────────────────
+
+    public static final RegistrySupplier<SoundEvent> RED_ALERT_SOUND =
+            SOUND_EVENTS.register("red_alert",
+                    () -> SoundEvent.createVariableRangeEvent(
+                            Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "red_alert")));
+
+    public static final RegistrySupplier<SoundEvent> DRAMATIC_SOUND =
+            SOUND_EVENTS.register("dramatic",
+                    () -> SoundEvent.createVariableRangeEvent(
+                            Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "dramatic")));
+
+    public static final RegistrySupplier<SoundEvent> RIMSHOT_SOUND =
+            SOUND_EVENTS.register("rimshot",
+                    () -> SoundEvent.createVariableRangeEvent(
+                            Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "rimshot")));
+
+    public static final RegistrySupplier<SoundEvent> WILHELM_SOUND =
+            SOUND_EVENTS.register("wilhelm",
+                    () -> SoundEvent.createVariableRangeEvent(
+                            Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "wilhelm")));
 
     // ── Data components ─────────────────────────────────────────────────────────
 
@@ -348,6 +375,64 @@ public final class Registration {
                     () -> new BlockItem(MOB_EXCLUSION_GLASS.get(), new Item.Properties()
                             .setId(itemKey("mob_exclusion_glass"))));
 
+    // ── Toggle Buttons ────────────────────────────────────────────────────────────
+
+    public static final RegistrySupplier<ToggleButtonBlock> RED_ALERT_BUTTON =
+            BLOCKS.register("red_alert_button",
+                    () -> new ToggleButtonBlock(BlockBehaviour.Properties.of()
+                            .setId(blockKey("red_alert_button"))
+                            .strength(0.5f)
+                            .sound(SoundType.STONE)
+                            .noOcclusion(),
+                            RED_ALERT_SOUND));
+
+    public static final RegistrySupplier<BlockItem> RED_ALERT_BUTTON_ITEM =
+            ITEMS.register("red_alert_button",
+                    () -> new BlockItem(RED_ALERT_BUTTON.get(), new Item.Properties()
+                            .setId(itemKey("red_alert_button"))));
+
+    public static final RegistrySupplier<ToggleButtonBlock> DRAMATIC_BUTTON =
+            BLOCKS.register("dramatic_button",
+                    () -> new ToggleButtonBlock(BlockBehaviour.Properties.of()
+                            .setId(blockKey("dramatic_button"))
+                            .strength(0.5f)
+                            .sound(SoundType.STONE)
+                            .noOcclusion(),
+                            DRAMATIC_SOUND));
+
+    public static final RegistrySupplier<BlockItem> DRAMATIC_BUTTON_ITEM =
+            ITEMS.register("dramatic_button",
+                    () -> new BlockItem(DRAMATIC_BUTTON.get(), new Item.Properties()
+                            .setId(itemKey("dramatic_button"))));
+
+    public static final RegistrySupplier<ToggleButtonBlock> RIMSHOT_BUTTON =
+            BLOCKS.register("rimshot_button",
+                    () -> new ToggleButtonBlock(BlockBehaviour.Properties.of()
+                            .setId(blockKey("rimshot_button"))
+                            .strength(0.5f)
+                            .sound(SoundType.STONE)
+                            .noOcclusion(),
+                            RIMSHOT_SOUND));
+
+    public static final RegistrySupplier<BlockItem> RIMSHOT_BUTTON_ITEM =
+            ITEMS.register("rimshot_button",
+                    () -> new BlockItem(RIMSHOT_BUTTON.get(), new Item.Properties()
+                            .setId(itemKey("rimshot_button"))));
+
+    public static final RegistrySupplier<ToggleButtonBlock> WILHELM_BUTTON =
+            BLOCKS.register("wilhelm_button",
+                    () -> new ToggleButtonBlock(BlockBehaviour.Properties.of()
+                            .setId(blockKey("wilhelm_button"))
+                            .strength(0.5f)
+                            .sound(SoundType.STONE)
+                            .noOcclusion(),
+                            WILHELM_SOUND));
+
+    public static final RegistrySupplier<BlockItem> WILHELM_BUTTON_ITEM =
+            ITEMS.register("wilhelm_button",
+                    () -> new BlockItem(WILHELM_BUTTON.get(), new Item.Properties()
+                            .setId(itemKey("wilhelm_button"))));
+
     // ── XP Juice fluid ────────────────────────────────────────────────────────────
 
     public static final RegistrySupplier<FlowingFluid> XP_JUICE_SOURCE =
@@ -511,6 +596,10 @@ public final class Registration {
                         output.accept(TANK_ITEM.get());
                         output.accept(EXPERIENCE_SYRINGE.get());
                         output.accept(XP_JUICE_BUCKET.get());
+                        output.accept(RED_ALERT_BUTTON_ITEM.get());
+                        output.accept(DRAMATIC_BUTTON_ITEM.get());
+                        output.accept(RIMSHOT_BUTTON_ITEM.get());
+                        output.accept(WILHELM_BUTTON_ITEM.get());
                     })
                     .build());
 
@@ -530,5 +619,6 @@ public final class Registration {
         MENUS.register();
         DATA_COMPONENTS.register();
         CREATIVE_TABS.register();
+        SOUND_EVENTS.register();
     }
 }
