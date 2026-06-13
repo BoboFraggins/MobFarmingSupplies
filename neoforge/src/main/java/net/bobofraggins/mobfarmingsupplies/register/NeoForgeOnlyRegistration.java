@@ -8,6 +8,7 @@ import net.bobofraggins.mobfarmingsupplies.absorptionhopper.AbsorptionHopperItem
 import net.bobofraggins.mobfarmingsupplies.crafting.FluidContainerIngredient;
 import net.bobofraggins.mobfarmingsupplies.experiencesyringe.ExperienceSyringeFluidHandler;
 import net.bobofraggins.mobfarmingsupplies.loot.DnaSamplePackChestLootModifier;
+import net.bobofraggins.mobfarmingsupplies.loot.ToggleButtonChestLootModifier;
 import net.bobofraggins.mobfarmingsupplies.tank.TankFluidHandler;
 import net.bobofraggins.mobfarmingsupplies.tank.TankItemFluidHandler;
 import net.bobofraggins.mobfarmingsupplies.xpjuice.XpJuiceFluid;
@@ -53,6 +54,11 @@ public final class NeoForgeOnlyRegistration {
             MapCodec<DnaSamplePackChestLootModifier>> DNA_SAMPLE_PACK_CHEST_LOOT_MODIFIER =
             LOOT_MODIFIER_SERIALIZERS.register("dna_sample_pack_chest",
                     () -> DnaSamplePackChestLootModifier.CODEC);
+
+    public static final net.neoforged.neoforge.registries.DeferredHolder<MapCodec<? extends IGlobalLootModifier>,
+            MapCodec<ToggleButtonChestLootModifier>> TOGGLE_BUTTON_CHEST_LOOT_MODIFIER =
+            LOOT_MODIFIER_SERIALIZERS.register("toggle_button_chest",
+                    () -> ToggleButtonChestLootModifier.CODEC);
 
     // ── XP Juice fluid ────────────────────────────────────────────────────────────
 

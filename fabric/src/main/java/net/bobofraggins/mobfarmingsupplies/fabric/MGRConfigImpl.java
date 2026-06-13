@@ -35,6 +35,9 @@ public final class MGRConfigImpl {
     private static List<String> rarePassivePackMobs = MGRConfig.DEFAULT_RARE_PASSIVE;
     private static List<String> babyPackMobs = MGRConfig.DEFAULT_BABY;
     private static List<String> wrongMobsPackMobs = MGRConfig.DEFAULT_WRONG_MOBS;
+    private static double toggleButtonChestChance = MGRConfig.DEFAULT_TOGGLE_BUTTON_CHEST_CHANCE;
+    private static double dnaSamplePackCommonChestChance = MGRConfig.DEFAULT_DNA_SAMPLE_PACK_COMMON_CHEST_CHANCE;
+    private static double dnaSamplePackRareChestChance = MGRConfig.DEFAULT_DNA_SAMPLE_PACK_RARE_CHEST_CHANCE;
 
     // ── @ExpectPlatform targets ───────────────────────────────────────────────────
 
@@ -49,6 +52,9 @@ public final class MGRConfigImpl {
     public static List<String> getRarePassivePackMobs()  { return rarePassivePackMobs; }
     public static List<String> getBabyPackMobs()         { return babyPackMobs; }
     public static List<String> getWrongMobsPackMobs()    { return wrongMobsPackMobs; }
+    public static double getToggleButtonChestChance()    { return toggleButtonChestChance; }
+    public static double getDnaSamplePackCommonChestChance() { return dnaSamplePackCommonChestChance; }
+    public static double getDnaSamplePackRareChestChance()   { return dnaSamplePackRareChestChance; }
 
     // ── Loading ───────────────────────────────────────────────────────────────────
 
@@ -83,6 +89,12 @@ public final class MGRConfigImpl {
                     cloneOMaticSpawnInterval = clamp(com.get("spawnInterval").getAsInt(), 1, 200);
             }
 
+            if (root.has("toggleButtons")) {
+                JsonObject tb = root.getAsJsonObject("toggleButtons");
+                if (tb.has("chestDropChance"))
+                    toggleButtonChestChance = clamp(tb.get("chestDropChance").getAsDouble(), 0.0, 1.0);
+            }
+
             if (root.has("dnaSamplePacks")) {
                 JsonObject packs = root.getAsJsonObject("dnaSamplePacks");
                 commonHostilePackMobs = readList(packs, "commonHostile", MGRConfig.DEFAULT_COMMON_HOSTILE);
@@ -93,6 +105,14 @@ public final class MGRConfigImpl {
                 rarePassivePackMobs   = readList(packs, "rarePassive",   MGRConfig.DEFAULT_RARE_PASSIVE);
                 babyPackMobs          = readList(packs, "baby",          MGRConfig.DEFAULT_BABY);
                 wrongMobsPackMobs     = readList(packs, "wrongMobs",     MGRConfig.DEFAULT_WRONG_MOBS);
+
+                if (packs.has("chestLoot")) {
+                    JsonObject chestLoot = packs.getAsJsonObject("chestLoot");
+                    if (chestLoot.has("commonChestChance"))
+                        dnaSamplePackCommonChestChance = clamp(chestLoot.get("commonChestChance").getAsDouble(), 0.0, 1.0);
+                    if (chestLoot.has("rareChestChance"))
+                        dnaSamplePackRareChestChance = clamp(chestLoot.get("rareChestChance").getAsDouble(), 0.0, 1.0);
+                }
             }
         } catch (Exception e) {
             LOGGER.error("Failed to load mobfarmingsupplies-server.json — using defaults", e);
@@ -111,6 +131,10 @@ public final class MGRConfigImpl {
     }
 
     private static int clamp(int value, int min, int max) {
+        return Math.min(max, Math.max(min, value));
+    }
+
+    private static double clamp(double value, double min, double max) {
         return Math.min(max, Math.max(min, value));
     }
 
@@ -136,6 +160,10 @@ public final class MGRConfigImpl {
         com.addProperty("spawnInterval", 5);
         root.add("cloneOMatic", com);
 
+        JsonObject tb = new JsonObject();
+        tb.addProperty("chestDropChance", MGRConfig.DEFAULT_TOGGLE_BUTTON_CHEST_CHANCE);
+        root.add("toggleButtons", tb);
+
         JsonObject packs = new JsonObject();
         packs.add("commonHostile", toArray(MGRConfig.DEFAULT_COMMON_HOSTILE));
         packs.add("commonPassive", toArray(MGRConfig.DEFAULT_COMMON_PASSIVE));
@@ -145,6 +173,12 @@ public final class MGRConfigImpl {
         packs.add("rarePassive",   toArray(MGRConfig.DEFAULT_RARE_PASSIVE));
         packs.add("baby",          toArray(MGRConfig.DEFAULT_BABY));
         packs.add("wrongMobs",     toArray(MGRConfig.DEFAULT_WRONG_MOBS));
+
+        JsonObject chestLoot = new JsonObject();
+        chestLoot.addProperty("commonChestChance", MGRConfig.DEFAULT_DNA_SAMPLE_PACK_COMMON_CHEST_CHANCE);
+        chestLoot.addProperty("rareChestChance", MGRConfig.DEFAULT_DNA_SAMPLE_PACK_RARE_CHEST_CHANCE);
+        packs.add("chestLoot", chestLoot);
+
         root.add("dnaSamplePacks", packs);
 
         try (Writer writer = Files.newBufferedWriter(configFile, StandardCharsets.UTF_8)) {

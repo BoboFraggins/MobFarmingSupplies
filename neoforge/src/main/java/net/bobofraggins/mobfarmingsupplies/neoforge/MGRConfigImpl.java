@@ -49,4 +49,16 @@ public final class MGRConfigImpl {
     public static List<String> getWrongMobsPackMobs() {
         return List.copyOf(MGRServerConfig.WRONG_MOBS_PACK_MOBS.get());
     }
+
+    public static double getToggleButtonChestChance() {
+        return MGRServerConfig.TOGGLE_BUTTON_CHEST_CHANCE.get();
+    }
+
+    public static double getDnaSamplePackCommonChestChance() {
+        return MGRServerConfig.DNA_SAMPLE_PACK_COMMON_CHEST_CHANCE.get();
+    }
+
+    public static double getDnaSamplePackRareChestChance() {
+        return MGRServerConfig.DNA_SAMPLE_PACK_RARE_CHEST_CHANCE.get();
+    }
 }

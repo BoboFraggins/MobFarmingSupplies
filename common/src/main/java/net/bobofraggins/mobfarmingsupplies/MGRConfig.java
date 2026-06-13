@@ -78,6 +78,14 @@ public final class MGRConfig {
             "minecraft:polar_bear", "minecraft:sniffer", "minecraft:snow_golem",
             "minecraft:strider", "minecraft:villager", "minecraft:wolf");
 
+    public static final double DEFAULT_TOGGLE_BUTTON_CHEST_CHANCE = 0.05;
+
+    /** Default chance for DNA sample/booster packs to appear in "common" tier chests (overworld dungeons/structures). */
+    public static final double DEFAULT_DNA_SAMPLE_PACK_COMMON_CHEST_CHANCE = 0.01;
+
+    /** Default chance for DNA sample/booster packs to appear in "rare" tier chests (nether/end structures). */
+    public static final double DEFAULT_DNA_SAMPLE_PACK_RARE_CHEST_CHANCE = 0.05;
+
     // ── Platform-bridged accessors ────────────────────────────────────────────────
 
     /** Whether the fan's push range is only blocked by solid-collision blocks (default: false). */
@@ -115,4 +123,16 @@ public final class MGRConfig {
 
     @ExpectPlatform
     public static List<String> getWrongMobsPackMobs() { throw new AssertionError(); }
+
+    /** Chance (0.0–1.0) for each toggle button to appear in chest loot tables (default: 0.05). */
+    @ExpectPlatform
+    public static double getToggleButtonChestChance() { throw new AssertionError(); }
+
+    /** Chance (0.0–1.0) for DNA sample/booster packs to appear in "common" tier chests (default: 0.01). */
+    @ExpectPlatform
+    public static double getDnaSamplePackCommonChestChance() { throw new AssertionError(); }
+
+    /** Chance (0.0–1.0) for DNA sample/booster packs to appear in "rare" tier chests (default: 0.05). */
+    @ExpectPlatform
+    public static double getDnaSamplePackRareChestChance() { throw new AssertionError(); }
 }

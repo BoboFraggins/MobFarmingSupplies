@@ -24,10 +24,9 @@ Nine upgrade slots accept:
 
 A redstone-powered mob duplicator. Place DNA Samples or DNA Sample Packs into its nine
 DNA slots; while continuously powered, it periodically attempts to spawn a clone of one
-of the stored mobs in the space above the block (spawn interval is configurable, default
-every 5 ticks). Spawn attempts respect block collisions, so the Clone-O-Matic won't jam
-itself by trying to spawn a mob inside a wall — but it ignores nearby entities, so it
-keeps working even in a crowded farm.
+of the stored mobs in the space around the block. Spawn attempts respect block collisions,
+so the Clone-O-Matic won't jam itself by trying to spawn a mob inside a wall — but it
+ignores nearby entities, so it keeps working even in a crowded farm.
 
 ### DNA Collector & DNA Samples
 

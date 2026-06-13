@@ -79,6 +79,17 @@ public final class MGRServerConfig {
      */
     public static final ModConfigSpec.ConfigValue<List<? extends String>> WRONG_MOBS_PACK_MOBS;
 
+    /** Chance (0.0–1.0) for DNA sample/booster packs to appear in "common" tier chests (overworld dungeons/structures). */
+    public static final ModConfigSpec.DoubleValue DNA_SAMPLE_PACK_COMMON_CHEST_CHANCE;
+
+    /** Chance (0.0–1.0) for DNA sample/booster packs to appear in "rare" tier chests (nether/end structures). */
+    public static final ModConfigSpec.DoubleValue DNA_SAMPLE_PACK_RARE_CHEST_CHANCE;
+
+    // ── Toggle Buttons ───────────────────────────────────────────────────────────
+
+    /** Chance (0.0–1.0) for each toggle button to appear in chest loot tables. */
+    public static final ModConfigSpec.DoubleValue TOGGLE_BUTTON_CHEST_CHANCE;
+
     static {
         ModConfigSpec.Builder b = new ModConfigSpec.Builder();
 
@@ -301,7 +312,24 @@ public final class MGRServerConfig {
                         e -> e instanceof String);
         b.pop();
 
+        b.push("chestLoot");
+        DNA_SAMPLE_PACK_COMMON_CHEST_CHANCE = b
+                .comment("Chance (0.0-1.0) for DNA sample/booster packs to appear in 'common' tier chests",
+                         "(overworld dungeons, mineshafts, temples, etc.).")
+                .defineInRange("commonChestChance", MGRConfig.DEFAULT_DNA_SAMPLE_PACK_COMMON_CHEST_CHANCE, 0.0, 1.0);
+        DNA_SAMPLE_PACK_RARE_CHEST_CHANCE = b
+                .comment("Chance (0.0-1.0) for DNA sample/booster packs to appear in 'rare' tier chests",
+                         "(nether fortresses, bastions, end city ships).")
+                .defineInRange("rareChestChance", MGRConfig.DEFAULT_DNA_SAMPLE_PACK_RARE_CHEST_CHANCE, 0.0, 1.0);
+        b.pop(); // chestLoot
+
         b.pop(); // dnaSamplePacks
+
+        b.comment("Toggle Button settings").push("toggleButtons");
+        TOGGLE_BUTTON_CHEST_CHANCE = b
+                .comment("Chance (0.0-1.0) for each toggle button to appear in chest loot tables.")
+                .defineInRange("chestDropChance", MGRConfig.DEFAULT_TOGGLE_BUTTON_CHEST_CHANCE, 0.0, 1.0);
+        b.pop();
 
         SPEC = b.build();
     }
