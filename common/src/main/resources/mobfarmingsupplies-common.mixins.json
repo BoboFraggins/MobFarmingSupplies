@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "net.bobofraggins.mobfarmingsupplies.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "GoalSelectorAccessor",
+    "MobFarmAccessor"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

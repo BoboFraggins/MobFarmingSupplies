@@ -15,6 +15,9 @@ import net.minecraft.world.Containers;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.animal.squid.GlowSquid;
+import net.minecraft.world.entity.animal.squid.Squid;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -154,6 +157,10 @@ public class CloneOMaticBlockEntity extends BlockEntity implements MenuProvider 
             // mobs awaiting harvest must not block new spawns just because something
             // else is standing nearby.
             if (!noBlockCollision(serverLevel, entity.getType().getSpawnAABB(sx, sy, sz))) continue;
+
+            if (entity instanceof Squid || entity instanceof GlowSquid) {
+                AquaticFarmMobHelper.suppressSwimmingAI((Mob) entity);
+            }
 
             entity.setPos(sx, sy, sz);
             serverLevel.addFreshEntity(entity);

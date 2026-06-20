@@ -15,7 +15,8 @@
     ]
   },
   "mixins": [
-    "mobfarmingsupplies.mixins.json"
+    "mobfarmingsupplies.mixins.json",
+    "mobfarmingsupplies-common.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=${fabric_loader_version}",
