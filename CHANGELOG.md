@@ -1,5 +1,7 @@
 # Mob Farming Supplies
 
+## 26.1.2.3
+
 ## 26.1.2.2
 
 * Add configuration UI to Ender Inhibitor
