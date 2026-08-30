@@ -7,16 +7,17 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Tracks active Ender Inhibitor positions and cancels Enderman natural teleports
- * that originate within {@value #RANGE} blocks (Chebyshev) of any inhibitor.
+ * that originate within {@value #RANGE} blocks (Chebyshev) of any inhibitor's
+ * (possibly offset) effective center.
  *
  * <p>The inhibitor registry (INHIBITORS map + add/remove/check) lives here in common
- * and is populated by {@link EnderInhibitorBlockEntity} on load/unload.
+ * and is populated by {@link EnderInhibitorBlockEntity} on load/unload/offset-change.
+ * Each inhibitor is keyed by its block position, with the value being the effective
+ * center of its suppression area (block position + configured offset).
  *
  * <p>Platform-specific teleport cancellation is wired in each loader's event handler:
  * NeoForge uses {@code NeoForgeEnderInhibitorEvents} (EntityTeleportEvent.EnderEntity);
@@ -31,25 +32,27 @@ public final class EnderInhibitorEvents {
 
     // ── Inhibitor registry ──────────────────────────────────────────────────────
 
-    private static final Map<ResourceKey<Level>, Set<BlockPos>> INHIBITORS = new HashMap<>();
+    private static final Map<ResourceKey<Level>, Map<BlockPos, BlockPos>> INHIBITORS = new HashMap<>();
 
-    public static void addInhibitor(Level level, BlockPos pos) {
-        INHIBITORS.computeIfAbsent(level.dimension(), k -> new HashSet<>()).add(pos.immutable());
+    /** Registers (or updates) an inhibitor's effective suppression center. */
+    public static void addInhibitor(Level level, BlockPos pos, BlockPos center) {
+        INHIBITORS.computeIfAbsent(level.dimension(), k -> new HashMap<>())
+                .put(pos.immutable(), center.immutable());
     }
 
     public static void removeInhibitor(Level level, BlockPos pos) {
-        Set<BlockPos> set = INHIBITORS.get(level.dimension());
-        if (set != null) set.remove(pos);
+        Map<BlockPos, BlockPos> map = INHIBITORS.get(level.dimension());
+        if (map != null) map.remove(pos);
     }
 
     public static boolean inhibitorNearby(Entity entity) {
-        Set<BlockPos> inhibitors = INHIBITORS.get(entity.level().dimension());
+        Map<BlockPos, BlockPos> inhibitors = INHIBITORS.get(entity.level().dimension());
         if (inhibitors == null || inhibitors.isEmpty()) return false;
-        BlockPos center = entity.blockPosition();
-        for (BlockPos inh : inhibitors) {
-            if (Math.abs(inh.getX() - center.getX()) <= RANGE
-                    && Math.abs(inh.getY() - center.getY()) <= RANGE
-                    && Math.abs(inh.getZ() - center.getZ()) <= RANGE) {
+        BlockPos point = entity.blockPosition();
+        for (BlockPos center : inhibitors.values()) {
+            if (Math.abs(center.getX() - point.getX()) <= RANGE
+                    && Math.abs(center.getY() - point.getY()) <= RANGE
+                    && Math.abs(center.getZ() - point.getZ()) <= RANGE) {
                 return true;
             }
         }

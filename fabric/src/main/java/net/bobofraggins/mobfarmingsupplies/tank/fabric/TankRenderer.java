@@ -72,7 +72,9 @@ public class TankRenderer implements BlockEntityRenderer<TankBlockEntity, TankRe
                 .get(fluid.getFluid().defaultFluidState());
         var sprite = fluidModel.stillMaterial().sprite();
 
-        int tint = fluidModel.tintSource().color(fluid.getFluid().defaultFluidState().createLegacyBlock());
+        int tint = fluidModel.tintSource() != null
+                ? fluidModel.tintSource().color(fluid.getFluid().defaultFluidState().createLegacyBlock())
+                : 0xFFFFFFFF;
         state.fr = (tint >> 16) & 0xFF;
         state.fg = (tint >>  8) & 0xFF;
         state.fb = tint & 0xFF;

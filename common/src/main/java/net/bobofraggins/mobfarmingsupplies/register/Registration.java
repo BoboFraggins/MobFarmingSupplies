@@ -18,6 +18,7 @@ import net.bobofraggins.mobfarmingsupplies.dna.DnaSampleItem;
 import net.bobofraggins.mobfarmingsupplies.dna.DnaSamplePackItem;
 import net.bobofraggins.mobfarmingsupplies.enderinhibitor.EnderInhibitorBlock;
 import net.bobofraggins.mobfarmingsupplies.enderinhibitor.EnderInhibitorBlockEntity;
+import net.bobofraggins.mobfarmingsupplies.enderinhibitor.EnderInhibitorMenu;
 import net.bobofraggins.mobfarmingsupplies.experiencesyringe.ExperienceSyringeItem;
 import net.bobofraggins.mobfarmingsupplies.fan.FanBlock;
 import net.bobofraggins.mobfarmingsupplies.fan.FanBlockEntity;
@@ -281,6 +282,9 @@ public final class Registration {
             ITEMS.register("ender_inhibitor",
                     () -> new BlockItem(ENDER_INHIBITOR.get(), new Item.Properties()
                             .setId(itemKey("ender_inhibitor"))));
+
+    public static final RegistrySupplier<MenuType<EnderInhibitorMenu>> ENDER_INHIBITOR_MENU =
+            MENUS.register("ender_inhibitor", () -> MenuRegistry.ofExtended(EnderInhibitorMenu::new));
 
     public static final RegistrySupplier<BlockEntityType<EnderInhibitorBlockEntity>> ENDER_INHIBITOR_BE_TYPE =
             BLOCK_ENTITIES.register("ender_inhibitor",

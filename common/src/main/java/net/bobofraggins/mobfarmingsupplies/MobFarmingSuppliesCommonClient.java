@@ -3,6 +3,7 @@ package net.bobofraggins.mobfarmingsupplies;
 import dev.architectury.registry.client.gui.MenuScreenRegistry;
 import net.bobofraggins.mobfarmingsupplies.absorptionhopper.AbsorptionHopperScreen;
 import net.bobofraggins.mobfarmingsupplies.cloneomatic.CloneOMaticScreen;
+import net.bobofraggins.mobfarmingsupplies.enderinhibitor.EnderInhibitorScreen;
 import net.bobofraggins.mobfarmingsupplies.fan.FanScreen;
 import net.bobofraggins.mobfarmingsupplies.mobharvester.MobHarvesterScreen;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
@@ -45,5 +46,8 @@ public final class MobFarmingSuppliesCommonClient {
         MenuScreenRegistry.registerScreenFactory(
                 Registration.ABSORPTION_HOPPER_MENU.get(),
                 AbsorptionHopperScreen::new);
+        MenuScreenRegistry.registerScreenFactory(
+                Registration.ENDER_INHIBITOR_MENU.get(),
+                EnderInhibitorScreen::new);
     }
 }

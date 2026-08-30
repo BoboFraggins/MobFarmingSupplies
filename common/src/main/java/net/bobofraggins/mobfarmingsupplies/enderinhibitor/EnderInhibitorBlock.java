@@ -1,10 +1,14 @@
 package net.bobofraggins.mobfarmingsupplies.enderinhibitor;
 
 import com.mojang.serialization.MapCodec;
+import dev.architectury.registry.menu.MenuRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -20,6 +24,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
@@ -44,16 +49,19 @@ public class EnderInhibitorBlock extends Block implements EntityBlock {
 
     // ── Collision / selection shapes ─────────────────────────────────────────────
     //
-    // The model's base plate is ~3–13 px wide and 0–1 px tall.
-    // The prongs reach ~6 px out from the surface (base + shaft).
-    // The cross-section on the two perpendicular axes is 3–13 px (10 px).
+    // The model's base plate is only ~3–13 px wide (a 10×10 px footprint centred on
+    // the mounting face), so an inset hitbox of the same size makes most clicks near
+    // the base land on the support block instead — only the narrow column near the
+    // prongs reliably registers. The shape is widened to the full mounting face
+    // (0–16 px) so the whole base is clickable, while keeping the same depth (how
+    // far the prongs reach out from the surface, ~6 px).
 
-    private static final VoxelShape SHAPE_UP    = Block.box( 3,  0,  3, 13,  6, 13);
-    private static final VoxelShape SHAPE_DOWN  = Block.box( 3, 10,  3, 13, 16, 13);
-    private static final VoxelShape SHAPE_NORTH = Block.box( 3,  3,  0, 13, 13,  6);
-    private static final VoxelShape SHAPE_SOUTH = Block.box( 3,  3, 10, 13, 13, 16);
-    private static final VoxelShape SHAPE_EAST  = Block.box(10,  3,  3, 16, 13, 13);
-    private static final VoxelShape SHAPE_WEST  = Block.box( 0,  3,  3,  6, 13, 13);
+    private static final VoxelShape SHAPE_UP    = Block.box( 0,  0,  0, 16,  6, 16);
+    private static final VoxelShape SHAPE_DOWN  = Block.box( 0, 10,  0, 16, 16, 16);
+    private static final VoxelShape SHAPE_NORTH = Block.box( 0,  0,  0, 16, 16,  6);
+    private static final VoxelShape SHAPE_SOUTH = Block.box( 0,  0, 10, 16, 16, 16);
+    private static final VoxelShape SHAPE_EAST  = Block.box(10,  0,  0, 16, 16, 16);
+    private static final VoxelShape SHAPE_WEST  = Block.box( 0,  0,  0,  6, 16, 16);
 
     // ── Construction ─────────────────────────────────────────────────────────────
 
@@ -172,6 +180,20 @@ public class EnderInhibitorBlock extends Block implements EntityBlock {
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new EnderInhibitorBlockEntity(pos, state);
+    }
+
+    // ── Interaction ─────────────────────────────────────────────────────────────
+
+    @Override
+    protected InteractionResult useWithoutItem(
+            BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
+        if (!level.isClientSide()) {
+            if (level.getBlockEntity(pos) instanceof EnderInhibitorBlockEntity be
+                    && player instanceof ServerPlayer sp) {
+                MenuRegistry.openExtendedMenu(sp, be, buf -> buf.writeBlockPos(pos));
+            }
+        }
+        return InteractionResult.SUCCESS;
     }
 
     // ── Structure rotation / mirror support ──────────────────────────────────────

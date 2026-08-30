@@ -18,5 +18,10 @@ public final class MGRNetwork {
                 SetHopperOffsetPacket.TYPE,
                 SetHopperOffsetPacket.STREAM_CODEC,
                 SetHopperOffsetPacket::handle);
+        NetworkManager.registerReceiver(
+                NetworkManager.c2s(),
+                SetInhibitorOffsetPacket.TYPE,
+                SetInhibitorOffsetPacket.STREAM_CODEC,
+                SetInhibitorOffsetPacket::handle);
     }
 }

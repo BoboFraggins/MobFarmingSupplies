@@ -97,7 +97,9 @@ public class TankItemRenderer implements SpecialModelRenderer<TankContents> {
                 .get(archFluid.getFluid().defaultFluidState());
         TextureAtlasSprite sprite = fluidModel.stillMaterial().sprite();
 
-        int fluidTint = fluidModel.tintSource().color(archFluid.getFluid().defaultFluidState().createLegacyBlock());
+        int fluidTint = fluidModel.tintSource() != null
+                ? fluidModel.tintSource().color(archFluid.getFluid().defaultFluidState().createLegacyBlock())
+                : 0xFFFFFFFF;
         int fr = (fluidTint >> 16) & 0xFF;
         int fg = (fluidTint >>  8) & 0xFF;
         int fb = fluidTint & 0xFF;
