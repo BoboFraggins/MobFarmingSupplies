@@ -8,6 +8,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityProcessor;
 import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.EntitySpawnRequest;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -51,7 +52,7 @@ public class DnaSampleItem extends Item implements IDnaSampleItem {
         DnaSampleContents contents = getContents(stack);
         if (contents == null) return null;
         Entity entity = EntityType.loadEntityRecursive(
-                contents.entityNbt(), level, EntitySpawnReason.SPAWNER, EntityProcessor.NOP);
+                contents.entityNbt(), level, new EntitySpawnRequest(EntitySpawnReason.SPAWNER, false), EntityProcessor.NOP);
         if (entity == null) return null;
 
         // The saved NBT carries the original captured mob's UUID. Every clone made

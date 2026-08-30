@@ -70,7 +70,7 @@ public class TankItemRenderer implements SpecialModelRenderer<TankContents> {
             cachedBlkParts = parts;
         }
         List<BlockStateModelPart> blkParts = cachedBlkParts;
-        collector.submitCustomGeometry(poseStack, Sheets.cutoutBlockSheet(), (pose, vc) -> {
+        collector.submitCustomGeometry(poseStack, Sheets.cutoutBlockItemSheet(), (pose, vc) -> {
             QuadInstance qi = new QuadInstance();
             qi.setColor(0xFFFFFFFF);
             qi.setLightCoords(packedLight);
@@ -97,9 +97,20 @@ public class TankItemRenderer implements SpecialModelRenderer<TankContents> {
                 .get(archFluid.getFluid().defaultFluidState());
         TextureAtlasSprite sprite = fluidModel.stillMaterial().sprite();
 
-        int fluidTint = fluidModel.tintSource() != null
-                ? fluidModel.tintSource().color(archFluid.getFluid().defaultFluidState().createLegacyBlock())
-                : 0xFFFFFFFF;
+        // color(BlockState) alone returns no tint at all for biome-dependent fluids like
+        // water (a hard no-op) — the real biome-sampled blue needs colorInWorld with a
+        // level+pos. There's no true world position for a held item, so approximate
+        // with the viewing player's position/level.
+        int fluidTint;
+        if (fluidModel.tintSource() == null) {
+            fluidTint = 0xFFFFFFFF;
+        } else if (mc.level != null && mc.player != null) {
+            fluidTint = fluidModel.tintSource().colorInWorld(
+                    archFluid.getFluid().defaultFluidState().createLegacyBlock(),
+                    mc.level, mc.player.blockPosition());
+        } else {
+            fluidTint = fluidModel.tintSource().color(archFluid.getFluid().defaultFluidState().createLegacyBlock());
+        }
         int fr = (fluidTint >> 16) & 0xFF;
         int fg = (fluidTint >>  8) & 0xFF;
         int fb = fluidTint & 0xFF;
@@ -114,7 +125,7 @@ public class TankItemRenderer implements SpecialModelRenderer<TankContents> {
         float vB = Mth.lerp(fillFrac, sprite.getV0(), sprite.getV1());
 
         final int ffrF = fr, ffgF = fg, ffbF = fb, ffaF = fa, flF = fluidLight, overlayF = packedOverlay;
-        collector.submitCustomGeometry(poseStack, Sheets.translucentBlockSheet(),
+        collector.submitCustomGeometry(poseStack, Sheets.translucentBlockItemSheet(),
                 (pose, vc) -> TankFluidGeometry.renderCubeFill(
                         vc, pose.pose(), ffrF, ffgF, ffbF, ffaF, flF, overlayF, uL, vT, uR, vB, fillTop));
     }

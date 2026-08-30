@@ -1,7 +1,7 @@
 package net.bobofraggins.mobfarmingsupplies.tank.neoforge;
 
 import dev.architectury.fluid.FluidStack;
-import dev.architectury.hooks.fluid.forge.FluidStackHooksForge;
+import dev.architectury.hooks.fluid.neoforge.FluidStackHooksForge;
 import net.bobofraggins.mobfarmingsupplies.tank.TankBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.SimpleContainer;

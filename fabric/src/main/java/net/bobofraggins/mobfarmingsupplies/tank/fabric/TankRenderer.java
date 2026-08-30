@@ -8,6 +8,7 @@ import net.bobofraggins.mobfarmingsupplies.tank.TankFluidGeometry;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -72,9 +73,20 @@ public class TankRenderer implements BlockEntityRenderer<TankBlockEntity, TankRe
                 .get(fluid.getFluid().defaultFluidState());
         var sprite = fluidModel.stillMaterial().sprite();
 
-        int tint = fluidModel.tintSource() != null
-                ? fluidModel.tintSource().color(fluid.getFluid().defaultFluidState().createLegacyBlock())
-                : 0xFFFFFFFF;
+        // color(BlockState) is a context-free fallback that returns no tint at all for
+        // biome-dependent fluids like water (BlockTintSources.water()#color() is a hard
+        // -1/no-op — the real biome-sampled blue only comes from colorInWorld, which
+        // needs the level+pos we actually have here). Using color() alone is why water
+        // rendered as its raw untinted (grayish) texture instead of blue.
+        int tint;
+        if (fluidModel.tintSource() == null) {
+            tint = 0xFFFFFFFF;
+        } else if (be.getLevel() instanceof BlockAndTintGetter tintGetter) {
+            tint = fluidModel.tintSource().colorInWorld(
+                    fluid.getFluid().defaultFluidState().createLegacyBlock(), tintGetter, be.getBlockPos());
+        } else {
+            tint = fluidModel.tintSource().color(fluid.getFluid().defaultFluidState().createLegacyBlock());
+        }
         state.fr = (tint >> 16) & 0xFF;
         state.fg = (tint >>  8) & 0xFF;
         state.fb = tint & 0xFF;
@@ -108,7 +120,7 @@ public class TankRenderer implements BlockEntityRenderer<TankBlockEntity, TankRe
         poseStack.pushPose();
         collector.submitCustomGeometry(
                 poseStack,
-                Sheets.translucentBlockSheet(),
+                Sheets.translucentBlockItemSheet(),
                 (pose, vc) -> TankFluidGeometry.renderCubeFill(
                         vc, pose.pose(), r, g, b, a, light, overlay, uL, vT, uR, vB, fillTop));
         poseStack.popPose();

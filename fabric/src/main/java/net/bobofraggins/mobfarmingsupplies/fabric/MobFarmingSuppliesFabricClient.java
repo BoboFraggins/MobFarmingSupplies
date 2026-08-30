@@ -5,6 +5,7 @@ import dev.architectury.registry.client.rendering.BlockEntityRendererRegistry;
 import java.lang.reflect.Field;
 import net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommon;
 import net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommonClient;
+import net.bobofraggins.mobfarmingsupplies.absorptionhopper.AbsorptionHopperBlockEntityRenderer;
 import net.bobofraggins.mobfarmingsupplies.client.model.fabric.ExtraBlockModelsImpl;
 import net.bobofraggins.mobfarmingsupplies.cloneomatic.CloneOMaticBlockEntityRenderer;
 import net.bobofraggins.mobfarmingsupplies.enderinhibitor.EnderInhibitorBlockEntityRenderer;
@@ -39,6 +40,9 @@ public class MobFarmingSuppliesFabricClient implements ClientModInitializer {
         BlockEntityRendererRegistry.register(
                 Registration.TANK_BE_TYPE.get(),
                 TankRenderer::new);
+        BlockEntityRendererRegistry.register(
+                Registration.ABSORPTION_HOPPER_BE_TYPE.get(),
+                AbsorptionHopperBlockEntityRenderer::new);
         ExtraBlockModelsImpl.registerModelLoadingPlugin();
         registerSpecialModelRenderers();
     }

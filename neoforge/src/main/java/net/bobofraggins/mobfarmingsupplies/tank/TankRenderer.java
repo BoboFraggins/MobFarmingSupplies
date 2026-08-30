@@ -14,7 +14,8 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import dev.architectury.fluid.FluidStack;
-import dev.architectury.hooks.fluid.forge.FluidStackHooksForge;
+import dev.architectury.hooks.fluid.neoforge.FluidStackHooksForge;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.neoforged.neoforge.client.extensions.IBlockEntityRendererExtension;
 import org.joml.Matrix4f;
 
@@ -72,9 +73,22 @@ public class TankRenderer
                 .get(fluid.getFluid().defaultFluidState());
         var sprite = fluidModel.stillMaterial().sprite();
 
-        int tint = fluidModel.fluidTintSource() != null
-                ? fluidModel.fluidTintSource().colorAsStack(FluidStackHooksForge.toForge(fluid.copyWithAmount(1)))
-                : 0xFFFFFFFF;
+        // colorAsStack() delegates to the context-free color(FluidState) overload, which
+        // returns no tint at all for biome-dependent fluids like water (a hard no-op) —
+        // the real biome-sampled blue only comes from colorInWorld, which needs the
+        // level+pos we actually have here. Using colorAsStack alone is why water
+        // rendered as its raw untinted (grayish) texture instead of blue.
+        int tint;
+        if (fluidModel.fluidTintSource() == null) {
+            tint = 0xFFFFFFFF;
+        } else if (be.getLevel() instanceof BlockAndTintGetter tintGetter) {
+            tint = fluidModel.fluidTintSource().colorInWorld(
+                    fluid.getFluid().defaultFluidState(),
+                    fluid.getFluid().defaultFluidState().createLegacyBlock(),
+                    tintGetter, be.getBlockPos());
+        } else {
+            tint = fluidModel.fluidTintSource().colorAsStack(FluidStackHooksForge.toForge(fluid.copyWithAmount(1)));
+        }
         state.fr = (tint >> 16) & 0xFF;
         state.fg = (tint >>  8) & 0xFF;
         state.fb = tint & 0xFF;
@@ -108,7 +122,7 @@ public class TankRenderer
         poseStack.pushPose();
         collector.submitCustomGeometry(
                 poseStack,
-                Sheets.translucentBlockSheet(),
+                Sheets.translucentBlockItemSheet(),
                 (pose, vc) -> renderCubeFill(
                         vc, pose.pose(), r, g, b, a, light, overlay, uL, vT, uR, vB, fillTop));
         poseStack.popPose();

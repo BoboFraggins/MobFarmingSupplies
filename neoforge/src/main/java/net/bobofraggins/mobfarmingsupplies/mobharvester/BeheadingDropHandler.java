@@ -3,6 +3,7 @@ package net.bobofraggins.mobfarmingsupplies.mobharvester;
 import net.bobofraggins.mobfarmingsupplies.register.MGRRegistryHelper;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.Item;
@@ -30,12 +31,12 @@ public class BeheadingDropHandler {
 
     /** Maps entity types that have a corresponding vanilla head item. */
     private static final Map<EntityType<?>, Item> HEAD_MAP = Map.of(
-            EntityType.ZOMBIE,          Items.ZOMBIE_HEAD,
-            EntityType.SKELETON,        Items.SKELETON_SKULL,
-            EntityType.CREEPER,         Items.CREEPER_HEAD,
-            EntityType.WITHER_SKELETON, Items.WITHER_SKELETON_SKULL,
-            EntityType.PIGLIN,          Items.PIGLIN_HEAD,
-            EntityType.ENDER_DRAGON,    Items.DRAGON_HEAD
+            EntityTypes.ZOMBIE,          Items.ZOMBIE_HEAD,
+            EntityTypes.SKELETON,        Items.SKELETON_SKULL,
+            EntityTypes.CREEPER,         Items.CREEPER_HEAD,
+            EntityTypes.WITHER_SKELETON, Items.WITHER_SKELETON_SKULL,
+            EntityTypes.PIGLIN,          Items.PIGLIN_HEAD,
+            EntityTypes.ENDER_DRAGON,    Items.DRAGON_HEAD
     );
 
     @SubscribeEvent

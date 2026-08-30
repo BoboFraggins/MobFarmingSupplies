@@ -151,7 +151,7 @@ public class FanBlockEntityRenderer
 
             collector.submitBlockModel(
                     poseStack,
-                    Sheets.cutoutBlockSheet(),
+                    Sheets.cutoutBlockItemSheet(),
                     List.of(turbine),
                     new int[0],
                     state.lightCoords,

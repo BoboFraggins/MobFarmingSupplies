@@ -17,6 +17,15 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 @SuppressWarnings("UnstableApiUsage")
 public final class AbsorptionHopperBlockEntityPlatformImpl {
 
+    /**
+     * {@link AbsorptionHopperBlockEntity#tankAmount} is tracked in Architectury's mB
+     * convention, but the Fabric Transfer API measures fluids in droplets (1 mB =
+     * {@value} droplets — see {@code FluidConstants.BUCKET} = 81000). {@code dest} in
+     * {@link #pushFluid} is an arbitrary adjacent block's storage, so it must be treated
+     * as droplet-based.
+     */
+    private static final long DROPLETS_PER_MB = 81L;
+
     private AbsorptionHopperBlockEntityPlatformImpl() {}
 
     public static void outputPhase(AbsorptionHopperBlockEntity be, Level level, BlockPos pos) {
@@ -60,16 +69,17 @@ public final class AbsorptionHopperBlockEntityPlatformImpl {
     }
 
     private static boolean pushFluid(AbsorptionHopperBlockEntity be, Storage<FluidVariant> dest) {
-        long toSend = Math.min(AbsorptionHopperBlockEntity.PUSH_FLUID_MB, be.tankAmount);
+        long toSendMb = Math.min(AbsorptionHopperBlockEntity.PUSH_FLUID_MB, be.tankAmount);
         FluidVariant variant = FluidVariant.of(be.tankFluid.getFluid(), be.tankFluid.getPatch());
-        long sent;
+        long sentMb;
         try (Transaction tx = Transaction.openOuter()) {
-            sent = dest.insert(variant, toSend, tx);
-            if (sent > 0) tx.commit();
-            else sent = 0;
+            long sentDroplets = dest.insert(variant, toSendMb * DROPLETS_PER_MB, tx);
+            sentMb = sentDroplets / DROPLETS_PER_MB;
+            if (sentMb > 0) tx.commit();
+            else sentMb = 0;
         }
-        if (sent > 0) {
-            be.tankAmount -= (int) sent;
+        if (sentMb > 0) {
+            be.tankAmount -= (int) sentMb;
             if (be.tankAmount <= 0) {
                 be.tankAmount = 0;
                 be.tankFluid = FluidStack.empty();

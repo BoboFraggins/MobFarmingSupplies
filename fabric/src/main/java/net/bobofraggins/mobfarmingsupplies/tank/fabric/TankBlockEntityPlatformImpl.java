@@ -9,20 +9,39 @@ import net.minecraft.world.level.Level;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.item.ContainerStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
+import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import org.jetbrains.annotations.Nullable;
 
 @SuppressWarnings("UnstableApiUsage")
 public final class TankBlockEntityPlatformImpl {
 
+    /**
+     * {@link TankBlockEntity#amount} is tracked in Architectury's mB convention, but the
+     * Fabric Transfer API measures fluids in droplets (1 mB = {@value} droplets — see
+     * {@code FluidConstants.BUCKET} = 81000). Every {@code storage.insert}/{@code extract}
+     * call below must convert at this boundary, since {@code storage} may be a generic
+     * Fabric-side provider (e.g. the vanilla bucket fallback) that only understands
+     * droplets.
+     */
+    private static final long DROPLETS_PER_MB = 81L;
+
     private TankBlockEntityPlatformImpl() {}
 
     @Nullable
     public static ItemStack tryTransferFluidWithItem(TankBlockEntity be, ItemStack input) {
-        ContainerItemContext ctx = ContainerItemContext.withConstant(input);
+        // withConstant() gives a read-only/simulation-only context — its insert() is a
+        // hard no-op (always returns 0), so item-side mutations like the Experience
+        // Syringe's stored-XP data component (set via ContainerItemContext#exchange,
+        // which internally requires a successful insert) can never actually persist.
+        // Back the context by the tank's real transfer-container slot instead, so
+        // exchanges genuinely write through.
+        SingleSlotStorage<ItemVariant> slot = ContainerStorage.of(be.transferContainer, null).getSlot(0);
+        ContainerItemContext ctx = ContainerItemContext.ofSingleSlot(slot);
         Storage<FluidVariant> storage = FluidStorage.ITEM.find(input, ctx);
         if (storage == null) return null;
 
@@ -41,13 +60,14 @@ public final class TankBlockEntityPlatformImpl {
                     continue;
                 }
 
-                long space = TankBlockEntity.CAPACITY - be.amount;
-                long toDrain = Math.min(view.getAmount(), space);
-                if (toDrain <= 0) continue;
+                long spaceDroplets = (TankBlockEntity.CAPACITY - be.amount) * DROPLETS_PER_MB;
+                long toDrainDroplets = Math.min(view.getAmount(), spaceDroplets);
+                if (toDrainDroplets <= 0) continue;
 
-                long extracted = storage.extract(variant, toDrain, peekTx);
-                if (extracted > 0) {
-                    be.insert(FluidStack.create(incoming, extracted), extracted, false);
+                long extractedDroplets = storage.extract(variant, toDrainDroplets, peekTx);
+                long extractedMb = extractedDroplets / DROPLETS_PER_MB;
+                if (extractedMb > 0) {
+                    be.insert(FluidStack.create(incoming, extractedMb), extractedMb, false);
                     peekTx.commit();
 
                     ItemVariant resultVariant = ctx.getMainSlot().getResource();
@@ -64,7 +84,8 @@ public final class TankBlockEntityPlatformImpl {
 
         FluidVariant toInsert = FabricTankFluidStorage.toFabric(be.storedFluid);
         try (Transaction fillTx = Transaction.openOuter()) {
-            long inserted = storage.insert(toInsert, be.amount, fillTx);
+            long insertedDroplets = storage.insert(toInsert, be.amount * DROPLETS_PER_MB, fillTx);
+            long inserted = insertedDroplets / DROPLETS_PER_MB;
             if (inserted > 0) {
                 be.extract(inserted, false);
                 fillTx.commit();

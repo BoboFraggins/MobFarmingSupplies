@@ -1,7 +1,7 @@
 package net.bobofraggins.mobfarmingsupplies.tank;
 
 import dev.architectury.fluid.FluidStack;
-import dev.architectury.hooks.fluid.forge.FluidStackHooksForge;
+import dev.architectury.hooks.fluid.neoforge.FluidStackHooksForge;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.transfer.ResourceHandler;

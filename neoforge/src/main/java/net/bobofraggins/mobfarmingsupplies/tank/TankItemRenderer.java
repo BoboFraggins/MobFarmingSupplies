@@ -18,7 +18,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
-import dev.architectury.hooks.fluid.forge.FluidStackHooksForge;
+import dev.architectury.hooks.fluid.neoforge.FluidStackHooksForge;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3fc;
@@ -58,7 +58,7 @@ public class TankItemRenderer implements SpecialModelRenderer<TankContents> {
             cachedBlkParts = parts;
         }
         List<BlockStateModelPart> blkParts = cachedBlkParts;
-        collector.submitCustomGeometry(poseStack, Sheets.cutoutBlockSheet(), (pose, vc) -> {
+        collector.submitCustomGeometry(poseStack, Sheets.cutoutBlockItemSheet(), (pose, vc) -> {
             QuadInstance qi = new QuadInstance();
             qi.setColor(0xFFFFFFFF);
             qi.setLightCoords(packedLight);
@@ -86,9 +86,21 @@ public class TankItemRenderer implements SpecialModelRenderer<TankContents> {
                 .get(fluid.getFluid().defaultFluidState());
         TextureAtlasSprite sprite = fluidModel.stillMaterial().sprite();
 
-        int fluidTint = fluidModel.fluidTintSource() != null
-                ? fluidModel.fluidTintSource().colorAsStack(fluid)
-                : 0xFFFFFFFF;
+        // colorAsStack() delegates to the context-free color(FluidState) overload, which
+        // returns no tint at all for biome-dependent fluids like water. There's no true
+        // world position for a held item, so approximate with the viewing player's
+        // position/level for the real biome-sampled colorInWorld.
+        int fluidTint;
+        if (fluidModel.fluidTintSource() == null) {
+            fluidTint = 0xFFFFFFFF;
+        } else if (mc.level != null && mc.player != null) {
+            fluidTint = fluidModel.fluidTintSource().colorInWorld(
+                    fluid.getFluid().defaultFluidState(),
+                    fluid.getFluid().defaultFluidState().createLegacyBlock(),
+                    mc.level, mc.player.blockPosition());
+        } else {
+            fluidTint = fluidModel.fluidTintSource().colorAsStack(fluid);
+        }
         int fr = (fluidTint >> 16) & 0xFF;
         int fg = (fluidTint >>  8) & 0xFF;
         int fb = fluidTint & 0xFF;
@@ -102,7 +114,7 @@ public class TankItemRenderer implements SpecialModelRenderer<TankContents> {
         float vB = Mth.lerp(fillFrac, sprite.getV0(), sprite.getV1());
 
         final int ffrF = fr, ffgF = fg, ffbF = fb, ffaF = fa, flF = fluidLight, overlayF = packedOverlay;
-        collector.submitCustomGeometry(poseStack, Sheets.translucentBlockSheet(),
+        collector.submitCustomGeometry(poseStack, Sheets.translucentBlockItemSheet(),
                 (pose, vc) -> TankRenderer.renderCubeFill(
                         vc, pose.pose(), ffrF, ffgF, ffbF, ffaF, flF, overlayF, uL, vT, uR, vB, fillTop));
     }

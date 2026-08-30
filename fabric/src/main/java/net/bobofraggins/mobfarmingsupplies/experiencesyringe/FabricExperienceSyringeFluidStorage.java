@@ -18,9 +18,18 @@ import java.util.Iterator;
  * <p>Reads and writes the {@link Registration#EXPERIENCE_SYRINGE_STORED_XP} data component,
  * propagating changes back to the inventory through {@link ContainerItemContext}.
  * Only accepts fluids tagged {@code c:experience}.
+ *
+ * <p>Stored XP is tracked internally via {@link ExperienceSyringeItem#xpToMb}/{@code mbToXp}
+ * (Architectury's mB convention), but the Fabric Transfer API measures fluids in
+ * <b>droplets</b> (1 mB = {@value #DROPLETS_PER_MB} droplets — see
+ * {@code FluidConstants.BUCKET} = 81000). All {@link Storage} methods convert at this
+ * boundary so this storage correctly interoperates with generic Fabric-side consumers
+ * (tanks, pipes, other mods).
  */
 @SuppressWarnings("UnstableApiUsage")
 public final class FabricExperienceSyringeFluidStorage implements Storage<FluidVariant> {
+
+    private static final long DROPLETS_PER_MB = 81L;
 
     private final ContainerItemContext ctx;
 
@@ -59,14 +68,14 @@ public final class FabricExperienceSyringeFluidStorage implements Storage<FluidV
         if (!resource.getFluid().is(Registration.TAG_EXPERIENCE_FLUID)) return 0;
 
         int stored = storedXp();
-        int capacityMb = ExperienceSyringeItem.xpToMb(ExperienceSyringeItem.CAPACITY);
-        int storedMb = ExperienceSyringeItem.xpToMb(stored);
-        long toInsert = Math.min(maxAmount, capacityMb - storedMb);
-        if (toInsert <= 0) return 0;
+        long capacityDroplets = (long) ExperienceSyringeItem.xpToMb(ExperienceSyringeItem.CAPACITY) * DROPLETS_PER_MB;
+        long storedDroplets = (long) ExperienceSyringeItem.xpToMb(stored) * DROPLETS_PER_MB;
+        long toInsertMb = Math.min(maxAmount, capacityDroplets - storedDroplets) / DROPLETS_PER_MB;
+        if (toInsertMb <= 0) return 0;
 
-        int newXp = ExperienceSyringeItem.mbToXp(storedMb + (int) toInsert);
+        int newXp = ExperienceSyringeItem.mbToXp(ExperienceSyringeItem.xpToMb(stored) + (int) toInsertMb);
         if (!setStoredXp(newXp, transaction)) return 0;
-        return toInsert;
+        return toInsertMb * DROPLETS_PER_MB;
     }
 
     @Override
@@ -77,12 +86,12 @@ public final class FabricExperienceSyringeFluidStorage implements Storage<FluidV
         int stored = storedXp();
         if (stored <= 0) return 0;
         int storedMb = ExperienceSyringeItem.xpToMb(stored);
-        long toExtract = Math.min(maxAmount, storedMb);
-        if (toExtract <= 0) return 0;
+        long toExtractMb = Math.min(maxAmount / DROPLETS_PER_MB, storedMb);
+        if (toExtractMb <= 0) return 0;
 
-        int newXp = ExperienceSyringeItem.mbToXp(storedMb - (int) toExtract);
+        int newXp = ExperienceSyringeItem.mbToXp(storedMb - (int) toExtractMb);
         if (!setStoredXp(newXp, transaction)) return 0;
-        return toExtract;
+        return toExtractMb * DROPLETS_PER_MB;
     }
 
     @Override
@@ -109,9 +118,11 @@ public final class FabricExperienceSyringeFluidStorage implements Storage<FluidV
         }
 
         @Override
-        public long getAmount() { return ExperienceSyringeItem.xpToMb(storedXp()); }
+        public long getAmount() { return (long) ExperienceSyringeItem.xpToMb(storedXp()) * DROPLETS_PER_MB; }
 
         @Override
-        public long getCapacity() { return ExperienceSyringeItem.xpToMb(ExperienceSyringeItem.CAPACITY); }
+        public long getCapacity() {
+            return (long) ExperienceSyringeItem.xpToMb(ExperienceSyringeItem.CAPACITY) * DROPLETS_PER_MB;
+        }
     }
 }

@@ -92,7 +92,7 @@ public class MobHarvesterRenderer
                     new ItemStack(Items.IRON_PICKAXE),
                     new ItemStack(Items.IRON_SHOVEL),
                     new ItemStack(Items.IRON_HOE),
-                    new ItemStack(Items.LIGHTNING_ROD)
+                    new ItemStack(Items.LIGHTNING_ROD.weathering().unaffected())
             );
             carvedPumpkin = new ItemStack(Items.CARVED_PUMPKIN);
         }
@@ -469,7 +469,7 @@ public class MobHarvesterRenderer
                     poseStack.translate(-0.5, -0.5, -0.5);
                     collector.submitBlockModel(
                             poseStack,
-                            Sheets.cutoutBlockSheet(),
+                            Sheets.cutoutBlockItemSheet(),
                             List.of(headModel),
                             new int[0],
                             state.lightCoords,
@@ -522,7 +522,7 @@ public class MobHarvesterRenderer
 
         collector.submitBlockModel(
                 poseStack,
-                Sheets.cutoutBlockSheet(),
+                Sheets.cutoutBlockItemSheet(),
                 List.of(model),
                 new int[0],
                 state.lightCoords,

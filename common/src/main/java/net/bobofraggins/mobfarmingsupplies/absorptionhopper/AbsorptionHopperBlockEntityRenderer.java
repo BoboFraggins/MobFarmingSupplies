@@ -104,13 +104,15 @@ public class AbsorptionHopperBlockEntityRenderer
     // ── Visibility ────────────────────────────────────────────────────────────
 
     /**
-     * Inflates the render bounding box so the wireframe is not culled when the pickup
-     * zone extends far from the block.  Max offset (8) + pickup radius (3.5) = 11.5;
-     * we use 12 for a small safety margin.
+     * Disables frustum culling for this renderer so the wireframe isn't clipped when
+     * the pickup zone (up to 11.5 blocks from the block position) extends outside the
+     * block's own small render bounds. Cross-platform equivalent of NeoForge's
+     * {@code IBlockEntityRendererExtension#getRenderBoundingBox}, which isn't available
+     * on vanilla/Fabric.
      */
     @Override
-    public AABB getRenderBoundingBox(AbsorptionHopperBlockEntity be) {
-        return new AABB(be.getBlockPos()).inflate(12);
+    public boolean shouldRenderOffScreen() {
+        return true;
     }
 
     // ── Static helpers — line drawing ─────────────────────────────────────────

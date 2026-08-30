@@ -1,7 +1,7 @@
 package net.bobofraggins.mobfarmingsupplies.absorptionhopper;
 
 import dev.architectury.fluid.FluidStack;
-import dev.architectury.hooks.fluid.forge.FluidStackHooksForge;
+import dev.architectury.hooks.fluid.neoforge.FluidStackHooksForge;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;

@@ -24,8 +24,10 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Block-entity renderer for the Clone-O-Matic.
@@ -79,6 +81,20 @@ public class CloneOMaticBlockEntityRenderer
      * reused across frames to avoid repeated allocation.
      */
     private final Map<EntityType<?>, Entity> dummyEntityCache = new HashMap<>();
+
+    /**
+     * Entity types that failed to construct a dummy (rejected by
+     * {@link EntityType#canSpawn}, e.g. hostile mobs on Peaceful, or a modded entity
+     * class that threw during construction). Remembered permanently so a broken type
+     * doesn't retry construction (and potentially re-throw) on every render frame for
+     * as long as it stays selected in the rotation — {@link Map#computeIfAbsent} does
+     * not cache {@code null} results, so without this a bad type would otherwise be
+     * retried 60 times a second, tanking framerate.
+     */
+    private final Set<EntityType<?>> unspawnableTypes = new HashSet<>();
+
+    /** Synthetic IDs handed to dummy entities — see the {@code setId} call below. */
+    private int nextDummyEntityId = 1;
 
     // ── Constructor ──────────────────────────────────────────────────────────────
 
@@ -160,18 +176,33 @@ public class CloneOMaticBlockEntityRenderer
         int typeIdx = (int) ((gameTime / SWITCH_TICKS) % types.size());
         EntityType<?> type = types.get(typeIdx);
 
-        // Retrieve or create a dummy entity (never added to the world).
-        Entity dummy = dummyEntityCache.computeIfAbsent(type, t -> {
-            try {
-                return t.create(level, EntitySpawnReason.SPAWNER);
-            } catch (Exception ignored) {
-                return null;
-            }
-        });
-
-        if (dummy == null) {
+        if (unspawnableTypes.contains(type)) {
             state.displayEntity = null;
             return;
+        }
+
+        // Retrieve or create a dummy entity (never added to the world).
+        Entity dummy = dummyEntityCache.get(type);
+        if (dummy == null) {
+            try {
+                dummy = type.create(level, EntitySpawnReason.SPAWNER);
+            } catch (Throwable ignored) {
+                dummy = null;
+            }
+            if (dummy == null) {
+                unspawnableTypes.add(type);
+                state.displayEntity = null;
+                return;
+            }
+            // EntityType#create() never assigns an entity ID (only Level#addFreshEntity
+            // does that, which we deliberately never call for a decorative dummy). As of
+            // MC 26.2, Entity#getId() throws IllegalStateException on the unassigned (0)
+            // default, and LivingEntityRenderer's item-model resolution now calls getId()
+            // unconditionally — so every dummy failed here. The id value itself is never
+            // looked up anywhere (this entity is never registered in a level), so any
+            // nonzero value is fine.
+            dummy.setId(nextDummyEntityId++);
+            dummyEntityCache.put(type, dummy);
         }
 
         // Scale down to fit within 0.9 blocks; large mobs (Ghasts, Withers, etc.) would
@@ -183,6 +214,12 @@ public class CloneOMaticBlockEntityRenderer
         try {
             state.displayEntity = entityRenderDispatcher.extractEntity(dummy, partialTick);
         } catch (Exception ignored) {
+            // extractEntity() builds a full CrashReport internally before rethrowing on
+            // any failure, which is expensive — remember the failure so we never retry
+            // this type (matches the unspawnableTypes handling above); without this, a
+            // type that always fails here would pay that cost on every frame for as long
+            // as it stays selected in the rotation.
+            unspawnableTypes.add(type);
             state.displayEntity = null;
         }
     }

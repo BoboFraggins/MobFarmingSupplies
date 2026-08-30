@@ -21,9 +21,17 @@ import java.util.Iterator;
  *
  * <p>Registered via {@link net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage#ITEM}
  * fallback in {@link net.bobofraggins.mobfarmingsupplies.fabric.MobFarmingSuppliesFabric}.
+ *
+ * <p>{@link TankContents#amount()} is tracked in Architectury's mB convention, but the
+ * Fabric Transfer API measures fluids in <b>droplets</b> (1 mB = {@value #DROPLETS_PER_MB}
+ * droplets — see {@code FluidConstants.BUCKET} = 81000). All {@link Storage} methods
+ * convert at this boundary so this storage correctly interoperates with generic
+ * Fabric-side consumers.
  */
 @SuppressWarnings("UnstableApiUsage")
 public final class FabricTankItemFluidStorage implements Storage<FluidVariant> {
+
+    private static final long DROPLETS_PER_MB = 81L;
 
     private final ContainerItemContext ctx;
 
@@ -63,13 +71,13 @@ public final class FabricTankItemFluidStorage implements Storage<FluidVariant> {
                 && (!c.storedFluid().isFluidEqual(incoming) || !c.storedFluid().isComponentEqual(incoming))) {
             return 0;
         }
-        long space = TankBlockEntity.CAPACITY - c.amount();
-        long toFill = Math.min(maxAmount, space);
-        if (toFill <= 0) return 0;
+        long spaceDroplets = (TankBlockEntity.CAPACITY - c.amount()) * DROPLETS_PER_MB;
+        long toFillMb = Math.min(maxAmount, spaceDroplets) / DROPLETS_PER_MB;
+        if (toFillMb <= 0) return 0;
 
         FluidStack newFluid = c.storedFluid().isEmpty() ? incoming.copyWithAmount(1) : c.storedFluid();
-        TankContents updated = new TankContents(newFluid, c.amount() + toFill, c.bucketMode());
-        return updateContents(updated, transaction) ? toFill : 0;
+        TankContents updated = new TankContents(newFluid, c.amount() + toFillMb, c.bucketMode());
+        return updateContents(updated, transaction) ? toFillMb * DROPLETS_PER_MB : 0;
     }
 
     @Override
@@ -79,11 +87,11 @@ public final class FabricTankItemFluidStorage implements Storage<FluidVariant> {
         if (c.storedFluid().isEmpty()) return 0;
         FluidStack req = FabricTankFluidStorage.fromFabric(resource, 1);
         if (!c.storedFluid().isFluidEqual(req) || !c.storedFluid().isComponentEqual(req)) return 0;
-        long toDrain = Math.min(maxAmount, c.amount());
-        if (toDrain <= 0) return 0;
+        long toDrainMb = Math.min(maxAmount / DROPLETS_PER_MB, c.amount());
+        if (toDrainMb <= 0) return 0;
 
-        TankContents updated = new TankContents(c.storedFluid(), c.amount() - toDrain, c.bucketMode());
-        return updateContents(updated, transaction) ? toDrain : 0;
+        TankContents updated = new TankContents(c.storedFluid(), c.amount() - toDrainMb, c.bucketMode());
+        return updateContents(updated, transaction) ? toDrainMb * DROPLETS_PER_MB : 0;
     }
 
     @Override
@@ -111,9 +119,9 @@ public final class FabricTankItemFluidStorage implements Storage<FluidVariant> {
         }
 
         @Override
-        public long getAmount() { return contents().amount(); }
+        public long getAmount() { return contents().amount() * DROPLETS_PER_MB; }
 
         @Override
-        public long getCapacity() { return TankBlockEntity.CAPACITY; }
+        public long getCapacity() { return TankBlockEntity.CAPACITY * DROPLETS_PER_MB; }
     }
 }

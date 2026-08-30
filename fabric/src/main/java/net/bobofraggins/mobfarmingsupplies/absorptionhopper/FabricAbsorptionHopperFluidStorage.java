@@ -16,11 +16,20 @@ import java.util.Iterator;
  *
  * <p>Only accepts fluids tagged {@code c:experience}. Uses {@link SnapshotParticipant} for
  * full transaction rollback support.
+ *
+ * <p>{@link AbsorptionHopperBlockEntity#tankAmount} is tracked in Architectury's mB
+ * convention (1000 mB = 1 bucket), but the Fabric Transfer API measures fluids in
+ * <b>droplets</b> (1 mB = {@value #DROPLETS_PER_MB} droplets — see
+ * {@code FluidConstants.BUCKET} = 81000). All {@link Storage} methods convert at this
+ * boundary so generic Fabric-side consumers (vanilla bucket fallback, other mods'
+ * pipes/tanks) see correctly-scaled amounts.
  */
 @SuppressWarnings("UnstableApiUsage")
 public final class FabricAbsorptionHopperFluidStorage
         extends SnapshotParticipant<FabricAbsorptionHopperFluidStorage.Snapshot>
         implements Storage<FluidVariant> {
+
+    private static final long DROPLETS_PER_MB = 81L;
 
     private final AbsorptionHopperBlockEntity be;
 
@@ -66,14 +75,14 @@ public final class FabricAbsorptionHopperFluidStorage
                 && (!be.tankFluid.isFluidEqual(incoming) || !be.tankFluid.isComponentEqual(incoming))) {
             return 0;
         }
-        long space = AbsorptionHopperBlockEntity.TANK_CAPACITY - be.tankAmount;
-        long toInsert = Math.min(maxAmount, space);
-        if (toInsert <= 0) return 0;
+        long spaceDroplets = (long) (AbsorptionHopperBlockEntity.TANK_CAPACITY - be.tankAmount) * DROPLETS_PER_MB;
+        long toInsertMb = Math.min(maxAmount, spaceDroplets) / DROPLETS_PER_MB;
+        if (toInsertMb <= 0) return 0;
 
         updateSnapshots(transaction);
         if (be.tankFluid.isEmpty()) be.tankFluid = incoming;
-        be.tankAmount += (int) toInsert;
-        return toInsert;
+        be.tankAmount += (int) toInsertMb;
+        return toInsertMb * DROPLETS_PER_MB;
     }
 
     @Override
@@ -81,16 +90,16 @@ public final class FabricAbsorptionHopperFluidStorage
         if (resource.isBlank() || maxAmount <= 0 || be.tankFluid.isEmpty()) return 0;
         FluidStack req = FluidStack.create(resource.getFluid(), 1, resource.getComponentsPatch());
         if (!be.tankFluid.isFluidEqual(req) || !be.tankFluid.isComponentEqual(req)) return 0;
-        long toExtract = Math.min(maxAmount, be.tankAmount);
-        if (toExtract <= 0) return 0;
+        long toExtractMb = Math.min(maxAmount / DROPLETS_PER_MB, be.tankAmount);
+        if (toExtractMb <= 0) return 0;
 
         updateSnapshots(transaction);
-        be.tankAmount -= (int) toExtract;
+        be.tankAmount -= (int) toExtractMb;
         if (be.tankAmount <= 0) {
             be.tankAmount = 0;
             be.tankFluid = FluidStack.empty();
         }
-        return toExtract;
+        return toExtractMb * DROPLETS_PER_MB;
     }
 
     @Override
@@ -126,9 +135,9 @@ public final class FabricAbsorptionHopperFluidStorage
         }
 
         @Override
-        public long getAmount() { return be.tankAmount; }
+        public long getAmount() { return be.tankAmount * DROPLETS_PER_MB; }
 
         @Override
-        public long getCapacity() { return AbsorptionHopperBlockEntity.TANK_CAPACITY; }
+        public long getCapacity() { return AbsorptionHopperBlockEntity.TANK_CAPACITY * DROPLETS_PER_MB; }
     }
 }

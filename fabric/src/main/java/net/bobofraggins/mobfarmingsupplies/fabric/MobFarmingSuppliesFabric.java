@@ -16,8 +16,12 @@ import net.bobofraggins.mobfarmingsupplies.tank.TankBlockEntity;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredientSerializer;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.fluid.base.FullItemFluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
+import net.minecraft.world.item.Items;
 
 @SuppressWarnings("UnstableApiUsage")
 public class MobFarmingSuppliesFabric implements ModInitializer {
@@ -59,5 +63,14 @@ public class MobFarmingSuppliesFabric implements ModInitializer {
         ItemStorage.SIDED.registerForBlockEntities(
                 (be, direction) -> FabricAbsorptionHopperItemStorage.of((AbsorptionHopperBlockEntity) be),
                 Registration.ABSORPTION_HOPPER_BE_TYPE.get());
+
+        // Vanilla's plain empty bucket needs its own registration to know it can be
+        // filled with (or emptied of) XP Juice — the generic BucketItem fallback that
+        // Fabric API provides automatically only covers the FULL custom bucket item
+        // (XP_JUICE_BUCKET) draining into / filling from things, not the empty bucket
+        // side of that same interaction.
+        FluidStorage.combinedItemApiProvider(Items.BUCKET).register(ctx ->
+                new FullItemFluidStorage(ctx, Registration.XP_JUICE_BUCKET.get(),
+                        FluidVariant.of(Registration.XP_JUICE_SOURCE.get()), FluidConstants.BUCKET));
     }
 }

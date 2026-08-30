@@ -40,6 +40,7 @@ tasks.withType(ProcessResources).configureEach {
         mod_version            : mod_version,
         mod_license            : mod_license,
         fabric_loader_version  : fabric_loader_version,
+        fabric_min_loader_version : fabric_min_loader_version,
         minecraft_version      : minecraft_version,
         architectury_version   : architectury_version,
     ]
