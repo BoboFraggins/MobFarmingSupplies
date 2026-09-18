@@ -28,6 +28,7 @@ dependencies {
     api "dev.architectury:architectury-fabric:${architectury_version}"
 
     compileOnly "maven.modrinth:jade:26.1.0+fabric"
+    compileOnly "eu.pb4:trinkets:4.1.0-rc.1+26.2"
 
     common(project(path: ':common')) { transitive false }
     shadowCommon(project(path: ':common', configuration: 'transformProductionFabric')) { transitive false }

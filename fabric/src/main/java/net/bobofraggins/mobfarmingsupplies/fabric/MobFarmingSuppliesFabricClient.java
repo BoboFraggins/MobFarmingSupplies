@@ -11,6 +11,7 @@ import net.bobofraggins.mobfarmingsupplies.cloneomatic.CloneOMaticBlockEntityRen
 import net.bobofraggins.mobfarmingsupplies.enderinhibitor.EnderInhibitorBlockEntityRenderer;
 import net.bobofraggins.mobfarmingsupplies.fan.FanBlockEntityRenderer;
 import net.bobofraggins.mobfarmingsupplies.mobharvester.MobHarvesterRenderer;
+import net.bobofraggins.mobfarmingsupplies.picnicbasket.PicnicBasketRenderer;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.bobofraggins.mobfarmingsupplies.tank.fabric.TankItemRenderer;
 import net.bobofraggins.mobfarmingsupplies.tank.fabric.TankRenderer;
@@ -43,6 +44,9 @@ public class MobFarmingSuppliesFabricClient implements ClientModInitializer {
         BlockEntityRendererRegistry.register(
                 Registration.ABSORPTION_HOPPER_BE_TYPE.get(),
                 AbsorptionHopperBlockEntityRenderer::new);
+        BlockEntityRendererRegistry.register(
+                Registration.PICNIC_BASKET_BE_TYPE.get(),
+                PicnicBasketRenderer::new);
         ExtraBlockModelsImpl.registerModelLoadingPlugin();
         registerSpecialModelRenderers();
     }

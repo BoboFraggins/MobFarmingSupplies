@@ -42,6 +42,7 @@ dependencies {
     api "dev.architectury:architectury-neoforge:${architectury_version}"
 
     compileOnly "maven.modrinth:jade:26.1.1+neoforge"
+    compileOnly "top.theillusivec4.curios:curios-neoforge:16.0.0+26.2:api"
 
     common(project(path: ':common')) { transitive false }
     shadowCommon(project(path: ':common', configuration: 'transformProductionNeoForge')) { transitive false }

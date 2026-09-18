@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "CCC",
+    "CBC",
+    "CCC"
+  ],
+  "key": {
+    "C": "minecraft:cocoa_beans",
+    "B": "minecraft:experience_bottle"
+  },
+  "result": {
+    "id": "mobfarmingsupplies:chocolate_bar",
+    "count": 8
+  },
+  "category": "food"
+}

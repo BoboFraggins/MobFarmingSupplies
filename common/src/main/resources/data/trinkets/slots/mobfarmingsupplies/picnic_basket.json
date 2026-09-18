@@ -1,0 +1,5 @@
+{
+  "icon": "mobfarmingsupplies:slot/picnic_basket",
+  "order": 0,
+  "validator_predicates": ["trinkets:default"]
+}

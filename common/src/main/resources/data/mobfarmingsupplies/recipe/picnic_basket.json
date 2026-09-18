@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "IAI",
+    "BCB",
+    "IAI"
+  ],
+  "key": {
+    "I": "minecraft:iron_bars",
+    "A": "minecraft:apple",
+    "B": "minecraft:bread",
+    "C": "minecraft:chest"
+  },
+  "result": {
+    "id": "mobfarmingsupplies:picnic_basket",
+    "count": 1
+  },
+  "category": "misc"
+}

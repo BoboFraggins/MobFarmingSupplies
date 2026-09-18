@@ -77,5 +77,20 @@
   "subtitle.mobfarmingsupplies.red_alert": "Alarm blares",
   "subtitle.mobfarmingsupplies.dramatic": "Dramatic sting",
   "subtitle.mobfarmingsupplies.rimshot": "Rimshot",
-  "subtitle.mobfarmingsupplies.wilhelm": "Scream"
+  "subtitle.mobfarmingsupplies.wilhelm": "Scream",
+
+  "block.mobfarmingsupplies.picnic_basket": "Picnic Basket",
+  "item.mobfarmingsupplies.picnic_basket": "Picnic Basket",
+  "item.mobfarmingsupplies.picnic_basket.tooltip": "Right-click to open. Sneak + right-click to toggle auto-feed.",
+  "key.category.mobfarmingsupplies.category": "Mob Farming Supplies",
+  "key.mobfarmingsupplies.open_picnic_basket": "Open Worn Picnic Basket",
+  "message.mobfarmingsupplies.picnic_basket.autofeed_on": "Picnic Basket auto-feed enabled",
+  "message.mobfarmingsupplies.picnic_basket.autofeed_off": "Picnic Basket auto-feed disabled",
+  "message.mobfarmingsupplies.picnic_basket.not_found": "No Picnic Basket found",
+
+  "item.mobfarmingsupplies.graham_cracker": "Graham Cracker",
+  "item.mobfarmingsupplies.chocolate_bar": "Chocolate Bar",
+  "item.mobfarmingsupplies.marshmallow": "Marshmallow",
+  "item.mobfarmingsupplies.toasted_marshmallow": "Toasted Marshmallow",
+  "item.mobfarmingsupplies.smore": "S'more"
 }

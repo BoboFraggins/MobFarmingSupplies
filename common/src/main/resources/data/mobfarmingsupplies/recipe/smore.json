@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "mobfarmingsupplies:graham_cracker",
+    "mobfarmingsupplies:chocolate_bar",
+    "mobfarmingsupplies:toasted_marshmallow"
+  ],
+  "result": {
+    "id": "mobfarmingsupplies:smore",
+    "count": 4
+  },
+  "category": "food"
+}

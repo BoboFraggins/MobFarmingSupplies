@@ -29,6 +29,10 @@ import net.bobofraggins.mobfarmingsupplies.mobharvester.HarvesterUpgradeItem;
 import net.bobofraggins.mobfarmingsupplies.mobharvester.MobHarvesterBlock;
 import net.bobofraggins.mobfarmingsupplies.mobharvester.MobHarvesterBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.mobharvester.MobHarvesterMenu;
+import net.bobofraggins.mobfarmingsupplies.picnicbasket.PicnicBasketBlock;
+import net.bobofraggins.mobfarmingsupplies.picnicbasket.PicnicBasketBlockEntity;
+import net.bobofraggins.mobfarmingsupplies.picnicbasket.PicnicBasketItem;
+import net.bobofraggins.mobfarmingsupplies.picnicbasket.PicnicBasketMenu;
 import net.bobofraggins.mobfarmingsupplies.tank.TankBlock;
 import net.bobofraggins.mobfarmingsupplies.tank.TankBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.tank.TankBlockItem;
@@ -48,6 +52,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.BucketItem;
@@ -558,6 +563,67 @@ public final class Registration {
                             .stacksTo(1),
                             MGRConfig::getWrongMobsPackMobs));
 
+    // ── Picnic Basket ─────────────────────────────────────────────────────────────
+
+    public static final RegistrySupplier<PicnicBasketBlock> PICNIC_BASKET =
+            BLOCKS.register("picnic_basket",
+                    () -> new PicnicBasketBlock(BlockBehaviour.Properties.of()
+                            .setId(blockKey("picnic_basket"))
+                            .strength(2.5f)
+                            .sound(SoundType.WOOD)
+                            .noOcclusion()));
+
+    public static final RegistrySupplier<PicnicBasketItem> PICNIC_BASKET_ITEM =
+            ITEMS.register("picnic_basket",
+                    () -> new PicnicBasketItem(PICNIC_BASKET.get(), new Item.Properties()
+                            .setId(itemKey("picnic_basket"))
+                            .stacksTo(1)));
+
+    public static final RegistrySupplier<MenuType<PicnicBasketMenu>> PICNIC_BASKET_MENU =
+            MENUS.register("picnic_basket", () -> MenuRegistry.ofExtended(PicnicBasketMenu::new));
+
+    public static final RegistrySupplier<BlockEntityType<PicnicBasketBlockEntity>> PICNIC_BASKET_BE_TYPE =
+            BLOCK_ENTITIES.register("picnic_basket",
+                    () -> BlockEntityTypePlatform.create(PicnicBasketBlockEntity::new, PICNIC_BASKET.get()));
+
+    // ── S'mores ───────────────────────────────────────────────────────────────────
+
+    private static final FoodProperties SNACK_FOOD =
+            new FoodProperties.Builder().nutrition(2).saturationModifier(0.25f).build();
+
+    private static final FoodProperties SMORE_FOOD =
+            new FoodProperties.Builder().nutrition(10).saturationModifier(0.25f).build();
+
+    public static final RegistrySupplier<Item> GRAHAM_CRACKER =
+            ITEMS.register("graham_cracker",
+                    () -> new Item(new Item.Properties()
+                            .setId(itemKey("graham_cracker"))
+                            .food(SNACK_FOOD)));
+
+    public static final RegistrySupplier<Item> CHOCOLATE_BAR =
+            ITEMS.register("chocolate_bar",
+                    () -> new Item(new Item.Properties()
+                            .setId(itemKey("chocolate_bar"))
+                            .food(SNACK_FOOD)));
+
+    public static final RegistrySupplier<Item> MARSHMALLOW =
+            ITEMS.register("marshmallow",
+                    () -> new Item(new Item.Properties()
+                            .setId(itemKey("marshmallow"))
+                            .food(SNACK_FOOD)));
+
+    public static final RegistrySupplier<Item> TOASTED_MARSHMALLOW =
+            ITEMS.register("toasted_marshmallow",
+                    () -> new Item(new Item.Properties()
+                            .setId(itemKey("toasted_marshmallow"))
+                            .food(SNACK_FOOD)));
+
+    public static final RegistrySupplier<Item> SMORE =
+            ITEMS.register("smore",
+                    () -> new Item(new Item.Properties()
+                            .setId(itemKey("smore"))
+                            .food(SMORE_FOOD)));
+
     // ── Creative tab ──────────────────────────────────────────────────────────────
 
     public static final RegistrySupplier<CreativeModeTab> CREATIVE_TAB =
@@ -604,6 +670,12 @@ public final class Registration {
                         output.accept(DRAMATIC_BUTTON_ITEM.get());
                         output.accept(RIMSHOT_BUTTON_ITEM.get());
                         output.accept(WILHELM_BUTTON_ITEM.get());
+                        output.accept(PICNIC_BASKET_ITEM.get());
+                        output.accept(GRAHAM_CRACKER.get());
+                        output.accept(CHOCOLATE_BAR.get());
+                        output.accept(MARSHMALLOW.get());
+                        output.accept(TOASTED_MARSHMALLOW.get());
+                        output.accept(SMORE.get());
                     })
                     .build());
 
