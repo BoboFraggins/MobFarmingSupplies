@@ -1,6 +1,5 @@
 package net.bobofraggins.mobfarmingsupplies.enderinhibitor;
 
-import com.mojang.serialization.MapCodec;
 import dev.architectury.registry.menu.MenuRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -42,8 +41,6 @@ import net.minecraft.world.phys.shapes.VoxelShape;
  */
 public class EnderInhibitorBlock extends Block implements EntityBlock {
 
-    public static final MapCodec<EnderInhibitorBlock> CODEC = simpleCodec(EnderInhibitorBlock::new);
-
     /** Direction the block points <em>away</em> from its support. */
     public static final EnumProperty<Direction> FACING = BlockStateProperties.FACING;
 
@@ -68,11 +65,6 @@ public class EnderInhibitorBlock extends Block implements EntityBlock {
     public EnderInhibitorBlock(Properties props) {
         super(props);
         registerDefaultState(stateDefinition.any().setValue(FACING, Direction.UP));
-    }
-
-    @Override
-    public MapCodec<EnderInhibitorBlock> codec() {
-        return CODEC;
     }
 
     // ── Block-state definition ───────────────────────────────────────────────────

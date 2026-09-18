@@ -15,7 +15,7 @@ public final class TankBlockItemPlatformImpl {
             ItemStack stack, Player player, Level level, InteractionHand hand, BlockPos targetPos) {
         TankItemFluidHandler tankHandler = new TankItemFluidHandler(stack.copy());
         net.neoforged.neoforge.fluids.FluidStack placed =
-                FluidUtil.tryPlaceFluid(tankHandler, player, level, hand, targetPos);
+                FluidUtil.tryPlaceFluid(tankHandler, player, level, targetPos, true, null);
         if (!placed.isEmpty()) {
             return tankHandler.getContainer();
         }
@@ -24,6 +24,6 @@ public final class TankBlockItemPlatformImpl {
 
     public static boolean interactWithFluidBlock(
             Player player, InteractionHand hand, Level level, BlockPos pos, Direction face) {
-        return FluidUtil.interactWithFluidHandler(player, hand, level, pos, face);
+        return FluidUtil.interactWithFluidHandler(player, hand, level, pos, face, null);
     }
 }

@@ -139,14 +139,14 @@ public class FanBlockEntityRenderer
             poseStack.translate(0.5, 0.5, 0.5);
 
             switch (state.facing) {
-                case UP    -> poseStack.mulPose(FACING_QUAT.rotationX( (float)(Math.PI / 2)));
-                case DOWN  -> poseStack.mulPose(FACING_QUAT.rotationX(-(float)(Math.PI / 2)));
-                case EAST  -> poseStack.mulPose(FACING_QUAT.rotationY(-(float)(Math.PI / 2)));
-                case SOUTH -> poseStack.mulPose(FACING_QUAT.rotationY( (float)  Math.PI));
-                case WEST  -> poseStack.mulPose(FACING_QUAT.rotationY( (float)(Math.PI / 2)));
+                case UP    -> poseStack.rotate(FACING_QUAT.rotationX( (float)(Math.PI / 2)));
+                case DOWN  -> poseStack.rotate(FACING_QUAT.rotationX(-(float)(Math.PI / 2)));
+                case EAST  -> poseStack.rotate(FACING_QUAT.rotationY(-(float)(Math.PI / 2)));
+                case SOUTH -> poseStack.rotate(FACING_QUAT.rotationY( (float)  Math.PI));
+                case WEST  -> poseStack.rotate(FACING_QUAT.rotationY( (float)(Math.PI / 2)));
                 default    -> {} // NORTH: no rotation
             }
-            poseStack.mulPose(SPIN_QUAT.rotationZ(state.spinAngleDeg * Mth.DEG_TO_RAD));
+            poseStack.rotate(SPIN_QUAT.rotationZ(state.spinAngleDeg * Mth.DEG_TO_RAD));
             poseStack.translate(-0.5, -0.5, -0.5);
 
             collector.submitBlockModel(

@@ -1,6 +1,5 @@
 package net.bobofraggins.mobfarmingsupplies.fan;
 
-import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import dev.architectury.registry.menu.MenuRegistry;
@@ -43,8 +42,6 @@ import net.bobofraggins.mobfarmingsupplies.register.Registration;
  */
 public class FanBlock extends DirectionalBlock implements EntityBlock {
 
-    public static final MapCodec<FanBlock> CODEC = simpleCodec(FanBlock::new);
-
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
 
     public FanBlock(Properties props) {
@@ -52,11 +49,6 @@ public class FanBlock extends DirectionalBlock implements EntityBlock {
         registerDefaultState(stateDefinition.any()
                 .setValue(FACING, Direction.NORTH)
                 .setValue(POWERED, false));
-    }
-
-    @Override
-    public MapCodec<FanBlock> codec() {
-        return CODEC;
     }
 
     @Override

@@ -1,6 +1,5 @@
 package net.bobofraggins.mobfarmingsupplies.witherproofglass;
 
-import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
@@ -32,8 +31,6 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
  */
 public class WitherProofGlassBlock extends HalfTransparentBlock {
 
-    public static final MapCodec<WitherProofGlassBlock> CODEC = simpleCodec(WitherProofGlassBlock::new);
-
     // ── Connection properties ──────────────────────────────────────────────────
     public static final BooleanProperty UP    = BlockStateProperties.UP;
     public static final BooleanProperty DOWN  = BlockStateProperties.DOWN;
@@ -51,11 +48,6 @@ public class WitherProofGlassBlock extends HalfTransparentBlock {
                 .setValue(SOUTH, false)
                 .setValue(EAST,  false)
                 .setValue(WEST,  false));
-    }
-
-    @Override
-    public MapCodec<WitherProofGlassBlock> codec() {
-        return CODEC;
     }
 
     // ── Block state definition ─────────────────────────────────────────────────

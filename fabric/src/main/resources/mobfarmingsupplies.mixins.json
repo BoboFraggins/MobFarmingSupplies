@@ -4,7 +4,7 @@
   "package": "net.bobofraggins.mobfarmingsupplies.enderinhibitor.fabric.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "EnderManMixin"
+    "EndermanMixin"
   ],
   "injectors": {
     "defaultRequire": 1

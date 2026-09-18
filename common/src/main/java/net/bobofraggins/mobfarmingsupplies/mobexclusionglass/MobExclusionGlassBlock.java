@@ -1,6 +1,5 @@
 package net.bobofraggins.mobfarmingsupplies.mobexclusionglass;
 
-import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
@@ -39,8 +38,6 @@ import net.minecraft.world.phys.shapes.VoxelShape;
  */
 public class MobExclusionGlassBlock extends HalfTransparentBlock {
 
-    public static final MapCodec<MobExclusionGlassBlock> CODEC = simpleCodec(MobExclusionGlassBlock::new);
-
     // ── Connection properties ──────────────────────────────────────────────────
     public static final BooleanProperty UP    = BlockStateProperties.UP;
     public static final BooleanProperty DOWN  = BlockStateProperties.DOWN;
@@ -58,11 +55,6 @@ public class MobExclusionGlassBlock extends HalfTransparentBlock {
                 .setValue(SOUTH, false)
                 .setValue(EAST,  false)
                 .setValue(WEST,  false));
-    }
-
-    @Override
-    public MapCodec<MobExclusionGlassBlock> codec() {
-        return CODEC;
     }
 
     // ── Block state definition ─────────────────────────────────────────────────

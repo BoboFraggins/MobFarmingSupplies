@@ -380,7 +380,7 @@ public class MobHarvesterRenderer
         // The static block model is already rotated by the blockstate JSON y-rotation.
         poseStack.pushPose();
         poseStack.translate(0.5, 0, 0.5);
-        poseStack.mulPose(FACING_QUAT.rotationY(state.facingOffsetDeg * Mth.DEG_TO_RAD));
+        poseStack.rotate(FACING_QUAT.rotationY(state.facingOffsetDeg * Mth.DEG_TO_RAD));
         poseStack.translate(-0.5, 0, -0.5);
 
         // ── Arms (six independent blades) ────────────────────────────────────────
@@ -434,7 +434,7 @@ public class MobHarvesterRenderer
 
             poseStack.pushPose();
             poseStack.translate(wx, wy, wz);
-            poseStack.mulPose(YAW_QUAT.rotationY(BLADE_YAW[i]));
+            poseStack.rotate(YAW_QUAT.rotationY(BLADE_YAW[i]));
             poseStack.scale(ITEM_SCALE, ITEM_SCALE, ITEM_SCALE);
             state.weapons[i].submit(
                     poseStack, collector,
@@ -454,9 +454,9 @@ public class MobHarvesterRenderer
             // Powered head model faces south by default → no base offset needed.
             // Unpowered pumpkin in FIXED context faces north → needs PI flip.
             float baseYaw = state.powered ? 0f : HEAD_BASE_YAW_RAD;
-            poseStack.mulPose(HEAD_YAW_QUAT.rotationY(baseYaw - yawRad));
+            poseStack.rotate(HEAD_YAW_QUAT.rotationY(baseYaw - yawRad));
             if (pitchRad != 0f) {
-                poseStack.mulPose(HEAD_PITCH_QUAT.rotationX(pitchRad));
+                poseStack.rotate(HEAD_PITCH_QUAT.rotationX(pitchRad));
             }
 
             poseStack.scale(HEAD_SCALE, HEAD_SCALE, HEAD_SCALE);
@@ -514,9 +514,9 @@ public class MobHarvesterRenderer
         poseStack.pushPose();
         poseStack.translate( origin[0],  origin[1],  origin[2]);
         if (swingOnZ) {
-            poseStack.mulPose(SWING_QUAT.rotationZ(swingRad));
+            poseStack.rotate(SWING_QUAT.rotationZ(swingRad));
         } else {
-            poseStack.mulPose(SWING_QUAT.rotationX(swingRad));
+            poseStack.rotate(SWING_QUAT.rotationX(swingRad));
         }
         poseStack.translate(-origin[0], -origin[1], -origin[2]);
 

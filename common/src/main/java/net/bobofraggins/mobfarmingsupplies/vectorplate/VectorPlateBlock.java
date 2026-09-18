@@ -1,6 +1,5 @@
 package net.bobofraggins.mobfarmingsupplies.vectorplate;
 
-import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.Entity;
@@ -31,8 +30,6 @@ import net.minecraft.world.phys.shapes.VoxelShape;
  */
 public class VectorPlateBlock extends HorizontalDirectionalBlock {
 
-    public static final MapCodec<VectorPlateBlock> CODEC = simpleCodec(VectorPlateBlock::new);
-
     /** Push distance added per tick in the facing direction (blocks/tick). */
     private static final double PUSH_SPEED = 0.5;
 
@@ -49,11 +46,6 @@ public class VectorPlateBlock extends HorizontalDirectionalBlock {
     public VectorPlateBlock(Properties props) {
         super(props);
         registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH));
-    }
-
-    @Override
-    public MapCodec<VectorPlateBlock> codec() {
-        return CODEC;
     }
 
     @Override
@@ -122,7 +114,7 @@ public class VectorPlateBlock extends HorizontalDirectionalBlock {
         }
 
         entity.setDeltaMovement(vx, motion.y, vz);
-        entity.hurtMarked = true;
+        entity.syncVelocity = true;
 
         // Mobs on the plate must not despawn mid-transport
         if (entity instanceof Mob mob) {

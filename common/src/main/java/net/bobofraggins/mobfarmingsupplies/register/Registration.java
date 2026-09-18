@@ -355,7 +355,7 @@ public final class Registration {
                             .explosionResistance(Float.MAX_VALUE)
                             .sound(SoundType.GLASS)
                             .noOcclusion()
-                            .isViewBlocking((s, r, p) -> false)));
+                            .isViewBlocking((s, r, p, aabb) -> false)));
 
     public static final RegistrySupplier<BlockItem> WITHER_PROOF_GLASS_ITEM =
             ITEMS.register("wither_proof_glass",
@@ -372,7 +372,7 @@ public final class Registration {
                             .explosionResistance(Float.MAX_VALUE)
                             .sound(SoundType.GLASS)
                             .noOcclusion()
-                            .isViewBlocking((s, r, p) -> false)));
+                            .isViewBlocking((s, r, p, aabb) -> false)));
 
     public static final RegistrySupplier<BlockItem> MOB_EXCLUSION_GLASS_ITEM =
             ITEMS.register("mob_exclusion_glass",
@@ -456,7 +456,7 @@ public final class Registration {
                                     .noLootTable()
                                     .liquid()
                                     .replaceable()
-                                    .pushReaction(PushReaction.DESTROY)));
+                                    .pushReaction(PushReaction.POPPED)));
 
     public static final RegistrySupplier<BucketItem> XP_JUICE_BUCKET =
             ITEMS.register("xp_juice_bucket",
@@ -477,7 +477,7 @@ public final class Registration {
                             .explosionResistance(Float.MAX_VALUE)
                             .sound(SoundType.GLASS)
                             .noOcclusion()
-                            .isViewBlocking((s, r, p) -> false)));
+                            .isViewBlocking((s, r, p, aabb) -> false)));
 
     public static final RegistrySupplier<TankBlockItem> TANK_ITEM =
             ITEMS.register("tank",

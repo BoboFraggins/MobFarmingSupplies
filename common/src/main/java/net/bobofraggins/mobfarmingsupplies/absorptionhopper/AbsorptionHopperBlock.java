@@ -1,6 +1,5 @@
 package net.bobofraggins.mobfarmingsupplies.absorptionhopper;
 
-import com.mojang.serialization.MapCodec;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.ProblemReporter;
@@ -35,8 +34,6 @@ import org.jetbrains.annotations.Nullable;
  */
 public class AbsorptionHopperBlock extends BaseEntityBlock {
 
-    public static final MapCodec<AbsorptionHopperBlock> CODEC = simpleCodec(AbsorptionHopperBlock::new);
-
     // ── Push-side block state properties ────────────────────────────────────────
     // Mirror the pushSides bitmask in the block entity so the multipart model
     // can show/hide each connection pipe independently.
@@ -62,11 +59,6 @@ public class AbsorptionHopperBlock extends BaseEntityBlock {
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(PUSH_UP, PUSH_DOWN, PUSH_NORTH, PUSH_SOUTH, PUSH_EAST, PUSH_WEST);
-    }
-
-    @Override
-    protected MapCodec<? extends BaseEntityBlock> codec() {
-        return CODEC;
     }
 
     // ── Drops ───────────────────────────────────────────────────────────────────

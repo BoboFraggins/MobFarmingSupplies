@@ -1,6 +1,5 @@
 package net.bobofraggins.mobfarmingsupplies.cloneomatic;
 
-import com.mojang.serialization.MapCodec;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -40,18 +39,11 @@ import org.jetbrains.annotations.Nullable;
  */
 public class CloneOMaticBlock extends BaseEntityBlock {
 
-    public static final MapCodec<CloneOMaticBlock> CODEC = simpleCodec(CloneOMaticBlock::new);
-
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
 
     public CloneOMaticBlock(BlockBehaviour.Properties props) {
         super(props);
         registerDefaultState(stateDefinition.any().setValue(POWERED, false));
-    }
-
-    @Override
-    protected MapCodec<? extends BaseEntityBlock> codec() {
-        return CODEC;
     }
 
     @Override

@@ -5,6 +5,7 @@ import dev.architectury.event.events.common.InteractionEvent;
 import net.bobofraggins.mobfarmingsupplies.register.MGRTags;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.Prediction;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
@@ -68,7 +69,7 @@ public final class DnaCollectorEvents {
                 new DnaSampleContents(entityNbt, mobName));
 
         // Give to player (auto-stacks into existing slots; overflow is dropped).
-        player.getInventory().placeItemBackInInventory(sampleStack);
+        player.getInventory().placeItemBackInInventory(sampleStack, Prediction.SERVER_ONLY);
 
         // Consume one collector from the stack.
         stack.consume(1, player);

@@ -41,7 +41,7 @@ dependencies {
 
     api "dev.architectury:architectury-neoforge:${architectury_version}"
 
-    compileOnly "maven.modrinth:jade:26.1.1+neoforge"
+    compileOnly "maven.modrinth:jade:26.3.1+neoforge"
 
     common(project(path: ':common')) { transitive false }
     shadowCommon(project(path: ':common', configuration: 'transformProductionNeoForge')) { transitive false }

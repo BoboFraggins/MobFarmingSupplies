@@ -9,8 +9,8 @@ dependencies {
     api "dev.architectury:architectury:${architectury_version}"
 
     // Jade optional-dependency API — NeoForge artifact used for compilation; API is cross-platform.
-    // Fabric uses 26.1.0+fabric (see fabric/build.gradle).
-    compileOnly "maven.modrinth:jade:26.1.1+neoforge"
+    // Fabric uses 26.3.1+fabric (see fabric/build.gradle).
+    compileOnly "maven.modrinth:jade:26.3.1+neoforge"
 }
 
 publishing {

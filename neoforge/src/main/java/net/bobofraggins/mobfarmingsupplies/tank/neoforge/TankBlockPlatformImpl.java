@@ -23,7 +23,7 @@ public final class TankBlockPlatformImpl {
                 level.getCapability(Capabilities.Fluid.BLOCK, pos, null);
         if (fluidCap == null) return false;
 
-        boolean success = FluidUtil.interactWithFluidHandler(player, hand, pos, fluidCap);
+        boolean success = FluidUtil.interactWithFluidHandler(player, hand, pos, fluidCap, null);
         if (success && level.getBlockEntity(pos) instanceof TankBlockEntity be) {
             FluidStack stored = be.getStoredFluid();
             if (!stored.isEmpty()) {

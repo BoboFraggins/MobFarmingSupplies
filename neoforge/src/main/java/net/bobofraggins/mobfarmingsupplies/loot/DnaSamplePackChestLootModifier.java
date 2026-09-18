@@ -5,6 +5,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.bobofraggins.mobfarmingsupplies.MGRConfig;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
@@ -16,6 +17,8 @@ import net.neoforged.neoforge.common.loot.IGlobalLootModifier;
 import net.neoforged.neoforge.common.loot.LootModifier;
 
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Optional;
 
 /**
  * Generic chest-loot modifier that adds one copy of a configurable item.
@@ -49,8 +52,8 @@ public class DnaSamplePackChestLootModifier extends LootModifier {
     @Nullable private transient Item resolvedItem;
     private transient boolean itemResolved = false;
 
-    protected DnaSamplePackChestLootModifier(LootItemCondition[] conditions, int priority, String itemId, String chanceTier) {
-        super(conditions, priority);
+    protected DnaSamplePackChestLootModifier(Optional<Holder<LootItemCondition>> condition, int priority, String itemId, String chanceTier) {
+        super(condition, priority);
         this.itemId = itemId;
         this.chanceTier = chanceTier;
     }

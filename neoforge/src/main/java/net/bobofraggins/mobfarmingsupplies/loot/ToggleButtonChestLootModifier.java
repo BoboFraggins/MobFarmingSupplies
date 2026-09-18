@@ -5,6 +5,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.bobofraggins.mobfarmingsupplies.MGRConfig;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
@@ -16,6 +17,8 @@ import net.neoforged.neoforge.common.loot.IGlobalLootModifier;
 import net.neoforged.neoforge.common.loot.LootModifier;
 
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Optional;
 
 /**
  * Chest-loot modifier for the redstone toggle buttons. Unlike
@@ -35,8 +38,8 @@ public class ToggleButtonChestLootModifier extends LootModifier {
     @Nullable private transient Item resolvedItem;
     private transient boolean itemResolved = false;
 
-    protected ToggleButtonChestLootModifier(LootItemCondition[] conditions, int priority, String itemId) {
-        super(conditions, priority);
+    protected ToggleButtonChestLootModifier(Optional<Holder<LootItemCondition>> condition, int priority, String itemId) {
+        super(condition, priority);
         this.itemId = itemId;
     }
 

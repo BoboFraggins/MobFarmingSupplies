@@ -1,6 +1,5 @@
 package net.bobofraggins.mobfarmingsupplies.mobharvester;
 
-import com.mojang.serialization.MapCodec;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.ProblemReporter;
@@ -52,8 +51,6 @@ import org.jetbrains.annotations.Nullable;
  */
 public class MobHarvesterBlock extends BaseEntityBlock {
 
-    public static final MapCodec<MobHarvesterBlock> CODEC = simpleCodec(MobHarvesterBlock::new);
-
     public static final BooleanProperty          POWERED = BlockStateProperties.POWERED;
     public static final EnumProperty<Direction> FACING  = BlockStateProperties.HORIZONTAL_FACING;
 
@@ -62,11 +59,6 @@ public class MobHarvesterBlock extends BaseEntityBlock {
         registerDefaultState(stateDefinition.any()
                 .setValue(POWERED, false)
                 .setValue(FACING, Direction.SOUTH));
-    }
-
-    @Override
-    protected MapCodec<? extends BaseEntityBlock> codec() {
-        return CODEC;
     }
 
     @Override

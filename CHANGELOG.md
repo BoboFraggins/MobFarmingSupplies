@@ -1,5 +1,9 @@
 # Mob Farming Supplies
 
+## 26.3.0.0
+
+* Initial version for MC 26.3
+
 ## 26.2.0.0
 
 * Initial version for MC 26.2

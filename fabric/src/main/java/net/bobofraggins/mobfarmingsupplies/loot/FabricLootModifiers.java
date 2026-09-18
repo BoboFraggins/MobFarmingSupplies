@@ -3,6 +3,7 @@ package net.bobofraggins.mobfarmingsupplies.loot;
 import dev.architectury.platform.Platform;
 import net.bobofraggins.mobfarmingsupplies.MGRConfig;
 import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
@@ -11,7 +12,7 @@ import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition;
-import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
+import net.minecraft.world.level.storage.loot.providers.number.ints.ConstantValue;
 
 /**
  * Fabric equivalent of the NeoForge global loot modifier system.
@@ -84,7 +85,7 @@ public final class FabricLootModifiers {
         Item item = BuiltInRegistries.ITEM.getValue(rl);
         if (item == null || item == Items.AIR) return;
         tableBuilder.withPool(LootPool.lootPool()
-                .setRolls(ConstantValue.exactly(1))
+                .setRolls(Holder.direct(new ConstantValue(1)))
                 .add(LootItem.lootTableItem(item)
                         .when(LootItemRandomChanceCondition.randomChance(chance))));
     }

@@ -27,7 +27,7 @@ dependencies {
     api "net.fabricmc.fabric-api:fabric-api:${fabric_api_version}"
     api "dev.architectury:architectury-fabric:${architectury_version}"
 
-    compileOnly "maven.modrinth:jade:26.1.0+fabric"
+    compileOnly "maven.modrinth:jade:26.3.1+fabric"
 
     common(project(path: ':common')) { transitive false }
     shadowCommon(project(path: ':common', configuration: 'transformProductionFabric')) { transitive false }

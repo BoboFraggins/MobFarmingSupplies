@@ -1,6 +1,5 @@
 package net.bobofraggins.mobfarmingsupplies.tank;
 
-import com.mojang.serialization.MapCodec;
 import dev.architectury.fluid.FluidStack;
 import dev.architectury.registry.menu.MenuRegistry;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
@@ -35,19 +34,12 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class TankBlock extends BaseEntityBlock {
 
-    public static final MapCodec<TankBlock> CODEC = simpleCodec(TankBlock::new);
-
     private static final int BOTTLE_MB = 250;
     private static final TagKey<Fluid> EXPERIENCE_TAG =
             TagKey.create(Registries.FLUID, Identifier.fromNamespaceAndPath("c", "experience"));
 
     public TankBlock(Properties props) {
         super(props);
-    }
-
-    @Override
-    public MapCodec<TankBlock> codec() {
-        return CODEC;
     }
 
     @Override

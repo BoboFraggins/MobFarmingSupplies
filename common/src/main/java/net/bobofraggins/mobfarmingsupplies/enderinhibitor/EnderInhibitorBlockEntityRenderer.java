@@ -171,7 +171,7 @@ public class EnderInhibitorBlockEntityRenderer
         // Spin slowly around the world Y axis regardless of facing, so the pearl
         // always appears to orbit rather than flip with the block orientation.
         float angleRad = state.angleDeg * Mth.DEG_TO_RAD;
-        poseStack.mulPose(SCRATCH_QUAT.rotationY(angleRad));
+        poseStack.rotate(SCRATCH_QUAT.rotationY(angleRad));
 
         // ── Submit ───────────────────────────────────────────────────────────────
         // Scale down to roughly gem-sized; ItemDisplayContext.FIXED renders at

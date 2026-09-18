@@ -1,6 +1,5 @@
 package net.bobofraggins.mobfarmingsupplies.togglebutton;
 
-import com.mojang.serialization.MapCodec;
 import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -56,21 +55,14 @@ public class ToggleButtonBlock extends FaceAttachedHorizontalDirectionalBlock {
     private static final VoxelShape WALL_WEST_SHAPE = Block.box(11, 3, 3, 16, 13, 13);
 
     private final RegistrySupplier<SoundEvent> activationSound;
-    private final MapCodec<ToggleButtonBlock> codec;
 
     public ToggleButtonBlock(BlockBehaviour.Properties props, RegistrySupplier<SoundEvent> activationSound) {
         super(props);
         this.activationSound = activationSound;
-        this.codec = simpleCodec(p -> new ToggleButtonBlock(p, activationSound));
         registerDefaultState(stateDefinition.any()
                 .setValue(POWERED, false)
                 .setValue(FACE, AttachFace.FLOOR)
                 .setValue(FACING, Direction.NORTH));
-    }
-
-    @Override
-    protected MapCodec<? extends ToggleButtonBlock> codec() {
-        return codec;
     }
 
     @Override

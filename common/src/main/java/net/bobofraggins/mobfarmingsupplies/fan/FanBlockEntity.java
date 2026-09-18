@@ -180,7 +180,7 @@ public class FanBlockEntity extends BlockEntity implements MenuProvider {
         if (add == 0.0) return;
         if (!level.noCollision(entity, entity.getBoundingBox().move(sx * add, sy * add, sz * add))) return;
         entity.push(sx * add, sy * add, sz * add);
-        entity.hurtMarked = true;
+        entity.syncVelocity = true;
         entity.fallDistance = 0f;
     }
 
