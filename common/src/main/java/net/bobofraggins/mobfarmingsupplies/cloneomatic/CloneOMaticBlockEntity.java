@@ -4,6 +4,7 @@ import net.bobofraggins.mobfarmingsupplies.MGRConfig;
 import net.bobofraggins.mobfarmingsupplies.dna.IDnaSampleItem;
 import net.bobofraggins.mobfarmingsupplies.register.MGRRegistryHelper;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import org.jetbrains.annotations.Nullable;
 import net.minecraft.nbt.CompoundTag;
@@ -147,7 +148,11 @@ public class CloneOMaticBlockEntity extends BlockEntity implements MenuProvider 
             if (spawnPos == null) continue;
 
             double sx = spawnPos.getX() + 0.5;
-            double sy = spawnPos.getY();
+            // Stand on top of whatever's actually occupying the feet cell (e.g. a thin
+            // block like a Vector Plate) rather than assuming the cell floor is bare —
+            // otherwise the entity's own spawn AABB overlaps that block's collision shape
+            // and gets rejected by the check below as if it were a real obstruction.
+            double sy = spawnPos.getY() + surfaceHeight(serverLevel, spawnPos);
             double sz = spawnPos.getZ() + 0.5;
 
             // Wider mobs (spiders, ravagers, horses, ...) can fit their feet on a 1x1
@@ -191,6 +196,16 @@ public class CloneOMaticBlockEntity extends BlockEntity implements MenuProvider 
     private static boolean isClear(ServerLevel level, BlockPos pos) {
         return !level.getBlockState(pos).isCollisionShapeFullBlock(level, pos)
                 && level.getFluidState(pos).isEmpty();
+    }
+
+    /**
+     * Height (0.0–1.0) of the top of {@code pos}'s collision shape, i.e. how far above
+     * the cell floor an entity should stand — 0 for an empty/air cell, ~0.125 for a
+     * thin block like a Vector Plate, etc.
+     */
+    private static double surfaceHeight(ServerLevel level, BlockPos pos) {
+        VoxelShape shape = level.getBlockState(pos).getCollisionShape(level, pos);
+        return shape.isEmpty() ? 0.0 : shape.max(Direction.Axis.Y);
     }
 
     /** Like {@link ServerLevel#noCollision(AABB)}, but ignores entities. */
