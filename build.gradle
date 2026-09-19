@@ -22,6 +22,12 @@ subprojects {
         maven { url = 'https://maven.neoforged.net/releases' }
         maven { url = 'https://ldtteam.jfrog.io/artifactory/parchmentmc-public' }
         maven { url = 'https://api.modrinth.com/maven' }
+        maven {
+            name = 'Curios Maven'
+            url = 'https://maven.theillusivec4.top'
+            content { includeGroup 'top.theillusivec4.curios' }
+        }
+        maven { url = 'https://maven.nucleoid.xyz/releases' }
     }
 
     dependencies {

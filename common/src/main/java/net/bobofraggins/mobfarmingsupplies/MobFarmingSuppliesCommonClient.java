@@ -6,6 +6,8 @@ import net.bobofraggins.mobfarmingsupplies.cloneomatic.CloneOMaticScreen;
 import net.bobofraggins.mobfarmingsupplies.enderinhibitor.EnderInhibitorScreen;
 import net.bobofraggins.mobfarmingsupplies.fan.FanScreen;
 import net.bobofraggins.mobfarmingsupplies.mobharvester.MobHarvesterScreen;
+import net.bobofraggins.mobfarmingsupplies.picnicbasket.PicnicBasketKeybinds;
+import net.bobofraggins.mobfarmingsupplies.picnicbasket.PicnicBasketScreen;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.bobofraggins.mobfarmingsupplies.tank.TankScreen;
 
@@ -49,5 +51,9 @@ public final class MobFarmingSuppliesCommonClient {
         MenuScreenRegistry.registerScreenFactory(
                 Registration.ENDER_INHIBITOR_MENU.get(),
                 EnderInhibitorScreen::new);
+        MenuScreenRegistry.registerScreenFactory(
+                Registration.PICNIC_BASKET_MENU.get(),
+                PicnicBasketScreen::new);
+        PicnicBasketKeybinds.init();
     }
 }

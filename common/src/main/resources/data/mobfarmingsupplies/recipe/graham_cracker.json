@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "WWW",
+    "WBW",
+    "WWW"
+  ],
+  "key": {
+    "W": "minecraft:wheat",
+    "B": "minecraft:experience_bottle"
+  },
+  "result": {
+    "id": "mobfarmingsupplies:graham_cracker",
+    "count": 8
+  },
+  "category": "food"
+}

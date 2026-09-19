@@ -4,6 +4,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import net.bobofraggins.mobfarmingsupplies.fan.FanBlockEntityRenderer;
 import net.bobofraggins.mobfarmingsupplies.mobharvester.MobHarvesterRenderer;
+import net.bobofraggins.mobfarmingsupplies.picnicbasket.PicnicBasketRenderer;
 import net.fabricmc.fabric.api.client.model.loading.v1.ExtraModelKey;
 import net.fabricmc.fabric.api.client.model.loading.v1.FabricModelManager;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
@@ -34,6 +35,9 @@ public final class ExtraBlockModelsImpl {
         register(MobHarvesterRenderer.RIGHT_ARM_SIDE_MODEL_ID);
         register(MobHarvesterRenderer.RIGHT_ARM_REAR_MODEL_ID);
         register(MobHarvesterRenderer.HEAD_MODEL_ID);
+        register(PicnicBasketRenderer.BODY_MODEL_ID);
+        register(PicnicBasketRenderer.LEFT_LID_MODEL_ID);
+        register(PicnicBasketRenderer.RIGHT_LID_MODEL_ID);
     }
 
     private ExtraBlockModelsImpl() {}

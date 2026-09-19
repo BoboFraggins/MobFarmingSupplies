@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "particle": "mobfarmingsupplies:block/picnic_basket"
+  }
+}
