@@ -69,6 +69,10 @@
   "item.mobfarmingsupplies.experience_syringe": "Experience Syringe",
   "item.mobfarmingsupplies.experience_syringe.stored": "%1$s / %2$s mB (%3$s XP)",
 
+  "item.mobfarmingsupplies.magic_hat": "Magic Hat",
+  "item.mobfarmingsupplies.magic_hat.tooltip_capture": "Right-click a mob to capture it.",
+  "item.mobfarmingsupplies.magic_hat.tooltip_release": "Right-click to release.",
+
   "itemGroup.mobfarmingsupplies": "Mob Farming Supplies",
 
   "jade.mobfarmingsupplies.tank.empty": "Empty",

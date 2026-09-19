@@ -24,6 +24,7 @@ import net.bobofraggins.mobfarmingsupplies.fan.FanBlock;
 import net.bobofraggins.mobfarmingsupplies.fan.FanBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.fan.FanMenu;
 import net.bobofraggins.mobfarmingsupplies.fan.FanUpgradeItem;
+import net.bobofraggins.mobfarmingsupplies.glamping.magichat.MagicHatItem;
 import net.bobofraggins.mobfarmingsupplies.mobharvester.HarvesterSword;
 import net.bobofraggins.mobfarmingsupplies.mobharvester.HarvesterUpgradeItem;
 import net.bobofraggins.mobfarmingsupplies.mobharvester.MobHarvesterBlock;
@@ -42,17 +43,21 @@ import net.bobofraggins.mobfarmingsupplies.vectorplate.VectorPlateBlock;
 import net.bobofraggins.mobfarmingsupplies.witherproofglass.WitherProofGlassBlock;
 import net.bobofraggins.mobfarmingsupplies.xpjuice.XpJuicePlatformHelper;
 import net.minecraft.core.component.DataComponentType;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.equipment.EquipmentAssets;
+import net.minecraft.world.item.equipment.Equippable;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.material.FlowingFluid;
@@ -174,6 +179,23 @@ public final class Registration {
                     () -> new DnaSampleItem(new Item.Properties()
                             .setId(itemKey("dna_sample"))
                             .stacksTo(1)));
+
+    // ── Magic Hat ────────────────────────────────────────────────────────────────
+
+    public static final RegistrySupplier<MagicHatItem> MAGIC_HAT_ITEM =
+            ITEMS.register("magic_hat",
+                    () -> new MagicHatItem(new Item.Properties()
+                            .setId(itemKey("magic_hat"))
+                            .stacksTo(1)
+                            .attributes(MagicHatItem.DEFAULT_MODIFIERS)
+                            .component(
+                                    DataComponents.EQUIPPABLE,
+                                    Equippable.builder(EquipmentSlot.HEAD)
+                                            .setAsset(ResourceKey.create(
+                                                    EquipmentAssets.ROOT_ID,
+                                                    Identifier.fromNamespaceAndPath(
+                                                            MobFarmingSuppliesCommon.MODID, "magic_hat")))
+                                            .build())));
 
     // ── Mob Harvester ────────────────────────────────────────────────────────────
 
@@ -586,6 +608,7 @@ public final class Registration {
                         output.accept(DNA_SAMPLE_NETHER.get());
                         output.accept(DNA_SAMPLE_BABY.get());
                         output.accept(DNA_SAMPLE_WRONG.get());
+                        output.accept(MAGIC_HAT_ITEM.get());
                         if (ModCompatRegistration.DNA_BOOSTER_AQUACULTURE != null)
                             output.accept(ModCompatRegistration.DNA_BOOSTER_AQUACULTURE.get());
                         if (ModCompatRegistration.DNA_BOOSTER_AETHER_PASSIVE != null)

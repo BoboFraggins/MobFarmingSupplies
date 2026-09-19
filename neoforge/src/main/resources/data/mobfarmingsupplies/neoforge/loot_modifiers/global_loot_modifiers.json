@@ -12,6 +12,7 @@
     "mobfarmingsupplies:loot_modifiers/red_alert_button",
     "mobfarmingsupplies:loot_modifiers/dramatic_button",
     "mobfarmingsupplies:loot_modifiers/rimshot_button",
-    "mobfarmingsupplies:loot_modifiers/wilhelm_button"
+    "mobfarmingsupplies:loot_modifiers/wilhelm_button",
+    "mobfarmingsupplies:loot_modifiers/magic_hat"
   ]
 }

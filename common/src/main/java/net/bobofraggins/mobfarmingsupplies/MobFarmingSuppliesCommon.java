@@ -3,6 +3,7 @@ package net.bobofraggins.mobfarmingsupplies;
 import com.mojang.logging.LogUtils;
 import net.bobofraggins.mobfarmingsupplies.dna.DnaCollectorEvents;
 import net.bobofraggins.mobfarmingsupplies.enderinhibitor.EnderInhibitorEvents;
+import net.bobofraggins.mobfarmingsupplies.glamping.magichat.MagicHatCaptureEvents;
 import net.bobofraggins.mobfarmingsupplies.network.MGRNetwork;
 import org.slf4j.Logger;
 
@@ -21,6 +22,7 @@ public final class MobFarmingSuppliesCommon {
     public static void init() {
         EnderInhibitorEvents.registerCommonEvents();
         DnaCollectorEvents.registerCommonEvents();
+        MagicHatCaptureEvents.registerCommonEvents();
         MGRNetwork.register();
         LOGGER.info("MobFarmingSupplies initialized");
     }

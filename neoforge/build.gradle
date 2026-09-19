@@ -36,12 +36,26 @@ loom {
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
+repositories {
+    maven {
+        name = 'Curios Maven'
+        url = 'https://maven.theillusivec4.top'
+        content {
+            includeGroup 'top.theillusivec4.curios'
+        }
+    }
+}
+
 dependencies {
     add('neoForge', "net.neoforged:neoforge:${neo_version}")
 
     api "dev.architectury:architectury-neoforge:${architectury_version}"
 
     compileOnly "maven.modrinth:jade:26.3.1+neoforge"
+
+    // Curios soft dependency — no 26.3 build exists yet (same situation NeoForge itself was in
+    // during the 26.3 migration), so this pins the closest available API to compile against.
+    compileOnly "top.theillusivec4.curios:curios-neoforge:16.0.0+26.2:api"
 
     common(project(path: ':common')) { transitive false }
     shadowCommon(project(path: ':common', configuration: 'transformProductionNeoForge')) { transitive false }

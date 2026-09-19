@@ -61,4 +61,8 @@ public final class MGRConfigImpl {
     public static double getDnaSamplePackRareChestChance() {
         return MGRServerConfig.DNA_SAMPLE_PACK_RARE_CHEST_CHANCE.get();
     }
+
+    public static double getMagicHatChestChance() {
+        return MGRServerConfig.MAGIC_HAT_CHEST_CHANCE.get();
+    }
 }

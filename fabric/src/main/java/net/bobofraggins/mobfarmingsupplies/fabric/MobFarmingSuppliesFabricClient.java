@@ -10,15 +10,22 @@ import net.bobofraggins.mobfarmingsupplies.client.model.fabric.ExtraBlockModelsI
 import net.bobofraggins.mobfarmingsupplies.cloneomatic.CloneOMaticBlockEntityRenderer;
 import net.bobofraggins.mobfarmingsupplies.enderinhibitor.EnderInhibitorBlockEntityRenderer;
 import net.bobofraggins.mobfarmingsupplies.fan.FanBlockEntityRenderer;
+import net.bobofraggins.mobfarmingsupplies.glamping.magichat.MagicHatHelmetLayer;
 import net.bobofraggins.mobfarmingsupplies.mobharvester.MobHarvesterRenderer;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.bobofraggins.mobfarmingsupplies.tank.fabric.TankItemRenderer;
 import net.bobofraggins.mobfarmingsupplies.tank.fabric.TankRenderer;
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityRenderLayerRegistrationCallback;
+import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.renderer.entity.LivingEntityRenderer;
+import net.minecraft.client.renderer.entity.player.AvatarRenderer;
+import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import net.minecraft.client.renderer.special.SpecialModelRenderers;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ExtraCodecs;
+import net.minecraft.world.entity.EntityTypes;
 
 public class MobFarmingSuppliesFabricClient implements ClientModInitializer {
 
@@ -45,6 +52,30 @@ public class MobFarmingSuppliesFabricClient implements ClientModInitializer {
                 AbsorptionHopperBlockEntityRenderer::new);
         ExtraBlockModelsImpl.registerModelLoadingPlugin();
         registerSpecialModelRenderers();
+        registerMagicHatLayer();
+    }
+
+    /**
+     * Registers {@link MagicHatHelmetLayer} on players, armor stands, and zombies — the
+     * same three targets as NeoForge's {@code EntityRenderersEvent.AddLayers} listener,
+     * via Fabric API's per-renderer registration callback instead.
+     */
+    private static void registerMagicHatLayer() {
+        LivingEntityRenderLayerRegistrationCallback.EVENT.register((entityType, entityRenderer, registrationHelper, context) -> {
+            if (entityRenderer instanceof AvatarRenderer<?> avatarRenderer) {
+                addMagicHatLayer(avatarRenderer, registrationHelper);
+            } else if (entityType == EntityTypes.ARMOR_STAND || entityType == EntityTypes.ZOMBIE) {
+                addMagicHatLayer(entityRenderer, registrationHelper);
+            }
+        });
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <S extends HumanoidRenderState, M extends HumanoidModel<S>> void addMagicHatLayer(
+            LivingEntityRenderer<?, ?, ?> renderer,
+            LivingEntityRenderLayerRegistrationCallback.RegistrationHelper registrationHelper) {
+        LivingEntityRenderer<?, S, M> typed = (LivingEntityRenderer<?, S, M>) renderer;
+        registrationHelper.register(new MagicHatHelmetLayer<>(typed));
     }
 
     /**

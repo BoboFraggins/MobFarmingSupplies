@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "H",
+    "D",
+    "S"
+  ],
+  "key": {
+    "H": "minecraft:black_wool_slab",
+    "D": "minecraft:red_dye",
+    "S": "minecraft:string"
+  },
+  "result": {
+    "id": "mobfarmingsupplies:magic_hat",
+    "count": 1
+  },
+  "category": "misc"
+}

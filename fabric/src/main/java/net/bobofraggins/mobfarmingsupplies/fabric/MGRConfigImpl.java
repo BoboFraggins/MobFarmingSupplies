@@ -36,6 +36,7 @@ public final class MGRConfigImpl {
     private static List<String> babyPackMobs = MGRConfig.DEFAULT_BABY;
     private static List<String> wrongMobsPackMobs = MGRConfig.DEFAULT_WRONG_MOBS;
     private static double toggleButtonChestChance = MGRConfig.DEFAULT_TOGGLE_BUTTON_CHEST_CHANCE;
+    private static double magicHatChestChance = MGRConfig.DEFAULT_MAGIC_HAT_CHEST_CHANCE;
     private static double dnaSamplePackCommonChestChance = MGRConfig.DEFAULT_DNA_SAMPLE_PACK_COMMON_CHEST_CHANCE;
     private static double dnaSamplePackRareChestChance = MGRConfig.DEFAULT_DNA_SAMPLE_PACK_RARE_CHEST_CHANCE;
 
@@ -53,6 +54,7 @@ public final class MGRConfigImpl {
     public static List<String> getBabyPackMobs()         { return babyPackMobs; }
     public static List<String> getWrongMobsPackMobs()    { return wrongMobsPackMobs; }
     public static double getToggleButtonChestChance()    { return toggleButtonChestChance; }
+    public static double getMagicHatChestChance()        { return magicHatChestChance; }
     public static double getDnaSamplePackCommonChestChance() { return dnaSamplePackCommonChestChance; }
     public static double getDnaSamplePackRareChestChance()   { return dnaSamplePackRareChestChance; }
 
@@ -93,6 +95,12 @@ public final class MGRConfigImpl {
                 JsonObject tb = root.getAsJsonObject("toggleButtons");
                 if (tb.has("chestDropChance"))
                     toggleButtonChestChance = clamp(tb.get("chestDropChance").getAsDouble(), 0.0, 1.0);
+            }
+
+            if (root.has("magicHat")) {
+                JsonObject mhc = root.getAsJsonObject("magicHat");
+                if (mhc.has("chestDropChance"))
+                    magicHatChestChance = clamp(mhc.get("chestDropChance").getAsDouble(), 0.0, 1.0);
             }
 
             if (root.has("dnaSamplePacks")) {
@@ -163,6 +171,10 @@ public final class MGRConfigImpl {
         JsonObject tb = new JsonObject();
         tb.addProperty("chestDropChance", MGRConfig.DEFAULT_TOGGLE_BUTTON_CHEST_CHANCE);
         root.add("toggleButtons", tb);
+
+        JsonObject mhc = new JsonObject();
+        mhc.addProperty("chestDropChance", MGRConfig.DEFAULT_MAGIC_HAT_CHEST_CHANCE);
+        root.add("magicHat", mhc);
 
         JsonObject packs = new JsonObject();
         packs.add("commonHostile", toArray(MGRConfig.DEFAULT_COMMON_HOSTILE));
