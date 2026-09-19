@@ -68,6 +68,7 @@ public final class NeoForgeOnlyRegistration {
                             FluidType.Properties.create()
                                     .density(900).viscosity(1500).temperature(300)
                                     .lightLevel(10)
+                                    .isWaterLike(true)
                                     .sound(SoundActions.BUCKET_FILL,  SoundEvents.PLAYER_LEVELUP)
                                     .sound(SoundActions.BUCKET_EMPTY, SoundEvents.EXPERIENCE_ORB_PICKUP)));
 
