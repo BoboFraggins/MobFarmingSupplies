@@ -13,6 +13,7 @@ import net.bobofraggins.mobfarmingsupplies.enderinhibitor.EnderInhibitorBlockEnt
 import net.bobofraggins.mobfarmingsupplies.fan.FanBlockEntityRenderer;
 import net.bobofraggins.mobfarmingsupplies.glamping.magichat.MagicHatHelmetLayer;
 import net.bobofraggins.mobfarmingsupplies.glamping.magichat.fabric.MagicHatTrinketClientSetup;
+import net.bobofraggins.mobfarmingsupplies.glamping.present.PresentRenderer;
 import net.bobofraggins.mobfarmingsupplies.mobharvester.MobHarvesterRenderer;
 import net.bobofraggins.mobfarmingsupplies.picnicbasket.PicnicBasketRenderer;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
@@ -56,6 +57,9 @@ public class MobFarmingSuppliesFabricClient implements ClientModInitializer {
         BlockEntityRendererRegistry.register(
                 Registration.PICNIC_BASKET_BE_TYPE.get(),
                 PicnicBasketRenderer::new);
+        BlockEntityRendererRegistry.register(
+                Registration.PRESENT_BE_TYPE.get(),
+                PresentRenderer::new);
         ExtraBlockModelsImpl.registerModelLoadingPlugin();
         registerSpecialModelRenderers();
         registerMagicHatLayer();

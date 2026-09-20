@@ -25,6 +25,9 @@ import net.bobofraggins.mobfarmingsupplies.fan.FanBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.fan.FanMenu;
 import net.bobofraggins.mobfarmingsupplies.fan.FanUpgradeItem;
 import net.bobofraggins.mobfarmingsupplies.glamping.magichat.MagicHatItem;
+import net.bobofraggins.mobfarmingsupplies.glamping.present.PresentBlock;
+import net.bobofraggins.mobfarmingsupplies.glamping.present.PresentBlockEntity;
+import net.bobofraggins.mobfarmingsupplies.glamping.present.PresentBlockItem;
 import net.bobofraggins.mobfarmingsupplies.mobharvester.HarvesterSword;
 import net.bobofraggins.mobfarmingsupplies.mobharvester.HarvesterUpgradeItem;
 import net.bobofraggins.mobfarmingsupplies.mobharvester.MobHarvesterBlock;
@@ -201,6 +204,25 @@ public final class Registration {
                                                     Identifier.fromNamespaceAndPath(
                                                             MobFarmingSuppliesCommon.MODID, "magic_hat")))
                                             .build())));
+
+    // ── Present ──────────────────────────────────────────────────────────────────
+
+    public static final RegistrySupplier<PresentBlock> PRESENT =
+            BLOCKS.register("present",
+                    () -> new PresentBlock(BlockBehaviour.Properties.of()
+                            .setId(blockKey("present"))
+                            .strength(3.0f, 1000.0f)
+                            .sound(SoundType.WOOD)
+                            .noOcclusion()));
+
+    public static final RegistrySupplier<PresentBlockItem> PRESENT_ITEM =
+            ITEMS.register("present",
+                    () -> new PresentBlockItem(PRESENT.get(), new Item.Properties()
+                            .setId(itemKey("present"))));
+
+    public static final RegistrySupplier<BlockEntityType<PresentBlockEntity>> PRESENT_BE_TYPE =
+            BLOCK_ENTITIES.register("present",
+                    () -> BlockEntityTypePlatform.create(PresentBlockEntity::new, PRESENT.get()));
 
     // ── Mob Harvester ────────────────────────────────────────────────────────────
 
@@ -675,6 +697,7 @@ public final class Registration {
                         output.accept(DNA_SAMPLE_BABY.get());
                         output.accept(DNA_SAMPLE_WRONG.get());
                         output.accept(MAGIC_HAT_ITEM.get());
+                        output.accept(PRESENT_ITEM.get());
                         if (ModCompatRegistration.DNA_BOOSTER_AQUACULTURE != null)
                             output.accept(ModCompatRegistration.DNA_BOOSTER_AQUACULTURE.get());
                         if (ModCompatRegistration.DNA_BOOSTER_AETHER_PASSIVE != null)

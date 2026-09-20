@@ -3,6 +3,7 @@ package net.bobofraggins.mobfarmingsupplies.client.model.fabric;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import net.bobofraggins.mobfarmingsupplies.fan.FanBlockEntityRenderer;
+import net.bobofraggins.mobfarmingsupplies.glamping.present.PresentRenderer;
 import net.bobofraggins.mobfarmingsupplies.mobharvester.MobHarvesterRenderer;
 import net.bobofraggins.mobfarmingsupplies.picnicbasket.PicnicBasketRenderer;
 import net.fabricmc.fabric.api.client.model.loading.v1.ExtraModelKey;
@@ -38,6 +39,7 @@ public final class ExtraBlockModelsImpl {
         register(PicnicBasketRenderer.BODY_MODEL_ID);
         register(PicnicBasketRenderer.LEFT_LID_MODEL_ID);
         register(PicnicBasketRenderer.RIGHT_LID_MODEL_ID);
+        register(PresentRenderer.MODEL_ID);
     }
 
     private ExtraBlockModelsImpl() {}

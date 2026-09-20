@@ -73,6 +73,11 @@
   "item.mobfarmingsupplies.magic_hat.tooltip_capture": "Right-click a mob to capture it.",
   "item.mobfarmingsupplies.magic_hat.tooltip_release": "Right-click to release.",
 
+  "block.mobfarmingsupplies.present": "Present",
+  "item.mobfarmingsupplies.present": "Present",
+  "item.mobfarmingsupplies.present.tooltip_wrap": "Right-click a block to wrap it.",
+  "item.mobfarmingsupplies.present.tooltip_unwrap": "Shift-right-click to unwrap in place.",
+
   "itemGroup.mobfarmingsupplies": "Mob Farming Supplies",
 
   "jade.mobfarmingsupplies.tank.empty": "Empty",

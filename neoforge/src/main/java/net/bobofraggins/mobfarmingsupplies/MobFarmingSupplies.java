@@ -11,6 +11,7 @@ import net.bobofraggins.mobfarmingsupplies.fan.FanClientEvents;
 import net.bobofraggins.mobfarmingsupplies.glamping.magichat.MagicHatClientEvents;
 import net.bobofraggins.mobfarmingsupplies.glamping.magichat.MagicHatCurioSetup;
 import net.bobofraggins.mobfarmingsupplies.glamping.magichat.MagicHatSpawnEvents;
+import net.bobofraggins.mobfarmingsupplies.glamping.present.PresentClientEvents;
 import net.bobofraggins.mobfarmingsupplies.mobharvester.BeheadingDropHandler;
 import net.bobofraggins.mobfarmingsupplies.mobharvester.MobHarvesterClientEvents;
 import net.bobofraggins.mobfarmingsupplies.picnicbasket.PicnicBasketClientEvents;
@@ -63,6 +64,7 @@ public class MobFarmingSupplies {
             modEventBus.register(PicnicBasketClientEvents.class);
             modEventBus.register(ExtraBlockModelsClientEvents.class);
             modEventBus.register(MagicHatClientEvents.class);
+            modEventBus.register(PresentClientEvents.class);
             if (curiosLoaded) {
                 MagicHatCurioSetup.onClientSetup(modEventBus);
             }
