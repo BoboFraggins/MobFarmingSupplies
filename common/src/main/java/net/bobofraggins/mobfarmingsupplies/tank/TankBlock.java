@@ -86,17 +86,26 @@ public class TankBlock extends BaseEntityBlock {
             BlockHitResult hit) {
         if (level.isClientSide()) return InteractionResult.SUCCESS;
 
-        // Empty glass bottle → water bottle
+        // Empty glass bottle → water bottle or bottle o' enchanting, depending on tank contents
         if (stack.is(Items.GLASS_BOTTLE)) {
             if (!(level.getBlockEntity(pos) instanceof TankBlockEntity be))
                 return InteractionResult.TRY_WITH_EMPTY_HAND;
             FluidStack simulated = be.extract(BOTTLE_MB, true);
-            if (simulated.getAmount() >= BOTTLE_MB && simulated.getRawFluid() == Fluids.WATER) {
-                be.extract(BOTTLE_MB, false);
-                player.setItemInHand(hand, ItemUtils.createFilledResult(
-                        stack, player, PotionContents.createItemStack(Items.POTION, Potions.WATER)));
-                level.playSound(null, pos, SoundEvents.BOTTLE_FILL, SoundSource.BLOCKS, 1.0f, 1.0f);
-                return InteractionResult.SUCCESS;
+            if (simulated.getAmount() >= BOTTLE_MB) {
+                if (simulated.getRawFluid() == Fluids.WATER) {
+                    be.extract(BOTTLE_MB, false);
+                    player.setItemInHand(hand, ItemUtils.createFilledResult(
+                            stack, player, PotionContents.createItemStack(Items.POTION, Potions.WATER)));
+                    level.playSound(null, pos, SoundEvents.BOTTLE_FILL, SoundSource.BLOCKS, 1.0f, 1.0f);
+                    return InteractionResult.SUCCESS;
+                }
+                if (simulated.getFluid().builtInRegistryHolder().is(EXPERIENCE_TAG)) {
+                    be.extract(BOTTLE_MB, false);
+                    player.setItemInHand(hand, ItemUtils.createFilledResult(
+                            stack, player, new ItemStack(Items.EXPERIENCE_BOTTLE)));
+                    level.playSound(null, pos, SoundEvents.BOTTLE_FILL, SoundSource.BLOCKS, 1.0f, 1.0f);
+                    return InteractionResult.SUCCESS;
+                }
             }
             return InteractionResult.TRY_WITH_EMPTY_HAND;
         }
@@ -124,17 +133,14 @@ public class TankBlock extends BaseEntityBlock {
         if (stack.is(Items.EXPERIENCE_BOTTLE)) {
             if (!(level.getBlockEntity(pos) instanceof TankBlockEntity be))
                 return InteractionResult.TRY_WITH_EMPTY_HAND;
-            FluidStack locked = be.getStoredFluid();
-            if (!locked.isEmpty() && locked.getFluid().builtInRegistryHolder().is(EXPERIENCE_TAG)) {
-                FluidStack xp = FluidStack.create(locked.getFluid(), BOTTLE_MB);
-                long inserted = be.insert(xp, BOTTLE_MB, true);
-                if (inserted >= BOTTLE_MB) {
-                    be.insert(xp, BOTTLE_MB, false);
-                    player.setItemInHand(hand, ItemUtils.createFilledResult(
-                            stack, player, new ItemStack(Items.GLASS_BOTTLE)));
-                    level.playSound(null, pos, SoundEvents.BOTTLE_EMPTY, SoundSource.BLOCKS, 1.0f, 1.0f);
-                    return InteractionResult.SUCCESS;
-                }
+            FluidStack xp = FluidStack.create(Registration.XP_JUICE_SOURCE.get(), BOTTLE_MB);
+            long inserted = be.insert(xp, BOTTLE_MB, true);
+            if (inserted >= BOTTLE_MB) {
+                be.insert(xp, BOTTLE_MB, false);
+                player.setItemInHand(hand, ItemUtils.createFilledResult(
+                        stack, player, new ItemStack(Items.GLASS_BOTTLE)));
+                level.playSound(null, pos, SoundEvents.BOTTLE_EMPTY, SoundSource.BLOCKS, 1.0f, 1.0f);
+                return InteractionResult.SUCCESS;
             }
             return InteractionResult.TRY_WITH_EMPTY_HAND;
         }
