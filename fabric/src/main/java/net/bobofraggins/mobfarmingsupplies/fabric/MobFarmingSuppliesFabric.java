@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.fabric;
 
+import dev.architectury.platform.Platform;
 import net.bobofraggins.mobfarmingsupplies.fabric.MGRConfigImpl;
 import net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommon;
 import net.bobofraggins.mobfarmingsupplies.absorptionhopper.AbsorptionHopperBlockEntity;
@@ -7,6 +8,7 @@ import net.bobofraggins.mobfarmingsupplies.absorptionhopper.FabricAbsorptionHopp
 import net.bobofraggins.mobfarmingsupplies.absorptionhopper.FabricAbsorptionHopperItemStorage;
 import net.bobofraggins.mobfarmingsupplies.crafting.FabricFluidContainerIngredient;
 import net.bobofraggins.mobfarmingsupplies.experiencesyringe.FabricExperienceSyringeFluidStorage;
+import net.bobofraggins.mobfarmingsupplies.glamping.magichat.fabric.MagicHatTrinketSetup;
 import net.bobofraggins.mobfarmingsupplies.loot.FabricLootModifiers;
 import net.bobofraggins.mobfarmingsupplies.register.ModCompatRegistration;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
@@ -35,6 +37,14 @@ public class MobFarmingSuppliesFabric implements ModInitializer {
         CustomIngredientSerializer.register(FabricFluidContainerIngredient.SERIALIZER);
         FabricLootModifiers.register();
         registerStorages();
+        // Magic Hat Trinkets Updated integration — soft dependency, registered only if present.
+        // MUST check isModLoaded() before ever calling into MagicHatTrinketSetup: that class
+        // references Trinkets API types, and simply loading it (even just to have this class's
+        // own bytecode verified) would throw NoClassDefFoundError without Trinkets Updated
+        // installed — see MagicHatTrinketSetup's javadoc.
+        if (Platform.isModLoaded("trinkets_updated")) {
+            MagicHatTrinketSetup.registerCommon();
+        }
         MobFarmingSuppliesCommon.init();
     }
 

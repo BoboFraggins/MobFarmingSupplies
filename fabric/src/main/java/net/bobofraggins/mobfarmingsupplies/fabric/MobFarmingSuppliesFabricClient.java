@@ -1,6 +1,7 @@
 package net.bobofraggins.mobfarmingsupplies.fabric;
 
 import com.mojang.serialization.MapCodec;
+import dev.architectury.platform.Platform;
 import dev.architectury.registry.client.rendering.BlockEntityRendererRegistry;
 import java.lang.reflect.Field;
 import net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommon;
@@ -11,6 +12,7 @@ import net.bobofraggins.mobfarmingsupplies.cloneomatic.CloneOMaticBlockEntityRen
 import net.bobofraggins.mobfarmingsupplies.enderinhibitor.EnderInhibitorBlockEntityRenderer;
 import net.bobofraggins.mobfarmingsupplies.fan.FanBlockEntityRenderer;
 import net.bobofraggins.mobfarmingsupplies.glamping.magichat.MagicHatHelmetLayer;
+import net.bobofraggins.mobfarmingsupplies.glamping.magichat.fabric.MagicHatTrinketClientSetup;
 import net.bobofraggins.mobfarmingsupplies.mobharvester.MobHarvesterRenderer;
 import net.bobofraggins.mobfarmingsupplies.picnicbasket.PicnicBasketRenderer;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
@@ -57,6 +59,12 @@ public class MobFarmingSuppliesFabricClient implements ClientModInitializer {
         ExtraBlockModelsImpl.registerModelLoadingPlugin();
         registerSpecialModelRenderers();
         registerMagicHatLayer();
+        // Magic Hat Trinkets Updated render layer — soft dependency, registered only if
+        // present. MUST check isModLoaded() before ever calling into MagicHatTrinketClientSetup:
+        // see that class's javadoc (and MagicHatTrinketSetup's) for why.
+        if (Platform.isModLoaded("trinkets_updated")) {
+            MagicHatTrinketClientSetup.registerClient();
+        }
     }
 
     /**
