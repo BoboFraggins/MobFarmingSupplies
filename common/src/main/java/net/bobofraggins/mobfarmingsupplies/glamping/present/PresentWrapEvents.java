@@ -44,9 +44,9 @@ public final class PresentWrapEvents {
 
     private static EventResult onUseItemOnBlock(
             Level level, Player player, InteractionHand hand,
-            ItemStack stack, BlockState state, BlockHitResult hit) {
-        if (!(stack.getItem() instanceof PresentBlockItem)) return EventResult.pass();
-        if (PresentBlockItem.hasWrappedBlock(stack)) return EventResult.pass();
+            ItemStack eventStack, BlockState state, BlockHitResult hit) {
+        if (!(eventStack.getItem() instanceof PresentBlockItem)) return EventResult.pass();
+        if (PresentBlockItem.hasWrappedBlock(eventStack)) return EventResult.pass();
 
         BlockPos pos = hit.getBlockPos();
         if (!canWrap(state, level, pos)) return EventResult.pass();
@@ -65,7 +65,12 @@ public final class PresentWrapEvents {
             }
 
             if (!player.isCreative()) {
-                stack.shrink(1);
+                // Mutating the event's own ItemStack parameter is not reliable — fetch the
+                // live stack from the player and write the shrunk result back explicitly,
+                // matching MagicHatCaptureEvents' established idiom for this exact reason.
+                ItemStack heldStack = player.getItemInHand(hand);
+                heldStack.shrink(1);
+                player.setItemInHand(hand, heldStack);
             }
         }
 
