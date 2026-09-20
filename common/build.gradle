@@ -11,6 +11,10 @@ dependencies {
     // Jade optional-dependency API — NeoForge artifact used for compilation; API is cross-platform.
     // Fabric uses 26.3.1+fabric (see fabric/build.gradle).
     compileOnly "maven.modrinth:jade:26.3.1+neoforge"
+
+    // JEI optional-dependency API — same cross-platform-API situation as Jade above. No stable
+    // release exists yet for MC 26.3, only beta builds (same situation NeoForge itself was in).
+    compileOnly "maven.modrinth:jei:k98tjGYK"
 }
 
 publishing {

@@ -1,5 +1,9 @@
 # Mob Farming Supplies
 
+## 26.3.0.1, 26.2.0.2, 26.1.2.4
+
+* Add JEI information on XP Juice Bucket
+
 ## 26.3.0.0
 
 * Initial version for MC 26.3

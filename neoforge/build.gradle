@@ -52,6 +52,7 @@ dependencies {
     api "dev.architectury:architectury-neoforge:${architectury_version}"
 
     compileOnly "maven.modrinth:jade:26.3.1+neoforge"
+    compileOnly "maven.modrinth:jei:k98tjGYK"
 
     // Curios soft dependency — no 26.3 build exists yet (same situation NeoForge itself was in
     // during the 26.3 migration), so this pins the closest available API to compile against.

@@ -12,6 +12,9 @@
     ],
     "client": [
       "net.bobofraggins.mobfarmingsupplies.fabric.MobFarmingSuppliesFabricClient"
+    ],
+    "jei_mod_plugin": [
+      "net.bobofraggins.mobfarmingsupplies.jei.MobFarmingSuppliesJeiPlugin"
     ]
   },
   "mixins": [
@@ -27,6 +30,7 @@
   },
   "suggests": {
     "jade": "*",
+    "jei": "*",
     "aquaculture": "*",
     "aether_ii": "*",
     "evilcraft": "*",
