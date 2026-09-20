@@ -81,7 +81,22 @@ public final class TankBottleTransfer {
         }
 
         if (input.is(Items.EXPERIENCE_BOTTLE)) {
-            FluidStack xp = FluidStack.create(Registration.XP_JUICE_SOURCE.get(), BOTTLE_MB);
+            // Prefer whatever fluid is already locked into the tank (if it's XP-tagged) over
+            // the mod's own XP_JUICE_SOURCE reference directly — a tank filled via a different
+            // path (e.g. a bucket) may have locked a fluid reference that's semantically the
+            // same XP juice but not exactly isFluidEqual() to XP_JUICE_SOURCE.get(), which
+            // would otherwise wrongly reject topping up an already-XP-filled tank. Only fall
+            // back to XP_JUICE_SOURCE for a genuinely empty (unlocked) tank.
+            FluidStack locked = be.getStoredFluid();
+            Fluid target;
+            if (locked.isEmpty()) {
+                target = Registration.XP_JUICE_SOURCE.get();
+            } else if (locked.getFluid().builtInRegistryHolder().is(EXPERIENCE_TAG)) {
+                target = locked.getFluid();
+            } else {
+                return null;
+            }
+            FluidStack xp = FluidStack.create(target, BOTTLE_MB);
             long inserted = be.insert(xp, BOTTLE_MB, true);
             if (inserted >= BOTTLE_MB) {
                 be.insert(xp, BOTTLE_MB, false);
