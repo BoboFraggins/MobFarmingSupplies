@@ -1,5 +1,11 @@
 # Mob Farming Supplies
 
+## 26.2.0.1
+
+* Fixed bug with bottles in the tank when dealing with XP Juice
+* Fixed bug with Clone-o-Matic not spawning on vector plates
+* Fixed bug with walking through XP Juice (NeoForge only)
+
 ## 26.2.0.0
 
 * Initial version for MC 26.2

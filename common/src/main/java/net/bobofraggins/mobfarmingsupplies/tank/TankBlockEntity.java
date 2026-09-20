@@ -71,10 +71,36 @@ public class TankBlockEntity extends BlockEntity implements MenuProvider {
         if (input.isEmpty()) return;
         if (!transferContainer.getItem(1).isEmpty()) return;
 
-        ItemStack output = TankBlockEntityPlatform.tryTransferFluidWithItem(this, input);
+        int originalCount = input.getCount();
+
+        // Only ever offer ONE item to a transfer attempt, regardless of how many are stacked
+        // in the slot. Both transfer paths below are only designed to process a single item
+        // per call, and the Fabric platform impl binds its transaction directly to this
+        // slot's live contents rather than to the ItemStack instance passed in — so the real
+        // slot's count has to be capped at 1 here too, not just the local variable, or its
+        // internal transaction could still see (and consume from) the full stack. Without
+        // this, shift-clicking a full stack of a stackable item (glass bottles, or any
+        // future stackable bucket/container) into the slot would destroy the rest of the
+        // stack for a single conversion.
+        if (originalCount > 1) {
+            transferContainer.setItem(0, input.copyWithCount(1));
+        }
+        ItemStack single = transferContainer.getItem(0);
+
+        // Bottles aren't registered fluid-container capabilities/storages on either loader,
+        // so the generic platform transfer path below never sees them — handle them first.
+        ItemStack output = TankBottleTransfer.tryTransfer(this, single);
+        if (output == null) {
+            output = TankBlockEntityPlatform.tryTransferFluidWithItem(this, single);
+        }
+
         if (output != null) {
-            transferContainer.setItem(0, ItemStack.EMPTY);
+            transferContainer.setItem(0,
+                    originalCount > 1 ? input.copyWithCount(originalCount - 1) : ItemStack.EMPTY);
             transferContainer.setItem(1, output);
+        } else if (originalCount > 1) {
+            // No transfer happened — undo the temporary single-item reduction.
+            transferContainer.setItem(0, input);
         }
     }
 
