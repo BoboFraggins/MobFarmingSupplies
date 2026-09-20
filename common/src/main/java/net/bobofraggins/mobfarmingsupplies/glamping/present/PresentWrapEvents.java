@@ -54,11 +54,16 @@ public final class PresentWrapEvents {
         if (!level.isClientSide()) {
             CompoundTag entityData = captureBlockEntity(level, pos);
 
+            // UPDATE_SUPPRESS_DROPS only suppresses the replaced block's own item drop — a
+            // container being replaced (chest, barrel, ...) still spills its inventory via
+            // BlockEntity#preRemoveSideEffects's default Containers.dropContents() call unless
+            // UPDATE_SKIP_BLOCK_ENTITY_SIDEEFFECTS is also set. entityData above already has a
+            // full snapshot of the contents to restore, so vanilla's own spill would just dupe.
             Direction facing = player.getDirection().getOpposite();
             level.setBlock(
                     pos,
                     Registration.PRESENT.get().defaultBlockState().setValue(PresentBlock.FACING, facing),
-                    Block.UPDATE_ALL | Block.UPDATE_SUPPRESS_DROPS);
+                    Block.UPDATE_ALL | Block.UPDATE_SUPPRESS_DROPS | Block.UPDATE_SKIP_BLOCK_ENTITY_SIDEEFFECTS);
 
             if (level.getBlockEntity(pos) instanceof PresentBlockEntity present) {
                 present.setWrappedBlock(state, entityData);

@@ -80,6 +80,8 @@ public class PresentBlockItem extends BlockItem {
         var data = stack.get(DataComponents.BLOCK_ENTITY_DATA);
         if (data == null) return Optional.empty();
         CompoundTag wrapped = data.copyTagWithoutId().getCompoundOrEmpty(PresentBlockEntity.TAG_WRAPPED_STATE);
-        return wrapped.getString("Name");
+        // NbtUtils.writeBlockState() writes the registry id under "id" in MC 26.3 (was "Name"
+        // in older versions, e.g. TremendousStorage's 26.1.2-era source this was ported from).
+        return wrapped.getString("id");
     }
 }

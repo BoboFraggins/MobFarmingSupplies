@@ -100,7 +100,12 @@ public class PresentBlock extends BaseEntityBlock {
         BlockState wrapped = present.getWrappedState();
         CompoundTag entityData = present.getWrappedEntityData();
 
-        level.setBlock(pos, wrapped, Block.UPDATE_ALL | Block.UPDATE_SUPPRESS_DROPS);
+        // UPDATE_SKIP_BLOCK_ENTITY_SIDEEFFECTS: the Present's own block entity isn't a
+        // Container so this is a no-op today, but skip vanilla's automatic side effects here
+        // too since we're manually transplanting the wrapped block-entity data ourselves right
+        // below — matches the wrap side in PresentWrapEvents for the same reason.
+        level.setBlock(pos, wrapped,
+                Block.UPDATE_ALL | Block.UPDATE_SUPPRESS_DROPS | Block.UPDATE_SKIP_BLOCK_ENTITY_SIDEEFFECTS);
 
         if (entityData != null) {
             BlockEntity newBe = level.getBlockEntity(pos);
