@@ -36,6 +36,13 @@ ordering="NONE"
 side="BOTH"
 
 [[dependencies.${mod_id}]]
+modId="jei"
+type="optional"
+versionRange="[30,)"
+ordering="NONE"
+side="CLIENT"
+
+[[dependencies.${mod_id}]]
 modId="tremendousstorage"
 type="optional"
 versionRange="[*,)"

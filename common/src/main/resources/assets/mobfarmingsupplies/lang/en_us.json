@@ -74,6 +74,11 @@
   "jade.mobfarmingsupplies.tank.empty": "Empty",
   "jade.mobfarmingsupplies.tank.contents": "%1$s / %2$s mB (%3$s)",
 
+  "jei.mobfarmingsupplies.xp_juice_guide": "Getting XP Juice",
+  "jei.mobfarmingsupplies.xp_juice_guide.step.syringe": "Shift-right-click a player to store their XP as XP Juice.",
+  "jei.mobfarmingsupplies.xp_juice_guide.step.tank": "Right-click a Tank with the syringe to empty it in.",
+  "jei.mobfarmingsupplies.xp_juice_guide.step.bucket": "Right-click the Tank with a bucket to scoop out an XP Juice Bucket.",
+
   "subtitle.mobfarmingsupplies.red_alert": "Alarm blares",
   "subtitle.mobfarmingsupplies.dramatic": "Dramatic sting",
   "subtitle.mobfarmingsupplies.rimshot": "Rimshot",

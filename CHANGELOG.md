@@ -1,5 +1,9 @@
 # Mob Farming Supplies
 
+## 26.2.0.2
+
+* Add JEI information on XP Juice Bucket
+
 ## 26.2.0.1
 
 * Fixed bug with bottles in the tank when dealing with XP Juice
