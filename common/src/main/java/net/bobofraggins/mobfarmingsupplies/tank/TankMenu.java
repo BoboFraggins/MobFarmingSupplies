@@ -42,11 +42,14 @@ public class TankMenu extends AbstractContainerMenu {
         super(Registration.TANK_MENU.get(), windowId);
         this.pos = pos;
 
-        // Slot 0: fluid input — any item exposing the platform's fluid-item storage
+        // Slot 0: fluid input — any item exposing the platform's fluid-item storage, plus
+        // bottles specifically (never registered as such a storage on either loader — see
+        // TankBottleTransfer — so the generic check alone would silently reject them, most
+        // noticeably on NeoForge which, unlike Fabric, exposes no fallback capability for them).
         addSlot(new Slot(transferContainer, 0, FLUID_IN_X, FLUID_IN_Y) {
             @Override
             public boolean mayPlace(ItemStack stack) {
-                return TankBlockEntityPlatform.isFluidContainer(stack);
+                return TankBlockEntityPlatform.isFluidContainer(stack) || TankBottleTransfer.isBottle(stack);
             }
         });
 

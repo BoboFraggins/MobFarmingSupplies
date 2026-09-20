@@ -2,6 +2,9 @@
 
 ## 26.1.2.3
 
+* Fixed bug with bottles in the tank when dealing with XP Juice
+* Fixed bug with Clone-o-Matic not spawning on vector plates
+
 ## 26.1.2.2
 
 * Add configuration UI to Ender Inhibitor
