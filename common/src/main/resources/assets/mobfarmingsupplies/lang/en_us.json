@@ -87,6 +87,7 @@
   "jei.mobfarmingsupplies.xp_juice_guide.step.syringe": "Shift-right-click a player to store their XP as XP Juice.",
   "jei.mobfarmingsupplies.xp_juice_guide.step.tank": "Right-click a Tank with the syringe to empty it in.",
   "jei.mobfarmingsupplies.xp_juice_guide.step.bucket": "Right-click the Tank with a bucket to scoop out an XP Juice Bucket.",
+  "jei.mobfarmingsupplies.xp_juice_guide.step.bottle": "Right-click the Tank with an empty glass bottle to fill a bottle o' enchanting.",
 
   "subtitle.mobfarmingsupplies.red_alert": "Alarm blares",
   "subtitle.mobfarmingsupplies.dramatic": "Dramatic sting",
