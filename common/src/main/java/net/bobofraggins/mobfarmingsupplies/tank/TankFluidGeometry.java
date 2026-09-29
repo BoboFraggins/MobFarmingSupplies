@@ -1,6 +1,7 @@
 package net.bobofraggins.mobfarmingsupplies.tank;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.blaze3d.vertex.PoseStack;
 import org.joml.Matrix4f;
 
 /**
@@ -25,41 +26,41 @@ public final class TankFluidGeometry {
     @SuppressWarnings("java:S107")
     public static void renderCubeFill(
             VertexConsumer vc,
-            Matrix4f mat,
+            PoseStack.Pose pose,
             int r, int g, int b, int a,
             int light, int overlay,
             float uL, float vT, float uR, float vB,
             float fillTop) {
         // North face (z = FLOOR)
-        quadFluid(vc, mat, r, g, b, a, light, overlay, uL, vT, uR, vB,
+        quadFluid(vc, pose, r, g, b, a, light, overlay, uL, vT, uR, vB,
                 CEIL,  FLOOR, FLOOR,
                 FLOOR, FLOOR, FLOOR,
                 FLOOR, fillTop, FLOOR,
                 CEIL,  fillTop, FLOOR,
                 0, 0, -1);
         // South face (z = CEIL)
-        quadFluid(vc, mat, r, g, b, a, light, overlay, uL, vT, uR, vB,
+        quadFluid(vc, pose, r, g, b, a, light, overlay, uL, vT, uR, vB,
                 FLOOR, FLOOR, CEIL,
                 CEIL,  FLOOR, CEIL,
                 CEIL,  fillTop, CEIL,
                 FLOOR, fillTop, CEIL,
                 0, 0, 1);
         // West face (x = FLOOR)
-        quadFluid(vc, mat, r, g, b, a, light, overlay, uL, vT, uR, vB,
+        quadFluid(vc, pose, r, g, b, a, light, overlay, uL, vT, uR, vB,
                 FLOOR, FLOOR, FLOOR,
                 FLOOR, FLOOR, CEIL,
                 FLOOR, fillTop, CEIL,
                 FLOOR, fillTop, FLOOR,
                 -1, 0, 0);
         // East face (x = CEIL)
-        quadFluid(vc, mat, r, g, b, a, light, overlay, uL, vT, uR, vB,
+        quadFluid(vc, pose, r, g, b, a, light, overlay, uL, vT, uR, vB,
                 CEIL, FLOOR, CEIL,
                 CEIL, FLOOR, FLOOR,
                 CEIL, fillTop, FLOOR,
                 CEIL, fillTop, CEIL,
                 1, 0, 0);
         // Top face
-        quadFluid(vc, mat, r, g, b, a, light, overlay, uL, vT, uR, vB,
+        quadFluid(vc, pose, r, g, b, a, light, overlay, uL, vT, uR, vB,
                 FLOOR, fillTop, FLOOR,
                 FLOOR, fillTop, CEIL,
                 CEIL,  fillTop, CEIL,
@@ -70,7 +71,7 @@ public final class TankFluidGeometry {
     @SuppressWarnings("java:S107")
     private static void quadFluid(
             VertexConsumer vc,
-            Matrix4f mat,
+            PoseStack.Pose pose,
             int r, int g, int b, int a,
             int light, int overlay,
             float uLeft, float vTop, float uRight, float vBottom,
@@ -79,9 +80,10 @@ public final class TankFluidGeometry {
             float x2, float y2, float z2,
             float x3, float y3, float z3,
             float nx, float ny, float nz) {
-        vc.addVertex(mat, x0, y0, z0).setColor(r, g, b, a).setUv(uLeft,  vBottom).setOverlay(overlay).setLight(light).setNormal(nx, ny, nz);
-        vc.addVertex(mat, x1, y1, z1).setColor(r, g, b, a).setUv(uRight, vBottom).setOverlay(overlay).setLight(light).setNormal(nx, ny, nz);
-        vc.addVertex(mat, x2, y2, z2).setColor(r, g, b, a).setUv(uRight, vTop).setOverlay(overlay).setLight(light).setNormal(nx, ny, nz);
-        vc.addVertex(mat, x3, y3, z3).setColor(r, g, b, a).setUv(uLeft,  vTop).setOverlay(overlay).setLight(light).setNormal(nx, ny, nz);
+        Matrix4f mat = pose.pose();
+        vc.addVertex(mat, x0, y0, z0).setColor(r, g, b, a).setUv(uLeft,  vBottom).setOverlay(overlay).setLight(light).setNormal(pose, nx, ny, nz);
+        vc.addVertex(mat, x1, y1, z1).setColor(r, g, b, a).setUv(uRight, vBottom).setOverlay(overlay).setLight(light).setNormal(pose, nx, ny, nz);
+        vc.addVertex(mat, x2, y2, z2).setColor(r, g, b, a).setUv(uRight, vTop).setOverlay(overlay).setLight(light).setNormal(pose, nx, ny, nz);
+        vc.addVertex(mat, x3, y3, z3).setColor(r, g, b, a).setUv(uLeft,  vTop).setOverlay(overlay).setLight(light).setNormal(pose, nx, ny, nz);
     }
 }

@@ -16,7 +16,6 @@ import net.minecraft.world.phys.Vec3;
 import dev.architectury.fluid.FluidStack;
 import dev.architectury.hooks.fluid.forge.FluidStackHooksForge;
 import net.neoforged.neoforge.client.extensions.IBlockEntityRendererExtension;
-import org.joml.Matrix4f;
 
 /**
  * Block-entity special renderer for the Tank.
@@ -110,7 +109,7 @@ public class TankRenderer
                 poseStack,
                 Sheets.translucentBlockSheet(),
                 (pose, vc) -> renderCubeFill(
-                        vc, pose.pose(), r, g, b, a, light, overlay, uL, vT, uR, vB, fillTop));
+                        vc, pose, r, g, b, a, light, overlay, uL, vT, uR, vB, fillTop));
         poseStack.popPose();
     }
 
@@ -122,11 +121,11 @@ public class TankRenderer
      */
     public static void renderCubeFill(
             VertexConsumer vc,
-            Matrix4f mat,
+            PoseStack.Pose pose,
             int r, int g, int b, int a,
             int light, int overlay,
             float uL, float vT, float uR, float vB,
             float fillTop) {
-        TankFluidGeometry.renderCubeFill(vc, mat, r, g, b, a, light, overlay, uL, vT, uR, vB, fillTop);
+        TankFluidGeometry.renderCubeFill(vc, pose, r, g, b, a, light, overlay, uL, vT, uR, vB, fillTop);
     }
 }
