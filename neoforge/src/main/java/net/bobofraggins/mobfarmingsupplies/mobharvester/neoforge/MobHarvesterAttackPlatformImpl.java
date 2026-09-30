@@ -1,6 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.mobharvester.neoforge;
 
-import net.bobofraggins.mobfarmingsupplies.mobharvester.HarvesterFakePlayer;
+import net.bobofraggins.mobfarmingsupplies.neoforge.mobharvester.HarvesterFakePlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;

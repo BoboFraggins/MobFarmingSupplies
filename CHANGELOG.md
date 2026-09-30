@@ -6,6 +6,7 @@
 * Fix lighting of tank items
 * Fix button placement (26.1.2.5 only)
 * Fix bug where NBT data lost on drop (26.3.0.2 only)
+* Fix mobs and item despawning when passing over vector plates
 
 ## 26.3.0.1, 26.2.0.2, 26.1.2.4
 
