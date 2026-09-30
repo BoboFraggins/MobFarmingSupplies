@@ -4,6 +4,7 @@
 
 * Fix bug where mob exclusion glass causes suffocation
 * Fix lighting of tank items
+* Fix button placement
 
 ## 26.1.2.4
 
