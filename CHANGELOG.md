@@ -1,5 +1,12 @@
 # Mob Farming Supplies
 
+## 26.1.2.6
+
+* Added Silicon and Silicon Wafers
+* Added Blank Filters and Item Filters
+* Added Filter Scribing Terminal
+* 
+
 ## 26.1.2.5
 
 * Fix bug where mob exclusion glass causes suffocation

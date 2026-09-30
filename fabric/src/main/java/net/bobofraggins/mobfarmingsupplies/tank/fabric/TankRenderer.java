@@ -23,7 +23,7 @@ import net.minecraft.world.phys.Vec3;
  *
  * <p>Renders the stored fluid as a translucent coloured cube that grows with the fill level,
  * using the shared {@link TankFluidGeometry} helper. Mirrors
- * {@code net.bobofraggins.mobfarmingsupplies.tank.TankRenderer} (NeoForge), but obtains the
+ * {@code net.bobofraggins.mobfarmingsupplies.neoforge.tank.TankRenderer} (NeoForge), but obtains the
  * fluid tint and light level via Fabric-safe APIs (no {@code FluidStackHooksForge}).
  */
 @SuppressWarnings("UnstableApiUsage")

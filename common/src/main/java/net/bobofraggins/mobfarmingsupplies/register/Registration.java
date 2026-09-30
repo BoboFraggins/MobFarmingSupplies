@@ -19,6 +19,11 @@ import net.bobofraggins.mobfarmingsupplies.dna.DnaSamplePackItem;
 import net.bobofraggins.mobfarmingsupplies.enderinhibitor.EnderInhibitorBlock;
 import net.bobofraggins.mobfarmingsupplies.enderinhibitor.EnderInhibitorBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.enderinhibitor.EnderInhibitorMenu;
+import net.bobofraggins.mobfarmingsupplies.filterscribingterminal.FilterScribingTerminalBlock;
+import net.bobofraggins.mobfarmingsupplies.filterscribingterminal.FilterScribingTerminalBlockEntity;
+import net.bobofraggins.mobfarmingsupplies.filterscribingterminal.FilterScribingTerminalMenu;
+import net.bobofraggins.mobfarmingsupplies.itemfilter.ItemFilterData;
+import net.bobofraggins.mobfarmingsupplies.itemfilter.ItemFilterItem;
 import net.bobofraggins.mobfarmingsupplies.experiencesyringe.ExperienceSyringeItem;
 import net.bobofraggins.mobfarmingsupplies.fan.FanBlock;
 import net.bobofraggins.mobfarmingsupplies.fan.FanBlockEntity;
@@ -159,6 +164,13 @@ public final class Registration {
                     () -> DataComponentType.<TankContents>builder()
                             .persistent(TankContents.CODEC)
                             .networkSynchronized(TankContents.STREAM_CODEC)
+                            .build());
+
+    public static final RegistrySupplier<DataComponentType<ItemFilterData>> ITEM_FILTER_DATA =
+            DATA_COMPONENTS.register("item_filter",
+                    () -> DataComponentType.<ItemFilterData>builder()
+                            .persistent(ItemFilterData.CODEC)
+                            .networkSynchronized(ItemFilterData.STREAM_CODEC)
                             .build());
 
     // ── DNA items ────────────────────────────────────────────────────────────────
@@ -559,6 +571,52 @@ public final class Registration {
                             .stacksTo(1),
                             MGRConfig::getWrongMobsPackMobs));
 
+    // ── Filter Scribing Terminal ──────────────────────────────────────────────────
+
+    public static final RegistrySupplier<FilterScribingTerminalBlock> FILTER_SCRIBING_TERMINAL =
+            BLOCKS.register("filter_scribing_terminal",
+                    () -> new FilterScribingTerminalBlock(BlockBehaviour.Properties.of()
+                            .setId(blockKey("filter_scribing_terminal"))
+                            .strength(2.5f)
+                            .sound(SoundType.WOOD)
+                            .noOcclusion()));
+
+    public static final RegistrySupplier<BlockItem> FILTER_SCRIBING_TERMINAL_ITEM =
+            ITEMS.register("filter_scribing_terminal",
+                    () -> new BlockItem(FILTER_SCRIBING_TERMINAL.get(), new Item.Properties()
+                            .setId(itemKey("filter_scribing_terminal"))));
+
+    public static final RegistrySupplier<BlockEntityType<FilterScribingTerminalBlockEntity>> FILTER_SCRIBING_TERMINAL_BE_TYPE =
+            BLOCK_ENTITIES.register("filter_scribing_terminal",
+                    () -> BlockEntityTypePlatform.create(
+                            FilterScribingTerminalBlockEntity::new, FILTER_SCRIBING_TERMINAL.get()));
+
+    public static final RegistrySupplier<MenuType<FilterScribingTerminalMenu>> FILTER_SCRIBING_TERMINAL_MENU =
+            MENUS.register("filter_scribing_terminal",
+                    () -> MenuRegistry.ofExtended(FilterScribingTerminalMenu::new));
+
+    // ── Crafting materials ────────────────────────────────────────────────────────
+
+    public static final RegistrySupplier<Item> SILICON =
+            ITEMS.register("silicon",
+                    () -> new Item(new Item.Properties()
+                            .setId(itemKey("silicon"))));
+
+    public static final RegistrySupplier<Item> SILICON_WAFER =
+            ITEMS.register("silicon_wafer",
+                    () -> new Item(new Item.Properties()
+                            .setId(itemKey("silicon_wafer"))));
+
+    public static final RegistrySupplier<Item> BLANK_FILTER =
+            ITEMS.register("blank_filter",
+                    () -> new Item(new Item.Properties()
+                            .setId(itemKey("blank_filter"))));
+
+    public static final RegistrySupplier<ItemFilterItem> ITEM_FILTER =
+            ITEMS.register("item_filter",
+                    () -> new ItemFilterItem(new Item.Properties()
+                            .setId(itemKey("item_filter"))));
+
     // ── Creative tab ──────────────────────────────────────────────────────────────
 
     public static final RegistrySupplier<CreativeModeTab> CREATIVE_TAB =
@@ -605,6 +663,11 @@ public final class Registration {
                         output.accept(DRAMATIC_BUTTON_ITEM.get());
                         output.accept(RIMSHOT_BUTTON_ITEM.get());
                         output.accept(WILHELM_BUTTON_ITEM.get());
+                        output.accept(SILICON.get());
+                        output.accept(SILICON_WAFER.get());
+                        output.accept(BLANK_FILTER.get());
+                        output.accept(ITEM_FILTER.get());
+                        output.accept(FILTER_SCRIBING_TERMINAL_ITEM.get());
                     })
                     .build());
 

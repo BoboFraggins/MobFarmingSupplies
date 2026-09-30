@@ -23,5 +23,10 @@ public final class MGRNetwork {
                 SetInhibitorOffsetPacket.TYPE,
                 SetInhibitorOffsetPacket.STREAM_CODEC,
                 SetInhibitorOffsetPacket::handle);
+        NetworkManager.registerReceiver(
+                NetworkManager.c2s(),
+                SetScribingStatePacket.TYPE,
+                SetScribingStatePacket.STREAM_CODEC,
+                SetScribingStatePacket::handle);
     }
 }

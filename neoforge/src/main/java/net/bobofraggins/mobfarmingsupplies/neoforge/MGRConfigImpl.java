@@ -1,6 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.neoforge;
 
-import net.bobofraggins.mobfarmingsupplies.MGRServerConfig;
+import net.bobofraggins.mobfarmingsupplies.neoforge.MGRServerConfig;
 
 import java.util.List;
 

@@ -1,0 +1,359 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "particle": "mobfarmingsupplies:block/filter_scribing_terminal_texture",
+    "texture": "mobfarmingsupplies:block/filter_scribing_terminal_texture",
+    "screen": "mobfarmingsupplies:block/filter_scribing_terminal_screen_on"
+  },
+  "texture_size": [
+    16,
+    16
+  ],
+  "elements": [
+    {
+      "name": "foot",
+      "from": [
+        4,
+        0,
+        6
+      ],
+      "to": [
+        14,
+        2,
+        16
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            7.5,
+            7.0,
+            10.0,
+            7.5
+          ],
+          "texture": "#texture"
+        },
+        "east": {
+          "uv": [
+            7.5,
+            7.5,
+            10.0,
+            8.0
+          ],
+          "texture": "#texture"
+        },
+        "south": {
+          "uv": [
+            2.5,
+            7.75,
+            5.0,
+            8.25
+          ],
+          "texture": "#texture"
+        },
+        "west": {
+          "uv": [
+            8.0,
+            0.0,
+            10.5,
+            0.5
+          ],
+          "texture": "#texture"
+        },
+        "up": {
+          "uv": [
+            7.5,
+            8.25,
+            5.0,
+            5.75
+          ],
+          "texture": "#texture"
+        },
+        "down": {
+          "uv": [
+            2.5,
+            6.0,
+            0.0,
+            8.5
+          ],
+          "texture": "#texture"
+        }
+      }
+    },
+    {
+      "name": "body",
+      "from": [
+        4,
+        2,
+        5
+      ],
+      "to": [
+        14,
+        14,
+        16
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0.0,
+            3.0,
+            2.5,
+            6.0
+          ],
+          "texture": "#texture"
+        },
+        "east": {
+          "uv": [
+            0.0,
+            0.0,
+            2.75,
+            3.0
+          ],
+          "texture": "#texture"
+        },
+        "south": {
+          "uv": [
+            2.5,
+            3.0,
+            5.0,
+            6.0
+          ],
+          "texture": "#texture"
+        },
+        "west": {
+          "uv": [
+            2.75,
+            0.0,
+            5.5,
+            3.0
+          ],
+          "texture": "#texture"
+        },
+        "up": {
+          "uv": [
+            7.5,
+            5.75,
+            5.0,
+            3.0
+          ],
+          "texture": "#texture"
+        },
+        "down": {
+          "uv": [
+            8.0,
+            0.0,
+            5.5,
+            2.75
+          ],
+          "texture": "#texture"
+        }
+      }
+    },
+    {
+      "name": "screen",
+      "from": [
+        5,
+        6,
+        4.999
+      ],
+      "to": [
+        13,
+        13,
+        5.999
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0.0,
+            0.0,
+            16.0,
+            16.0
+          ],
+          "texture": "#screen"
+        },
+        "east": {
+          "uv": [
+            4.5,
+            6.0,
+            4.75,
+            7.75
+          ],
+          "texture": "#screen"
+        },
+        "south": {
+          "uv": [
+            7.5,
+            5.25,
+            9.5,
+            7.0
+          ],
+          "texture": "#screen"
+        },
+        "west": {
+          "uv": [
+            4.75,
+            6.0,
+            5.0,
+            7.75
+          ],
+          "texture": "#screen"
+        },
+        "up": {
+          "uv": [
+            7.5,
+            3.0,
+            5.5,
+            2.75
+          ],
+          "texture": "#screen"
+        },
+        "down": {
+          "uv": [
+            10.0,
+            1.0,
+            8.0,
+            1.25
+          ],
+          "texture": "#screen"
+        }
+      }
+    },
+    {
+      "name": "keyboard",
+      "from": [
+        3,
+        0,
+        0
+      ],
+      "to": [
+        15,
+        1,
+        5
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            8.0,
+            0.5,
+            11.0,
+            0.75
+          ],
+          "texture": "#texture"
+        },
+        "east": {
+          "uv": [
+            8.0,
+            1.25,
+            9.25,
+            1.5
+          ],
+          "texture": "#texture"
+        },
+        "south": {
+          "uv": [
+            8.0,
+            0.75,
+            11.0,
+            1.0
+          ],
+          "texture": "#texture"
+        },
+        "west": {
+          "uv": [
+            8.0,
+            1.5,
+            9.25,
+            1.75
+          ],
+          "texture": "#texture"
+        },
+        "up": {
+          "uv": [
+            10.5,
+            4.0,
+            7.5,
+            2.75
+          ],
+          "texture": "#texture"
+        },
+        "down": {
+          "uv": [
+            10.5,
+            4.0,
+            7.5,
+            5.25
+          ],
+          "texture": "#texture"
+        }
+      }
+    },
+    {
+      "name": "mouse",
+      "from": [
+        1,
+        0,
+        2
+      ],
+      "to": [
+        2,
+        1,
+        4
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            7.75,
+            8.0,
+            8.0,
+            8.25
+          ],
+          "texture": "#texture"
+        },
+        "east": {
+          "uv": [
+            8.0,
+            1.75,
+            8.5,
+            2.0
+          ],
+          "texture": "#texture"
+        },
+        "south": {
+          "uv": [
+            8.0,
+            8.0,
+            8.25,
+            8.25
+          ],
+          "texture": "#texture"
+        },
+        "west": {
+          "uv": [
+            8.0,
+            2.0,
+            8.5,
+            2.25
+          ],
+          "texture": "#texture"
+        },
+        "up": {
+          "uv": [
+            8.25,
+            2.75,
+            8.0,
+            2.25
+          ],
+          "texture": "#texture"
+        },
+        "down": {
+          "uv": [
+            7.75,
+            8.0,
+            7.5,
+            8.5
+          ],
+          "texture": "#texture"
+        }
+      }
+    }
+  ]
+}

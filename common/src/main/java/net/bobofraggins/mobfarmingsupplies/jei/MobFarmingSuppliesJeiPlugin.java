@@ -4,10 +4,12 @@ import java.util.List;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.helpers.IGuiHelper;
+import mezz.jei.api.registration.IGuiHandlerRegistration;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommon;
+import net.bobofraggins.mobfarmingsupplies.filterscribingterminal.FilterScribingTerminalScreen;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.minecraft.resources.Identifier;
 
@@ -42,6 +44,11 @@ public class MobFarmingSuppliesJeiPlugin implements IModPlugin {
     @Override
     public void registerRecipes(IRecipeRegistration reg) {
         reg.addRecipes(XpJuiceGuideCategory.RECIPE_TYPE, List.of(XpJuiceGuideRecipe.create()));
+    }
+
+    @Override
+    public void registerGuiHandlers(IGuiHandlerRegistration reg) {
+        reg.addGhostIngredientHandler(FilterScribingTerminalScreen.class, new FilterScribingTerminalGhostHandler());
     }
 
     @Override

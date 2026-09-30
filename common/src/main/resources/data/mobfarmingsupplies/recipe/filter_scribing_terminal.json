@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SSS",
+    "RGR",
+    "HHH"
+  ],
+  "key": {
+    "S": "minecraft:stone_slab",
+    "R": "#c:dusts/redstone",
+    "G": "#c:glass_blocks/colorless",
+    "H": "minecraft:hopper"
+  },
+  "result": {
+    "id": "mobfarmingsupplies:filter_scribing_terminal",
+    "count": 1
+  },
+  "category": "misc"
+}

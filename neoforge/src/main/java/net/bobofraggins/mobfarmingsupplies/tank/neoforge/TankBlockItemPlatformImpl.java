@@ -1,6 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.tank.neoforge;
 
-import net.bobofraggins.mobfarmingsupplies.tank.TankItemFluidHandler;
+import net.bobofraggins.mobfarmingsupplies.neoforge.tank.TankItemFluidHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
