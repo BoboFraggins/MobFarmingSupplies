@@ -3,7 +3,6 @@ package net.bobofraggins.mobfarmingsupplies.cloneomatic;
 import net.bobofraggins.mobfarmingsupplies.dna.IDnaSampleItem;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -70,9 +69,9 @@ public class CloneOMaticMenu extends AbstractContainerMenu {
 
     // ── Client-side constructor ──────────────────────────────────────────────────
 
-    public CloneOMaticMenu(int syncId, Inventory playerInv, FriendlyByteBuf buf) {
+    public CloneOMaticMenu(int syncId, Inventory playerInv, BlockPos pos) {
         super(Registration.CLONE_O_MATIC_MENU.get(), syncId);
-        this.pos = buf.readBlockPos();
+        this.pos = pos;
 
         @Nullable CloneOMaticBlockEntity be = null;
         var level = playerInv.player.level();

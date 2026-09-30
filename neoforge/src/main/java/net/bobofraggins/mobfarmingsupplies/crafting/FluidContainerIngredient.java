@@ -21,6 +21,7 @@ import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.item.VanillaContainerWrapper;
 
 import java.util.stream.Stream;
+import net.minecraft.core.registries.BuiltInRegistries;
 
 /**
  * A custom crafting ingredient that matches any item whose fluid capability
@@ -83,7 +84,7 @@ public class FluidContainerIngredient implements ICustomIngredient {
     @Override
     public Stream<Holder<Item>> items() {
         if (xpJuiceBucketHolder == null)
-            xpJuiceBucketHolder = MGRRegistryHelper.getItem("xp_juice_bucket").builtInRegistryHolder();
+            xpJuiceBucketHolder = BuiltInRegistries.ITEM.wrapAsHolder(MGRRegistryHelper.getItem("xp_juice_bucket"));
         return Stream.of(xpJuiceBucketHolder);
     }
 

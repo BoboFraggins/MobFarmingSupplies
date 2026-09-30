@@ -10,7 +10,6 @@ import mezz.jei.api.registration.IRecipeRegistration;
 import net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommon;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
 /**
@@ -53,11 +52,10 @@ public class MobFarmingSuppliesJeiPlugin implements IModPlugin {
 
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration reg) {
-        reg.addRecipeCatalyst(
-                Registration.EXPERIENCE_SYRINGE.get().getDefaultInstance(), XpJuiceGuideCategory.RECIPE_TYPE);
-        reg.addRecipeCatalyst(Registration.TANK_ITEM.get().getDefaultInstance(), XpJuiceGuideCategory.RECIPE_TYPE);
-        reg.addRecipeCatalyst(
-                Registration.XP_JUICE_BUCKET.get().getDefaultInstance(), XpJuiceGuideCategory.RECIPE_TYPE);
-        reg.addRecipeCatalyst(new ItemStack(Items.EXPERIENCE_BOTTLE), XpJuiceGuideCategory.RECIPE_TYPE);
+        reg.addCraftingStation(XpJuiceGuideCategory.RECIPE_TYPE,
+                Registration.EXPERIENCE_SYRINGE.get(),
+                Registration.TANK_ITEM.get(),
+                Registration.XP_JUICE_BUCKET.get(),
+                Items.EXPERIENCE_BOTTLE);
     }
 }

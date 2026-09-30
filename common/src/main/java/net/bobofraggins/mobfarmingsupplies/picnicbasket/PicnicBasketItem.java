@@ -1,6 +1,5 @@
 package net.bobofraggins.mobfarmingsupplies.picnicbasket;
 
-import dev.architectury.registry.menu.MenuRegistry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -17,6 +16,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 
 import java.util.function.Consumer;
+import net.bobofraggins.mobfarmingsupplies.shared.menu.ExtendedMenus;
+import java.util.Optional;
 
 /**
  * Block item for the Picnic Basket.
@@ -67,11 +68,10 @@ public class PicnicBasketItem extends BlockItem {
     private static void openItemMenu(ServerPlayer sp, InteractionHand hand) {
         PicnicBasketItemContainer container =
                 new PicnicBasketItemContainer(sp, new PicnicBasketLocator.Hand(hand));
-        MenuRegistry.openExtendedMenu(sp,
+        ExtendedMenus.open(sp,
                 new SimpleMenuProvider(
                         (syncId, inv, p) -> new PicnicBasketMenu(syncId, inv, container, null),
-                        Component.translatable("item.mobfarmingsupplies.picnic_basket")),
-                buf -> buf.writeBoolean(false));
+                        Component.translatable("item.mobfarmingsupplies.picnic_basket")), Optional.empty(), ExtendedMenus.OPTIONAL_POS);
     }
 
     private static void toggleAutoFeed(ServerPlayer sp, InteractionHand hand) {

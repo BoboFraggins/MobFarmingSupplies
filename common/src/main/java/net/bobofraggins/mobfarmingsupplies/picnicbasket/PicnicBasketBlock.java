@@ -1,6 +1,5 @@
 package net.bobofraggins.mobfarmingsupplies.picnicbasket;
 
-import dev.architectury.registry.menu.MenuRegistry;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -36,6 +35,8 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import net.bobofraggins.mobfarmingsupplies.shared.menu.ExtendedMenus;
+import java.util.Optional;
 
 /**
  * Picnic Basket — a portable 54-slot storage container that acts like a double chest,
@@ -116,10 +117,7 @@ public class PicnicBasketBlock extends BaseEntityBlock {
                             : "message.mobfarmingsupplies.picnic_basket.autofeed_off"));
                 } else {
                     be.startOpen(player);
-                    MenuRegistry.openExtendedMenu(sp, be, buf -> {
-                        buf.writeBoolean(true);
-                        buf.writeBlockPos(pos);
-                    });
+                    ExtendedMenus.open(sp, be, Optional.of(pos), ExtendedMenus.OPTIONAL_POS);
                 }
             }
         }

@@ -1,6 +1,5 @@
 package net.bobofraggins.mobfarmingsupplies.enderinhibitor;
 
-import dev.architectury.registry.menu.MenuRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -26,6 +25,7 @@ import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.bobofraggins.mobfarmingsupplies.shared.menu.ExtendedMenus;
 
 /**
  * An ender-teleport-suppression block that attaches to any face (floor, ceiling, walls).
@@ -182,7 +182,7 @@ public class EnderInhibitorBlock extends Block implements EntityBlock {
         if (!level.isClientSide()) {
             if (level.getBlockEntity(pos) instanceof EnderInhibitorBlockEntity be
                     && player instanceof ServerPlayer sp) {
-                MenuRegistry.openExtendedMenu(sp, be, buf -> buf.writeBlockPos(pos));
+                ExtendedMenus.openAt(sp, be, pos);
             }
         }
         return InteractionResult.SUCCESS;

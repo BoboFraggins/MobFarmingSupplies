@@ -2,7 +2,6 @@ package net.bobofraggins.mobfarmingsupplies.glamping.present;
 
 import net.bobofraggins.mobfarmingsupplies.register.MGRRegistryHelper;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -10,6 +9,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.Nullable;
+import net.minecraft.core.registries.BuiltInRegistries;
 
 public class PresentBlockEntity extends BlockEntity {
 
@@ -62,7 +62,7 @@ public class PresentBlockEntity extends BlockEntity {
         super.loadAdditional(input);
         wrappedEntityData = input.read(TAG_WRAPPED_ENTITY, CompoundTag.CODEC).orElse(null);
         wrappedState = input.read(TAG_WRAPPED_STATE, CompoundTag.CODEC)
-                .map(tag -> NbtUtils.readBlockState(input.lookup().lookupOrThrow(Registries.BLOCK), tag))
+                .map(tag -> NbtUtils.readBlockState(BuiltInRegistries.BLOCK, tag))
                 .orElse(null);
     }
 }

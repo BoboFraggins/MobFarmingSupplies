@@ -2,7 +2,6 @@ package net.bobofraggins.mobfarmingsupplies.fan;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import dev.architectury.registry.menu.MenuRegistry;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -29,6 +28,7 @@ import net.minecraft.world.phys.BlockHitResult;
 
 import java.util.List;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
+import net.bobofraggins.mobfarmingsupplies.shared.menu.ExtendedMenus;
 
 /**
  * The Fan block.
@@ -130,7 +130,7 @@ public class FanBlock extends DirectionalBlock implements EntityBlock {
         if (!level.isClientSide()) {
             if (level.getBlockEntity(pos) instanceof FanBlockEntity be
                     && player instanceof ServerPlayer sp) {
-                MenuRegistry.openExtendedMenu(sp, be, buf -> buf.writeBlockPos(pos));
+                ExtendedMenus.openAt(sp, be, pos);
             }
         }
         return InteractionResult.SUCCESS;

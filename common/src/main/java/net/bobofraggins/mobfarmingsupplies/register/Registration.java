@@ -75,6 +75,8 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
+import net.minecraft.core.BlockPos;
+import net.bobofraggins.mobfarmingsupplies.shared.menu.ExtendedMenus;
 
 public final class Registration {
 
@@ -241,7 +243,7 @@ public final class Registration {
                             .setId(itemKey("mob_harvester"))));
 
     public static final RegistrySupplier<MenuType<MobHarvesterMenu>> MOB_HARVESTER_MENU =
-            MENUS.register("mob_harvester", () -> MenuRegistry.ofExtended(MobHarvesterMenu::new));
+            MENUS.register("mob_harvester", () -> MenuRegistry.ofExtended(MobHarvesterMenu::new, BlockPos.STREAM_CODEC));
 
     public static final RegistrySupplier<BlockEntityType<MobHarvesterBlockEntity>> MOB_HARVESTER_BE_TYPE =
             BLOCK_ENTITIES.register("mob_harvester",
@@ -287,7 +289,7 @@ public final class Registration {
                             .setId(itemKey("clone_o_matic"))));
 
     public static final RegistrySupplier<MenuType<CloneOMaticMenu>> CLONE_O_MATIC_MENU =
-            MENUS.register("clone_o_matic", () -> MenuRegistry.ofExtended(CloneOMaticMenu::new));
+            MENUS.register("clone_o_matic", () -> MenuRegistry.ofExtended(CloneOMaticMenu::new, BlockPos.STREAM_CODEC));
 
     public static final RegistrySupplier<BlockEntityType<CloneOMaticBlockEntity>> CLONE_O_MATIC_BE_TYPE =
             BLOCK_ENTITIES.register("clone_o_matic",
@@ -310,7 +312,7 @@ public final class Registration {
                             .setId(itemKey("absorption_hopper"))));
 
     public static final RegistrySupplier<MenuType<AbsorptionHopperMenu>> ABSORPTION_HOPPER_MENU =
-            MENUS.register("absorption_hopper", () -> MenuRegistry.ofExtended(AbsorptionHopperMenu::new));
+            MENUS.register("absorption_hopper", () -> MenuRegistry.ofExtended(AbsorptionHopperMenu::new, BlockPos.STREAM_CODEC));
 
     public static final RegistrySupplier<BlockEntityType<AbsorptionHopperBlockEntity>> ABSORPTION_HOPPER_BE_TYPE =
             BLOCK_ENTITIES.register("absorption_hopper",
@@ -333,7 +335,7 @@ public final class Registration {
                             .setId(itemKey("ender_inhibitor"))));
 
     public static final RegistrySupplier<MenuType<EnderInhibitorMenu>> ENDER_INHIBITOR_MENU =
-            MENUS.register("ender_inhibitor", () -> MenuRegistry.ofExtended(EnderInhibitorMenu::new));
+            MENUS.register("ender_inhibitor", () -> MenuRegistry.ofExtended(EnderInhibitorMenu::new, BlockPos.STREAM_CODEC));
 
     public static final RegistrySupplier<BlockEntityType<EnderInhibitorBlockEntity>> ENDER_INHIBITOR_BE_TYPE =
             BLOCK_ENTITIES.register("ender_inhibitor",
@@ -356,7 +358,7 @@ public final class Registration {
                             .setId(itemKey("fan"))));
 
     public static final RegistrySupplier<MenuType<FanMenu>> FAN_MENU =
-            MENUS.register("fan", () -> MenuRegistry.ofExtended(FanMenu::new));
+            MENUS.register("fan", () -> MenuRegistry.ofExtended(FanMenu::new, BlockPos.STREAM_CODEC));
 
     public static final RegistrySupplier<BlockEntityType<FanBlockEntity>> FAN_BE_TYPE =
             BLOCK_ENTITIES.register("fan",
@@ -539,7 +541,7 @@ public final class Registration {
                     () -> BlockEntityTypePlatform.create(TankBlockEntity::new, TANK.get()));
 
     public static final RegistrySupplier<MenuType<TankMenu>> TANK_MENU =
-            MENUS.register("tank", () -> MenuRegistry.ofExtended(TankMenu::new));
+            MENUS.register("tank", () -> MenuRegistry.ofExtended(TankMenu::new, BlockPos.STREAM_CODEC));
 
     // ── Experience Syringe ────────────────────────────────────────────────────────
 
@@ -625,7 +627,7 @@ public final class Registration {
                             .stacksTo(1)));
 
     public static final RegistrySupplier<MenuType<PicnicBasketMenu>> PICNIC_BASKET_MENU =
-            MENUS.register("picnic_basket", () -> MenuRegistry.ofExtended(PicnicBasketMenu::new));
+            MENUS.register("picnic_basket", () -> MenuRegistry.ofExtended(PicnicBasketMenu::new, ExtendedMenus.OPTIONAL_POS));
 
     public static final RegistrySupplier<BlockEntityType<PicnicBasketBlockEntity>> PICNIC_BASKET_BE_TYPE =
             BLOCK_ENTITIES.register("picnic_basket",

@@ -27,9 +27,9 @@ public class EnderInhibitorMenu extends AbstractContainerMenu {
 
     // ── Client-side constructor (via FriendlyByteBuf / MenuRegistry.ofExtended) ──
 
-    public EnderInhibitorMenu(int syncId, Inventory playerInv, FriendlyByteBuf buf) {
+    public EnderInhibitorMenu(int syncId, Inventory playerInv, BlockPos pos) {
         super(Registration.ENDER_INHIBITOR_MENU.get(), syncId);
-        this.pos = buf.readBlockPos();
+        this.pos = pos;
     }
 
     public BlockPos getPos() { return pos; }

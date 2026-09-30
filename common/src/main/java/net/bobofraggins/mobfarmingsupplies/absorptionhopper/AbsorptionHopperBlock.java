@@ -11,7 +11,6 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 
 import java.util.List;
 import net.minecraft.world.InteractionResult;
-import dev.architectury.registry.menu.MenuRegistry;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -27,6 +26,7 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
 
 import org.jetbrains.annotations.Nullable;
+import net.bobofraggins.mobfarmingsupplies.shared.menu.ExtendedMenus;
 
 /**
  * Absorption Hopper — vacuums nearby item entities and XP orbs into internal storage,
@@ -106,7 +106,7 @@ public class AbsorptionHopperBlock extends BaseEntityBlock {
         if (!level.isClientSide()) {
             if (level.getBlockEntity(pos) instanceof AbsorptionHopperBlockEntity be
                     && player instanceof ServerPlayer sp) {
-                MenuRegistry.openExtendedMenu(sp, be, buf -> buf.writeBlockPos(pos));
+                ExtendedMenus.openAt(sp, be, pos);
             }
         }
         return InteractionResult.SUCCESS;

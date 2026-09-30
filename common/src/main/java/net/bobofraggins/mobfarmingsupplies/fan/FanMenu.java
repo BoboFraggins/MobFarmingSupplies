@@ -65,9 +65,9 @@ public class FanMenu extends AbstractContainerMenu {
 
     // ── Client-side constructor (via FriendlyByteBuf / MenuRegistry.ofExtended) ──
 
-    public FanMenu(int syncId, Inventory playerInv, FriendlyByteBuf buf) {
+    public FanMenu(int syncId, Inventory playerInv, BlockPos pos) {
         super(Registration.FAN_MENU.get(), syncId);
-        this.pos = buf.readBlockPos();
+        this.pos = pos;
 
         @Nullable FanBlockEntity be = null;
         var level = playerInv.player.level();

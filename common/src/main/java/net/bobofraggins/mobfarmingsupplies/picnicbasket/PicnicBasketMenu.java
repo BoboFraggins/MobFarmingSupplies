@@ -3,7 +3,6 @@ package net.bobofraggins.mobfarmingsupplies.picnicbasket;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -13,6 +12,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
 import org.jetbrains.annotations.Nullable;
+import java.util.Optional;
 
 /**
  * Container menu for the Picnic Basket. Works for both the block form (backed by the live
@@ -55,8 +55,8 @@ public class PicnicBasketMenu extends AbstractContainerMenu {
     }
 
     /** Client-side constructor (via {@link dev.architectury.registry.menu.MenuRegistry}). */
-    public PicnicBasketMenu(int syncId, Inventory playerInv, FriendlyByteBuf buf) {
-        this(syncId, playerInv, new SimpleContainer(SLOT_COUNT), buf.readBoolean() ? buf.readBlockPos() : null);
+    public PicnicBasketMenu(int syncId, Inventory playerInv, Optional<BlockPos> pos) {
+        this(syncId, playerInv, new SimpleContainer(SLOT_COUNT), pos.orElse(null));
     }
 
     private void addBasketSlots() {

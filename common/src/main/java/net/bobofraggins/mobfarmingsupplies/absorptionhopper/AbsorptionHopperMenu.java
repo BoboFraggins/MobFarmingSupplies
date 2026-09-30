@@ -68,9 +68,9 @@ public class AbsorptionHopperMenu extends AbstractContainerMenu {
 
     // ── Client-side constructor (via FriendlyByteBuf / MenuRegistry.ofExtended) ──
 
-    public AbsorptionHopperMenu(int syncId, Inventory playerInv, FriendlyByteBuf buf) {
+    public AbsorptionHopperMenu(int syncId, Inventory playerInv, BlockPos pos) {
         super(Registration.ABSORPTION_HOPPER_MENU.get(), syncId);
-        this.pos = buf.readBlockPos();
+        this.pos = pos;
         // On the client, read the BE from the local level for slot backing
         @Nullable
         AbsorptionHopperBlockEntity be = null;

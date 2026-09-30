@@ -1,7 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.network;
 
 import dev.architectury.networking.NetworkManager;
-import dev.architectury.registry.menu.MenuRegistry;
 import net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommon;
 import net.bobofraggins.mobfarmingsupplies.picnicbasket.PicnicBasketItemContainer;
 import net.bobofraggins.mobfarmingsupplies.picnicbasket.PicnicBasketItemUtils;
@@ -13,6 +12,8 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.SimpleMenuProvider;
+import net.bobofraggins.mobfarmingsupplies.shared.menu.ExtendedMenus;
+import java.util.Optional;
 
 /**
  * Client → server: open the item-form Picnic Basket UI for whichever basket the player is
@@ -43,11 +44,10 @@ public record OpenPicnicBasketPacket() implements CustomPacketPayload {
                 return;
             }
             PicnicBasketItemContainer container = new PicnicBasketItemContainer(player, locator);
-            MenuRegistry.openExtendedMenu(player,
+            ExtendedMenus.open(player,
                     new SimpleMenuProvider(
                             (syncId, inv, p) -> new PicnicBasketMenu(syncId, inv, container, null),
-                            Component.translatable("item.mobfarmingsupplies.picnic_basket")),
-                    buf -> buf.writeBoolean(false));
+                            Component.translatable("item.mobfarmingsupplies.picnic_basket")), Optional.empty(), ExtendedMenus.OPTIONAL_POS);
         });
     }
 }

@@ -1,6 +1,5 @@
 package net.bobofraggins.mobfarmingsupplies.tank;
 
-import dev.architectury.registry.menu.MenuRegistry;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
@@ -22,6 +21,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.bobofraggins.mobfarmingsupplies.shared.menu.ExtendedMenus;
 
 public class TankBlock extends BaseEntityBlock {
 
@@ -57,7 +57,7 @@ public class TankBlock extends BaseEntityBlock {
             BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
         if (!level.isClientSide() && level.getBlockEntity(pos) instanceof TankBlockEntity be
                 && player instanceof ServerPlayer sp) {
-            MenuRegistry.openExtendedMenu(sp, be, buf -> buf.writeBlockPos(pos));
+            ExtendedMenus.openAt(sp, be, pos);
         }
         return InteractionResult.SUCCESS;
     }

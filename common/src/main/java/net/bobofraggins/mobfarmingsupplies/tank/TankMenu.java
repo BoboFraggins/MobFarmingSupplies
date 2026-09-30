@@ -2,7 +2,6 @@ package net.bobofraggins.mobfarmingsupplies.tank;
 
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -74,8 +73,8 @@ public class TankMenu extends AbstractContainerMenu {
     }
 
     /** Client-side constructor — reads BlockPos from network buffer; creates a dummy transfer container. */
-    public TankMenu(int windowId, Inventory inv, FriendlyByteBuf buf) {
-        this(windowId, inv, buf.readBlockPos(), new SimpleContainer(2));
+    public TankMenu(int windowId, Inventory inv, BlockPos pos) {
+        this(windowId, inv, pos, new SimpleContainer(2));
     }
 
     public BlockPos getPos() { return pos; }

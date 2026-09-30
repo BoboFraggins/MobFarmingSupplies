@@ -24,6 +24,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.material.Fluid;
 
 import java.util.stream.Stream;
+import net.minecraft.core.registries.BuiltInRegistries;
 
 /**
  * Fabric equivalent of {@code FluidContainerIngredient} (NeoForge).
@@ -103,7 +104,7 @@ public class FabricFluidContainerIngredient implements CustomIngredient {
         if (storage == null) return false;
         for (StorageView<FluidVariant> view : storage.nonEmptyViews()) {
             FluidVariant variant = view.getResource();
-            if (variant.getFluid().builtInRegistryHolder().is(fluidTag)
+            if (BuiltInRegistries.FLUID.wrapAsHolder(variant.getFluid()).is(fluidTag)
                     && view.getAmount() >= (long) amount * DROPLETS_PER_MB) {
                 return true;
             }
@@ -115,7 +116,7 @@ public class FabricFluidContainerIngredient implements CustomIngredient {
     public Stream<Holder<Item>> items() {
         Item item = MGRRegistryHelper.getItem("xp_juice_bucket");
         if (item == null || item == Items.AIR) return Stream.empty();
-        return Stream.of(item.builtInRegistryHolder());
+        return Stream.of(BuiltInRegistries.ITEM.wrapAsHolder(item));
     }
 
     @Override

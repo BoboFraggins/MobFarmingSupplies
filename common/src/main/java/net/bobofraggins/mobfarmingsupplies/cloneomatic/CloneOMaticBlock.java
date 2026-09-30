@@ -5,7 +5,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.InteractionResult;
-import dev.architectury.registry.menu.MenuRegistry;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -24,6 +23,7 @@ import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.phys.BlockHitResult;
 
 import org.jetbrains.annotations.Nullable;
+import net.bobofraggins.mobfarmingsupplies.shared.menu.ExtendedMenus;
 
 /**
  * Clone-O-Matic block.
@@ -111,7 +111,7 @@ public class CloneOMaticBlock extends BaseEntityBlock {
         if (!level.isClientSide()) {
             if (level.getBlockEntity(pos) instanceof CloneOMaticBlockEntity be
                     && player instanceof ServerPlayer sp) {
-                MenuRegistry.openExtendedMenu(sp, be, buf -> buf.writeBlockPos(pos));
+                ExtendedMenus.openAt(sp, be, pos);
             }
         }
         return InteractionResult.SUCCESS;
