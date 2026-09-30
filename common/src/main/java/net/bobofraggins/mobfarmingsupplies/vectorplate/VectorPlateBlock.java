@@ -5,8 +5,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.InsideBlockEffectApplier;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -91,11 +89,11 @@ public class VectorPlateBlock extends HorizontalDirectionalBlock {
      *   <li>Applies {@link #PUSH_SPEED} in the {@link #FACING} direction.</li>
      *   <li>Nudges the entity toward the block centre on the perpendicular axis
      *       so entities stay in the lane rather than drifting to one side.</li>
-     *   <li>{@link Mob} entities are marked persistence-required so they do not
-     *       despawn while being transported.</li>
-     *   <li>{@link ItemEntity} entities are given unlimited lifetime so they
-     *       cannot expire mid-transport.</li>
      * </ul>
+     *
+     * <p>Transported mobs and items keep their normal despawn behaviour (an item expires
+     * after 5 minutes on the ground). Making them permanent let anything that never reached
+     * a harvester or collector pile up forever and lag the world.
      */
     @Override
     protected void entityInside(BlockState state, Level level, BlockPos pos, Entity entity,
@@ -123,15 +121,5 @@ public class VectorPlateBlock extends HorizontalDirectionalBlock {
 
         entity.setDeltaMovement(vx, motion.y, vz);
         entity.hurtMarked = true;
-
-        // Mobs on the plate must not despawn mid-transport
-        if (entity instanceof Mob mob) {
-            mob.setPersistenceRequired();
-        }
-
-        // Items on the plate must not expire mid-transport
-        if (entity instanceof ItemEntity ie) {
-            ie.setUnlimitedLifetime();
-        }
     }
 }

@@ -4,6 +4,7 @@
 
 * Fix bug where mob exclusion glass causes suffocation
 * Fix lighting of tank items
+* Fix mobs and item despawning when passing over vector plates
 
 ## 26.2.0.2
 
