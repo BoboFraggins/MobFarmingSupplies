@@ -3,6 +3,7 @@ package net.bobofraggins.mobfarmingsupplies.togglebutton;
 import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -111,10 +112,24 @@ public class ToggleButtonBlock extends FaceAttachedHorizontalDirectionalBlock {
 
     @Override
     protected int getDirectSignal(BlockState state, BlockGetter level, BlockPos pos, Direction direction) {
-        // Strong power only flows into the block this button is actually mounted on
-        // (matches vanilla ButtonBlock/LeverBlock), not always "down" — that was only
-        // correct back when this block was floor-only.
-        return state.getValue(POWERED) && direction == getConnectedDirection(state).getOpposite() ? 15 : 0;
+        // Strong power only flows into the block this button is mounted on (matches vanilla
+        // ButtonBlock/LeverBlock). `direction` points from the querying block toward this
+        // button, so for the support block it equals getConnectedDirection (e.g. UP for a
+        // floor button) — no getOpposite().
+        return state.getValue(POWERED) && direction == getConnectedDirection(state) ? 15 : 0;
+    }
+
+    @Override
+    protected void affectNeighborsAfterRemoval(BlockState state, ServerLevel level, BlockPos pos, boolean movedByPiston) {
+        // Breaking a powered button must de-power whatever it was driving.
+        if (!movedByPiston && state.getValue(POWERED)) {
+            updateNeighbours(state, level, pos);
+        }
+    }
+
+    private void updateNeighbours(BlockState state, Level level, BlockPos pos) {
+        level.updateNeighborsAt(pos, this);
+        level.updateNeighborsAt(pos.relative(getConnectedDirection(state).getOpposite()), this);
     }
 
     // ── Toggle ────────────────────────────────────────────────────────────────────
@@ -126,8 +141,7 @@ public class ToggleButtonBlock extends FaceAttachedHorizontalDirectionalBlock {
 
         boolean powered = !state.getValue(POWERED);
         level.setBlock(pos, state.setValue(POWERED, powered), Block.UPDATE_ALL);
-        level.updateNeighborsAt(pos, this);
-        level.updateNeighborsAt(pos.relative(getConnectedDirection(state).getOpposite()), this);
+        updateNeighbours(state, level, pos);
 
         if (powered) {
             level.playSound(null, pos, activationSound.get(), SoundSource.BLOCKS, 1.0f, 1.0f);

@@ -127,7 +127,7 @@ public class TankItemRenderer implements SpecialModelRenderer<TankContents> {
         final int ffrF = fr, ffgF = fg, ffbF = fb, ffaF = fa, flF = fluidLight, overlayF = packedOverlay;
         collector.submitCustomGeometry(poseStack, Sheets.translucentBlockItemSheet(),
                 (pose, vc) -> TankFluidGeometry.renderCubeFill(
-                        vc, pose.pose(), ffrF, ffgF, ffbF, ffaF, flF, overlayF, uL, vT, uR, vB, fillTop));
+                        vc, pose, ffrF, ffgF, ffbF, ffaF, flF, overlayF, uL, vT, uR, vB, fillTop));
     }
 
     public record Unbaked() implements SpecialModelRenderer.Unbaked<TankContents> {

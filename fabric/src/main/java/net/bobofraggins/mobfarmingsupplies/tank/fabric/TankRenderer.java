@@ -122,7 +122,7 @@ public class TankRenderer implements BlockEntityRenderer<TankBlockEntity, TankRe
                 poseStack,
                 Sheets.translucentBlockItemSheet(),
                 (pose, vc) -> TankFluidGeometry.renderCubeFill(
-                        vc, pose.pose(), r, g, b, a, light, overlay, uL, vT, uR, vB, fillTop));
+                        vc, pose, r, g, b, a, light, overlay, uL, vT, uR, vB, fillTop));
         poseStack.popPose();
     }
 }

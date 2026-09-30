@@ -421,6 +421,7 @@ public final class Registration {
                             .explosionResistance(Float.MAX_VALUE)
                             .sound(SoundType.GLASS)
                             .noOcclusion()
+                            .isSuffocating((s, r, p) -> false)
                             .isViewBlocking((s, r, p, aabb) -> false)));
 
     public static final RegistrySupplier<BlockItem> MOB_EXCLUSION_GLASS_ITEM =
