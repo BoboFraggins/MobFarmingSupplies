@@ -1,5 +1,10 @@
 # Mob Farming Supplies
 
+## 26.2.0.3
+
+* Fix bug where mob exclusion glass causes suffocation
+* Fix lighting of tank items
+
 ## 26.2.0.2
 
 * Add JEI information on XP Juice Bucket
