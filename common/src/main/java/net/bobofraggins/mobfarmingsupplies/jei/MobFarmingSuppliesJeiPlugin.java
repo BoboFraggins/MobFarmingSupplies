@@ -48,10 +48,9 @@ public class MobFarmingSuppliesJeiPlugin implements IModPlugin {
 
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration reg) {
-        reg.addRecipeCatalyst(
-                Registration.EXPERIENCE_SYRINGE.get().getDefaultInstance(), XpJuiceGuideCategory.RECIPE_TYPE);
-        reg.addRecipeCatalyst(Registration.TANK_ITEM.get().getDefaultInstance(), XpJuiceGuideCategory.RECIPE_TYPE);
-        reg.addRecipeCatalyst(
-                Registration.XP_JUICE_BUCKET.get().getDefaultInstance(), XpJuiceGuideCategory.RECIPE_TYPE);
+        reg.addCraftingStation(XpJuiceGuideCategory.RECIPE_TYPE,
+                Registration.EXPERIENCE_SYRINGE.get(),
+                Registration.TANK_ITEM.get(),
+                Registration.XP_JUICE_BUCKET.get());
     }
 }

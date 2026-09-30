@@ -22,7 +22,7 @@ final class AquaticFarmMobHelper {
     static void suppressSwimmingAI(Mob mob) {
         MobFarmAccessor acc = (MobFarmAccessor) mob;
 
-        acc.setMoveControl(new MoveControl(mob));
+        acc.setMoveControl(new MoveControl<>(mob));
 
         Set<WrappedGoal> goals = ((GoalSelectorAccessor) acc.getGoalSelectorDirect()).getAvailableGoals();
         goals.forEach(wg -> { if (wg.isRunning()) wg.stop(); });

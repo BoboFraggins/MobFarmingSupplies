@@ -5,7 +5,7 @@ import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
-import mezz.jei.api.recipe.RecipeType;
+import mezz.jei.api.recipe.types.IRecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommon;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
@@ -23,8 +23,8 @@ import net.minecraft.network.chat.Component;
  */
 public class XpJuiceGuideCategory implements IRecipeCategory<XpJuiceGuideRecipe> {
 
-    public static final RecipeType<XpJuiceGuideRecipe> RECIPE_TYPE =
-            RecipeType.create(MobFarmingSuppliesCommon.MODID, "xp_juice_guide", XpJuiceGuideRecipe.class);
+    public static final IRecipeType<XpJuiceGuideRecipe> RECIPE_TYPE =
+            IRecipeType.create(MobFarmingSuppliesCommon.MODID, "xp_juice_guide", XpJuiceGuideRecipe.class);
 
     private static final int SLOT_X = 4;
     private static final int[] SLOT_YS = {0, 24, 48};
@@ -39,7 +39,7 @@ public class XpJuiceGuideCategory implements IRecipeCategory<XpJuiceGuideRecipe>
     }
 
     @Override
-    public RecipeType<XpJuiceGuideRecipe> getRecipeType() {
+    public IRecipeType<XpJuiceGuideRecipe> getRecipeType() {
         return RECIPE_TYPE;
     }
 
@@ -69,7 +69,7 @@ public class XpJuiceGuideCategory implements IRecipeCategory<XpJuiceGuideRecipe>
         for (int i = 0; i < steps.size(); i++) {
             var step = steps.get(i);
             builder.addSlot(step.role(), SLOT_X, SLOT_YS[i])
-                    .addItemStack(step.stack())
+                    .add(step.stack())
                     .addRichTooltipCallback((slotView, tooltip) -> tooltip.add(step.tooltip()));
         }
     }

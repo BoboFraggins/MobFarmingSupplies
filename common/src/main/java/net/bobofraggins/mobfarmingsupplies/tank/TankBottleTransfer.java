@@ -13,6 +13,7 @@ import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import org.jetbrains.annotations.Nullable;
+import net.minecraft.core.registries.BuiltInRegistries;
 
 /**
  * Glass bottle / water bottle / bottle o' enchanting transfer logic for the Tank, shared by
@@ -60,7 +61,7 @@ public final class TankBottleTransfer {
                     be.extract(BOTTLE_MB, false);
                     return PotionContents.createItemStack(Items.POTION, Potions.WATER);
                 }
-                if (simulated.getFluid().builtInRegistryHolder().is(EXPERIENCE_TAG)) {
+                if (BuiltInRegistries.FLUID.wrapAsHolder(simulated.getFluid()).is(EXPERIENCE_TAG)) {
                     be.extract(BOTTLE_MB, false);
                     return new ItemStack(Items.EXPERIENCE_BOTTLE);
                 }
@@ -91,7 +92,7 @@ public final class TankBottleTransfer {
             Fluid target;
             if (locked.isEmpty()) {
                 target = Registration.XP_JUICE_SOURCE.get();
-            } else if (locked.getFluid().builtInRegistryHolder().is(EXPERIENCE_TAG)) {
+            } else if (BuiltInRegistries.FLUID.wrapAsHolder(locked.getFluid()).is(EXPERIENCE_TAG)) {
                 target = locked.getFluid();
             } else {
                 return null;

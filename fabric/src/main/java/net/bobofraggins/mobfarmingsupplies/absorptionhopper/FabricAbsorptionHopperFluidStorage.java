@@ -10,6 +10,7 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 
 import java.util.Collections;
 import java.util.Iterator;
+import net.minecraft.core.registries.BuiltInRegistries;
 
 /**
  * Fabric {@link Storage}{@code <FluidVariant>} backed by an {@link AbsorptionHopperBlockEntity}.
@@ -68,7 +69,7 @@ public final class FabricAbsorptionHopperFluidStorage
     @Override
     public long insert(FluidVariant resource, long maxAmount, TransactionContext transaction) {
         if (resource.isBlank() || maxAmount <= 0) return 0;
-        if (!resource.getFluid().is(Registration.TAG_EXPERIENCE_FLUID)) return 0;
+        if (!BuiltInRegistries.FLUID.wrapAsHolder(resource.getFluid()).is(Registration.TAG_EXPERIENCE_FLUID)) return 0;
 
         FluidStack incoming = FluidStack.create(resource.getFluid(), 1, resource.getComponentsPatch());
         if (!be.tankFluid.isEmpty()

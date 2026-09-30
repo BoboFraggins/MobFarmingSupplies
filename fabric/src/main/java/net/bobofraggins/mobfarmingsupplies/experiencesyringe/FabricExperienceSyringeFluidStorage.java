@@ -11,6 +11,7 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.Collections;
 import java.util.Iterator;
+import net.minecraft.core.registries.BuiltInRegistries;
 
 /**
  * Fabric {@link Storage}{@code <FluidVariant>} for the Experience Syringe item.
@@ -65,7 +66,7 @@ public final class FabricExperienceSyringeFluidStorage implements Storage<FluidV
     @Override
     public long insert(FluidVariant resource, long maxAmount, TransactionContext transaction) {
         if (resource.isBlank() || maxAmount <= 0) return 0;
-        if (!resource.getFluid().is(Registration.TAG_EXPERIENCE_FLUID)) return 0;
+        if (!BuiltInRegistries.FLUID.wrapAsHolder(resource.getFluid()).is(Registration.TAG_EXPERIENCE_FLUID)) return 0;
 
         int stored = storedXp();
         long capacityDroplets = (long) ExperienceSyringeItem.xpToMb(ExperienceSyringeItem.CAPACITY) * DROPLETS_PER_MB;
@@ -81,7 +82,7 @@ public final class FabricExperienceSyringeFluidStorage implements Storage<FluidV
     @Override
     public long extract(FluidVariant resource, long maxAmount, TransactionContext transaction) {
         if (resource.isBlank() || maxAmount <= 0) return 0;
-        if (!resource.getFluid().is(Registration.TAG_EXPERIENCE_FLUID)) return 0;
+        if (!BuiltInRegistries.FLUID.wrapAsHolder(resource.getFluid()).is(Registration.TAG_EXPERIENCE_FLUID)) return 0;
 
         int stored = storedXp();
         if (stored <= 0) return 0;
