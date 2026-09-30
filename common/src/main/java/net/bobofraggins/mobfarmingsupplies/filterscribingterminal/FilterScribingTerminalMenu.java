@@ -183,6 +183,12 @@ public class FilterScribingTerminalMenu extends AbstractContainerMenu {
         }
     }
 
+    /** Double-click "collect all" must not take (and so scribe) the output preview — as CraftingMenu does. */
+    @Override
+    public boolean canTakeItemForPickAll(ItemStack stack, Slot slot) {
+        return slot.container != result && super.canTakeItemForPickAll(stack, slot);
+    }
+
     // ── Shift-click ───────────────────────────────────────────────────────────────
 
     @Override

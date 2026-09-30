@@ -28,5 +28,10 @@ public final class MGRNetwork {
                 SetScribingStatePacket.TYPE,
                 SetScribingStatePacket.STREAM_CODEC,
                 SetScribingStatePacket::handle);
+        NetworkManager.registerReceiver(
+                NetworkManager.c2s(),
+                SetSorterConfigPacket.TYPE,
+                SetSorterConfigPacket.STREAM_CODEC,
+                SetSorterConfigPacket::handle);
     }
 }

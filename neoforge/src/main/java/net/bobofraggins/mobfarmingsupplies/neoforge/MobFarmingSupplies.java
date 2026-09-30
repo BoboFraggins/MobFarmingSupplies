@@ -7,6 +7,7 @@ import net.bobofraggins.mobfarmingsupplies.client.model.neoforge.ExtraBlockModel
 import net.bobofraggins.mobfarmingsupplies.neoforge.cloneomatic.CloneOMaticClientEvents;
 import net.bobofraggins.mobfarmingsupplies.neoforge.enderinhibitor.EnderInhibitorClientEvents;
 import net.bobofraggins.mobfarmingsupplies.neoforge.filterscribingterminal.FilterScribingTerminalClientEvents;
+import net.bobofraggins.mobfarmingsupplies.neoforge.logisticsorter.LogisticSorterClientEvents;
 import net.bobofraggins.mobfarmingsupplies.neoforge.enderinhibitor.NeoForgeEnderInhibitorEvents;
 import net.bobofraggins.mobfarmingsupplies.neoforge.fan.FanClientEvents;
 import net.bobofraggins.mobfarmingsupplies.neoforge.mobharvester.BeheadingDropHandler;
@@ -42,6 +43,7 @@ public class MobFarmingSupplies {
             // NeoForge-specific client events (renderers, standalone models, NeoForge fluid rendering, etc.)
             modEventBus.register(EnderInhibitorClientEvents.class);
             modEventBus.register(FilterScribingTerminalClientEvents.class);
+            modEventBus.register(LogisticSorterClientEvents.class);
             modEventBus.register(TankClientEvents.class);
             modEventBus.register(XpJuiceClientEvents.class);
             modEventBus.register(AbsorptionHopperClientEvents.class);

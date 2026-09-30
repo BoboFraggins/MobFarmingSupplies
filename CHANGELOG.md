@@ -5,7 +5,7 @@
 * Added Silicon and Silicon Wafers
 * Added Blank Filters and Item Filters
 * Added Filter Scribing Terminal
-* 
+* Added Logistic Sorter
 
 ## 26.1.2.5
 

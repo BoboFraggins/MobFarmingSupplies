@@ -12,6 +12,7 @@ import net.bobofraggins.mobfarmingsupplies.fan.FanBlockEntityRenderer;
 import net.bobofraggins.mobfarmingsupplies.mobharvester.MobHarvesterRenderer;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.bobofraggins.mobfarmingsupplies.tank.fabric.TankItemRenderer;
+import net.bobofraggins.mobfarmingsupplies.logisticsorter.LogisticSorterItemRenderer;
 import net.bobofraggins.mobfarmingsupplies.tank.fabric.TankRenderer;
 import net.fabricmc.api.ClientModInitializer;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
@@ -44,7 +45,8 @@ public class MobFarmingSuppliesFabricClient implements ClientModInitializer {
     }
 
     /**
-     * Registers {@code mobfarmingsupplies:tank_renderer} (referenced by {@code items/tank.json})
+     * Registers {@code mobfarmingsupplies:tank_renderer} and {@code logistic_sorter_renderer} (referenced by
+     * {@code items/tank.json} and {@code items/logistic_sorter.json})
      * against vanilla's {@code SpecialModelRenderers.ID_MAPPER}.
      *
      * <p>NeoForge has {@code RegisterSpecialModelRendererEvent} for this; Fabric has no
@@ -63,8 +65,11 @@ public class MobFarmingSuppliesFabricClient implements ClientModInitializer {
             idMapper.put(
                     Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "tank_renderer"),
                     TankItemRenderer.Unbaked.MAP_CODEC);
+            idMapper.put(
+                    Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "logistic_sorter_renderer"),
+                    LogisticSorterItemRenderer.Unbaked.MAP_CODEC);
         } catch (ReflectiveOperationException e) {
-            throw new RuntimeException("Failed to register mobfarmingsupplies:tank_renderer special model renderer", e);
+            throw new RuntimeException("Failed to register mobfarmingsupplies special model renderers", e);
         }
     }
 }

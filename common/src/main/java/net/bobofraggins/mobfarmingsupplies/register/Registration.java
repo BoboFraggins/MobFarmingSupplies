@@ -23,6 +23,9 @@ import net.bobofraggins.mobfarmingsupplies.filterscribingterminal.FilterScribing
 import net.bobofraggins.mobfarmingsupplies.filterscribingterminal.FilterScribingTerminalBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.filterscribingterminal.FilterScribingTerminalMenu;
 import net.bobofraggins.mobfarmingsupplies.itemfilter.ItemFilterData;
+import net.bobofraggins.mobfarmingsupplies.logisticsorter.LogisticSorterBlock;
+import net.bobofraggins.mobfarmingsupplies.logisticsorter.LogisticSorterBlockEntity;
+import net.bobofraggins.mobfarmingsupplies.logisticsorter.LogisticSorterMenu;
 import net.bobofraggins.mobfarmingsupplies.itemfilter.ItemFilterItem;
 import net.bobofraggins.mobfarmingsupplies.experiencesyringe.ExperienceSyringeItem;
 import net.bobofraggins.mobfarmingsupplies.fan.FanBlock;
@@ -595,6 +598,28 @@ public final class Registration {
             MENUS.register("filter_scribing_terminal",
                     () -> MenuRegistry.ofExtended(FilterScribingTerminalMenu::new));
 
+    // ── Logistic Sorter ───────────────────────────────────────────────────────────
+
+    public static final RegistrySupplier<LogisticSorterBlock> LOGISTIC_SORTER =
+            BLOCKS.register("logistic_sorter",
+                    () -> new LogisticSorterBlock(BlockBehaviour.Properties.of()
+                            .setId(blockKey("logistic_sorter"))
+                            .strength(3.5f)
+                            .sound(SoundType.METAL)
+                            .noOcclusion()));
+
+    public static final RegistrySupplier<BlockItem> LOGISTIC_SORTER_ITEM =
+            ITEMS.register("logistic_sorter",
+                    () -> new BlockItem(LOGISTIC_SORTER.get(), new Item.Properties()
+                            .setId(itemKey("logistic_sorter"))));
+
+    public static final RegistrySupplier<BlockEntityType<LogisticSorterBlockEntity>> LOGISTIC_SORTER_BE_TYPE =
+            BLOCK_ENTITIES.register("logistic_sorter",
+                    () -> BlockEntityTypePlatform.create(LogisticSorterBlockEntity::new, LOGISTIC_SORTER.get()));
+
+    public static final RegistrySupplier<MenuType<LogisticSorterMenu>> LOGISTIC_SORTER_MENU =
+            MENUS.register("logistic_sorter", () -> MenuRegistry.ofExtended(LogisticSorterMenu::new));
+
     // ── Crafting materials ────────────────────────────────────────────────────────
 
     public static final RegistrySupplier<Item> SILICON =
@@ -666,8 +691,8 @@ public final class Registration {
                         output.accept(SILICON.get());
                         output.accept(SILICON_WAFER.get());
                         output.accept(BLANK_FILTER.get());
-                        output.accept(ITEM_FILTER.get());
                         output.accept(FILTER_SCRIBING_TERMINAL_ITEM.get());
+                        output.accept(LOGISTIC_SORTER_ITEM.get());
                     })
                     .build());
 

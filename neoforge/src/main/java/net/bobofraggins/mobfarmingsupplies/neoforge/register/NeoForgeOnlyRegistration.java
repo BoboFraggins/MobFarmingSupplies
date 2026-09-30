@@ -16,6 +16,8 @@ import net.minecraft.sounds.SoundEvents;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.bobofraggins.mobfarmingsupplies.logisticsorter.SideMode;
+import net.bobofraggins.mobfarmingsupplies.logisticsorter.neoforge.LogisticSorterItemHandler;
 import net.neoforged.neoforge.common.SoundActions;
 import net.neoforged.neoforge.common.crafting.IngredientType;
 import net.neoforged.neoforge.common.loot.IGlobalLootModifier;
@@ -145,5 +147,12 @@ public final class NeoForgeOnlyRegistration {
                 Capabilities.Fluid.BLOCK,
                 Registration.ABSORPTION_HOPPER_BE_TYPE.get(),
                 (be, side) -> new AbsorptionHopperFluidHandler(be));
+
+        // Logistic Sorter: insert-only, and only on INPUT sides.
+        event.registerBlockEntity(
+                Capabilities.Item.BLOCK,
+                Registration.LOGISTIC_SORTER_BE_TYPE.get(),
+                (be, side) -> side != null && be.getSide(side) == SideMode.INPUT
+                        ? new LogisticSorterItemHandler(be) : null);
     }
 }
