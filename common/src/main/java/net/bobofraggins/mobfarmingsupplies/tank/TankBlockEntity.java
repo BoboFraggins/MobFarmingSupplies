@@ -186,7 +186,7 @@ public class TankBlockEntity extends BlockEntity implements MenuProvider {
     // ── Notifications ──────────────────────────────────────────────────────────
 
     /** Called after fluid mutations — saves and syncs to clients. */
-    void notifyFluidChanged() {
+    public void notifyFluidChanged() {
         super.setChanged();
         if (level != null) {
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);

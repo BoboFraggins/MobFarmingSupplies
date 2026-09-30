@@ -1,6 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.xpjuice.neoforge;
 
-import net.bobofraggins.mobfarmingsupplies.xpjuice.XpJuiceFluid;
+import net.bobofraggins.mobfarmingsupplies.neoforge.xpjuice.XpJuiceFluid;
 import net.minecraft.world.level.material.FlowingFluid;
 
 /** NeoForge implementation of {@link net.bobofraggins.mobfarmingsupplies.xpjuice.XpJuicePlatformHelper}. */

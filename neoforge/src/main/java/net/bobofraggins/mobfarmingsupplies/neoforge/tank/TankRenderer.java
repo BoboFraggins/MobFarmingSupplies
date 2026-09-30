@@ -1,11 +1,7 @@
-package net.bobofraggins.mobfarmingsupplies.tank.fabric;
+package net.bobofraggins.mobfarmingsupplies.neoforge.tank;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import dev.architectury.fluid.FluidStack;
-import dev.architectury.hooks.fluid.fabric.FluidStackHooksFabric;
-import net.bobofraggins.mobfarmingsupplies.tank.TankBlockEntity;
-import net.bobofraggins.mobfarmingsupplies.tank.TankFluidGeometry;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
@@ -17,20 +13,25 @@ import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
+import dev.architectury.fluid.FluidStack;
+import dev.architectury.hooks.fluid.forge.FluidStackHooksForge;
+import net.neoforged.neoforge.client.extensions.IBlockEntityRendererExtension;
+import net.bobofraggins.mobfarmingsupplies.tank.TankBlockEntity;
+import net.bobofraggins.mobfarmingsupplies.tank.TankFluidGeometry;
 
 /**
- * Fabric port of the NeoForge {@code TankRenderer}.
+ * Block-entity special renderer for the Tank.
  *
- * <p>Renders the stored fluid as a translucent coloured cube that grows with the fill level,
- * using the shared {@link TankFluidGeometry} helper. Mirrors
- * {@code net.bobofraggins.mobfarmingsupplies.neoforge.tank.TankRenderer} (NeoForge), but obtains the
- * fluid tint and light level via Fabric-safe APIs (no {@code FluidStackHooksForge}).
+ * <p>Renders the stored fluid as a translucent coloured cube that grows with the fill level.
+ * The block model provides the glass frame; this renderer draws only the fluid fill.
  */
-@SuppressWarnings("UnstableApiUsage")
-public class TankRenderer implements BlockEntityRenderer<TankBlockEntity, TankRenderer.TankState> {
+public class TankRenderer
+        implements BlockEntityRenderer<TankBlockEntity, TankRenderer.TankState>,
+                   IBlockEntityRendererExtension<TankBlockEntity> {
 
-    private static final float FLOOR = TankFluidGeometry.FLOOR;
-    private static final float H = TankFluidGeometry.H;
+    /** Floor and ceiling of the renderable interior, in block units. */
+    static final float FLOOR = TankFluidGeometry.FLOOR;
+    static final float H     = TankFluidGeometry.H;
 
     public TankRenderer(BlockEntityRendererProvider.Context ctx) {}
 
@@ -72,8 +73,8 @@ public class TankRenderer implements BlockEntityRenderer<TankBlockEntity, TankRe
                 .get(fluid.getFluid().defaultFluidState());
         var sprite = fluidModel.stillMaterial().sprite();
 
-        int tint = fluidModel.tintSource() != null
-                ? fluidModel.tintSource().color(fluid.getFluid().defaultFluidState().createLegacyBlock())
+        int tint = fluidModel.fluidTintSource() != null
+                ? fluidModel.fluidTintSource().colorAsStack(FluidStackHooksForge.toForge(fluid.copyWithAmount(1)))
                 : 0xFFFFFFFF;
         state.fr = (tint >> 16) & 0xFF;
         state.fg = (tint >>  8) & 0xFF;
@@ -81,9 +82,9 @@ public class TankRenderer implements BlockEntityRenderer<TankBlockEntity, TankRe
         state.fa = (tint >> 24) & 0xFF;
         if (state.fa == 0) state.fa = 77; // default semi-transparency for fluids without alpha
 
-        int luminance = FluidVariantAttributes.getLuminance(FluidStackHooksFabric.toFabric(fluid.copyWithAmount(1)));
-        state.fluidLight = luminance > 0 ? 0xF000F0 : state.lightCoords;
-
+        // getFluidType() is NeoForge-specific; convert via FluidStackHooksForge
+        state.fluidLight = FluidStackHooksForge.toForge(fluid.copyWithAmount(1))
+                .getFluidType().getLightLevel() > 0 ? 0xF000F0 : state.lightCoords;
         state.uL = sprite.getU0();
         state.uR = sprite.getU1();
         state.vT = sprite.getV0();
@@ -109,8 +110,24 @@ public class TankRenderer implements BlockEntityRenderer<TankBlockEntity, TankRe
         collector.submitCustomGeometry(
                 poseStack,
                 Sheets.translucentBlockSheet(),
-                (pose, vc) -> TankFluidGeometry.renderCubeFill(
+                (pose, vc) -> renderCubeFill(
                         vc, pose, r, g, b, a, light, overlay, uL, vT, uR, vB, fillTop));
         poseStack.popPose();
+    }
+
+    // ── Geometry ───────────────────────────────────────────────────────────────
+
+    /**
+     * Emits a five-faced translucent cube (no bottom) representing the fluid fill level.
+     * The cube spans from {@link #FLOOR} on all sides to {@code fillTop} on the Y axis.
+     */
+    public static void renderCubeFill(
+            VertexConsumer vc,
+            PoseStack.Pose pose,
+            int r, int g, int b, int a,
+            int light, int overlay,
+            float uL, float vT, float uR, float vB,
+            float fillTop) {
+        TankFluidGeometry.renderCubeFill(vc, pose, r, g, b, a, light, overlay, uL, vT, uR, vB, fillTop);
     }
 }
