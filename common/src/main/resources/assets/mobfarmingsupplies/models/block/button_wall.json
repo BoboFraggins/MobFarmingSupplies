@@ -1,0 +1,46 @@
+{
+  "format_version": "1.21.11",
+  "credit": "Made with Blockbench",
+  "parent": "minecraft:block/block",
+  "texture_size": [32, 32],
+  "textures": {
+    "0": "mobfarmingsupplies:block/button_texture",
+    "particle": "mobfarmingsupplies:block/button_texture"
+  },
+  "elements": [
+    {
+      "name": "base",
+      "from": [3, 3, 14],
+      "to": [13, 13, 16],
+      "faces": {
+        "north": {"uv": [5, 5, 0, 0], "texture": "#0"},
+        "south": {"uv": [5, 5, 0, 10], "texture": "#0"},
+        "up": {"uv": [8, 0, 13, 1], "texture": "#0"},
+        "down": {"uv": [5, 6, 10, 7], "texture": "#0"},
+        "east": {"uv": [5, 7, 10, 8], "texture": "#0"},
+        "west": {"uv": [8, 1, 13, 2], "texture": "#0"}
+      }
+    },
+    {
+      "from": [5, 5, 11],
+      "to": [11, 11, 14],
+      "faces": {
+        "north": {"uv": [8, 3, 5, 0], "texture": "#0"},
+        "south": {"uv": [8, 3, 5, 6], "texture": "#0"},
+        "up": {"uv": [5, 8, 8, 9.5], "texture": "#0"},
+        "down": {"uv": [8, 2, 11, 3.5], "texture": "#0"},
+        "east": {"uv": [8, 3.5, 11, 5], "texture": "#0"},
+        "west": {"uv": [8, 8, 11, 9.5], "texture": "#0"}
+      }
+    }
+  ],
+  "groups": [
+    {
+      "name": "root",
+      "origin": [8, 8, 8],
+      "scope": 0,
+      "color": 0,
+      "children": [0, 1]
+    }
+  ]
+}
