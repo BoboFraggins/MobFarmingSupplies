@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.client.Minecraft;
 
 /**
  * Screen for the Filter Scribing Terminal.
@@ -39,7 +40,7 @@ public class FilterScribingTerminalScreen extends AbstractContainerScreen<Filter
     public FilterScribingTerminalScreen(FilterScribingTerminalMenu menu, Inventory inv, Component title) {
         ScribingControlsPane c = new ScribingControlsPane(
                 menu::getCarried,
-                item -> ItemMatchers.forItem(item).stream().map(ItemMatcher::listLabel).toList(),
+                item -> ItemMatchers.forItem(item, Minecraft.getInstance().level.registryAccess()).stream().map(ItemMatcher::listLabel).toList(),
                 pane -> NetworkManager.sendToServer(new SetScribingStatePacket(
                         menu.containerId, pane.getGhostItem(), pane.isNot(), pane.getSelectedRow())));
         Dialog d = new Dialog(c, new PlayerInventoryPane(FilterScribingTerminalMenu.INV_START_X));
@@ -122,7 +123,8 @@ public class FilterScribingTerminalScreen extends AbstractContainerScreen<Filter
 
     // ── Drawing helpers ───────────────────────────────────────────────────────────
 
-    private static void drawSlot(GuiGraphicsExtractor g, int sx, int sy) {
+    /** Draws a terminal slot frame; also used by the JEI Filter Scribing recipe view. */
+    public static void drawSlot(GuiGraphicsExtractor g, int sx, int sy) {
         g.fill(sx,      sy,      sx + 16, sy + 1,  0xFF373737); // top
         g.fill(sx,      sy + 1,  sx + 1,  sy + 16, 0xFF373737); // left
         g.fill(sx,      sy + 16, sx + 17, sy + 17, 0xFFFFFFFF); // bottom

@@ -70,6 +70,9 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
+import net.bobofraggins.mobfarmingsupplies.crushing.AnvilCrushingRecipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
 
 public final class Registration {
 
@@ -116,6 +119,26 @@ public final class Registration {
 
     public static final DeferredRegister<SoundEvent> SOUND_EVENTS =
             DeferredRegister.create(MobFarmingSuppliesCommon.MODID, Registries.SOUND_EVENT);
+
+    public static final DeferredRegister<RecipeType<?>> RECIPE_TYPES =
+            DeferredRegister.create(MobFarmingSuppliesCommon.MODID, Registries.RECIPE_TYPE);
+
+    public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS =
+            DeferredRegister.create(MobFarmingSuppliesCommon.MODID, Registries.RECIPE_SERIALIZER);
+
+    // ── Recipes ──────────────────────────────────────────────────────────────────
+
+    public static final RegistrySupplier<RecipeType<AnvilCrushingRecipe>> ANVIL_CRUSHING_TYPE =
+            RECIPE_TYPES.register("anvil_crushing", () -> new RecipeType<AnvilCrushingRecipe>() {
+                @Override
+                public String toString() {
+                    return MobFarmingSuppliesCommon.MODID + ":anvil_crushing";
+                }
+            });
+
+    public static final RegistrySupplier<RecipeSerializer<AnvilCrushingRecipe>> ANVIL_CRUSHING_SERIALIZER =
+            RECIPE_SERIALIZERS.register("anvil_crushing",
+                    () -> new RecipeSerializer<>(AnvilCrushingRecipe.MAP_CODEC, AnvilCrushingRecipe.STREAM_CODEC));
 
     // ── Sound events ─────────────────────────────────────────────────────────────
 
@@ -627,6 +650,11 @@ public final class Registration {
                     () -> new Item(new Item.Properties()
                             .setId(itemKey("silicon"))));
 
+    public static final RegistrySupplier<Item> SILICON_CLUMP =
+            ITEMS.register("silicon_clump",
+                    () -> new Item(new Item.Properties()
+                            .setId(itemKey("silicon_clump"))));
+
     public static final RegistrySupplier<Item> SILICON_WAFER =
             ITEMS.register("silicon_wafer",
                     () -> new Item(new Item.Properties()
@@ -688,6 +716,7 @@ public final class Registration {
                         output.accept(DRAMATIC_BUTTON_ITEM.get());
                         output.accept(RIMSHOT_BUTTON_ITEM.get());
                         output.accept(WILHELM_BUTTON_ITEM.get());
+                        output.accept(SILICON_CLUMP.get());
                         output.accept(SILICON.get());
                         output.accept(SILICON_WAFER.get());
                         output.accept(BLANK_FILTER.get());
@@ -713,5 +742,7 @@ public final class Registration {
         DATA_COMPONENTS.register();
         CREATIVE_TABS.register();
         SOUND_EVENTS.register();
+        RECIPE_TYPES.register();
+        RECIPE_SERIALIZERS.register();
     }
 }

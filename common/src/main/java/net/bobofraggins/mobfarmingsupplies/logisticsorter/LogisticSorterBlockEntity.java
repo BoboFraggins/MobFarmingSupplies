@@ -131,7 +131,7 @@ public class LogisticSorterBlockEntity extends BlockEntity implements MenuProvid
     // ── Routing ───────────────────────────────────────────────────────────────────
 
     public boolean matches(ItemStack stack) {
-        return SorterFilters.matches(filters, andMode, stack);
+        return SorterFilters.matches(filters, andMode, stack, level != null ? level.registryAccess() : null);
     }
 
     /**

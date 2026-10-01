@@ -16,7 +16,9 @@ import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
-import java.util.function.Predicate;
+import java.util.function.BiPredicate;
+import net.minecraft.core.HolderLookup;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * One matching criterion an Item Filter can hold.
@@ -48,25 +50,33 @@ public record ItemMatcher(Kind kind, ItemStack item, String key) {
         }
     }
 
-    /** Criteria that aren't expressed as tags. */
+    /**
+     * Criteria that aren't expressed as tags. Checks receive the world's registries (may be null
+     * if unavailable, in which case registry-based checks don't match).
+     */
     public enum Property {
-        WEAPON("weapon", s -> s.is(MELEE_WEAPONS) || s.is(RANGED_WEAPONS)),
-        ENCHANTABLE("enchantable", s -> s.has(DataComponents.ENCHANTABLE)),
-        ENCHANTED("enchanted", s -> s.isEnchanted() || s.has(DataComponents.STORED_ENCHANTMENTS)),
-        DAMAGEABLE("damageable", ItemStack::isDamageableItem),
-        DAMAGED("damaged", ItemStack::isDamaged);
+        WEAPON("weapon", (s, r) -> s.is(MELEE_WEAPONS) || s.is(RANGED_WEAPONS)),
+        // Asks the enchantments rather than checking the ENCHANTABLE component: some mods (e.g.
+        // Apothic Enchanting) give every item a default Enchantable component, which would make
+        // everything — even Oak Planks — count as enchantable.
+        ENCHANTABLE("enchantable", ItemMatcher::anyEnchantmentSupports),
+        ENCHANTED("enchanted", (s, r) -> s.isEnchanted() || s.has(DataComponents.STORED_ENCHANTMENTS)),
+        DAMAGEABLE("damageable", (s, r) -> s.isDamageableItem()),
+        DAMAGED("damaged", (s, r) -> s.isDamaged());
 
         private final String id;
-        private final Predicate<ItemStack> test;
+        private final BiPredicate<ItemStack, HolderLookup.Provider> test;
 
-        Property(String id, Predicate<ItemStack> test) {
+        Property(String id, BiPredicate<ItemStack, HolderLookup.Provider> test) {
             this.id = id;
             this.test = test;
         }
 
         public String id() { return id; }
 
-        public boolean test(ItemStack stack) { return test.test(stack); }
+        public boolean test(ItemStack stack, @Nullable HolderLookup.Provider registries) {
+            return test.test(stack, registries);
+        }
 
         static Property byId(String id) {
             for (Property p : values()) if (p.id.equals(id)) return p;
@@ -100,7 +110,8 @@ public record ItemMatcher(Kind kind, ItemStack item, String key) {
 
     // ── Matching ──────────────────────────────────────────────────────────────────
 
-    public boolean test(ItemStack stack) {
+    /** @param registries the world's registries, for registry-based properties (may be null) */
+    public boolean test(ItemStack stack, @Nullable HolderLookup.Provider registries) {
         if (stack.isEmpty()) return false;
         return switch (kind) {
             case EXACT -> ItemStack.isSameItemSameComponents(stack, item);
@@ -112,9 +123,16 @@ public record ItemMatcher(Kind kind, ItemStack item, String key) {
             }
             case PROPERTY -> {
                 Property p = Property.byId(key);
-                yield p != null && p.test(stack);
+                yield p != null && p.test(stack, registries);
             }
         };
+    }
+
+    /** True if at least one registered enchantment can be applied to {@code stack} (e.g. at an anvil). */
+    private static boolean anyEnchantmentSupports(ItemStack stack, @Nullable HolderLookup.Provider registries) {
+        if (registries == null) return false;
+        return registries.lookupOrThrow(Registries.ENCHANTMENT).listElements()
+                .anyMatch(enchantment -> enchantment.value().isSupportedItem(stack));
     }
 
     // ── Text ──────────────────────────────────────────────────────────────────────

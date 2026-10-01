@@ -111,6 +111,18 @@ public class ScribingControlsPane implements IDialogPane {
     /** Index of the selected row, or -1 for none. */
     public int getSelectedRow() { return selectedRow; }
 
+    /**
+     * Shows a fixed example without an item in the ghost slot — used by the JEI recipe view,
+     * which draws the matcher item itself. Scrolls so the selected row is visible. Doesn't
+     * fire {@code onChange}.
+     */
+    public void showExample(List<Component> rows, boolean isNot, int selectedRow) {
+        this.rows = List.copyOf(rows);
+        this.isNot = isNot;
+        this.selectedRow = selectedRow;
+        this.scrollOffset = Mth.clamp(selectedRow - (VISIBLE_ROWS - 1), 0, maxScroll());
+    }
+
     // ── IDialogPane ───────────────────────────────────────────────────────────────
 
     @Override public int preferredWidth()  { return WIDTH; }

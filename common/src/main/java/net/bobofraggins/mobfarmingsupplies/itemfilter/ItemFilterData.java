@@ -7,6 +7,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.HolderLookup;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Data component stored on a scribed Item Filter: one {@link ItemMatcher} plus whether the
@@ -25,8 +27,8 @@ public record ItemFilterData(ItemMatcher matcher, boolean negate) {
             ItemFilterData::new);
 
     /** Whether {@code stack} passes this filter. Empty stacks never pass. */
-    public boolean test(ItemStack stack) {
-        return !stack.isEmpty() && matcher.test(stack) != negate;
+    public boolean test(ItemStack stack, @Nullable HolderLookup.Provider registries) {
+        return !stack.isEmpty() && matcher.test(stack, registries) != negate;
     }
 
     /** "is a sword" / "is not enchantable". */

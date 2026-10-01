@@ -9,6 +9,8 @@ import net.minecraft.world.item.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
+import net.minecraft.core.HolderLookup;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Builds the list of {@link ItemMatcher}s offered by the Filter Scribing Terminal for a given
@@ -57,7 +59,7 @@ public final class ItemMatchers {
             .toList();
 
     /** All matchers applicable to {@code stack}, or an empty list if it's empty. */
-    public static List<ItemMatcher> forItem(ItemStack stack) {
+    public static List<ItemMatcher> forItem(ItemStack stack, @Nullable HolderLookup.Provider registries) {
         if (stack.isEmpty()) return List.of();
         List<ItemMatcher> out = new ArrayList<>();
         out.add(ItemMatcher.exact(stack));
@@ -67,7 +69,7 @@ public final class ItemMatchers {
             if (stack.is(TagKey.create(Registries.ITEM, tag))) out.add(ItemMatcher.tag(tag));
         }
         for (ItemMatcher.Property p : ItemMatcher.Property.values()) {
-            if (p.test(stack)) out.add(ItemMatcher.property(p));
+            if (p.test(stack, registries)) out.add(ItemMatcher.property(p));
         }
         return out;
     }

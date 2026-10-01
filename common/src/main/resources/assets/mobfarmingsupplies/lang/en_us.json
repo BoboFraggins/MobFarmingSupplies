@@ -60,6 +60,7 @@
   "item.mobfarmingsupplies.xp_juice_bucket": "XP Juice Bucket",
   "item.mobfarmingsupplies.fan_upgrade_width": "Fan Width Upgrade",
   "item.mobfarmingsupplies.fan_upgrade_height": "Fan Height Upgrade",
+  "item.mobfarmingsupplies.silicon_clump": "Silicon Clump",
   "item.mobfarmingsupplies.silicon": "Silicon",
   "item.mobfarmingsupplies.silicon_wafer": "Silicon Wafer",
   "item.mobfarmingsupplies.blank_filter": "Blank Filter",
@@ -202,6 +203,10 @@
   "jei.mobfarmingsupplies.xp_juice_guide.step.syringe": "Shift-right-click a player to store their XP as XP Juice.",
   "jei.mobfarmingsupplies.xp_juice_guide.step.tank": "Right-click a Tank with the syringe to empty it in.",
   "jei.mobfarmingsupplies.xp_juice_guide.step.bucket": "Right-click the Tank with a bucket to scoop out an XP Juice Bucket.",
+  "jei.mobfarmingsupplies.anvil_crushing": "Anvil Crushing",
+  "jei.mobfarmingsupplies.anvil_crushing.step.anvil": "Drop an anvil (e.g. by breaking the block under it) onto items lying on the ground.",
+  "jei.mobfarmingsupplies.anvil_crushing.step.quartz": "Nether Quartz items where the anvil lands are crushed, one for one.",
+  "jei.mobfarmingsupplies.anvil_crushing.step.clump": "Silicon Clump. Smelt it into Silicon.",
 
   "subtitle.mobfarmingsupplies.red_alert": "Alarm blares",
   "subtitle.mobfarmingsupplies.dramatic": "Dramatic sting",

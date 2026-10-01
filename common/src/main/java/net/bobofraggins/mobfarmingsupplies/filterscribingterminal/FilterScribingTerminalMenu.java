@@ -20,6 +20,7 @@ import net.minecraft.world.item.ItemStack;
 import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
+import net.minecraft.core.HolderLookup;
 
 /**
  * Container menu for the Filter Scribing Terminal.
@@ -153,12 +154,12 @@ public class FilterScribingTerminalMenu extends AbstractContainerMenu {
 
     /** Recomputes the output slot. Server only — the client receives the result via slot sync. */
     private void updateResult() {
-        access.execute((level, p) -> result.setItem(0, buildResult()));
+        access.execute((level, p) -> result.setItem(0, buildResult(level.registryAccess())));
     }
 
-    private ItemStack buildResult() {
+    private ItemStack buildResult(HolderLookup.Provider registries) {
         if (!input.getItem(0).is(Registration.BLANK_FILTER.get())) return ItemStack.EMPTY;
-        List<ItemMatcher> matchers = ItemMatchers.forItem(matcherItem);
+        List<ItemMatcher> matchers = ItemMatchers.forItem(matcherItem, registries);
         if (selected < 0 || selected >= matchers.size()) return ItemStack.EMPTY;
         ItemStack filter = new ItemStack(Registration.ITEM_FILTER.get());
         filter.set(Registration.ITEM_FILTER_DATA.get(), new ItemFilterData(matchers.get(selected), negate));
