@@ -78,6 +78,12 @@ public final class MGRConfig {
             "minecraft:polar_bear", "minecraft:sniffer", "minecraft:snow_golem",
             "minecraft:strider", "minecraft:villager", "minecraft:wolf");
 
+    /**
+     * Entity types never taken from a biome's natural spawns by the Common packs. Entries are
+     * entity type IDs, or {@code "modid:*"} for every mob from a mod. Empty by default.
+     */
+    public static final List<String> DEFAULT_BIOME_SPAWN_DENY_LIST = List.of();
+
     public static final double DEFAULT_TOGGLE_BUTTON_CHEST_CHANCE = 0.05;
 
     /** Default chance for DNA sample/booster packs to appear in "common" tier chests (overworld dungeons/structures). */
@@ -123,6 +129,9 @@ public final class MGRConfig {
 
     @ExpectPlatform
     public static List<String> getWrongMobsPackMobs() { throw new AssertionError(); }
+
+    @ExpectPlatform
+    public static List<String> getBiomeSpawnDenyList() { throw new AssertionError(); }
 
     /** Chance (0.0–1.0) for each toggle button to appear in chest loot tables (default: 0.05). */
     @ExpectPlatform

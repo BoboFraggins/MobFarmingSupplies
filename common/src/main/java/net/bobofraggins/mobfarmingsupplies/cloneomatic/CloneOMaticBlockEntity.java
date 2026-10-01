@@ -139,7 +139,7 @@ public class CloneOMaticBlockEntity extends BlockEntity implements MenuProvider 
 
             ItemStack chosen = pool.get(serverLevel.getRandom().nextInt(pool.size()));
             Entity entity = ((IDnaSampleItem) chosen.getItem())
-                    .createSpawnEntity(chosen, serverLevel, serverLevel.getRandom());
+                    .createSpawnEntity(chosen, serverLevel, pos, serverLevel.getRandom());
             if (entity == null) continue;
 
             double ox = (serverLevel.getRandom().nextDouble() * 2.0 - 1.0) * SPAWN_RADIUS_XZ;

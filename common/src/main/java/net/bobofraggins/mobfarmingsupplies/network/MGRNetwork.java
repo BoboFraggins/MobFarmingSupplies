@@ -20,6 +20,11 @@ public final class MGRNetwork {
                 SetHopperOffsetPacket::handle);
         NetworkManager.registerReceiver(
                 NetworkManager.c2s(),
+                SetVoidExcessPacket.TYPE,
+                SetVoidExcessPacket.STREAM_CODEC,
+                SetVoidExcessPacket::handle);
+        NetworkManager.registerReceiver(
+                NetworkManager.c2s(),
                 SetInhibitorOffsetPacket.TYPE,
                 SetInhibitorOffsetPacket.STREAM_CODEC,
                 SetInhibitorOffsetPacket::handle);

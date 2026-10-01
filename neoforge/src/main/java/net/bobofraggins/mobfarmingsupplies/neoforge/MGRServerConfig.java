@@ -80,6 +80,12 @@ public final class MGRServerConfig {
      */
     public static final ModConfigSpec.ConfigValue<List<? extends String>> WRONG_MOBS_PACK_MOBS;
 
+    /**
+     * Entity types the Common packs never take from the Clone-O-Matic's biome spawns.
+     * Entity type IDs, or {@code "modid:*"} for a whole mod.
+     */
+    public static final ModConfigSpec.ConfigValue<List<? extends String>> BIOME_SPAWN_DENY_LIST;
+
     /** Chance (0.0–1.0) for DNA sample/booster packs to appear in "common" tier chests (overworld dungeons/structures). */
     public static final ModConfigSpec.DoubleValue DNA_SAMPLE_PACK_COMMON_CHEST_CHANCE;
 
@@ -309,6 +315,18 @@ public final class MGRServerConfig {
                                 "minecraft:villager",
                                 "minecraft:wolf"
                         ),
+                        () -> "",
+                        e -> e instanceof String);
+        b.pop();
+
+        b.push("biomeSpawns");
+        BIOME_SPAWN_DENY_LIST = b
+                .comment("The Common/Hostile and Common/Passive packs also spawn the mobs that naturally",
+                         "spawn (monsters / land creatures) in the Clone-O-Matic's biome, including ones",
+                         "other mods add. Mobs listed here are never taken from the biome.",
+                         "Each entry is an entity type ID, e.g. \"minecraft:witch\", or \"modid:*\" for a whole mod.",
+                         "Mobs in a pack's own list above are not affected.")
+                .defineListAllowEmpty("denyList", MGRConfig.DEFAULT_BIOME_SPAWN_DENY_LIST,
                         () -> "",
                         e -> e instanceof String);
         b.pop();

@@ -50,6 +50,10 @@ public final class MGRConfigImpl {
         return List.copyOf(MGRServerConfig.WRONG_MOBS_PACK_MOBS.get());
     }
 
+    public static List<String> getBiomeSpawnDenyList() {
+        return List.copyOf(MGRServerConfig.BIOME_SPAWN_DENY_LIST.get());
+    }
+
     public static double getToggleButtonChestChance() {
         return MGRServerConfig.TOGGLE_BUTTON_CHEST_CHANCE.get();
     }

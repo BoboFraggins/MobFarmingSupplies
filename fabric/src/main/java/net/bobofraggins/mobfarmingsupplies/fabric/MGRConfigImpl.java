@@ -35,6 +35,7 @@ public final class MGRConfigImpl {
     private static List<String> rarePassivePackMobs = MGRConfig.DEFAULT_RARE_PASSIVE;
     private static List<String> babyPackMobs = MGRConfig.DEFAULT_BABY;
     private static List<String> wrongMobsPackMobs = MGRConfig.DEFAULT_WRONG_MOBS;
+    private static List<String> biomeSpawnDenyList = MGRConfig.DEFAULT_BIOME_SPAWN_DENY_LIST;
     private static double toggleButtonChestChance = MGRConfig.DEFAULT_TOGGLE_BUTTON_CHEST_CHANCE;
     private static double dnaSamplePackCommonChestChance = MGRConfig.DEFAULT_DNA_SAMPLE_PACK_COMMON_CHEST_CHANCE;
     private static double dnaSamplePackRareChestChance = MGRConfig.DEFAULT_DNA_SAMPLE_PACK_RARE_CHEST_CHANCE;
@@ -52,6 +53,7 @@ public final class MGRConfigImpl {
     public static List<String> getRarePassivePackMobs()  { return rarePassivePackMobs; }
     public static List<String> getBabyPackMobs()         { return babyPackMobs; }
     public static List<String> getWrongMobsPackMobs()    { return wrongMobsPackMobs; }
+    public static List<String> getBiomeSpawnDenyList()   { return biomeSpawnDenyList; }
     public static double getToggleButtonChestChance()    { return toggleButtonChestChance; }
     public static double getDnaSamplePackCommonChestChance() { return dnaSamplePackCommonChestChance; }
     public static double getDnaSamplePackRareChestChance()   { return dnaSamplePackRareChestChance; }
@@ -105,6 +107,7 @@ public final class MGRConfigImpl {
                 rarePassivePackMobs   = readList(packs, "rarePassive",   MGRConfig.DEFAULT_RARE_PASSIVE);
                 babyPackMobs          = readList(packs, "baby",          MGRConfig.DEFAULT_BABY);
                 wrongMobsPackMobs     = readList(packs, "wrongMobs",     MGRConfig.DEFAULT_WRONG_MOBS);
+                biomeSpawnDenyList    = readList(packs, "biomeSpawnDenyList", MGRConfig.DEFAULT_BIOME_SPAWN_DENY_LIST);
 
                 if (packs.has("chestLoot")) {
                     JsonObject chestLoot = packs.getAsJsonObject("chestLoot");
@@ -173,6 +176,7 @@ public final class MGRConfigImpl {
         packs.add("rarePassive",   toArray(MGRConfig.DEFAULT_RARE_PASSIVE));
         packs.add("baby",          toArray(MGRConfig.DEFAULT_BABY));
         packs.add("wrongMobs",     toArray(MGRConfig.DEFAULT_WRONG_MOBS));
+        packs.add("biomeSpawnDenyList", toArray(MGRConfig.DEFAULT_BIOME_SPAWN_DENY_LIST));
 
         JsonObject chestLoot = new JsonObject();
         chestLoot.addProperty("commonChestChance", MGRConfig.DEFAULT_DNA_SAMPLE_PACK_COMMON_CHEST_CHANCE);

@@ -69,6 +69,7 @@
   "block.mobfarmingsupplies.logistic_sorter": "Logistic Sorter",
   "item.mobfarmingsupplies.logistic_sorter": "Logistic Sorter",
   "container.mobfarmingsupplies.logistic_sorter.connections": "Connections:",
+  "gui.mobfarmingsupplies.absorption_hopper.void_excess": "Void Excess:",
   "gui.mobfarmingsupplies.toggle.on": "On",
   "gui.mobfarmingsupplies.toggle.off": "Off",
   "gui.mobfarmingsupplies.toggle.is": "Is",

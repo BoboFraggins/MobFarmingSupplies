@@ -1,6 +1,7 @@
 package net.bobofraggins.mobfarmingsupplies.dna;
 
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
@@ -47,7 +48,7 @@ public class DnaSampleItem extends Item implements IDnaSampleItem {
 
     @Override
     @Nullable
-    public Entity createSpawnEntity(ItemStack stack, ServerLevel level, RandomSource random) {
+    public Entity createSpawnEntity(ItemStack stack, ServerLevel level, BlockPos pos, RandomSource random) {
         DnaSampleContents contents = getContents(stack);
         if (contents == null) return null;
         Entity entity = EntityType.loadEntityRecursive(

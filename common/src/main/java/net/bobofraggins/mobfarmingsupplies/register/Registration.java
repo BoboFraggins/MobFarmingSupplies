@@ -56,6 +56,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.BucketItem;
@@ -539,21 +540,22 @@ public final class Registration {
                             .stacksTo(1)));
 
     // ── DNA Sample Pack items ─────────────────────────────────────────────────────
-    // Mob lists are config-driven (MGRConfig) and read lazily via supplier.
+    // Mob lists are config-driven (MGRConfig) and read lazily via supplier. The Common packs
+    // also add the natural spawns (of the given category) of the Clone-O-Matic's biome.
 
     public static final RegistrySupplier<DnaSamplePackItem> DNA_SAMPLE_COMMON_HOSTILE =
             ITEMS.register("dna_sample_common_hostile",
                     () -> new DnaSamplePackItem(new Item.Properties()
                             .setId(itemKey("dna_sample_common_hostile"))
                             .stacksTo(1),
-                            MGRConfig::getCommonHostilePackMobs));
+                            MGRConfig::getCommonHostilePackMobs, MobCategory.MONSTER));
 
     public static final RegistrySupplier<DnaSamplePackItem> DNA_SAMPLE_COMMON_PASSIVE =
             ITEMS.register("dna_sample_common_passive",
                     () -> new DnaSamplePackItem(new Item.Properties()
                             .setId(itemKey("dna_sample_common_passive"))
                             .stacksTo(1),
-                            MGRConfig::getCommonPassivePackMobs));
+                            MGRConfig::getCommonPassivePackMobs, MobCategory.CREATURE));
 
     public static final RegistrySupplier<DnaSamplePackItem> DNA_SAMPLE_AQUATIC =
             ITEMS.register("dna_sample_aquatic",
