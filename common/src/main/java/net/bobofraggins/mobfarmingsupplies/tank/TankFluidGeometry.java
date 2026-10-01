@@ -22,6 +22,8 @@ public final class TankFluidGeometry {
     /**
      * Emits a five-faced translucent cube (no bottom) representing the fluid fill level.
      * The cube spans from {@link #FLOOR} on all sides to {@code fillTop} on the Y axis.
+     * {@code vT..vB} is the texture slice for the sides; {@code vMax} is the sprite's full
+     * V extent ({@code getV1()}), used for the top face.
      */
     @SuppressWarnings("java:S107")
     public static void renderCubeFill(
@@ -29,7 +31,7 @@ public final class TankFluidGeometry {
             PoseStack.Pose pose,
             int r, int g, int b, int a,
             int light, int overlay,
-            float uL, float vT, float uR, float vB,
+            float uL, float vT, float uR, float vB, float vMax,
             float fillTop) {
         // North face (z = FLOOR)
         quadFluid(vc, pose, r, g, b, a, light, overlay, uL, vT, uR, vB,
@@ -59,8 +61,10 @@ public final class TankFluidGeometry {
                 CEIL, fillTop, FLOOR,
                 CEIL, fillTop, CEIL,
                 1, 0, 0);
-        // Top face
-        quadFluid(vc, pose, r, g, b, a, light, overlay, uL, vT, uR, vB,
+        // Top face — always the full fluid texture. The sides show a slice proportional to the
+        // fill level (vT..vB), but the surface is a full square: stretching that same slice
+        // across it is what made a part-full tank's surface look like horizontal bands.
+        quadFluid(vc, pose, r, g, b, a, light, overlay, uL, vT, uR, vMax,
                 FLOOR, fillTop, FLOOR,
                 FLOOR, fillTop, CEIL,
                 CEIL,  fillTop, CEIL,

@@ -1,9 +1,6 @@
 {
-  "type": "minecraft:crafting_shapeless",
-  "category": "misc",
-  "ingredients": [
-    "mobfarmingsupplies:silicon"
-  ],
+  "type": "minecraft:stonecutting",
+  "ingredient": "mobfarmingsupplies:silicon",
   "result": {
     "id": "mobfarmingsupplies:silicon_wafer",
     "count": 9

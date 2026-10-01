@@ -41,7 +41,7 @@ public class TankRenderer
         boolean hasFill;
         int fr, fg, fb, fa;
         float fillTop;
-        float uL, uR, vT, vB;
+        float uL, uR, vT, vB, vMax;
         int fluidLight;
     }
 
@@ -89,6 +89,7 @@ public class TankRenderer
         state.uR = sprite.getU1();
         state.vT = sprite.getV0();
         state.vB = Mth.lerp(fillFrac, sprite.getV0(), sprite.getV1());
+        state.vMax = sprite.getV1();
         state.hasFill = true;
     }
 
@@ -104,14 +105,14 @@ public class TankRenderer
         float fillTop = state.fillTop;
         int r = state.fr, g = state.fg, b = state.fb, a = state.fa;
         int light = state.fluidLight;
-        float uL = state.uL, uR = state.uR, vT = state.vT, vB = state.vB;
+        float uL = state.uL, uR = state.uR, vT = state.vT, vB = state.vB, vMax = state.vMax;
 
         poseStack.pushPose();
         collector.submitCustomGeometry(
                 poseStack,
                 Sheets.translucentBlockSheet(),
                 (pose, vc) -> renderCubeFill(
-                        vc, pose, r, g, b, a, light, overlay, uL, vT, uR, vB, fillTop));
+                        vc, pose, r, g, b, a, light, overlay, uL, vT, uR, vB, vMax, fillTop));
         poseStack.popPose();
     }
 
@@ -126,8 +127,8 @@ public class TankRenderer
             PoseStack.Pose pose,
             int r, int g, int b, int a,
             int light, int overlay,
-            float uL, float vT, float uR, float vB,
+            float uL, float vT, float uR, float vB, float vMax,
             float fillTop) {
-        TankFluidGeometry.renderCubeFill(vc, pose, r, g, b, a, light, overlay, uL, vT, uR, vB, fillTop);
+        TankFluidGeometry.renderCubeFill(vc, pose, r, g, b, a, light, overlay, uL, vT, uR, vB, vMax, fillTop);
     }
 }

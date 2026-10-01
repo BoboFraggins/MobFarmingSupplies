@@ -6,6 +6,8 @@
 * Added Blank Filters and Item Filters
 * Added Filter Scribing Terminal
 * Added Logistic Sorter
+* Fixed squids getting trapped inside vector plates
+* Fixed rendering bug with surface of fluids in tanks
 
 ## 26.3.0.2, 26.2.0.3, 26.1.2.5
 
