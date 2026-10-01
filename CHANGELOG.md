@@ -1,27 +1,45 @@
 # Mob Farming Supplies
 
-## 26.1.2.6
+## 26.3.0.3, 26.2.0.4, 26.1.2.6
 
 * Added Silicon Clumps, Silicon and Silicon Wafers
 * Added Blank Filters and Item Filters
 * Added Filter Scribing Terminal
 * Added Logistic Sorter
 
-## 26.1.2.5
+## 26.3.0.2, 26.2.0.3, 26.1.2.5
 
 * Fix bug where mob exclusion glass causes suffocation
 * Fix lighting of tank items
-* Fix button placement
+* Fix button placement (26.1.2.5 only)
+* Fix bug where NBT data lost on drop (26.3.0.2 only)
 * Fix mobs and item despawning when passing over vector plates
 
-## 26.1.2.4
+## 26.3.0.1, 26.2.0.2, 26.1.2.4
 
 * Add JEI information on XP Juice Bucket
+
+## 26.3.0.0
+
+* Initial version for MC 26.3
+* Add Picnic Basket as a food storage that enables auto-eating
+* Add Magic Hat for picking up mobs in the world
+* Add Present as item enabling picking up and replacing blocks
+
+## 26.2.0.1
+
+* Fixed bug with bottles in the tank when dealing with XP Juice
+* Fixed bug with Clone-o-Matic not spawning on vector plates
+* Fixed bug with walking through XP Juice (NeoForge only)
 
 ## 26.1.2.3
 
 * Fixed bug with bottles in the tank when dealing with XP Juice
 * Fixed bug with Clone-o-Matic not spawning on vector plates
+
+## 26.2.0.0
+
+* Initial version for MC 26.2
 
 ## 26.1.2.2
 
