@@ -2,63 +2,64 @@ package net.bobofraggins.mobfarmingsupplies.jei;
 
 import dev.architectury.fluid.FluidStack;
 import java.util.List;
+import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.RecipeIngredientRole;
+import mezz.jei.api.recipe.types.IRecipeType;
+import net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommon;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.bobofraggins.mobfarmingsupplies.tank.TankBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.tank.TankContents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 /**
- * Data carrier for the "how do I get XP Juice out of a Tank" guides shown in JEI: the
- * Experience Syringe stores XP withdrawn from a player and empties into a Tank, which can then
- * be scooped with either a bucket ({@link #bucket()}) or a glass bottle ({@link #bottle()}).
+ * JEI guides for "how do I get XP Juice out of a Tank": the Experience Syringe stores XP
+ * withdrawn from a player and empties into a Tank, which can then be scooped with either a
+ * bucket ({@link #bucket()}) or a glass bottle ({@link #bottle()}).
  */
-public final class XpJuiceGuideRecipe {
+public final class XpJuiceGuide {
 
-    /** One row in the vertical guide: the item to display, its JEI role, and a tooltip hint. */
-    public record Step(ItemStack stack, RecipeIngredientRole role, Component tooltip) {}
+    public static final IRecipeType<GuideRecipe> RECIPE_TYPE =
+            IRecipeType.create(MobFarmingSuppliesCommon.MODID, "xp_juice_guide", GuideRecipe.class);
 
-    private final List<Step> steps;
+    private XpJuiceGuide() {}
 
-    private XpJuiceGuideRecipe(List<Step> steps) {
-        this.steps = steps;
+    public static VerticalGuideCategory category(IGuiHelper helper) {
+        return new VerticalGuideCategory(RECIPE_TYPE,
+                Component.translatable("jei.mobfarmingsupplies.xp_juice_guide"),
+                helper.createDrawableItemLike(Registration.XP_JUICE_BUCKET.get()), 3);
     }
 
-    public List<Step> steps() {
-        return steps;
-    }
-
-    public static XpJuiceGuideRecipe bucket() {
-        return new XpJuiceGuideRecipe(List.of(
+    public static GuideRecipe bucket() {
+        return new GuideRecipe(List.of(
                 syringeStep(),
                 tankStep(),
-                new Step(
+                new GuideRecipe.Step(
                         new ItemStack(Registration.XP_JUICE_BUCKET.get()),
                         RecipeIngredientRole.OUTPUT,
                         Component.translatable("jei.mobfarmingsupplies.xp_juice_guide.step.bucket"))));
     }
 
-    public static XpJuiceGuideRecipe bottle() {
-        return new XpJuiceGuideRecipe(List.of(
+    public static GuideRecipe bottle() {
+        return new GuideRecipe(List.of(
                 syringeStep(),
                 tankStep(),
-                new Step(
+                new GuideRecipe.Step(
                         new ItemStack(Items.EXPERIENCE_BOTTLE),
                         RecipeIngredientRole.OUTPUT,
                         Component.translatable("jei.mobfarmingsupplies.xp_juice_guide.step.bottle"))));
     }
 
-    private static Step syringeStep() {
-        return new Step(
+    private static GuideRecipe.Step syringeStep() {
+        return new GuideRecipe.Step(
                 new ItemStack(Registration.EXPERIENCE_SYRINGE.get()),
                 RecipeIngredientRole.INPUT,
                 Component.translatable("jei.mobfarmingsupplies.xp_juice_guide.step.syringe"));
     }
 
-    private static Step tankStep() {
-        return new Step(
+    private static GuideRecipe.Step tankStep() {
+        return new GuideRecipe.Step(
                 tankOfXpJuice(),
                 RecipeIngredientRole.CRAFTING_STATION,
                 Component.translatable("jei.mobfarmingsupplies.xp_juice_guide.step.tank"));

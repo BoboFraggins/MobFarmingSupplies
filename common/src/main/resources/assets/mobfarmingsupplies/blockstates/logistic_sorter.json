@@ -1,0 +1,164 @@
+{
+  "multipart": [
+    {
+      "when": {
+        "active": "false"
+      },
+      "apply": {
+        "model": "mobfarmingsupplies:block/logistic_sorter_body_inactive"
+      }
+    },
+    {
+      "when": {
+        "active": "true"
+      },
+      "apply": {
+        "model": "mobfarmingsupplies:block/logistic_sorter_body_active"
+      }
+    },
+    {
+      "when": {
+        "north": "input"
+      },
+      "apply": {
+        "model": "mobfarmingsupplies:block/logistic_sorter_north_input"
+      }
+    },
+    {
+      "when": {
+        "north": "match"
+      },
+      "apply": {
+        "model": "mobfarmingsupplies:block/logistic_sorter_north_match"
+      }
+    },
+    {
+      "when": {
+        "north": "no_match"
+      },
+      "apply": {
+        "model": "mobfarmingsupplies:block/logistic_sorter_north_no_match"
+      }
+    },
+    {
+      "when": {
+        "south": "input"
+      },
+      "apply": {
+        "model": "mobfarmingsupplies:block/logistic_sorter_south_input"
+      }
+    },
+    {
+      "when": {
+        "south": "match"
+      },
+      "apply": {
+        "model": "mobfarmingsupplies:block/logistic_sorter_south_match"
+      }
+    },
+    {
+      "when": {
+        "south": "no_match"
+      },
+      "apply": {
+        "model": "mobfarmingsupplies:block/logistic_sorter_south_no_match"
+      }
+    },
+    {
+      "when": {
+        "east": "input"
+      },
+      "apply": {
+        "model": "mobfarmingsupplies:block/logistic_sorter_east_input"
+      }
+    },
+    {
+      "when": {
+        "east": "match"
+      },
+      "apply": {
+        "model": "mobfarmingsupplies:block/logistic_sorter_east_match"
+      }
+    },
+    {
+      "when": {
+        "east": "no_match"
+      },
+      "apply": {
+        "model": "mobfarmingsupplies:block/logistic_sorter_east_no_match"
+      }
+    },
+    {
+      "when": {
+        "west": "input"
+      },
+      "apply": {
+        "model": "mobfarmingsupplies:block/logistic_sorter_west_input"
+      }
+    },
+    {
+      "when": {
+        "west": "match"
+      },
+      "apply": {
+        "model": "mobfarmingsupplies:block/logistic_sorter_west_match"
+      }
+    },
+    {
+      "when": {
+        "west": "no_match"
+      },
+      "apply": {
+        "model": "mobfarmingsupplies:block/logistic_sorter_west_no_match"
+      }
+    },
+    {
+      "when": {
+        "up": "input"
+      },
+      "apply": {
+        "model": "mobfarmingsupplies:block/logistic_sorter_up_input"
+      }
+    },
+    {
+      "when": {
+        "up": "match"
+      },
+      "apply": {
+        "model": "mobfarmingsupplies:block/logistic_sorter_up_match"
+      }
+    },
+    {
+      "when": {
+        "up": "no_match"
+      },
+      "apply": {
+        "model": "mobfarmingsupplies:block/logistic_sorter_up_no_match"
+      }
+    },
+    {
+      "when": {
+        "down": "input"
+      },
+      "apply": {
+        "model": "mobfarmingsupplies:block/logistic_sorter_down_input"
+      }
+    },
+    {
+      "when": {
+        "down": "match"
+      },
+      "apply": {
+        "model": "mobfarmingsupplies:block/logistic_sorter_down_match"
+      }
+    },
+    {
+      "when": {
+        "down": "no_match"
+      },
+      "apply": {
+        "model": "mobfarmingsupplies:block/logistic_sorter_down_no_match"
+      }
+    }
+  ]
+}

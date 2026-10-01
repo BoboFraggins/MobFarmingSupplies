@@ -5,7 +5,8 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "GoalSelectorAccessor",
-    "MobFarmAccessor"
+    "MobFarmAccessor",
+    "AnvilBlockMixin"
   ],
   "injectors": {
     "defaultRequire": 1

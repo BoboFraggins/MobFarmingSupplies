@@ -28,5 +28,15 @@ public final class MGRNetwork {
                 OpenPicnicBasketPacket.TYPE,
                 OpenPicnicBasketPacket.STREAM_CODEC,
                 OpenPicnicBasketPacket::handle);
+        NetworkManager.registerReceiver(
+                NetworkManager.c2s(),
+                SetScribingStatePacket.TYPE,
+                SetScribingStatePacket.STREAM_CODEC,
+                SetScribingStatePacket::handle);
+        NetworkManager.registerReceiver(
+                NetworkManager.c2s(),
+                SetSorterConfigPacket.TYPE,
+                SetSorterConfigPacket.STREAM_CODEC,
+                SetSorterConfigPacket::handle);
     }
 }

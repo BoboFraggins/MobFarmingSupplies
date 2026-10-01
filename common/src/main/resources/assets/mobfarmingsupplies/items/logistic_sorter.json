@@ -1,0 +1,9 @@
+{
+  "model": {
+    "type": "minecraft:special",
+    "base": "mobfarmingsupplies:item/logistic_sorter",
+    "model": {
+      "type": "mobfarmingsupplies:logistic_sorter_renderer"
+    }
+  }
+}

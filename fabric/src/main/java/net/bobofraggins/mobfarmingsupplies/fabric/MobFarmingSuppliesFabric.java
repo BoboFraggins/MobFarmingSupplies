@@ -10,6 +10,9 @@ import net.bobofraggins.mobfarmingsupplies.crafting.FabricFluidContainerIngredie
 import net.bobofraggins.mobfarmingsupplies.experiencesyringe.FabricExperienceSyringeFluidStorage;
 import net.bobofraggins.mobfarmingsupplies.glamping.magichat.fabric.MagicHatTrinketSetup;
 import net.bobofraggins.mobfarmingsupplies.loot.FabricLootModifiers;
+import net.bobofraggins.mobfarmingsupplies.logisticsorter.LogisticSorterBlockEntity;
+import net.bobofraggins.mobfarmingsupplies.logisticsorter.SideMode;
+import net.bobofraggins.mobfarmingsupplies.logisticsorter.fabric.LogisticSorterItemStorage;
 import net.bobofraggins.mobfarmingsupplies.register.ModCompatRegistration;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.bobofraggins.mobfarmingsupplies.tank.FabricTankFluidStorage;
@@ -82,5 +85,14 @@ public class MobFarmingSuppliesFabric implements ModInitializer {
         FluidStorage.combinedItemApiProvider(Items.BUCKET).register(ctx ->
                 new FullItemFluidStorage(ctx, Registration.XP_JUICE_BUCKET.get(),
                         FluidVariant.of(Registration.XP_JUICE_SOURCE.get()), FluidConstants.BUCKET));
+
+        // Logistic Sorter: insert-only, and only on INPUT sides.
+        ItemStorage.SIDED.registerForBlockEntities(
+                (be, direction) -> {
+                    LogisticSorterBlockEntity sorter = (LogisticSorterBlockEntity) be;
+                    return direction != null && sorter.getSide(direction) == SideMode.INPUT
+                            ? new LogisticSorterItemStorage(sorter) : null;
+                },
+                Registration.LOGISTIC_SORTER_BE_TYPE.get());
     }
 }
