@@ -6,6 +6,8 @@
     "mobfarmingsupplies:fan",
     "mobfarmingsupplies:wither_proof_glass",
     "mobfarmingsupplies:ender_inhibitor",
-    "mobfarmingsupplies:vector_plate"
+    "mobfarmingsupplies:vector_plate",
+    "mobfarmingsupplies:filter_scribing_terminal",
+    "mobfarmingsupplies:logistic_sorter"
   ]
 }

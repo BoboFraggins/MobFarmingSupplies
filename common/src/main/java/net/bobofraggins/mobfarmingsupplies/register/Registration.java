@@ -19,6 +19,14 @@ import net.bobofraggins.mobfarmingsupplies.dna.DnaSamplePackItem;
 import net.bobofraggins.mobfarmingsupplies.enderinhibitor.EnderInhibitorBlock;
 import net.bobofraggins.mobfarmingsupplies.enderinhibitor.EnderInhibitorBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.enderinhibitor.EnderInhibitorMenu;
+import net.bobofraggins.mobfarmingsupplies.filterscribingterminal.FilterScribingTerminalBlock;
+import net.bobofraggins.mobfarmingsupplies.filterscribingterminal.FilterScribingTerminalBlockEntity;
+import net.bobofraggins.mobfarmingsupplies.filterscribingterminal.FilterScribingTerminalMenu;
+import net.bobofraggins.mobfarmingsupplies.itemfilter.ItemFilterData;
+import net.bobofraggins.mobfarmingsupplies.logisticsorter.LogisticSorterBlock;
+import net.bobofraggins.mobfarmingsupplies.logisticsorter.LogisticSorterBlockEntity;
+import net.bobofraggins.mobfarmingsupplies.logisticsorter.LogisticSorterMenu;
+import net.bobofraggins.mobfarmingsupplies.itemfilter.ItemFilterItem;
 import net.bobofraggins.mobfarmingsupplies.experiencesyringe.ExperienceSyringeItem;
 import net.bobofraggins.mobfarmingsupplies.fan.FanBlock;
 import net.bobofraggins.mobfarmingsupplies.fan.FanBlockEntity;
@@ -62,6 +70,9 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
+import net.bobofraggins.mobfarmingsupplies.crushing.AnvilCrushingRecipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
 
 public final class Registration {
 
@@ -108,6 +119,26 @@ public final class Registration {
 
     public static final DeferredRegister<SoundEvent> SOUND_EVENTS =
             DeferredRegister.create(MobFarmingSuppliesCommon.MODID, Registries.SOUND_EVENT);
+
+    public static final DeferredRegister<RecipeType<?>> RECIPE_TYPES =
+            DeferredRegister.create(MobFarmingSuppliesCommon.MODID, Registries.RECIPE_TYPE);
+
+    public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS =
+            DeferredRegister.create(MobFarmingSuppliesCommon.MODID, Registries.RECIPE_SERIALIZER);
+
+    // ── Recipes ──────────────────────────────────────────────────────────────────
+
+    public static final RegistrySupplier<RecipeType<AnvilCrushingRecipe>> ANVIL_CRUSHING_TYPE =
+            RECIPE_TYPES.register("anvil_crushing", () -> new RecipeType<AnvilCrushingRecipe>() {
+                @Override
+                public String toString() {
+                    return MobFarmingSuppliesCommon.MODID + ":anvil_crushing";
+                }
+            });
+
+    public static final RegistrySupplier<RecipeSerializer<AnvilCrushingRecipe>> ANVIL_CRUSHING_SERIALIZER =
+            RECIPE_SERIALIZERS.register("anvil_crushing",
+                    () -> new RecipeSerializer<>(AnvilCrushingRecipe.MAP_CODEC, AnvilCrushingRecipe.STREAM_CODEC));
 
     // ── Sound events ─────────────────────────────────────────────────────────────
 
@@ -159,6 +190,13 @@ public final class Registration {
                     () -> DataComponentType.<TankContents>builder()
                             .persistent(TankContents.CODEC)
                             .networkSynchronized(TankContents.STREAM_CODEC)
+                            .build());
+
+    public static final RegistrySupplier<DataComponentType<ItemFilterData>> ITEM_FILTER_DATA =
+            DATA_COMPONENTS.register("item_filter",
+                    () -> DataComponentType.<ItemFilterData>builder()
+                            .persistent(ItemFilterData.CODEC)
+                            .networkSynchronized(ItemFilterData.STREAM_CODEC)
                             .build());
 
     // ── DNA items ────────────────────────────────────────────────────────────────
@@ -559,6 +597,79 @@ public final class Registration {
                             .stacksTo(1),
                             MGRConfig::getWrongMobsPackMobs));
 
+    // ── Filter Scribing Terminal ──────────────────────────────────────────────────
+
+    public static final RegistrySupplier<FilterScribingTerminalBlock> FILTER_SCRIBING_TERMINAL =
+            BLOCKS.register("filter_scribing_terminal",
+                    () -> new FilterScribingTerminalBlock(BlockBehaviour.Properties.of()
+                            .setId(blockKey("filter_scribing_terminal"))
+                            .strength(2.5f)
+                            .sound(SoundType.WOOD)
+                            .noOcclusion()));
+
+    public static final RegistrySupplier<BlockItem> FILTER_SCRIBING_TERMINAL_ITEM =
+            ITEMS.register("filter_scribing_terminal",
+                    () -> new BlockItem(FILTER_SCRIBING_TERMINAL.get(), new Item.Properties()
+                            .setId(itemKey("filter_scribing_terminal"))));
+
+    public static final RegistrySupplier<BlockEntityType<FilterScribingTerminalBlockEntity>> FILTER_SCRIBING_TERMINAL_BE_TYPE =
+            BLOCK_ENTITIES.register("filter_scribing_terminal",
+                    () -> BlockEntityTypePlatform.create(
+                            FilterScribingTerminalBlockEntity::new, FILTER_SCRIBING_TERMINAL.get()));
+
+    public static final RegistrySupplier<MenuType<FilterScribingTerminalMenu>> FILTER_SCRIBING_TERMINAL_MENU =
+            MENUS.register("filter_scribing_terminal",
+                    () -> MenuRegistry.ofExtended(FilterScribingTerminalMenu::new));
+
+    // ── Logistic Sorter ───────────────────────────────────────────────────────────
+
+    public static final RegistrySupplier<LogisticSorterBlock> LOGISTIC_SORTER =
+            BLOCKS.register("logistic_sorter",
+                    () -> new LogisticSorterBlock(BlockBehaviour.Properties.of()
+                            .setId(blockKey("logistic_sorter"))
+                            .strength(3.5f)
+                            .sound(SoundType.METAL)
+                            .noOcclusion()));
+
+    public static final RegistrySupplier<BlockItem> LOGISTIC_SORTER_ITEM =
+            ITEMS.register("logistic_sorter",
+                    () -> new BlockItem(LOGISTIC_SORTER.get(), new Item.Properties()
+                            .setId(itemKey("logistic_sorter"))));
+
+    public static final RegistrySupplier<BlockEntityType<LogisticSorterBlockEntity>> LOGISTIC_SORTER_BE_TYPE =
+            BLOCK_ENTITIES.register("logistic_sorter",
+                    () -> BlockEntityTypePlatform.create(LogisticSorterBlockEntity::new, LOGISTIC_SORTER.get()));
+
+    public static final RegistrySupplier<MenuType<LogisticSorterMenu>> LOGISTIC_SORTER_MENU =
+            MENUS.register("logistic_sorter", () -> MenuRegistry.ofExtended(LogisticSorterMenu::new));
+
+    // ── Crafting materials ────────────────────────────────────────────────────────
+
+    public static final RegistrySupplier<Item> SILICON =
+            ITEMS.register("silicon",
+                    () -> new Item(new Item.Properties()
+                            .setId(itemKey("silicon"))));
+
+    public static final RegistrySupplier<Item> SILICON_CLUMP =
+            ITEMS.register("silicon_clump",
+                    () -> new Item(new Item.Properties()
+                            .setId(itemKey("silicon_clump"))));
+
+    public static final RegistrySupplier<Item> SILICON_WAFER =
+            ITEMS.register("silicon_wafer",
+                    () -> new Item(new Item.Properties()
+                            .setId(itemKey("silicon_wafer"))));
+
+    public static final RegistrySupplier<Item> BLANK_FILTER =
+            ITEMS.register("blank_filter",
+                    () -> new Item(new Item.Properties()
+                            .setId(itemKey("blank_filter"))));
+
+    public static final RegistrySupplier<ItemFilterItem> ITEM_FILTER =
+            ITEMS.register("item_filter",
+                    () -> new ItemFilterItem(new Item.Properties()
+                            .setId(itemKey("item_filter"))));
+
     // ── Creative tab ──────────────────────────────────────────────────────────────
 
     public static final RegistrySupplier<CreativeModeTab> CREATIVE_TAB =
@@ -605,6 +716,12 @@ public final class Registration {
                         output.accept(DRAMATIC_BUTTON_ITEM.get());
                         output.accept(RIMSHOT_BUTTON_ITEM.get());
                         output.accept(WILHELM_BUTTON_ITEM.get());
+                        output.accept(SILICON_CLUMP.get());
+                        output.accept(SILICON.get());
+                        output.accept(SILICON_WAFER.get());
+                        output.accept(BLANK_FILTER.get());
+                        output.accept(FILTER_SCRIBING_TERMINAL_ITEM.get());
+                        output.accept(LOGISTIC_SORTER_ITEM.get());
                     })
                     .build());
 
@@ -625,5 +742,7 @@ public final class Registration {
         DATA_COMPONENTS.register();
         CREATIVE_TABS.register();
         SOUND_EVENTS.register();
+        RECIPE_TYPES.register();
+        RECIPE_SERIALIZERS.register();
     }
 }

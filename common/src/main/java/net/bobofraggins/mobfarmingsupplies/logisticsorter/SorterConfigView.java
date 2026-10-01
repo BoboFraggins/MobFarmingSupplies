@@ -1,0 +1,59 @@
+package net.bobofraggins.mobfarmingsupplies.logisticsorter;
+
+import dev.architectury.networking.NetworkManager;
+import net.bobofraggins.mobfarmingsupplies.network.SetSorterConfigPacket;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+
+/**
+ * Client-side view of a Logistic Sorter's side modes and AND/OR mode, shared by the screen's
+ * panes. Changes apply immediately (optimistically) and are sent to the server; otherwise the
+ * view follows the synced client block entity.
+ */
+final class SorterConfigView {
+
+    /** How long a local change wins over (possibly stale) block entity data. */
+    private static final long LOCAL_GRACE_MS = 500;
+
+    private final BlockPos pos;
+    private int sides;
+    private boolean andMode = true;
+    private long lastLocalChange;
+
+    SorterConfigView(BlockPos pos) {
+        this.pos = pos;
+        refresh();
+    }
+
+    BlockPos pos() { return pos; }
+
+    void refresh() {
+        if (System.currentTimeMillis() - lastLocalChange < LOCAL_GRACE_MS) return;
+        var level = Minecraft.getInstance().level;
+        if (level != null && level.getBlockEntity(pos) instanceof LogisticSorterBlockEntity be) {
+            sides = be.packedSides();
+            andMode = be.isAndMode();
+        }
+    }
+
+    SideMode side(Direction d) { return LogisticSorterBlockEntity.unpackSide(sides, d); }
+
+    boolean andMode() { return andMode; }
+
+    void cycle(Direction d) {
+        int shift = 2 * d.get3DDataValue();
+        sides = (sides & ~(3 << shift)) | (side(d).next().ordinal() << shift);
+        send();
+    }
+
+    void toggleAndMode() {
+        andMode = !andMode;
+        send();
+    }
+
+    private void send() {
+        lastLocalChange = System.currentTimeMillis();
+        NetworkManager.sendToServer(new SetSorterConfigPacket(pos, sides, andMode));
+    }
+}

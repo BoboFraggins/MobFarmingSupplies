@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mobfarmingsupplies:silicon"
+  ],
+  "result": {
+    "id": "mobfarmingsupplies:silicon_wafer",
+    "count": 9
+  }
+}
