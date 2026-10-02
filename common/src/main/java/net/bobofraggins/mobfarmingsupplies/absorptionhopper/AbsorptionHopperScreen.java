@@ -23,8 +23,11 @@ import org.jetbrains.annotations.Nullable;
  *   <li>8 px gap</li>
  *   <li>2 rows × 8 hopper slots + fluid gauge (36 px)</li>
  *   <li>8 px gap</li>
- *   <li>Offset controls row (22 px)</li>
- *   <li>6 px gap</li>
+ *   <li>Offset controls row (34 px)</li>
+ *   <li>4 px gap</li>
+ *   <li>Show Area button row (20 px)</li>
+ *   <li>Void Excess toggle row (20 px)</li>
+ *   <li>4 px gap</li>
  *   <li>Push-sides (Exports) control (90 px)</li>
  *   <li>6 px gap</li>
  *   <li>Player inventory 3×9 + hotbar (80 px)</li>
@@ -39,10 +42,11 @@ public class AbsorptionHopperScreen extends AbstractContainerScreen<AbsorptionHo
     private static final int PANE_OFFSETS   = 3;
     private static final int PANE_GAP2      = 4;
     private static final int PANE_SHOW_AREA = 5;
-    private static final int PANE_GAP3      = 6;
-    private static final int PANE_PUSH      = 7;
-    private static final int PANE_GAP4      = 8;
-    private static final int PANE_PLAYER    = 9;
+    private static final int PANE_VOID      = 6;
+    private static final int PANE_GAP3      = 7;
+    private static final int PANE_PUSH      = 8;
+    private static final int PANE_GAP4      = 9;
+    private static final int PANE_PLAYER    = 10;
 
     private static final int SHOW_AREA_PANE_H  = 20;
     private static final int SHOW_AREA_BUTTON_W = 90;
@@ -69,6 +73,7 @@ public class AbsorptionHopperScreen extends AbstractContainerScreen<AbsorptionHo
                 offsetsPane,                                            // PANE_OFFSETS
                 Dialog.blankPane(HopperSlotsPane.WIDTH, 4),           // PANE_GAP2
                 Dialog.blankPane(HopperSlotsPane.WIDTH, SHOW_AREA_PANE_H), // PANE_SHOW_AREA
+                new VoidExcessPane(menu.getPos()),                     // PANE_VOID
                 Dialog.blankPane(HopperSlotsPane.WIDTH, 4),           // PANE_GAP3
                 pushPane,                                               // PANE_PUSH
                 Dialog.blankPane(HopperSlotsPane.WIDTH, 6),           // PANE_GAP4

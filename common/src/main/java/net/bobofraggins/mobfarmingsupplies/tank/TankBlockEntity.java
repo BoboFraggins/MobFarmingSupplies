@@ -1,7 +1,7 @@
 package net.bobofraggins.mobfarmingsupplies.tank;
 
 import dev.architectury.fluid.FluidStack;
-import net.bobofraggins.mobfarmingsupplies.register.MGRRegistryHelper;
+import net.bobofraggins.mobfarmingsupplies.register.MFSRegistryHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentGetter;
@@ -57,7 +57,7 @@ public class TankBlockEntity extends BlockEntity implements MenuProvider {
     private int transferTick = 0;
 
     public TankBlockEntity(BlockPos pos, BlockState state) {
-        super(MGRRegistryHelper.getBEType("tank"), pos, state);
+        super(MFSRegistryHelper.getBEType("tank"), pos, state);
     }
 
     // ── Server tick ────────────────────────────────────────────────────────────
@@ -240,14 +240,14 @@ public class TankBlockEntity extends BlockEntity implements MenuProvider {
     @Override
     protected void collectImplicitComponents(DataComponentMap.Builder components) {
         super.collectImplicitComponents(components);
-        components.set(MGRRegistryHelper.getDataComponentType("tank_contents"),
+        components.set(MFSRegistryHelper.getDataComponentType("tank_contents"),
                 new TankContents(storedFluid, amount));
     }
 
     @Override
     protected void applyImplicitComponents(DataComponentGetter input) {
         super.applyImplicitComponents(input);
-        TankContents contents = input.get(MGRRegistryHelper.<TankContents>getDataComponentType("tank_contents"));
+        TankContents contents = input.get(MFSRegistryHelper.<TankContents>getDataComponentType("tank_contents"));
         if (contents != null) {
             storedFluid = contents.storedFluid().isEmpty()
                     ? FluidStack.empty()

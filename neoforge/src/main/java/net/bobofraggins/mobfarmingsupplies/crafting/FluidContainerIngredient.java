@@ -3,7 +3,7 @@ package net.bobofraggins.mobfarmingsupplies.crafting;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.bobofraggins.mobfarmingsupplies.register.MGRRegistryHelper;
+import net.bobofraggins.mobfarmingsupplies.register.MFSRegistryHelper;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
@@ -84,7 +84,7 @@ public class FluidContainerIngredient implements ICustomIngredient {
     @Override
     public Stream<Holder<Item>> items() {
         if (xpJuiceBucketHolder == null)
-            xpJuiceBucketHolder = BuiltInRegistries.ITEM.wrapAsHolder(MGRRegistryHelper.getItem("xp_juice_bucket"));
+            xpJuiceBucketHolder = BuiltInRegistries.ITEM.wrapAsHolder(MFSRegistryHelper.getItem("xp_juice_bucket"));
         return Stream.of(xpJuiceBucketHolder);
     }
 

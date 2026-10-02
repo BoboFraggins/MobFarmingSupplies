@@ -15,7 +15,7 @@ import snownee.jade.api.WailaPlugin;
 import snownee.jade.api.config.IPluginConfig;
 
 /**
- * Jade (WAILA) plugin for the MGR Tank.
+ * Jade (WAILA) plugin for the MFS Tank.
  *
  * <p>When Jade is present, looking at a Tank shows the stored fluid name and
  * current / maximum amount, e.g. "8,000 / 16,000 mB (Water)" or "Empty".

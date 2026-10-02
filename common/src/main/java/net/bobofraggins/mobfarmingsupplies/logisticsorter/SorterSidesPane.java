@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.logisticsorter;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import net.bobofraggins.mobfarmingsupplies.shared.ui.IDialogPane;
 import net.bobofraggins.mobfarmingsupplies.shared.ui.PlayerInventoryPane;
 import net.minecraft.client.Minecraft;
@@ -114,7 +115,7 @@ class SorterSidesPane implements IDialogPane {
 
     @Override
     public boolean mouseClicked(double x, double y, int button) {
-        if (button != 0) return false;
+        if (button != InputConstants.MOUSE_BUTTON_LEFT) return false;
         for (var e : BUTTONS.entrySet()) {
             int bx = buttonX(e.getValue()), by = buttonY(e.getValue());
             if (x >= bx && x < bx + BUTTON_SIZE && y >= by && y < by + BUTTON_SIZE) {

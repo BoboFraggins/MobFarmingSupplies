@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.absorptionhopper;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import net.bobofraggins.mobfarmingsupplies.network.SetPushSidesPacket;
 import net.bobofraggins.mobfarmingsupplies.shared.ui.IDialogPane;
 import net.bobofraggins.mobfarmingsupplies.shared.ui.PlayerInventoryPane;
@@ -146,7 +147,7 @@ public class PushSidesPane implements IDialogPane {
 
     @Override
     public boolean mouseClicked(double localX, double localY, int button) {
-        if (button != 0) return false;
+        if (button != InputConstants.MOUSE_BUTTON_LEFT) return false;
         int stride = BUTTON_SIZE + BUTTON_MARGIN;
         for (int[] btn : BUTTONS) {
             int col = btn[0], row = btn[1], bit = btn[2];

@@ -5,6 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.InsideBlockEffectApplier;
+import net.minecraft.world.entity.animal.squid.Squid;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -89,6 +90,8 @@ public class VectorPlateBlock extends HorizontalDirectionalBlock {
      *   <li>Applies {@link #PUSH_SPEED} in the {@link #FACING} direction.</li>
      *   <li>Nudges the entity toward the block centre on the perpendicular axis
      *       so entities stay in the lane rather than drifting to one side.</li>
+     *   <li>Squids out of water are moved directly, since they cancel their own
+     *       horizontal velocity on land.</li>
      * </ul>
      *
      * <p>Transported mobs and items keep their normal despawn behaviour (an item expires
@@ -121,5 +124,26 @@ public class VectorPlateBlock extends HorizontalDirectionalBlock {
 
         entity.setDeltaMovement(vx, motion.y, vz);
         entity.hurtMarked = true;
+
+        // Squids out of water zero their own horizontal velocity every tick (Squid#aiStep),
+        // so the push above never takes effect and they sit on the plate until they suffocate.
+        // Move them directly instead, by the same amount the velocity would have.
+        if (entity instanceof Squid && !entity.isInWater()) {
+            displace(level, entity, vx, vz);
+        }
+    }
+
+    /**
+     * Moves {@code entity} horizontally by ({@code dx}, {@code dz}) without relying on its own
+     * velocity, stopping at anything solid. Done in two half-steps so a thin block can't be
+     * skipped. Uses setPos rather than Entity#move, which mustn't be called from entityInside
+     * (it would add to the movement list Minecraft is iterating when it calls us).
+     */
+    private static void displace(Level level, Entity entity, double dx, double dz) {
+        for (int step = 0; step < 2; step++) {
+            double hx = dx / 2, hz = dz / 2;
+            if (!level.noCollision(entity, entity.getBoundingBox().move(hx, 0, hz))) return;
+            entity.setPos(entity.getX() + hx, entity.getY(), entity.getZ() + hz);
+        }
     }
 }

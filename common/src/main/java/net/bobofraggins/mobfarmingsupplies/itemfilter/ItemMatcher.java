@@ -56,11 +56,12 @@ public record ItemMatcher(Kind kind, ItemStack item, String key) {
      */
     public enum Property {
         WEAPON("weapon", (s, r) -> s.is(MELEE_WEAPONS) || s.is(RANGED_WEAPONS)),
+        // Only offered when the item actually carries enchantments (incl. enchanted books).
+        ENCHANTED("enchanted", (s, r) -> s.isEnchanted() || s.has(DataComponents.STORED_ENCHANTMENTS)),
         // Asks the enchantments rather than checking the ENCHANTABLE component: some mods (e.g.
         // Apothic Enchanting) give every item a default Enchantable component, which would make
         // everything — even Oak Planks — count as enchantable.
         ENCHANTABLE("enchantable", ItemMatcher::anyEnchantmentSupports),
-        ENCHANTED("enchanted", (s, r) -> s.isEnchanted() || s.has(DataComponents.STORED_ENCHANTMENTS)),
         DAMAGEABLE("damageable", (s, r) -> s.isDamageableItem()),
         DAMAGED("damaged", (s, r) -> s.isDamaged());
 

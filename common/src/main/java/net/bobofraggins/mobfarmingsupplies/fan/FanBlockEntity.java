@@ -1,7 +1,7 @@
 package net.bobofraggins.mobfarmingsupplies.fan;
 
-import net.bobofraggins.mobfarmingsupplies.MGRConfig;
-import net.bobofraggins.mobfarmingsupplies.register.MGRRegistryHelper;
+import net.bobofraggins.mobfarmingsupplies.MFSConfig;
+import net.bobofraggins.mobfarmingsupplies.register.MFSRegistryHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -36,7 +36,7 @@ import java.util.List;
  * <ol>
  *   <li>Reads the upgrade slot counts (Width, Height, Distance).</li>
  *   <li>Computes the push AABB, scanning outward from the fan face and stopping
- *       at the first blocking block (see {@link MGRConfig#getFanStrongerBlades()}).</li>
+ *       at the first blocking block (see {@link MFSConfig#getFanStrongerBlades()}).</li>
  *   <li>Collects all {@link Entity} instances inside the AABB and applies a
  *       velocity impulse of 0.35 m/tick in the {@link FanBlock#FACING} direction.</li>
  * </ol>
@@ -85,7 +85,7 @@ public class FanBlockEntity extends BlockEntity implements MenuProvider {
     @SuppressWarnings("unchecked")
     public FanBlockEntity(BlockPos pos, BlockState state) {
         super((net.minecraft.world.level.block.entity.BlockEntityType<FanBlockEntity>)
-                        MGRRegistryHelper.getBEType("fan"), pos, state);
+                        MFSRegistryHelper.getBEType("fan"), pos, state);
     }
 
     // ── Server tick ─────────────────────────────────────────────────────────────
@@ -100,7 +100,7 @@ public class FanBlockEntity extends BlockEntity implements MenuProvider {
         int distanceCount = Math.min(be.upgrades.getItem(2).getCount(), MAX_UPGRADES);
         int maxDepth      = 3 + distanceCount;
 
-        boolean strongerBlades = MGRConfig.getFanStrongerBlades();
+        boolean strongerBlades = MFSConfig.getFanStrongerBlades();
         int depth = computeDepth(level, pos, facing, maxDepth, strongerBlades);
         if (depth == 0) return;
 

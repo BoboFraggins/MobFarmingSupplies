@@ -1,6 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.logisticsorter;
 
-import net.bobofraggins.mobfarmingsupplies.register.MGRRegistryHelper;
+import net.bobofraggins.mobfarmingsupplies.register.MFSRegistryHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -54,7 +54,7 @@ public class LogisticSorterBlockEntity extends BlockEntity implements MenuProvid
     private boolean routing = false;           // re-entrancy guard for pushed-in items
 
     public LogisticSorterBlockEntity(BlockPos pos, BlockState state) {
-        super(MGRRegistryHelper.getBEType("logistic_sorter"), pos, state);
+        super(MFSRegistryHelper.getBEType("logistic_sorter"), pos, state);
         java.util.Arrays.fill(sides, SideMode.NONE);
     }
 

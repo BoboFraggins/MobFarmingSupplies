@@ -45,15 +45,15 @@ public class AbsorptionHopperMenu extends AbstractContainerMenu {
     /**
      * Top of the player inventory rows.
      * = Dialog.TITLE_H(17) + blank(8) + slots(54) + blank(8) + offset(34)
-     *   + blank(4) + showArea(20) + blank(4) + push(90) + blank(6) = 245
+     *   + blank(4) + showArea(20) + voidExcess(20) + blank(4) + push(90) + blank(6) = 265
      */
-    public static final int INV_TOP = 245;
+    public static final int INV_TOP = 265;
 
     /**
      * Top of the player hotbar row.
-     * = INV_TOP + 3×18 + hotbarGap(4) = 245 + 54 + 4 = 303
+     * = INV_TOP + 3×18 + hotbarGap(4) = 265 + 54 + 4 = 323
      */
-    public static final int HOTBAR_TOP = 303;
+    public static final int HOTBAR_TOP = 323;
 
     private final BlockPos pos;
 

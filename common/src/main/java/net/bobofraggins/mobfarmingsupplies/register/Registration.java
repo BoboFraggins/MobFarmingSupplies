@@ -5,7 +5,7 @@ import dev.architectury.registry.menu.MenuRegistry;
 import dev.architectury.registry.registries.DeferredRegister;
 import dev.architectury.registry.registries.RegistrySupplier;
 import net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommon;
-import net.bobofraggins.mobfarmingsupplies.MGRConfig;
+import net.bobofraggins.mobfarmingsupplies.MFSConfig;
 import net.bobofraggins.mobfarmingsupplies.absorptionhopper.AbsorptionHopperBlock;
 import net.bobofraggins.mobfarmingsupplies.absorptionhopper.AbsorptionHopperBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.absorptionhopper.AbsorptionHopperMenu;
@@ -24,6 +24,7 @@ import net.bobofraggins.mobfarmingsupplies.filterscribingterminal.FilterScribing
 import net.bobofraggins.mobfarmingsupplies.filterscribingterminal.FilterScribingTerminalMenu;
 import net.bobofraggins.mobfarmingsupplies.itemfilter.ItemFilterData;
 import net.bobofraggins.mobfarmingsupplies.logisticsorter.LogisticSorterBlock;
+import net.bobofraggins.mobfarmingsupplies.logisticsorter.LogisticSorterBlockItem;
 import net.bobofraggins.mobfarmingsupplies.logisticsorter.LogisticSorterBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.logisticsorter.LogisticSorterMenu;
 import net.bobofraggins.mobfarmingsupplies.itemfilter.ItemFilterItem;
@@ -56,6 +57,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.BucketItem;
@@ -539,63 +541,64 @@ public final class Registration {
                             .stacksTo(1)));
 
     // ── DNA Sample Pack items ─────────────────────────────────────────────────────
-    // Mob lists are config-driven (MGRConfig) and read lazily via supplier.
+    // Mob lists are config-driven (MFSConfig) and read lazily via supplier. The Common packs
+    // also add the natural spawns (of the given category) of the Clone-O-Matic's biome.
 
     public static final RegistrySupplier<DnaSamplePackItem> DNA_SAMPLE_COMMON_HOSTILE =
             ITEMS.register("dna_sample_common_hostile",
                     () -> new DnaSamplePackItem(new Item.Properties()
                             .setId(itemKey("dna_sample_common_hostile"))
                             .stacksTo(1),
-                            MGRConfig::getCommonHostilePackMobs));
+                            MFSConfig::getCommonHostilePackMobs, MobCategory.MONSTER));
 
     public static final RegistrySupplier<DnaSamplePackItem> DNA_SAMPLE_COMMON_PASSIVE =
             ITEMS.register("dna_sample_common_passive",
                     () -> new DnaSamplePackItem(new Item.Properties()
                             .setId(itemKey("dna_sample_common_passive"))
                             .stacksTo(1),
-                            MGRConfig::getCommonPassivePackMobs));
+                            MFSConfig::getCommonPassivePackMobs, MobCategory.CREATURE));
 
     public static final RegistrySupplier<DnaSamplePackItem> DNA_SAMPLE_AQUATIC =
             ITEMS.register("dna_sample_aquatic",
                     () -> new DnaSamplePackItem(new Item.Properties()
                             .setId(itemKey("dna_sample_aquatic"))
                             .stacksTo(1),
-                            MGRConfig::getAquaticPackMobs));
+                            MFSConfig::getAquaticPackMobs));
 
     public static final RegistrySupplier<DnaSamplePackItem> DNA_SAMPLE_RARE =
             ITEMS.register("dna_sample_rare",
                     () -> new DnaSamplePackItem(new Item.Properties()
                             .setId(itemKey("dna_sample_rare"))
                             .stacksTo(1),
-                            MGRConfig::getRareHostilePackMobs));
+                            MFSConfig::getRareHostilePackMobs));
 
     public static final RegistrySupplier<DnaSamplePackItem> DNA_SAMPLE_PASSIVE_RARE =
             ITEMS.register("dna_sample_passive_rare",
                     () -> new DnaSamplePackItem(new Item.Properties()
                             .setId(itemKey("dna_sample_passive_rare"))
                             .stacksTo(1),
-                            MGRConfig::getRarePassivePackMobs));
+                            MFSConfig::getRarePassivePackMobs));
 
     public static final RegistrySupplier<DnaSamplePackItem> DNA_SAMPLE_NETHER =
             ITEMS.register("dna_sample_nether",
                     () -> new DnaSamplePackItem(new Item.Properties()
                             .setId(itemKey("dna_sample_nether"))
                             .stacksTo(1),
-                            MGRConfig::getNetherPackMobs));
+                            MFSConfig::getNetherPackMobs));
 
     public static final RegistrySupplier<DnaSamplePackItem> DNA_SAMPLE_BABY =
             ITEMS.register("dna_sample_baby",
                     () -> new DnaSamplePackItem(new Item.Properties()
                             .setId(itemKey("dna_sample_baby"))
                             .stacksTo(1),
-                            MGRConfig::getBabyPackMobs, true));
+                            MFSConfig::getBabyPackMobs, true));
 
     public static final RegistrySupplier<DnaSamplePackItem> DNA_SAMPLE_WRONG =
             ITEMS.register("dna_sample_wrong",
                     () -> new DnaSamplePackItem(new Item.Properties()
                             .setId(itemKey("dna_sample_wrong"))
                             .stacksTo(1),
-                            MGRConfig::getWrongMobsPackMobs));
+                            MFSConfig::getWrongMobsPackMobs));
 
     // ── Filter Scribing Terminal ──────────────────────────────────────────────────
 
@@ -633,7 +636,7 @@ public final class Registration {
 
     public static final RegistrySupplier<BlockItem> LOGISTIC_SORTER_ITEM =
             ITEMS.register("logistic_sorter",
-                    () -> new BlockItem(LOGISTIC_SORTER.get(), new Item.Properties()
+                    () -> new LogisticSorterBlockItem(LOGISTIC_SORTER.get(), new Item.Properties()
                             .setId(itemKey("logistic_sorter"))));
 
     public static final RegistrySupplier<BlockEntityType<LogisticSorterBlockEntity>> LOGISTIC_SORTER_BE_TYPE =

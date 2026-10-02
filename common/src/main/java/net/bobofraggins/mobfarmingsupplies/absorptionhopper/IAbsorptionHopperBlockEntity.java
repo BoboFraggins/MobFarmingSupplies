@@ -18,6 +18,8 @@ public interface IAbsorptionHopperBlockEntity {
 
     void adjustOffset(int axis, int delta);
 
+    void setVoidExcess(boolean on);
+
     /** Maps a side-mask bit index (0–5) to its absolute world {@link Direction}. */
     static Direction bitToWorldDir(int bit) {
         return switch (bit) {

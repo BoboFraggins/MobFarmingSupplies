@@ -1,6 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.mobharvester;
 
-import net.bobofraggins.mobfarmingsupplies.register.MGRRegistryHelper;
+import net.bobofraggins.mobfarmingsupplies.register.MFSRegistryHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -85,7 +85,7 @@ public class MobHarvesterBlockEntity extends BlockEntity implements MenuProvider
 
     public MobHarvesterBlockEntity(BlockPos pos, BlockState state) {
         super((net.minecraft.world.level.block.entity.BlockEntityType<MobHarvesterBlockEntity>)
-                MGRRegistryHelper.getBEType("mob_harvester"), pos, state);
+                MFSRegistryHelper.getBEType("mob_harvester"), pos, state);
         killBox = new AABB(
                 pos.getX() + 0.5 - KILL_WIDTH, pos.getY(),       pos.getZ() + 0.5 - KILL_WIDTH,
                 pos.getX() + 0.5 + KILL_WIDTH, pos.getY() + KILL_HEIGHT, pos.getZ() + 0.5 + KILL_WIDTH);
@@ -112,8 +112,8 @@ public class MobHarvesterBlockEntity extends BlockEntity implements MenuProvider
         if (targets.isEmpty()) return;
 
         if (swordDirty) {
-            if (harvesterSwordItem == null) harvesterSwordItem = MGRRegistryHelper.getItem("harvester_sword");
-            if (beheadingLevelType == null) beheadingLevelType = MGRRegistryHelper.getDataComponentType("beheading_level");
+            if (harvesterSwordItem == null) harvesterSwordItem = MFSRegistryHelper.getItem("harvester_sword");
+            if (beheadingLevelType == null) beheadingLevelType = MFSRegistryHelper.getDataComponentType("beheading_level");
             ItemStack sword = new ItemStack(harvesterSwordItem);
             int sharpness = getUpgradeCount(HarvesterUpgradeItem.UpgradeType.SHARPNESS);
             int looting   = getUpgradeCount(HarvesterUpgradeItem.UpgradeType.LOOTING);

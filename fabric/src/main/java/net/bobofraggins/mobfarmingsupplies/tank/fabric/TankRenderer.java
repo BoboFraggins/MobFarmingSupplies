@@ -41,7 +41,7 @@ public class TankRenderer implements BlockEntityRenderer<TankBlockEntity, TankRe
         boolean hasFill;
         int fr, fg, fb, fa;
         float fillTop;
-        float uL, uR, vT, vB;
+        float uL, uR, vT, vB, vMax;
         int fluidLight;
     }
 
@@ -100,6 +100,7 @@ public class TankRenderer implements BlockEntityRenderer<TankBlockEntity, TankRe
         state.uR = sprite.getU1();
         state.vT = sprite.getV0();
         state.vB = Mth.lerp(fillFrac, sprite.getV0(), sprite.getV1());
+        state.vMax = sprite.getV1();
         state.hasFill = true;
     }
 
@@ -115,14 +116,14 @@ public class TankRenderer implements BlockEntityRenderer<TankBlockEntity, TankRe
         float fillTop = state.fillTop;
         int r = state.fr, g = state.fg, b = state.fb, a = state.fa;
         int light = state.fluidLight;
-        float uL = state.uL, uR = state.uR, vT = state.vT, vB = state.vB;
+        float uL = state.uL, uR = state.uR, vT = state.vT, vB = state.vB, vMax = state.vMax;
 
         poseStack.pushPose();
         collector.submitCustomGeometry(
                 poseStack,
                 Sheets.translucentBlockItemSheet(),
                 (pose, vc) -> TankFluidGeometry.renderCubeFill(
-                        vc, pose, r, g, b, a, light, overlay, uL, vT, uR, vB, fillTop));
+                        vc, pose, r, g, b, a, light, overlay, uL, vT, uR, vB, vMax, fillTop));
         poseStack.popPose();
     }
 }
