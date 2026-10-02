@@ -2,14 +2,13 @@
   "type": "minecraft:crafting_shaped",
   "pattern": [
     "CRC",
-    "WOW",
+    "WRW",
     "CPC"
   ],
   "key": {
     "C": "#c:nuggets/copper",
     "R": "#c:dusts/redstone",
     "W": "#c:plates/silicon",
-    "O": "minecraft:comparator",
     "P": "#c:dyes/purple"
   },
   "result": {

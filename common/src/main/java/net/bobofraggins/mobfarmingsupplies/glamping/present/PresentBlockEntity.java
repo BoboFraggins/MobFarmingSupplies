@@ -1,6 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.glamping.present;
 
-import net.bobofraggins.mobfarmingsupplies.register.MGRRegistryHelper;
+import net.bobofraggins.mobfarmingsupplies.register.MFSRegistryHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
@@ -23,7 +23,7 @@ public class PresentBlockEntity extends BlockEntity {
     private CompoundTag wrappedEntityData;
 
     public PresentBlockEntity(BlockPos pos, BlockState state) {
-        super(MGRRegistryHelper.getBEType("present"), pos, state);
+        super(MFSRegistryHelper.getBEType("present"), pos, state);
     }
 
     public boolean hasWrappedBlock() {

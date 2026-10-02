@@ -4,7 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.bobofraggins.mobfarmingsupplies.MGRConfig;
+import net.bobofraggins.mobfarmingsupplies.MFSConfig;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
@@ -22,7 +22,7 @@ import java.util.Optional;
 
 /**
  * Chest-loot modifier for the Magic Hat. The drop chance is read from
- * {@link MGRConfig#getMagicHatChestChance()} at apply-time (rather than baked into the
+ * {@link MFSConfig#getMagicHatChestChance()} at apply-time (rather than baked into the
  * JSON conditions), so it can be changed via the mod's config file without editing data files.
  */
 public class MagicHatChestLootModifier extends LootModifier {
@@ -57,7 +57,7 @@ public class MagicHatChestLootModifier extends LootModifier {
     @Override
     protected ObjectArrayList<ItemStack> doApply(ObjectArrayList<ItemStack> generatedLoot, LootContext context) {
         Item item = getItem();
-        if (item != null && context.getRandom().nextFloat() < (float) MGRConfig.getMagicHatChestChance()) {
+        if (item != null && context.getRandom().nextFloat() < (float) MFSConfig.getMagicHatChestChance()) {
             generatedLoot.add(new ItemStack(item));
         }
         return generatedLoot;

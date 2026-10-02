@@ -1,6 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.filterscribingterminal;
 
-import net.bobofraggins.mobfarmingsupplies.register.MGRRegistryHelper;
+import net.bobofraggins.mobfarmingsupplies.register.MFSRegistryHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.Containers;
 import net.minecraft.world.SimpleContainer;
@@ -34,7 +34,7 @@ public class FilterScribingTerminalBlockEntity extends BlockEntity {
     };
 
     public FilterScribingTerminalBlockEntity(BlockPos pos, BlockState state) {
-        super(MGRRegistryHelper.getBEType("filter_scribing_terminal"), pos, state);
+        super(MFSRegistryHelper.getBEType("filter_scribing_terminal"), pos, state);
     }
 
     public SimpleContainer getInput() { return input; }

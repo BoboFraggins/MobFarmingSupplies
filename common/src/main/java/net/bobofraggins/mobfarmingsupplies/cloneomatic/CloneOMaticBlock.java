@@ -29,7 +29,7 @@ import net.bobofraggins.mobfarmingsupplies.shared.menu.ExtendedMenus;
  * Clone-O-Matic block.
  *
  * <p>Spawns mobs from its DNA slots when continuously powered by redstone.
- * Spawn attempts are gated by {@link net.bobofraggins.mobfarmingsupplies.neoforge.MGRServerConfig#CLONE_O_MATIC_SPAWN_INTERVAL}.
+ * Spawn attempts are gated by {@link net.bobofraggins.mobfarmingsupplies.neoforge.MFSServerConfig#CLONE_O_MATIC_SPAWN_INTERVAL}.
  * The block has a single block-state property, {@link #POWERED}, that mirrors the
  * incoming redstone signal; actual spawn logic runs only when {@code POWERED=true}.
  *

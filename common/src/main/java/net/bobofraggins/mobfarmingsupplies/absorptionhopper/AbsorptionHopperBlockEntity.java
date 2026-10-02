@@ -1,7 +1,7 @@
 package net.bobofraggins.mobfarmingsupplies.absorptionhopper;
 
 import dev.architectury.fluid.FluidStack;
-import net.bobofraggins.mobfarmingsupplies.register.MGRRegistryHelper;
+import net.bobofraggins.mobfarmingsupplies.register.MFSRegistryHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -38,6 +38,10 @@ import java.util.List;
  *   <li>Push items (one full stack) and fluid (up to {@value #PUSH_FLUID_MB} mB) to every enabled
  *       adjacent side — delegated to {@link AbsorptionHopperBlockEntityPlatform#outputPhase}.</li>
  * </ol>
+ *
+ * <p>With {@link #voidExcess} on, items and XP orbs in the pickup area that don't fit are
+ * destroyed instead of being left to pile up — a safety valve for when the collection system
+ * downstream backs up. Items a player dropped are never voided.
  */
 public class AbsorptionHopperBlockEntity extends BlockEntity implements MenuProvider, IAbsorptionHopperBlockEntity {
 
@@ -73,6 +77,9 @@ public class AbsorptionHopperBlockEntity extends BlockEntity implements MenuProv
     private int offsetY = 0;
     private int offsetZ = 0;
 
+    /** Destroy pickups that don't fit instead of leaving them on the ground. Off by default. */
+    private boolean voidExcess = false;
+
     private int tickCounter = 0;
     private AABB cachedPickupBox = null;
     private boolean clientSyncPending = false;
@@ -83,7 +90,7 @@ public class AbsorptionHopperBlockEntity extends BlockEntity implements MenuProv
     // ── Constructor ─────────────────────────────────────────────────────────────
 
     public AbsorptionHopperBlockEntity(BlockPos pos, BlockState state) {
-        super(MGRRegistryHelper.getBEType("absorption_hopper"), pos, state);
+        super(MFSRegistryHelper.getBEType("absorption_hopper"), pos, state);
     }
 
     // ── Server tick ─────────────────────────────────────────────────────────────
@@ -123,22 +130,30 @@ public class AbsorptionHopperBlockEntity extends BlockEntity implements MenuProv
             if (canInsertItem(stack)) {
                 insertItem(stack);
                 setChanged();
-                if (stack.isEmpty()) ie.discard();
+            }
+            if (stack.isEmpty()) {
+                ie.discard();
+            } else if (voidExcess && !(ie.getOwner() instanceof Player)) {
+                // Whatever didn't fit. Player-dropped items are spared so nobody loses gear by
+                // dropping it near the hopper (the thrower only resolves while they're online).
+                ie.discard();
             }
         }
 
-        if (tankAmount < TANK_CAPACITY) {
+        if (tankAmount < TANK_CAPACITY || voidExcess) {
             List<ExperienceOrb> orbs = level.getEntitiesOfClass(ExperienceOrb.class, box);
             for (ExperienceOrb orb : orbs) {
                 int mb = orb.getValue() * MB_PER_XP;
                 if (tankAmount + mb <= TANK_CAPACITY) {
                     tankAmount += mb;
                     if (tankFluid.isEmpty()) {
-                        if (xpJuiceFluid == null) xpJuiceFluid = MGRRegistryHelper.getFluid("xp_juice");
+                        if (xpJuiceFluid == null) xpJuiceFluid = MFSRegistryHelper.getFluid("xp_juice");
                         tankFluid = FluidStack.create(xpJuiceFluid, 1);
                     }
                     orb.discard();
                     setChanged();
+                } else if (voidExcess) {
+                    orb.discard();
                 }
             }
         }
@@ -201,6 +216,12 @@ public class AbsorptionHopperBlockEntity extends BlockEntity implements MenuProv
     public int getOffsetX()           { return offsetX; }
     public int getOffsetY()           { return offsetY; }
     public int getOffsetZ()           { return offsetZ; }
+    public boolean isVoidExcess()     { return voidExcess; }
+
+    public void setVoidExcess(boolean on) {
+        voidExcess = on;
+        setChanged();
+    }
 
     public void setPushSides(int mask) {
         pushSides = mask & 0x3F;
@@ -287,6 +308,7 @@ public class AbsorptionHopperBlockEntity extends BlockEntity implements MenuProv
         output.putInt("OffsetX", offsetX);
         output.putInt("OffsetY", offsetY);
         output.putInt("OffsetZ", offsetZ);
+        output.putBoolean("VoidExcess", voidExcess);
     }
 
     @Override
@@ -308,6 +330,7 @@ public class AbsorptionHopperBlockEntity extends BlockEntity implements MenuProv
         offsetX   = input.getIntOr("OffsetX", 0);
         offsetY   = input.getIntOr("OffsetY", 0);
         offsetZ   = input.getIntOr("OffsetZ", 0);
+        voidExcess = input.getBooleanOr("VoidExcess", false);
     }
 
     // ── Client sync ───────────────────────────────────────────────────────────────

@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.dna;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
@@ -23,10 +24,19 @@ public interface IDnaSampleItem {
      *
      * @param stack  the item stack in the Clone-O-Matic slot
      * @param level  the server level to spawn into
+     * @param pos    the Clone-O-Matic's position (packs use its biome's natural spawns)
      * @param random a random source (typically {@code level.getRandom()})
      * @return a newly constructed {@link Entity} not yet added to the world,
      *         or {@code null} if the sample is empty / has invalid data
      */
     @Nullable
-    Entity createSpawnEntity(ItemStack stack, ServerLevel level, RandomSource random);
+    Entity createSpawnEntity(ItemStack stack, ServerLevel level, BlockPos pos, RandomSource random);
+
+    /**
+     * Called once the Clone-O-Matic has placed {@code entity} at its final position, just
+     * before adding it to the world. Anything that depends on where the mob stands, or that
+     * adds companions to the world (a zombie's chicken jockey), belongs here rather than in
+     * {@link #createSpawnEntity}, which runs before the spawn spot has been found or checked.
+     */
+    default void onSpawnPositioned(ItemStack stack, ServerLevel level, Entity entity) {}
 }

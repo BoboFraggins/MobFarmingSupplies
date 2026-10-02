@@ -1,8 +1,9 @@
 package net.bobofraggins.mobfarmingsupplies.cloneomatic;
 
-import net.bobofraggins.mobfarmingsupplies.MGRConfig;
+import net.bobofraggins.mobfarmingsupplies.MFSConfig;
 import net.bobofraggins.mobfarmingsupplies.dna.IDnaSampleItem;
-import net.bobofraggins.mobfarmingsupplies.register.MGRRegistryHelper;
+import net.bobofraggins.mobfarmingsupplies.glamping.magichat.MagicHatZombieHandler;
+import net.bobofraggins.mobfarmingsupplies.register.MFSRegistryHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -19,6 +20,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.animal.squid.GlowSquid;
 import net.minecraft.world.entity.animal.squid.Squid;
+import net.minecraft.world.entity.monster.zombie.Zombie;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -39,7 +41,7 @@ import java.util.List;
  * Block entity for the Clone-O-Matic.
  *
  * <p>Holds nine DNA sample slots.  When the block is powered by redstone, a spawn
- * attempt fires every {@link MGRConfig#getCloneOMaticSpawnInterval()} ticks.
+ * attempt fires every {@link MFSConfig#getCloneOMaticSpawnInterval()} ticks.
  * Each slot accepts a {@link net.bobofraggins.mobfarmingsupplies.dna.DnaSampleItem};
  * on each proc a random populated slot is chosen and its stored entity NBT is used to
  * reconstruct the mob via {@link net.minecraft.world.entity.EntityType#loadEntityRecursive}.
@@ -89,7 +91,7 @@ public class CloneOMaticBlockEntity extends BlockEntity implements MenuProvider 
     @SuppressWarnings("unchecked")
     public CloneOMaticBlockEntity(BlockPos pos, BlockState state) {
         super((net.minecraft.world.level.block.entity.BlockEntityType<CloneOMaticBlockEntity>)
-                MGRRegistryHelper.getBEType("clone_o_matic"), pos, state);
+                MFSRegistryHelper.getBEType("clone_o_matic"), pos, state);
     }
 
     // ── Server tick ──────────────────────────────────────────────────────────────
@@ -104,7 +106,7 @@ public class CloneOMaticBlockEntity extends BlockEntity implements MenuProvider 
             return;
         }
 
-        int interval = MGRConfig.getCloneOMaticSpawnInterval();
+        int interval = MFSConfig.getCloneOMaticSpawnInterval();
         if (++spawnTickCounter >= interval) {
             spawnTickCounter = 0;
             trySpawn(level, pos);
@@ -139,7 +141,7 @@ public class CloneOMaticBlockEntity extends BlockEntity implements MenuProvider 
 
             ItemStack chosen = pool.get(serverLevel.getRandom().nextInt(pool.size()));
             Entity entity = ((IDnaSampleItem) chosen.getItem())
-                    .createSpawnEntity(chosen, serverLevel, serverLevel.getRandom());
+                    .createSpawnEntity(chosen, serverLevel, pos, serverLevel.getRandom());
             if (entity == null) continue;
 
             double ox = (serverLevel.getRandom().nextDouble() * 2.0 - 1.0) * SPAWN_RADIUS_XZ;
@@ -168,7 +170,16 @@ public class CloneOMaticBlockEntity extends BlockEntity implements MenuProvider 
             }
 
             entity.setPos(sx, sy, sz);
-            serverLevel.addFreshEntity(entity);
+            // Spawn setup may hit the Magic Hat's natural-spawn hook (the Fabric mixin does; NeoForge's
+            // event doesn't fire for it). Skip that roll and use the Clone-O-Matic's own, lower chance.
+            Entity spawned = entity;
+            MagicHatZombieHandler.withoutNaturalRoll(() ->
+                    ((IDnaSampleItem) chosen.getItem()).onSpawnPositioned(chosen, serverLevel, spawned));
+            if (entity instanceof Zombie zombie) {
+                MagicHatZombieHandler.tryEquipMagicHat(zombie, serverLevel.getRandom(),
+                        MagicHatZombieHandler.CLONE_O_MATIC_CHANCE);
+            }
+            serverLevel.addFreshEntityWithPassengers(entity);
         }
     }
 

@@ -1,6 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.picnicbasket;
 
-import net.bobofraggins.mobfarmingsupplies.register.MGRRegistryHelper;
+import net.bobofraggins.mobfarmingsupplies.register.MFSRegistryHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -117,7 +117,7 @@ public class PicnicBasketBlockEntity extends BlockEntity implements MenuProvider
     // ── Constructor ─────────────────────────────────────────────────────────────
 
     public PicnicBasketBlockEntity(BlockPos pos, BlockState state) {
-        super(MGRRegistryHelper.getBEType("picnic_basket"), pos, state);
+        super(MFSRegistryHelper.getBEType("picnic_basket"), pos, state);
     }
 
     // ── Auto-feed flag ───────────────────────────────────────────────────────────

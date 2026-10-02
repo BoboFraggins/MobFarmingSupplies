@@ -5,10 +5,8 @@ import net.bobofraggins.mobfarmingsupplies.shared.ui.IDialogPane;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
@@ -17,6 +15,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import net.bobofraggins.mobfarmingsupplies.shared.ui.ToggleSwitch;
 
 /**
  * The centre controls of the Filter Scribing Terminal, stacked vertically and centred:
@@ -42,23 +41,20 @@ public class ScribingControlsPane implements IDialogPane {
     public static final int GHOST_Y = 4;
 
     // ── Toggle (64 × 16 sprites) ──────────────────────────────────────────────────
-    private static final int TOGGLE_W = 64;
-    private static final int TOGGLE_H = 16;
+    private static final int TOGGLE_W = ToggleSwitch.WIDTH;
+    private static final int TOGGLE_H = ToggleSwitch.HEIGHT;
     private static final int TOGGLE_X = (WIDTH - TOGGLE_W) / 2; // 56
     private static final int TOGGLE_Y = GHOST_Y + 18 + 4;       // 26
-    private static final Identifier TOGGLE_IS =
-            Identifier.fromNamespaceAndPath("mobfarmingsupplies", "widget/toggle_is");
-    private static final Identifier TOGGLE_IS_NOT =
-            Identifier.fromNamespaceAndPath("mobfarmingsupplies", "widget/toggle_is_not");
 
     // ── List ──────────────────────────────────────────────────────────────────────
-    private static final int LIST_W       = 92;
-    private static final int LIST_X       = (WIDTH - LIST_W) / 2; // 42
+    // 92 px of text area plus a scrollbar as wide as a row is tall; clears both item slots.
+    private static final int LIST_W       = 98;
+    private static final int LIST_X       = (WIDTH - LIST_W) / 2; // 39
     private static final int LIST_Y       = TOGGLE_Y + TOGGLE_H + 4; // 46
     private static final int ROW_H        = 11;
     private static final int VISIBLE_ROWS = 4;
     private static final int LIST_H       = VISIBLE_ROWS * ROW_H + 2; // 46, incl. 1 px frame
-    private static final int SCROLLBAR_W  = 5;
+    private static final int SCROLLBAR_W  = ROW_H;
 
     private static final int COLOR_FRAME_DARK  = 0xFF373737;
     private static final int COLOR_FRAME_LIGHT = 0xFFFFFFFF;
@@ -137,8 +133,8 @@ public class ScribingControlsPane implements IDialogPane {
         if (inGhost(mouseX, mouseY)) g.fill(GHOST_X + 1, GHOST_Y + 1, GHOST_X + 17, GHOST_Y + 17, 0x80FFFFFF);
 
         // Toggle
-        g.blitSprite(RenderPipelines.GUI_TEXTURED, isNot ? TOGGLE_IS_NOT : TOGGLE_IS,
-                TOGGLE_X, TOGGLE_Y, TOGGLE_W, TOGGLE_H);
+        ToggleSwitch.draw(g, font, TOGGLE_X, TOGGLE_Y, !isNot, Component.translatable(
+                isNot ? "gui.mobfarmingsupplies.toggle.is_not" : "gui.mobfarmingsupplies.toggle.is"));
 
         // List
         drawInset(g, LIST_X, LIST_Y, LIST_W, LIST_H);

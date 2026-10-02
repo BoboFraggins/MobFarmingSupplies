@@ -2,7 +2,7 @@ package net.bobofraggins.mobfarmingsupplies.dna;
 
 import dev.architectury.event.EventResult;
 import dev.architectury.event.events.common.InteractionEvent;
-import net.bobofraggins.mobfarmingsupplies.register.MGRTags;
+import net.bobofraggins.mobfarmingsupplies.register.MFSTags;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Prediction;
@@ -43,7 +43,7 @@ public final class DnaCollectorEvents {
             return EventResult.pass();
         }
 
-        if (target.getType().builtInRegistryHolder().is(MGRTags.EntityTypes.NO_DNA_SAMPLING)) {
+        if (target.getType().builtInRegistryHolder().is(MFSTags.EntityTypes.NO_DNA_SAMPLING)) {
             return EventResult.pass();
         }
 
@@ -56,7 +56,7 @@ public final class DnaCollectorEvents {
         TagValueOutput output = TagValueOutput.createWithContext(
                 ProblemReporter.DISCARDING, player.level().registryAccess());
         target.save(output);
-        CompoundTag entityNbt = output.buildResult();
+        CompoundTag entityNbt = DnaSampleItem.stripSampleNbt(output.buildResult());
 
         // ── Compute display name ──────────────────────────────────────────────────
         String mobName = target.hasCustomName()

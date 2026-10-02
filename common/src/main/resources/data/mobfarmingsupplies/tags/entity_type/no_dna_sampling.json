@@ -3,6 +3,7 @@
   "values": [
     "minecraft:wither",
     "minecraft:ender_dragon",
+    "minecraft:armor_stand",
     { "id": "#mob_farming_supplies:no_swab", "required": false }
   ]
 }

@@ -4,7 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.bobofraggins.mobfarmingsupplies.MGRConfig;
+import net.bobofraggins.mobfarmingsupplies.MFSConfig;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
@@ -27,8 +27,8 @@ import java.util.Optional;
  * so this modifier is safe to load even when the target mod (and thus the
  * item) is absent — it simply produces no output in that case.
  *
- * <p>The drop chance is read from {@link MGRConfig#getDnaSamplePackCommonChestChance()}
- * / {@link MGRConfig#getDnaSamplePackRareChestChance()} at apply-time (rather than baked
+ * <p>The drop chance is read from {@link MFSConfig#getDnaSamplePackCommonChestChance()}
+ * / {@link MFSConfig#getDnaSamplePackRareChestChance()} at apply-time (rather than baked
  * into the JSON conditions), so it can be changed via the mod's config file without
  * editing data files. The {@code chance_tier} field selects which configured chance
  * applies:
@@ -78,11 +78,11 @@ public class DnaSamplePackChestLootModifier extends LootModifier {
         if (item == null) return generatedLoot;
 
         float chance = switch (chanceTier) {
-            case "common" -> (float) MGRConfig.getDnaSamplePackCommonChestChance();
-            case "rare" -> (float) MGRConfig.getDnaSamplePackRareChestChance();
+            case "common" -> (float) MFSConfig.getDnaSamplePackCommonChestChance();
+            case "rare" -> (float) MFSConfig.getDnaSamplePackRareChestChance();
             default -> ChestLootTables.NETHER_END_CHESTS.contains(context.getQueriedLootTableId().toString())
-                    ? (float) MGRConfig.getDnaSamplePackRareChestChance()
-                    : (float) MGRConfig.getDnaSamplePackCommonChestChance();
+                    ? (float) MFSConfig.getDnaSamplePackRareChestChance()
+                    : (float) MFSConfig.getDnaSamplePackCommonChestChance();
         };
 
         if (context.getRandom().nextFloat() < chance) {

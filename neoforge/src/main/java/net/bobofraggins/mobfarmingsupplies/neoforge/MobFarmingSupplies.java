@@ -35,7 +35,7 @@ public class MobFarmingSupplies {
 
     public MobFarmingSupplies(IEventBus modEventBus, ModContainer modContainer) {
         NeoForgeOnlyRegistration.register(modEventBus);
-        modContainer.registerConfig(ModConfig.Type.SERVER, MGRServerConfig.SPEC);
+        modContainer.registerConfig(ModConfig.Type.SERVER, MFSServerConfig.SPEC);
 
         // EnderTeleport suppression — NeoForge-specific (no Architectury equivalent)
         NeoForge.EVENT_BUS.register(NeoForgeEnderInhibitorEvents.class);
@@ -52,7 +52,7 @@ public class MobFarmingSupplies {
         if (curiosLoaded) {
             MagicHatCurioSetup.onCommonSetup(modEventBus);
         }
-        // Networking registered in MobFarmingSuppliesCommon.init() via MGRNetwork (Phase 6)
+        // Networking registered in MobFarmingSuppliesCommon.init() via MFSNetwork (Phase 6)
 
         if (Platform.getEnvironment() == Env.CLIENT) {
             // Deferred to FMLClientSetupEvent so RegistrySupplier.get() calls are safe (registries committed by then)

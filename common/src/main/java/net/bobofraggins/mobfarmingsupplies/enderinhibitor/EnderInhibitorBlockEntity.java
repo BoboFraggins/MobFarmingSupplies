@@ -1,6 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.enderinhibitor;
 
-import net.bobofraggins.mobfarmingsupplies.register.MGRRegistryHelper;
+import net.bobofraggins.mobfarmingsupplies.register.MFSRegistryHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -39,7 +39,7 @@ public class EnderInhibitorBlockEntity extends BlockEntity implements MenuProvid
     public boolean showArea = false;
 
     public EnderInhibitorBlockEntity(BlockPos pos, BlockState state) {
-        super(MGRRegistryHelper.getBEType("ender_inhibitor"), pos, state);
+        super(MFSRegistryHelper.getBEType("ender_inhibitor"), pos, state);
     }
 
     @Override

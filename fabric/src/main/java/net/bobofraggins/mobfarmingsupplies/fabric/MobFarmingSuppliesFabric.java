@@ -1,7 +1,7 @@
 package net.bobofraggins.mobfarmingsupplies.fabric;
 
 import dev.architectury.platform.Platform;
-import net.bobofraggins.mobfarmingsupplies.fabric.MGRConfigImpl;
+import net.bobofraggins.mobfarmingsupplies.fabric.MFSConfigImpl;
 import net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommon;
 import net.bobofraggins.mobfarmingsupplies.absorptionhopper.AbsorptionHopperBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.absorptionhopper.FabricAbsorptionHopperFluidStorage;
@@ -34,7 +34,7 @@ public class MobFarmingSuppliesFabric implements ModInitializer {
     @Override
     public void onInitialize() {
         // TODO Phase 4: server-side events will be registered here (EnderInhibitor ender teleport mixin)
-        ServerLifecycleEvents.SERVER_STARTING.register(server -> MGRConfigImpl.load());
+        ServerLifecycleEvents.SERVER_STARTING.register(server -> MFSConfigImpl.load());
         ModCompatRegistration.register();
         Registration.register();
         CustomIngredientSerializer.register(FabricFluidContainerIngredient.SERIALIZER);

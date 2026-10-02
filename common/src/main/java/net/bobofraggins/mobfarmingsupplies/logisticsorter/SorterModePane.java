@@ -5,22 +5,20 @@ import net.bobofraggins.mobfarmingsupplies.shared.ui.PlayerInventoryPane;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
-import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.network.chat.Component;
+import net.bobofraggins.mobfarmingsupplies.shared.ui.ToggleSwitch;
 
 /** The AND / OR toggle: whether an item must pass all of the sorter's filters, or just one. */
 class SorterModePane implements IDialogPane {
 
     public static final int HEIGHT = 20;
 
-    private static final int TOGGLE_W = 64;
-    private static final int TOGGLE_H = 16;
+    private static final int TOGGLE_W = ToggleSwitch.WIDTH;
+    private static final int TOGGLE_H = ToggleSwitch.HEIGHT;
     private static final int TOGGLE_X = (PlayerInventoryPane.WIDTH - TOGGLE_W) / 2;
     private static final int TOGGLE_Y = (HEIGHT - TOGGLE_H) / 2;
-    private static final Identifier TOGGLE_AND = Identifier.fromNamespaceAndPath("mobfarmingsupplies", "widget/toggle_and");
-    private static final Identifier TOGGLE_OR  = Identifier.fromNamespaceAndPath("mobfarmingsupplies", "widget/toggle_or");
 
     private final SorterConfigView config;
 
@@ -33,8 +31,9 @@ class SorterModePane implements IDialogPane {
 
     @Override
     public void render(GuiGraphicsExtractor g, Font font, int width, int mouseX, int mouseY, float pt) {
-        g.blitSprite(RenderPipelines.GUI_TEXTURED, config.andMode() ? TOGGLE_AND : TOGGLE_OR,
-                TOGGLE_X, TOGGLE_Y, TOGGLE_W, TOGGLE_H);
+        boolean and = config.andMode();
+        ToggleSwitch.draw(g, font, TOGGLE_X, TOGGLE_Y, !and, Component.translatable(
+                and ? "gui.mobfarmingsupplies.toggle.and" : "gui.mobfarmingsupplies.toggle.or"));
     }
 
     @Override

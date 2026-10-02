@@ -10,7 +10,7 @@ import dev.architectury.injectables.annotations.ExpectPlatform;
  * {@link PicnicBasketAccessoryPlatform}, even though both are conceptually about the same
  * feature. Architectury's {@code @ExpectPlatform} requires every annotated method of a common
  * class to be implemented together in one matching {@code <platform>.<ClassName>Impl} class
- * (same convention as {@code MGRConfig}/{@code MGRConfigImpl} elsewhere in this codebase) — so
+ * (same convention as {@code MFSConfig}/{@code MFSConfigImpl} elsewhere in this codebase) — so
  * if this check lived in the same class as {@code findAccessoryBasket}/{@code
  * writeAccessoryBasket}, calling it would require loading that whole class, which references
  * Curios/Trinkets types in its other methods. Loading a class means verifying <em>all</em> of

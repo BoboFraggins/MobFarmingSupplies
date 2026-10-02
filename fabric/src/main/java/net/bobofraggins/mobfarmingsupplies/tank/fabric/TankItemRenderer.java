@@ -123,11 +123,12 @@ public class TankItemRenderer implements SpecialModelRenderer<TankContents> {
         float uL = sprite.getU0(), uR = sprite.getU1();
         float vT = sprite.getV0();
         float vB = Mth.lerp(fillFrac, sprite.getV0(), sprite.getV1());
+        float vMax = sprite.getV1();
 
         final int ffrF = fr, ffgF = fg, ffbF = fb, ffaF = fa, flF = fluidLight, overlayF = packedOverlay;
         collector.submitCustomGeometry(poseStack, Sheets.translucentBlockItemSheet(),
                 (pose, vc) -> TankFluidGeometry.renderCubeFill(
-                        vc, pose, ffrF, ffgF, ffbF, ffaF, flF, overlayF, uL, vT, uR, vB, fillTop));
+                        vc, pose, ffrF, ffgF, ffbF, ffaF, flF, overlayF, uL, vT, uR, vB, vMax, fillTop));
     }
 
     public record Unbaked() implements SpecialModelRenderer.Unbaked<TankContents> {

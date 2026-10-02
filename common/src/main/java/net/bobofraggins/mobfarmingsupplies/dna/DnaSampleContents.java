@@ -10,9 +10,10 @@ import net.minecraft.network.codec.StreamCodec;
 /**
  * Data component that attaches mob identity to a {@link DnaSampleItem}.
  *
- * <p>{@link #entityNbt} holds the complete entity save produced by
+ * <p>{@link #entityNbt} holds the entity save produced by
  * {@link net.minecraft.world.entity.Entity#save(net.minecraft.world.level.storage.ValueOutput)},
- * including the {@code "id"} key needed to reconstruct the entity type.
+ * including the {@code "id"} key needed to reconstruct the entity type, with carried items
+ * and transient state removed (see {@link DnaSampleItem#stripSampleNbt}).
  * {@link #mobName} is the human-readable label captured at collection time
  * (the mob's custom name if set, otherwise its entity-type translation string).
  */
