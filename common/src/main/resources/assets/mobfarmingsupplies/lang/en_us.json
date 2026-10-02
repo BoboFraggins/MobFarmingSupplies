@@ -68,6 +68,7 @@
   "item.mobfarmingsupplies.filter_scribing_terminal": "Filter Scribing Terminal",
   "block.mobfarmingsupplies.logistic_sorter": "Logistic Sorter",
   "item.mobfarmingsupplies.logistic_sorter": "Logistic Sorter",
+  "item.mobfarmingsupplies.logistic_sorter.tooltip": "Sorts items between adjacent inventories using Item Filters",
   "container.mobfarmingsupplies.logistic_sorter.connections": "Connections:",
   "gui.mobfarmingsupplies.absorption_hopper.void_excess": "Void Excess:",
   "gui.mobfarmingsupplies.toggle.on": "On",

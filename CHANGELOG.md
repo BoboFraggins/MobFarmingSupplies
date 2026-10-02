@@ -10,7 +10,9 @@
 
 * Fixed squids getting trapped inside vector plates
 * Fixed rendering bug with surface of fluids in tanks
-* Fixed "common" dna samples will now include all local biome spawns, too
+* Fixed "common" DNA Samples will now include all local biome spawns, too
+* Fixed call finalizeSpawn on DNA Pack spawns to ensure rich variety of mobs
+* Fixed item duplication with DNA Samples retaining mobs' inventory items
 
 ## 26.3.0.2, 26.2.0.3, 26.1.2.5
 

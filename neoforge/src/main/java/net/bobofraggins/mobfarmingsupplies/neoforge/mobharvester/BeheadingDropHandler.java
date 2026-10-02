@@ -1,6 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.neoforge.mobharvester;
 
-import net.bobofraggins.mobfarmingsupplies.register.MGRRegistryHelper;
+import net.bobofraggins.mobfarmingsupplies.register.MFSRegistryHelper;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -50,7 +50,7 @@ public class BeheadingDropHandler {
         ItemStack weapon = fp.getMainHandItem();
         if (!(weapon.getItem() instanceof HarvesterSword)) return;
 
-        if (beheadingLevelType == null) beheadingLevelType = MGRRegistryHelper.getDataComponentType("beheading_level");
+        if (beheadingLevelType == null) beheadingLevelType = MFSRegistryHelper.getDataComponentType("beheading_level");
         int beheadingLevel = weapon.getOrDefault(beheadingLevelType, 0);
         if (beheadingLevel <= 0) return;
 

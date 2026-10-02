@@ -1,7 +1,7 @@
 package net.bobofraggins.mobfarmingsupplies.absorptionhopper;
 
 import dev.architectury.fluid.FluidStack;
-import net.bobofraggins.mobfarmingsupplies.register.MGRRegistryHelper;
+import net.bobofraggins.mobfarmingsupplies.register.MFSRegistryHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -90,7 +90,7 @@ public class AbsorptionHopperBlockEntity extends BlockEntity implements MenuProv
     // ── Constructor ─────────────────────────────────────────────────────────────
 
     public AbsorptionHopperBlockEntity(BlockPos pos, BlockState state) {
-        super(MGRRegistryHelper.getBEType("absorption_hopper"), pos, state);
+        super(MFSRegistryHelper.getBEType("absorption_hopper"), pos, state);
     }
 
     // ── Server tick ─────────────────────────────────────────────────────────────
@@ -147,7 +147,7 @@ public class AbsorptionHopperBlockEntity extends BlockEntity implements MenuProv
                 if (tankAmount + mb <= TANK_CAPACITY) {
                     tankAmount += mb;
                     if (tankFluid.isEmpty()) {
-                        if (xpJuiceFluid == null) xpJuiceFluid = MGRRegistryHelper.getFluid("xp_juice");
+                        if (xpJuiceFluid == null) xpJuiceFluid = MFSRegistryHelper.getFluid("xp_juice");
                         tankFluid = FluidStack.create(xpJuiceFluid, 1);
                     }
                     orb.discard();

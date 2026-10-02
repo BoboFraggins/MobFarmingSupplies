@@ -31,4 +31,12 @@ public interface IDnaSampleItem {
      */
     @Nullable
     Entity createSpawnEntity(ItemStack stack, ServerLevel level, BlockPos pos, RandomSource random);
+
+    /**
+     * Called once the Clone-O-Matic has placed {@code entity} at its final position, just
+     * before adding it to the world. Anything that depends on where the mob stands, or that
+     * adds companions to the world (a zombie's chicken jockey), belongs here rather than in
+     * {@link #createSpawnEntity}, which runs before the spawn spot has been found or checked.
+     */
+    default void onSpawnPositioned(ItemStack stack, ServerLevel level, Entity entity) {}
 }

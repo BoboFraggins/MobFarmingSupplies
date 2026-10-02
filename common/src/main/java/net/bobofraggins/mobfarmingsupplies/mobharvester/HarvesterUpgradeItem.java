@@ -21,7 +21,7 @@ import java.util.function.Consumer;
  *   <li>{@link UpgradeType#BEHEADING} (slot 2) — adds a chance to drop mob heads</li>
  * </ul>
  *
- * <p>Each slot accepts up to {@link net.bobofraggins.mobfarmingsupplies.MGRConfig#getHarvesterMaxUpgrade()} items of
+ * <p>Each slot accepts up to {@link net.bobofraggins.mobfarmingsupplies.MFSConfig#getHarvesterMaxUpgrade()} items of
  * its own type.  The slot enforces this via {@link MobHarvesterMenu}'s typed slot.
  */
 public class HarvesterUpgradeItem extends Item {

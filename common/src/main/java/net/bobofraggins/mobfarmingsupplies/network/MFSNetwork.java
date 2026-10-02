@@ -3,9 +3,9 @@ package net.bobofraggins.mobfarmingsupplies.network;
 import dev.architectury.networking.NetworkManager;
 
 /** Registers all server-bound network payloads. Called from {@link net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommon#init()}. */
-public final class MGRNetwork {
+public final class MFSNetwork {
 
-    private MGRNetwork() {}
+    private MFSNetwork() {}
 
     public static void register() {
         NetworkManager.registerReceiver(

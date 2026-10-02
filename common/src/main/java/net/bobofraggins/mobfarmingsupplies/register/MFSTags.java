@@ -13,9 +13,9 @@ import net.minecraft.world.entity.EntityType;
  * {@code data/<namespace>/tags/entity_type/no_swab.json} file with
  * {@code "replace": false}.
  */
-public final class MGRTags {
+public final class MFSTags {
 
-    private MGRTags() {}
+    private MFSTags() {}
 
     public static final class EntityTypes {
 

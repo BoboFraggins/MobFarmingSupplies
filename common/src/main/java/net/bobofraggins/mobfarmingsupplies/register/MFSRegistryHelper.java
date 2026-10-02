@@ -17,11 +17,11 @@ import net.minecraft.world.level.material.Fluid;
  * Looking up the type by name from {@link BuiltInRegistries} defers the resolution to
  * runtime, after all static initialisers have completed.
  */
-public final class MGRRegistryHelper {
+public final class MFSRegistryHelper {
 
     private static final String MODID = "mobfarmingsupplies";
 
-    private MGRRegistryHelper() {}
+    private MFSRegistryHelper() {}
 
     /** Returns the registered {@link BlockEntityType} for the given registry name. */
     public static BlockEntityType<?> getBEType(String key) {

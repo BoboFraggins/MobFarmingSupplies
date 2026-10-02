@@ -1,7 +1,7 @@
 package net.bobofraggins.mobfarmingsupplies.loot;
 
 import dev.architectury.platform.Platform;
-import net.bobofraggins.mobfarmingsupplies.MGRConfig;
+import net.bobofraggins.mobfarmingsupplies.MFSConfig;
 import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
@@ -28,8 +28,8 @@ public final class FabricLootModifiers {
         LootTableEvents.MODIFY.register((id, tableBuilder, source, registries) -> {
             String tableId = id.toString();
 
-            float commonChance = (float) MGRConfig.getDnaSamplePackCommonChestChance();
-            float rareChance = (float) MGRConfig.getDnaSamplePackRareChestChance();
+            float commonChance = (float) MFSConfig.getDnaSamplePackCommonChestChance();
+            float rareChance = (float) MFSConfig.getDnaSamplePackRareChestChance();
 
             if (ChestLootTables.OVERWORLD_CHESTS.contains(tableId)) {
                 addItem(tableBuilder, "mobfarmingsupplies:dna_sample_rare", commonChance);
@@ -52,7 +52,7 @@ public final class FabricLootModifiers {
             }
 
             if (ChestLootTables.OVERWORLD_CHESTS.contains(tableId) || ChestLootTables.NETHER_END_CHESTS.contains(tableId)) {
-                float toggleButtonChance = (float) MGRConfig.getToggleButtonChestChance();
+                float toggleButtonChance = (float) MFSConfig.getToggleButtonChestChance();
                 addItem(tableBuilder, "mobfarmingsupplies:red_alert_button", toggleButtonChance);
                 addItem(tableBuilder, "mobfarmingsupplies:dramatic_button", toggleButtonChance);
                 addItem(tableBuilder, "mobfarmingsupplies:rimshot_button", toggleButtonChance);

@@ -4,7 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommon;
-import net.bobofraggins.mobfarmingsupplies.register.MGRRegistryHelper;
+import net.bobofraggins.mobfarmingsupplies.register.MFSRegistryHelper;
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredient;
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredientSerializer;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
@@ -113,7 +113,7 @@ public class FabricFluidContainerIngredient implements CustomIngredient {
 
     @Override
     public Stream<Holder<Item>> items() {
-        Item item = MGRRegistryHelper.getItem("xp_juice_bucket");
+        Item item = MFSRegistryHelper.getItem("xp_juice_bucket");
         if (item == null || item == Items.AIR) return Stream.empty();
         return Stream.of(item.builtInRegistryHolder());
     }

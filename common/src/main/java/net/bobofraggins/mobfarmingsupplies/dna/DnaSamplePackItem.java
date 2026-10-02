@@ -1,6 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.dna;
 
-import net.bobofraggins.mobfarmingsupplies.MGRConfig;
+import net.bobofraggins.mobfarmingsupplies.MFSConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
@@ -11,7 +11,9 @@ import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.monster.piglin.Piglin;
 import net.minecraft.world.entity.monster.zombie.Zombie;
 import net.minecraft.world.item.Item;
@@ -43,7 +45,7 @@ import java.util.function.Supplier;
  * <p>A pack given a {@link MobCategory} (the Common packs) also draws from the natural spawns of
  * that category in the Clone-O-Matic's biome — read from the live biome, so mobs other mods add
  * to it through biome modifiers are included. Those mobs share one pool with the configured
- * list, each equally likely; entries on {@link MGRConfig#getBiomeSpawnDenyList()} are left out.
+ * list, each equally likely; entries on {@link MFSConfig#getBiomeSpawnDenyList()} are left out.
  */
 public class DnaSamplePackItem extends Item implements IDnaSampleItem {
 
@@ -81,16 +83,23 @@ public class DnaSamplePackItem extends Item implements IDnaSampleItem {
         if (mobs.isEmpty()) return null;
 
         EntityType<?> type = mobs.get(random.nextInt(mobs.size()));
-        Entity entity = type.create(level, EntitySpawnReason.SPAWNER);
-        if (entity == null) return null;
+        return type.create(level, EntitySpawnReason.SPAWNER);
+    }
 
-        if (forceBaby) {
-            applyBabyState(entity, true);
-        } else {
-            applyBabyState(entity, false);
+    /**
+     * Runs the mob's normal spawn setup - gear, biome variants, sheep colour, slime size - as a
+     * natural spawn would, then applies the pack's baby/adult rule on top.
+     */
+    @Override
+    public void onSpawnPositioned(ItemStack stack, ServerLevel level, Entity entity) {
+        if (entity instanceof Mob mob) {
+            // Zombies otherwise pick their own baby chance and may add a chicken jockey to the
+            // world; the pack decides baby/adult, and a jockey would be an extra, uncounted mob.
+            SpawnGroupData groupData = mob instanceof Zombie ? new Zombie.ZombieGroupData(forceBaby, false) : null;
+            mob.finalizeSpawn(level, level.getCurrentDifficultyAt(mob.blockPosition()),
+                    EntitySpawnReason.SPAWNER, groupData);
         }
-
-        return entity;
+        applyBabyState(entity, forceBaby);
     }
 
     /** The configured mobs plus (for a pack with a biome category) the biome's spawns, without duplicates. */
@@ -101,7 +110,7 @@ public class DnaSamplePackItem extends Item implements IDnaSampleItem {
             if (loc != null) BuiltInRegistries.ENTITY_TYPE.getOptional(loc).ifPresent(pool::add);
         }
         if (biomeCategory != null) {
-            List<String> deny = MGRConfig.getBiomeSpawnDenyList();
+            List<String> deny = MFSConfig.getBiomeSpawnDenyList();
             for (Weighted<MobSpawnSettings.SpawnerData> spawn
                     : level.getBiome(pos).value().getMobSettings().getMobs(biomeCategory).unwrap()) {
                 EntityType<?> type = spawn.value().type();

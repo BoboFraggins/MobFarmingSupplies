@@ -6,7 +6,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import dev.architectury.platform.Platform;
-import net.bobofraggins.mobfarmingsupplies.MGRConfig;
+import net.bobofraggins.mobfarmingsupplies.MFSConfig;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
@@ -18,7 +18,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class MGRConfigImpl {
+public final class MFSConfigImpl {
 
     private static final org.slf4j.Logger LOGGER =
             LoggerFactory.getLogger("MobFarmingSupplies/Config");
@@ -27,18 +27,18 @@ public final class MGRConfigImpl {
     private static boolean fanStrongerBlades = false;
     private static int harvesterMaxUpgrade = 10;
     private static int cloneOMaticSpawnInterval = 5;
-    private static List<String> commonHostilePackMobs = MGRConfig.DEFAULT_COMMON_HOSTILE;
-    private static List<String> commonPassivePackMobs = MGRConfig.DEFAULT_COMMON_PASSIVE;
-    private static List<String> aquaticPackMobs = MGRConfig.DEFAULT_AQUATIC;
-    private static List<String> netherPackMobs = MGRConfig.DEFAULT_NETHER;
-    private static List<String> rareHostilePackMobs = MGRConfig.DEFAULT_RARE_HOSTILE;
-    private static List<String> rarePassivePackMobs = MGRConfig.DEFAULT_RARE_PASSIVE;
-    private static List<String> babyPackMobs = MGRConfig.DEFAULT_BABY;
-    private static List<String> wrongMobsPackMobs = MGRConfig.DEFAULT_WRONG_MOBS;
-    private static List<String> biomeSpawnDenyList = MGRConfig.DEFAULT_BIOME_SPAWN_DENY_LIST;
-    private static double toggleButtonChestChance = MGRConfig.DEFAULT_TOGGLE_BUTTON_CHEST_CHANCE;
-    private static double dnaSamplePackCommonChestChance = MGRConfig.DEFAULT_DNA_SAMPLE_PACK_COMMON_CHEST_CHANCE;
-    private static double dnaSamplePackRareChestChance = MGRConfig.DEFAULT_DNA_SAMPLE_PACK_RARE_CHEST_CHANCE;
+    private static List<String> commonHostilePackMobs = MFSConfig.DEFAULT_COMMON_HOSTILE;
+    private static List<String> commonPassivePackMobs = MFSConfig.DEFAULT_COMMON_PASSIVE;
+    private static List<String> aquaticPackMobs = MFSConfig.DEFAULT_AQUATIC;
+    private static List<String> netherPackMobs = MFSConfig.DEFAULT_NETHER;
+    private static List<String> rareHostilePackMobs = MFSConfig.DEFAULT_RARE_HOSTILE;
+    private static List<String> rarePassivePackMobs = MFSConfig.DEFAULT_RARE_PASSIVE;
+    private static List<String> babyPackMobs = MFSConfig.DEFAULT_BABY;
+    private static List<String> wrongMobsPackMobs = MFSConfig.DEFAULT_WRONG_MOBS;
+    private static List<String> biomeSpawnDenyList = MFSConfig.DEFAULT_BIOME_SPAWN_DENY_LIST;
+    private static double toggleButtonChestChance = MFSConfig.DEFAULT_TOGGLE_BUTTON_CHEST_CHANCE;
+    private static double dnaSamplePackCommonChestChance = MFSConfig.DEFAULT_DNA_SAMPLE_PACK_COMMON_CHEST_CHANCE;
+    private static double dnaSamplePackRareChestChance = MFSConfig.DEFAULT_DNA_SAMPLE_PACK_RARE_CHEST_CHANCE;
 
     // ── @ExpectPlatform targets ───────────────────────────────────────────────────
 
@@ -99,15 +99,15 @@ public final class MGRConfigImpl {
 
             if (root.has("dnaSamplePacks")) {
                 JsonObject packs = root.getAsJsonObject("dnaSamplePacks");
-                commonHostilePackMobs = readList(packs, "commonHostile", MGRConfig.DEFAULT_COMMON_HOSTILE);
-                commonPassivePackMobs = readList(packs, "commonPassive", MGRConfig.DEFAULT_COMMON_PASSIVE);
-                aquaticPackMobs       = readList(packs, "aquatic",       MGRConfig.DEFAULT_AQUATIC);
-                netherPackMobs        = readList(packs, "nether",        MGRConfig.DEFAULT_NETHER);
-                rareHostilePackMobs   = readList(packs, "rareHostile",   MGRConfig.DEFAULT_RARE_HOSTILE);
-                rarePassivePackMobs   = readList(packs, "rarePassive",   MGRConfig.DEFAULT_RARE_PASSIVE);
-                babyPackMobs          = readList(packs, "baby",          MGRConfig.DEFAULT_BABY);
-                wrongMobsPackMobs     = readList(packs, "wrongMobs",     MGRConfig.DEFAULT_WRONG_MOBS);
-                biomeSpawnDenyList    = readList(packs, "biomeSpawnDenyList", MGRConfig.DEFAULT_BIOME_SPAWN_DENY_LIST);
+                commonHostilePackMobs = readList(packs, "commonHostile", MFSConfig.DEFAULT_COMMON_HOSTILE);
+                commonPassivePackMobs = readList(packs, "commonPassive", MFSConfig.DEFAULT_COMMON_PASSIVE);
+                aquaticPackMobs       = readList(packs, "aquatic",       MFSConfig.DEFAULT_AQUATIC);
+                netherPackMobs        = readList(packs, "nether",        MFSConfig.DEFAULT_NETHER);
+                rareHostilePackMobs   = readList(packs, "rareHostile",   MFSConfig.DEFAULT_RARE_HOSTILE);
+                rarePassivePackMobs   = readList(packs, "rarePassive",   MFSConfig.DEFAULT_RARE_PASSIVE);
+                babyPackMobs          = readList(packs, "baby",          MFSConfig.DEFAULT_BABY);
+                wrongMobsPackMobs     = readList(packs, "wrongMobs",     MFSConfig.DEFAULT_WRONG_MOBS);
+                biomeSpawnDenyList    = readList(packs, "biomeSpawnDenyList", MFSConfig.DEFAULT_BIOME_SPAWN_DENY_LIST);
 
                 if (packs.has("chestLoot")) {
                     JsonObject chestLoot = packs.getAsJsonObject("chestLoot");
@@ -164,23 +164,23 @@ public final class MGRConfigImpl {
         root.add("cloneOMatic", com);
 
         JsonObject tb = new JsonObject();
-        tb.addProperty("chestDropChance", MGRConfig.DEFAULT_TOGGLE_BUTTON_CHEST_CHANCE);
+        tb.addProperty("chestDropChance", MFSConfig.DEFAULT_TOGGLE_BUTTON_CHEST_CHANCE);
         root.add("toggleButtons", tb);
 
         JsonObject packs = new JsonObject();
-        packs.add("commonHostile", toArray(MGRConfig.DEFAULT_COMMON_HOSTILE));
-        packs.add("commonPassive", toArray(MGRConfig.DEFAULT_COMMON_PASSIVE));
-        packs.add("aquatic",       toArray(MGRConfig.DEFAULT_AQUATIC));
-        packs.add("nether",        toArray(MGRConfig.DEFAULT_NETHER));
-        packs.add("rareHostile",   toArray(MGRConfig.DEFAULT_RARE_HOSTILE));
-        packs.add("rarePassive",   toArray(MGRConfig.DEFAULT_RARE_PASSIVE));
-        packs.add("baby",          toArray(MGRConfig.DEFAULT_BABY));
-        packs.add("wrongMobs",     toArray(MGRConfig.DEFAULT_WRONG_MOBS));
-        packs.add("biomeSpawnDenyList", toArray(MGRConfig.DEFAULT_BIOME_SPAWN_DENY_LIST));
+        packs.add("commonHostile", toArray(MFSConfig.DEFAULT_COMMON_HOSTILE));
+        packs.add("commonPassive", toArray(MFSConfig.DEFAULT_COMMON_PASSIVE));
+        packs.add("aquatic",       toArray(MFSConfig.DEFAULT_AQUATIC));
+        packs.add("nether",        toArray(MFSConfig.DEFAULT_NETHER));
+        packs.add("rareHostile",   toArray(MFSConfig.DEFAULT_RARE_HOSTILE));
+        packs.add("rarePassive",   toArray(MFSConfig.DEFAULT_RARE_PASSIVE));
+        packs.add("baby",          toArray(MFSConfig.DEFAULT_BABY));
+        packs.add("wrongMobs",     toArray(MFSConfig.DEFAULT_WRONG_MOBS));
+        packs.add("biomeSpawnDenyList", toArray(MFSConfig.DEFAULT_BIOME_SPAWN_DENY_LIST));
 
         JsonObject chestLoot = new JsonObject();
-        chestLoot.addProperty("commonChestChance", MGRConfig.DEFAULT_DNA_SAMPLE_PACK_COMMON_CHEST_CHANCE);
-        chestLoot.addProperty("rareChestChance", MGRConfig.DEFAULT_DNA_SAMPLE_PACK_RARE_CHEST_CHANCE);
+        chestLoot.addProperty("commonChestChance", MFSConfig.DEFAULT_DNA_SAMPLE_PACK_COMMON_CHEST_CHANCE);
+        chestLoot.addProperty("rareChestChance", MFSConfig.DEFAULT_DNA_SAMPLE_PACK_RARE_CHEST_CHANCE);
         packs.add("chestLoot", chestLoot);
 
         root.add("dnaSamplePacks", packs);

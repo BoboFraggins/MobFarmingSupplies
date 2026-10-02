@@ -7,16 +7,16 @@ import java.util.List;
 /**
  * Cross-platform config accessor for MobFarmingSupplies server settings.
  *
- * <p>On NeoForge the accessors delegate to {@link MGRServerConfig} (loaded via
+ * <p>On NeoForge the accessors delegate to {@link MFSServerConfig} (loaded via
  * {@code ModConfigSpec} from {@code mobfarmingsupplies-server.toml}).
  * On Fabric they return values loaded from
  * {@code config/mobfarmingsupplies-server.json} at server-start time.
  *
  * <p>All methods return safe defaults until the platform-specific config is loaded.
  */
-public final class MGRConfig {
+public final class MFSConfig {
 
-    private MGRConfig() {}
+    private MFSConfig() {}
 
     // ── Defaults ──────────────────────────────────────────────────────────────────
     // These are the canonical defaults; both the NeoForge TOML spec and the Fabric
