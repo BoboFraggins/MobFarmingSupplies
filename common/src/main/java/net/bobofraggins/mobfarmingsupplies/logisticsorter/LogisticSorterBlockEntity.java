@@ -135,8 +135,9 @@ public class LogisticSorterBlockEntity extends BlockEntity implements MenuProvid
     }
 
     /**
-     * The output sides an item should go to, in round-robin order so repeated moves spread
-     * across several outputs of the same kind.
+     * The output sides an item should go to, in round-robin order. Items are split evenly across
+     * them ({@link EvenSplit}); the rotation decides which outputs get the remainder of an uneven
+     * split, so over time every output gets its turn at the extras.
      */
     public List<Direction> outputsFor(ItemStack stack) {
         return outputs(matches(stack));

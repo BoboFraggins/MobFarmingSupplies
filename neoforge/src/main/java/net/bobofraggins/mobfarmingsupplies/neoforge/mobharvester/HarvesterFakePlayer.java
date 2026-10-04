@@ -1,11 +1,9 @@
 package net.bobofraggins.mobfarmingsupplies.neoforge.mobharvester;
 
 import com.mojang.authlib.GameProfile;
-import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.neoforged.neoforge.common.util.FakePlayer;
 
-import java.lang.ref.WeakReference;
 import java.util.UUID;
 
 /**
@@ -38,22 +36,6 @@ public class HarvesterFakePlayer extends FakePlayer {
      */
     public void resetAttackStrength() {
         this.attackStrengthTicker = 100;
-    }
-
-    // ── Factory ───────────────────────────────────────────────────────────────────
-
-    /**
-     * Returns the cached fake player, creating it if the weak reference has been
-     * collected. Repositions the fake player below {@code machinePos} each call.
-     */
-    public static WeakReference<HarvesterFakePlayer> get(
-            WeakReference<HarvesterFakePlayer> previous, ServerLevel level, BlockPos machinePos) {
-        HarvesterFakePlayer fp = previous.get();
-        if (fp == null) {
-            fp = new HarvesterFakePlayer(level);
-        }
-        fp.setPos(machinePos.getX() + 0.5, machinePos.getY() - 100.0, machinePos.getZ() + 0.5);
-        return new WeakReference<>(fp);
     }
 
     /** Returns {@code true} if {@code player} was created by the Mob Harvester. */
