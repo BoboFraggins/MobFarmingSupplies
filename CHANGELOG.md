@@ -13,6 +13,7 @@
 * Fixed "common" DNA Samples will now include all local biome spawns, too
 * Fixed call finalizeSpawn on DNA Pack spawns to ensure rich variety of mobs
 * Fixed item duplication with DNA Samples retaining mobs' inventory items
+* Fixed crash with mods that break fake player interaction
 
 ## 26.3.0.2, 26.2.0.3, 26.1.2.5
 
