@@ -16,6 +16,8 @@ import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.bobofraggins.mobfarmingsupplies.tank.FabricTankFluidStorage;
 import net.bobofraggins.mobfarmingsupplies.tank.FabricTankItemFluidStorage;
 import net.bobofraggins.mobfarmingsupplies.tank.TankBlockEntity;
+import net.bobofraggins.mobfarmingsupplies.toilet.fabric.ToiletItemStorage;
+import net.bobofraggins.mobfarmingsupplies.toilet.fabric.ToiletWaterStorage;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredientSerializer;
@@ -71,5 +73,13 @@ public class MobFarmingSuppliesFabric implements ModInitializer {
                             ? new LogisticSorterItemStorage(sorter) : null;
                 },
                 Registration.LOGISTIC_SORTER_BE_TYPE.get());
+
+        // Toilet: voids any item pushed in and supplies unlimited water, on every side.
+        ItemStorage.SIDED.registerForBlockEntities(
+                (be, direction) -> ToiletItemStorage.INSTANCE,
+                Registration.TOILET_BE_TYPE.get());
+        FluidStorage.SIDED.registerForBlockEntities(
+                (be, direction) -> ToiletWaterStorage.INSTANCE,
+                Registration.TOILET_BE_TYPE.get());
     }
 }

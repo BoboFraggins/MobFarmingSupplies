@@ -14,6 +14,7 @@ import net.bobofraggins.mobfarmingsupplies.neoforge.mobharvester.BeheadingDropHa
 import net.bobofraggins.mobfarmingsupplies.neoforge.mobharvester.MobHarvesterClientEvents;
 import net.bobofraggins.mobfarmingsupplies.neoforge.register.NeoForgeOnlyRegistration;
 import net.bobofraggins.mobfarmingsupplies.neoforge.tank.TankClientEvents;
+import net.bobofraggins.mobfarmingsupplies.neoforge.toilet.ToiletClientEvents;
 import net.bobofraggins.mobfarmingsupplies.neoforge.xpjuice.XpJuiceClientEvents;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
@@ -51,6 +52,7 @@ public class MobFarmingSupplies {
             modEventBus.register(CloneOMaticClientEvents.class);
             modEventBus.register(MobHarvesterClientEvents.class);
             modEventBus.register(ExtraBlockModelsClientEvents.class);
+            modEventBus.register(ToiletClientEvents.class);
         }
 
         MobFarmingSuppliesCommon.init();

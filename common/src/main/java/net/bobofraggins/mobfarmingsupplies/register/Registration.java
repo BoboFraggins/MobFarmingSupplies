@@ -43,6 +43,10 @@ import net.bobofraggins.mobfarmingsupplies.tank.TankBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.tank.TankBlockItem;
 import net.bobofraggins.mobfarmingsupplies.tank.TankContents;
 import net.bobofraggins.mobfarmingsupplies.tank.TankMenu;
+import net.bobofraggins.mobfarmingsupplies.toilet.ToiletBlock;
+import net.bobofraggins.mobfarmingsupplies.toilet.ToiletBlockEntity;
+import net.bobofraggins.mobfarmingsupplies.toilet.ToiletBlockItem;
+import net.bobofraggins.mobfarmingsupplies.toilet.ToiletSeatEntity;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
 import net.bobofraggins.mobfarmingsupplies.mobexclusionglass.MobExclusionGlassBlock;
@@ -57,6 +61,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
@@ -109,6 +114,9 @@ public final class Registration {
 
     public static final DeferredRegister<MenuType<?>> MENUS =
             DeferredRegister.create(MobFarmingSuppliesCommon.MODID, Registries.MENU);
+
+    public static final DeferredRegister<EntityType<?>> ENTITY_TYPES =
+            DeferredRegister.create(MobFarmingSuppliesCommon.MODID, Registries.ENTITY_TYPE);
 
     public static final DeferredRegister<DataComponentType<?>> DATA_COMPONENTS =
             DeferredRegister.create(MobFarmingSuppliesCommon.MODID, Registries.DATA_COMPONENT_TYPE);
@@ -163,6 +171,11 @@ public final class Registration {
             SOUND_EVENTS.register("wilhelm",
                     () -> SoundEvent.createVariableRangeEvent(
                             Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "wilhelm")));
+
+    public static final RegistrySupplier<SoundEvent> TOILET_FLUSH_SOUND =
+            SOUND_EVENTS.register("flush",
+                    () -> SoundEvent.createVariableRangeEvent(
+                            Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "flush")));
 
     // ── Data components ─────────────────────────────────────────────────────────
 
@@ -646,6 +659,34 @@ public final class Registration {
     public static final RegistrySupplier<MenuType<LogisticSorterMenu>> LOGISTIC_SORTER_MENU =
             MENUS.register("logistic_sorter", () -> MenuRegistry.ofExtended(LogisticSorterMenu::new));
 
+    // ── Toilet ────────────────────────────────────────────────────────────────────
+
+    public static final RegistrySupplier<ToiletBlock> TOILET =
+            BLOCKS.register("toilet",
+                    () -> new ToiletBlock(BlockBehaviour.Properties.of()
+                            .setId(blockKey("toilet"))
+                            .strength(0.8f)
+                            .sound(SoundType.CALCITE)
+                            .noOcclusion()));
+
+    public static final RegistrySupplier<BlockItem> TOILET_ITEM =
+            ITEMS.register("toilet",
+                    () -> new ToiletBlockItem(TOILET.get(), new Item.Properties()
+                            .setId(itemKey("toilet"))));
+
+    public static final RegistrySupplier<BlockEntityType<ToiletBlockEntity>> TOILET_BE_TYPE =
+            BLOCK_ENTITIES.register("toilet",
+                    () -> BlockEntityTypePlatform.create(ToiletBlockEntity::new, TOILET.get()));
+
+    public static final RegistrySupplier<EntityType<ToiletSeatEntity>> TOILET_SEAT =
+            ENTITY_TYPES.register("toilet_seat",
+                    () -> EntityType.Builder.<ToiletSeatEntity>of(ToiletSeatEntity::new, MobCategory.MISC)
+                            .sized(0.0f, 0.0f)
+                            .noSummon()
+                            .clientTrackingRange(10)
+                            .build(ResourceKey.create(Registries.ENTITY_TYPE,
+                                    Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "toilet_seat"))));
+
     // ── Crafting materials ────────────────────────────────────────────────────────
 
     public static final RegistrySupplier<Item> SILICON =
@@ -725,6 +766,7 @@ public final class Registration {
                         output.accept(BLANK_FILTER.get());
                         output.accept(FILTER_SCRIBING_TERMINAL_ITEM.get());
                         output.accept(LOGISTIC_SORTER_ITEM.get());
+                        output.accept(TOILET_ITEM.get());
                     })
                     .build());
 
@@ -741,6 +783,7 @@ public final class Registration {
         BLOCKS.register();
         ITEMS.register();
         BLOCK_ENTITIES.register();
+        ENTITY_TYPES.register();
         MENUS.register();
         DATA_COMPONENTS.register();
         CREATIVE_TABS.register();

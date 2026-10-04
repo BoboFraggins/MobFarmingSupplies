@@ -1,5 +1,11 @@
 # Mob Farming Supplies
 
+## 26.3.0.4, 26.2.0.5, 26.1.2.7
+
+* Added Toilet block that voids items sent to it and can have water extracted from it
+
+* Fix mobs refusing to be moved via fans
+
 ## 26.3.0.3, 26.2.0.4, 26.1.2.6
 
 * Added Silicon Clumps, Silicon and Silicon Wafers
