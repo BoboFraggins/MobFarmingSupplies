@@ -12,7 +12,7 @@ import java.util.function.BiFunction;
 public final class BlockEntityTypePlatformImpl {
 
     public static <T extends BlockEntity> BlockEntityType<T> create(
-            BiFunction<BlockPos, BlockState, T> factory, Block block) {
-        return FabricBlockEntityTypeBuilder.create((pos, state) -> factory.apply(pos, state), block).build();
+            BiFunction<BlockPos, BlockState, T> factory, Block... blocks) {
+        return FabricBlockEntityTypeBuilder.create((pos, state) -> factory.apply(pos, state), blocks).build();
     }
 }

@@ -2,6 +2,7 @@ package net.bobofraggins.mobfarmingsupplies.fan;
 
 import net.bobofraggins.mobfarmingsupplies.MFSConfig;
 import net.bobofraggins.mobfarmingsupplies.register.MFSRegistryHelper;
+import net.bobofraggins.mobfarmingsupplies.shared.ForcedMovement;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -57,8 +58,16 @@ public class FanBlockEntity extends BlockEntity implements MenuProvider {
     /** Ticks between push cycles. */
     private static final int TICK_PERIOD = 2;
 
-    /** Velocity impulse applied to entities per push cycle (m/tick in facing direction). */
+    /** Speed the fan blows at (m/tick in facing direction), velocity and direct movement combined. */
     private static final double PUSH_SPEED = 0.35;
+    /**
+     * Distance each push cycle moves an entity directly, without relying on its velocity. Flyers
+     * such as phantoms overwrite their own velocity from their AI every tick, so a velocity push
+     * alone never moves them; this small step does (about one block a second).
+     */
+    private static final double FORCED_STEP = 0.1;
+    /** Velocity the fan tops entities up to when they also get {@link #FORCED_STEP}, so they don't blow any faster. */
+    private static final double VELOCITY_WITH_FORCED_STEP = PUSH_SPEED - FORCED_STEP / TICK_PERIOD;
 
     /** Maximum upgrades recognised per slot (stack limit in the menu). */
     public static final int MAX_UPGRADES = 5;
@@ -173,14 +182,21 @@ public class FanBlockEntity extends BlockEntity implements MenuProvider {
     }
 
     private static void applyPush(Entity entity, Direction facing, Level level) {
-        Vec3 motion = entity.getDeltaMovement();
         int sx = facing.getStepX(), sy = facing.getStepY(), sz = facing.getStepZ();
+        // Players are only ever pushed by velocity: moving one directly on the server makes the
+        // client rubber-band. Passengers move with whatever they ride.
+        boolean forced = !(entity instanceof Player) && !entity.isPassenger();
+
+        Vec3 motion = entity.getDeltaMovement();
         double current = motion.x * sx + motion.y * sy + motion.z * sz;
-        double add = Math.max(0.0, PUSH_SPEED - current);
-        if (add == 0.0) return;
-        if (!level.noCollision(entity, entity.getBoundingBox().move(sx * add, sy * add, sz * add))) return;
-        entity.push(sx * add, sy * add, sz * add);
-        entity.hurtMarked = true;
+        double add = Math.max(0.0, (forced ? VELOCITY_WITH_FORCED_STEP : PUSH_SPEED) - current);
+        if (add > 0.0 && level.noCollision(entity, entity.getBoundingBox().move(sx * add, sy * add, sz * add))) {
+            entity.push(sx * add, sy * add, sz * add);
+            entity.hurtMarked = true;
+        }
+        if (forced) {
+            ForcedMovement.displace(level, entity, sx * FORCED_STEP, sy * FORCED_STEP, sz * FORCED_STEP);
+        }
         entity.fallDistance = 0f;
     }
 

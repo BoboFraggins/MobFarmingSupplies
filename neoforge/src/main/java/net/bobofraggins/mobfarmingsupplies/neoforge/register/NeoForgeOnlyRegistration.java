@@ -27,6 +27,8 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import net.bobofraggins.mobfarmingsupplies.register.ModCompatRegistration;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
+import net.bobofraggins.mobfarmingsupplies.neoforge.toilet.ToiletFluidHandler;
+import net.bobofraggins.mobfarmingsupplies.neoforge.toilet.ToiletItemHandler;
 
 public final class NeoForgeOnlyRegistration {
 
@@ -132,7 +134,8 @@ public final class NeoForgeOnlyRegistration {
         event.registerItem(
                 Capabilities.Fluid.ITEM,
                 (stack, ctx) -> new TankItemFluidHandler(stack),
-                Registration.TANK_ITEM.get());
+                Registration.TANK_ITEM.get(), Registration.GOLD_TANK_ITEM.get(),
+                Registration.DIAMOND_TANK_ITEM.get(), Registration.EMERALD_TANK_ITEM.get());
 
         event.registerItem(
                 Capabilities.Fluid.ITEM,
@@ -155,5 +158,16 @@ public final class NeoForgeOnlyRegistration {
                 Registration.LOGISTIC_SORTER_BE_TYPE.get(),
                 (be, side) -> side != null && be.getSide(side) == SideMode.INPUT
                         ? new LogisticSorterItemHandler(be) : null);
+
+        // Toilet: voids any item pushed in and supplies unlimited water, on every side.
+        event.registerBlockEntity(
+                Capabilities.Item.BLOCK,
+                Registration.TOILET_BE_TYPE.get(),
+                (be, side) -> ToiletItemHandler.INSTANCE);
+
+        event.registerBlockEntity(
+                Capabilities.Fluid.BLOCK,
+                Registration.TOILET_BE_TYPE.get(),
+                (be, side) -> ToiletFluidHandler.INSTANCE);
     }
 }

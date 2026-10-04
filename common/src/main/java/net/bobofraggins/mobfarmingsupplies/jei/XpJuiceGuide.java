@@ -7,8 +7,8 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.types.IRecipeType;
 import net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommon;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
-import net.bobofraggins.mobfarmingsupplies.tank.TankBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.tank.TankContents;
+import net.bobofraggins.mobfarmingsupplies.tank.TankTier;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
@@ -49,7 +49,7 @@ public final class XpJuiceGuide {
     private static ItemStack tankOfXpJuice() {
         ItemStack stack = new ItemStack(Registration.TANK_ITEM.get());
         FluidStack fluid = FluidStack.create(Registration.XP_JUICE_SOURCE.get(), 1);
-        stack.set(Registration.TANK_CONTENTS.get(), new TankContents(fluid, TankBlockEntity.CAPACITY));
+        stack.set(Registration.TANK_CONTENTS.get(), new TankContents(fluid, TankTier.BASIC.capacity()));
         return stack;
     }
 }

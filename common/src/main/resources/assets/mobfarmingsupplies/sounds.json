@@ -14,5 +14,9 @@
   "wilhelm": {
     "subtitle": "subtitle.mobfarmingsupplies.wilhelm",
     "sounds": ["mobfarmingsupplies:wilhelm"]
+  },
+  "flush": {
+    "subtitle": "subtitle.mobfarmingsupplies.flush",
+    "sounds": ["mobfarmingsupplies:flush"]
   }
 }

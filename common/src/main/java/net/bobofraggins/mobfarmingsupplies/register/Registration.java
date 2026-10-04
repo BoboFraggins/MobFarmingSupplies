@@ -33,6 +33,7 @@ import net.bobofraggins.mobfarmingsupplies.fan.FanBlock;
 import net.bobofraggins.mobfarmingsupplies.fan.FanBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.fan.FanMenu;
 import net.bobofraggins.mobfarmingsupplies.fan.FanUpgradeItem;
+import net.bobofraggins.mobfarmingsupplies.haltingplate.HaltingPlateBlock;
 import net.bobofraggins.mobfarmingsupplies.mobharvester.HarvesterSword;
 import net.bobofraggins.mobfarmingsupplies.mobharvester.HarvesterUpgradeItem;
 import net.bobofraggins.mobfarmingsupplies.mobharvester.MobHarvesterBlock;
@@ -43,6 +44,12 @@ import net.bobofraggins.mobfarmingsupplies.tank.TankBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.tank.TankBlockItem;
 import net.bobofraggins.mobfarmingsupplies.tank.TankContents;
 import net.bobofraggins.mobfarmingsupplies.tank.TankMenu;
+import net.bobofraggins.mobfarmingsupplies.tank.TankTier;
+import net.bobofraggins.mobfarmingsupplies.tank.TankUpgradeRecipe;
+import net.bobofraggins.mobfarmingsupplies.toilet.ToiletBlock;
+import net.bobofraggins.mobfarmingsupplies.toilet.ToiletBlockEntity;
+import net.bobofraggins.mobfarmingsupplies.toilet.ToiletBlockItem;
+import net.bobofraggins.mobfarmingsupplies.toilet.ToiletSeatEntity;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
 import net.bobofraggins.mobfarmingsupplies.mobexclusionglass.MobExclusionGlassBlock;
@@ -57,6 +64,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
@@ -110,6 +118,9 @@ public final class Registration {
     public static final DeferredRegister<MenuType<?>> MENUS =
             DeferredRegister.create(MobFarmingSuppliesCommon.MODID, Registries.MENU);
 
+    public static final DeferredRegister<EntityType<?>> ENTITY_TYPES =
+            DeferredRegister.create(MobFarmingSuppliesCommon.MODID, Registries.ENTITY_TYPE);
+
     public static final DeferredRegister<DataComponentType<?>> DATA_COMPONENTS =
             DeferredRegister.create(MobFarmingSuppliesCommon.MODID, Registries.DATA_COMPONENT_TYPE);
 
@@ -142,6 +153,11 @@ public final class Registration {
             RECIPE_SERIALIZERS.register("anvil_crushing",
                     () -> new RecipeSerializer<>(AnvilCrushingRecipe.MAP_CODEC, AnvilCrushingRecipe.STREAM_CODEC));
 
+    /** Shaped recipe that upgrades a tank a tier and keeps its contents. */
+    public static final RegistrySupplier<RecipeSerializer<TankUpgradeRecipe>> TANK_UPGRADE_SERIALIZER =
+            RECIPE_SERIALIZERS.register("tank_upgrade",
+                    () -> new RecipeSerializer<>(TankUpgradeRecipe.MAP_CODEC, TankUpgradeRecipe.STREAM_CODEC));
+
     // ── Sound events ─────────────────────────────────────────────────────────────
 
     public static final RegistrySupplier<SoundEvent> RED_ALERT_SOUND =
@@ -163,6 +179,11 @@ public final class Registration {
             SOUND_EVENTS.register("wilhelm",
                     () -> SoundEvent.createVariableRangeEvent(
                             Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "wilhelm")));
+
+    public static final RegistrySupplier<SoundEvent> TOILET_FLUSH_SOUND =
+            SOUND_EVENTS.register("flush",
+                    () -> SoundEvent.createVariableRangeEvent(
+                            Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "flush")));
 
     // ── Data components ─────────────────────────────────────────────────────────
 
@@ -385,6 +406,23 @@ public final class Registration {
                     () -> new BlockItem(VECTOR_PLATE.get(), new Item.Properties()
                             .setId(itemKey("vector_plate"))));
 
+    // ── Halting Plate ─────────────────────────────────────────────────────────────
+
+    public static final RegistrySupplier<HaltingPlateBlock> HALTING_PLATE =
+            BLOCKS.register("halting_plate",
+                    () -> new HaltingPlateBlock(BlockBehaviour.Properties.of()
+                            .setId(blockKey("halting_plate"))
+                            .strength(2.0f)
+                            .explosionResistance(Float.MAX_VALUE)
+                            .sound(SoundType.METAL)
+                            .isValidSpawn((state, level, pos, entityType) -> true)
+                            .noOcclusion()));
+
+    public static final RegistrySupplier<BlockItem> HALTING_PLATE_ITEM =
+            ITEMS.register("halting_plate",
+                    () -> new BlockItem(HALTING_PLATE.get(), new Item.Properties()
+                            .setId(itemKey("halting_plate"))));
+
     // ── Wither-Proof Glass ────────────────────────────────────────────────────────
 
     public static final RegistrySupplier<WitherProofGlassBlock> WITHER_PROOF_GLASS =
@@ -509,25 +547,40 @@ public final class Registration {
 
     // ── Tank ──────────────────────────────────────────────────────────────────────
 
-    public static final RegistrySupplier<TankBlock> TANK =
-            BLOCKS.register("tank",
-                    () -> new TankBlock(BlockBehaviour.Properties.of()
-                            .setId(blockKey("tank"))
-                            .mapColor(MapColor.NONE)
-                            .strength(0.3f)
-                            .explosionResistance(Float.MAX_VALUE)
-                            .sound(SoundType.GLASS)
-                            .noOcclusion()
-                            .isViewBlocking((s, r, p) -> false)));
+    public static final RegistrySupplier<TankBlock> TANK = registerTank("tank", TankTier.BASIC);
+    public static final RegistrySupplier<TankBlock> GOLD_TANK = registerTank("gold_tank", TankTier.GOLD);
+    public static final RegistrySupplier<TankBlock> DIAMOND_TANK = registerTank("diamond_tank", TankTier.DIAMOND);
+    public static final RegistrySupplier<TankBlock> EMERALD_TANK = registerTank("emerald_tank", TankTier.EMERALD);
 
-    public static final RegistrySupplier<TankBlockItem> TANK_ITEM =
-            ITEMS.register("tank",
-                    () -> new TankBlockItem(TANK.get(), new Item.Properties()
-                            .setId(itemKey("tank"))));
+    public static final RegistrySupplier<TankBlockItem> TANK_ITEM = registerTankItem("tank", TANK);
+    public static final RegistrySupplier<TankBlockItem> GOLD_TANK_ITEM = registerTankItem("gold_tank", GOLD_TANK);
+    public static final RegistrySupplier<TankBlockItem> DIAMOND_TANK_ITEM = registerTankItem("diamond_tank", DIAMOND_TANK);
+    public static final RegistrySupplier<TankBlockItem> EMERALD_TANK_ITEM = registerTankItem("emerald_tank", EMERALD_TANK);
 
+    /** One block entity type for every tier: the capacity comes from the block (see {@link TankTier}). */
     public static final RegistrySupplier<BlockEntityType<TankBlockEntity>> TANK_BE_TYPE =
             BLOCK_ENTITIES.register("tank",
-                    () -> BlockEntityTypePlatform.create(TankBlockEntity::new, TANK.get()));
+                    () -> BlockEntityTypePlatform.create(TankBlockEntity::new,
+                            TANK.get(), GOLD_TANK.get(), DIAMOND_TANK.get(), EMERALD_TANK.get()));
+
+    /** Every tier is the same glass tank; only its capacity and texture differ. */
+    private static RegistrySupplier<TankBlock> registerTank(String name, TankTier tier) {
+        return BLOCKS.register(name,
+                () -> new TankBlock(tier, BlockBehaviour.Properties.of()
+                        .setId(blockKey(name))
+                        .mapColor(MapColor.NONE)
+                        .strength(0.3f)
+                        .explosionResistance(Float.MAX_VALUE)
+                        .sound(SoundType.GLASS)
+                        .noOcclusion()
+                        .isViewBlocking((s, r, p) -> false)));
+    }
+
+    private static RegistrySupplier<TankBlockItem> registerTankItem(String name, RegistrySupplier<TankBlock> block) {
+        return ITEMS.register(name,
+                () -> new TankBlockItem(block.get(), new Item.Properties()
+                        .setId(itemKey(name))));
+    }
 
     public static final RegistrySupplier<MenuType<TankMenu>> TANK_MENU =
             MENUS.register("tank", () -> MenuRegistry.ofExtended(TankMenu::new));
@@ -646,6 +699,34 @@ public final class Registration {
     public static final RegistrySupplier<MenuType<LogisticSorterMenu>> LOGISTIC_SORTER_MENU =
             MENUS.register("logistic_sorter", () -> MenuRegistry.ofExtended(LogisticSorterMenu::new));
 
+    // ── Toilet ────────────────────────────────────────────────────────────────────
+
+    public static final RegistrySupplier<ToiletBlock> TOILET =
+            BLOCKS.register("toilet",
+                    () -> new ToiletBlock(BlockBehaviour.Properties.of()
+                            .setId(blockKey("toilet"))
+                            .strength(0.8f)
+                            .sound(SoundType.CALCITE)
+                            .noOcclusion()));
+
+    public static final RegistrySupplier<BlockItem> TOILET_ITEM =
+            ITEMS.register("toilet",
+                    () -> new ToiletBlockItem(TOILET.get(), new Item.Properties()
+                            .setId(itemKey("toilet"))));
+
+    public static final RegistrySupplier<BlockEntityType<ToiletBlockEntity>> TOILET_BE_TYPE =
+            BLOCK_ENTITIES.register("toilet",
+                    () -> BlockEntityTypePlatform.create(ToiletBlockEntity::new, TOILET.get()));
+
+    public static final RegistrySupplier<EntityType<ToiletSeatEntity>> TOILET_SEAT =
+            ENTITY_TYPES.register("toilet_seat",
+                    () -> EntityType.Builder.<ToiletSeatEntity>of(ToiletSeatEntity::new, MobCategory.MISC)
+                            .sized(0.0f, 0.0f)
+                            .noSummon()
+                            .clientTrackingRange(10)
+                            .build(ResourceKey.create(Registries.ENTITY_TYPE,
+                                    Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "toilet_seat"))));
+
     // ── Crafting materials ────────────────────────────────────────────────────────
 
     public static final RegistrySupplier<Item> SILICON =
@@ -686,6 +767,7 @@ public final class Registration {
                         output.accept(FAN_UPGRADE_HEIGHT.get());
                         output.accept(FAN_UPGRADE_DISTANCE.get());
                         output.accept(VECTOR_PLATE_ITEM.get());
+                        output.accept(HALTING_PLATE_ITEM.get());
                         output.accept(CLONE_O_MATIC_ITEM.get());
                         output.accept(MOB_HARVESTER_ITEM.get());
                         output.accept(HARVESTER_UPGRADE_SHARPNESS.get());
@@ -713,6 +795,9 @@ public final class Registration {
                         output.accept(MOB_EXCLUSION_GLASS_ITEM.get());
                         output.accept(ENDER_INHIBITOR_ITEM.get());
                         output.accept(TANK_ITEM.get());
+                        output.accept(GOLD_TANK_ITEM.get());
+                        output.accept(DIAMOND_TANK_ITEM.get());
+                        output.accept(EMERALD_TANK_ITEM.get());
                         output.accept(EXPERIENCE_SYRINGE.get());
                         output.accept(XP_JUICE_BUCKET.get());
                         output.accept(RED_ALERT_BUTTON_ITEM.get());
@@ -725,6 +810,7 @@ public final class Registration {
                         output.accept(BLANK_FILTER.get());
                         output.accept(FILTER_SCRIBING_TERMINAL_ITEM.get());
                         output.accept(LOGISTIC_SORTER_ITEM.get());
+                        output.accept(TOILET_ITEM.get());
                     })
                     .build());
 
@@ -741,6 +827,7 @@ public final class Registration {
         BLOCKS.register();
         ITEMS.register();
         BLOCK_ENTITIES.register();
+        ENTITY_TYPES.register();
         MENUS.register();
         DATA_COMPONENTS.register();
         CREATIVE_TABS.register();

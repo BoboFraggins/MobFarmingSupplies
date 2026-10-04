@@ -3,15 +3,16 @@ package net.bobofraggins.mobfarmingsupplies.tank.fabric;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.QuadInstance;
 import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.architectury.fluid.FluidStack;
 import dev.architectury.hooks.fluid.fabric.FluidStackHooksFabric;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
-import net.bobofraggins.mobfarmingsupplies.tank.TankBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.tank.TankContents;
 import net.bobofraggins.mobfarmingsupplies.tank.TankFluidGeometry;
+import net.bobofraggins.mobfarmingsupplies.tank.TankTier;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Sheets;
@@ -37,8 +38,15 @@ import org.joml.Vector3fc;
 @SuppressWarnings("UnstableApiUsage")
 public class TankItemRenderer implements SpecialModelRenderer<TankContents> {
 
+    /** Which tank this renders: decides the case model and the capacity the fill level is relative to. */
+    private final TankTier tier;
+
     /** Cached once on first render — block model parts never change after bake. */
     private List<BlockStateModelPart> cachedBlkParts = null;
+
+    public TankItemRenderer(TankTier tier) {
+        this.tier = tier;
+    }
 
     @Override
     public void getExtents(Consumer<Vector3fc> output) {}
@@ -64,7 +72,7 @@ public class TankItemRenderer implements SpecialModelRenderer<TankContents> {
         if (cachedBlkParts == null) {
             BlockStateModel blkModel = mc.getModelManager()
                     .getBlockStateModelSet()
-                    .get(Registration.TANK.get().defaultBlockState());
+                    .get(tier.block().defaultBlockState());
             List<BlockStateModelPart> parts = new ArrayList<>();
             blkModel.collectParts(RandomSource.create(), parts);
             cachedBlkParts = parts;
@@ -89,7 +97,7 @@ public class TankItemRenderer implements SpecialModelRenderer<TankContents> {
 
         if (data == null || data.isEmpty()) return;
 
-        float fillFrac = Math.max(0.01f, (float) data.amount() / TankBlockEntity.CAPACITY);
+        float fillFrac = Math.max(0.01f, (float) data.amount() / tier.capacity());
         FluidStack archFluid = data.storedFluid();
 
         var fluidModel = mc.getModelManager()
@@ -131,13 +139,16 @@ public class TankItemRenderer implements SpecialModelRenderer<TankContents> {
                         vc, pose, ffrF, ffgF, ffbF, ffaF, flF, overlayF, uL, vT, uR, vB, vMax, fillTop));
     }
 
-    public record Unbaked() implements SpecialModelRenderer.Unbaked<TankContents> {
-        public static final MapCodec<Unbaked> MAP_CODEC = MapCodec.unit(new Unbaked());
+    /** {@code tier} comes from the item's model JSON ({@code "tier": "gold"}); a basic tank leaves it out. */
+    public record Unbaked(TankTier tier) implements SpecialModelRenderer.Unbaked<TankContents> {
+        public static final MapCodec<Unbaked> MAP_CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
+                TankTier.CODEC.optionalFieldOf("tier", TankTier.BASIC).forGetter(Unbaked::tier)
+        ).apply(i, Unbaked::new));
 
         @Override
         @Nullable
         public SpecialModelRenderer<TankContents> bake(SpecialModelRenderer.BakingContext context) {
-            return new TankItemRenderer();
+            return new TankItemRenderer(tier);
         }
 
         @Override

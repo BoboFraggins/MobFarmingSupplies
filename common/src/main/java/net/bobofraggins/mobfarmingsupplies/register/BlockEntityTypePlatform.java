@@ -14,13 +14,13 @@ public final class BlockEntityTypePlatform {
     private BlockEntityTypePlatform() {}
 
     /**
-     * Creates a BlockEntityType for the given factory and block.
+     * Creates a BlockEntityType for the given factory and block(s).
      * Uses BiFunction to avoid referencing BlockEntityType.BlockEntitySupplier, which is
      * package-private in vanilla MC (Fabric) but public in NeoForge's patched jar.
      */
     @ExpectPlatform
     public static <T extends BlockEntity> BlockEntityType<T> create(
-            BiFunction<BlockPos, BlockState, T> factory, Block block) {
+            BiFunction<BlockPos, BlockState, T> factory, Block... blocks) {
         throw new AssertionError("Missing platform implementation");
     }
 }

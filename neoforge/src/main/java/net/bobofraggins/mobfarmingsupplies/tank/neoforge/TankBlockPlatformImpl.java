@@ -32,6 +32,10 @@ public final class TankBlockPlatformImpl {
                 if (sound == null) sound = filling ? SoundEvents.BUCKET_FILL : SoundEvents.BUCKET_EMPTY;
                 level.playSound(null, pos, sound, SoundSource.BLOCKS, 1.0f, 1.0f);
             }
+        } else if (success) {
+            // Any other block using this (e.g. the Toilet's water): the plain bucket sound, as on Fabric.
+            level.playSound(null, pos, filling ? SoundEvents.BUCKET_FILL : SoundEvents.BUCKET_EMPTY,
+                    SoundSource.BLOCKS, 1.0f, 1.0f);
         }
         return success;
     }
