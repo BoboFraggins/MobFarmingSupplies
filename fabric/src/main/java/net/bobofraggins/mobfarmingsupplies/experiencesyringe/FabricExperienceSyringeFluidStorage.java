@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.experiencesyringe;
 
+import net.bobofraggins.mobfarmingsupplies.fluid.fabric.FabricFluidUnits;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
@@ -61,12 +62,12 @@ public final class FabricExperienceSyringeFluidStorage implements Storage<FluidV
         int stored = storedXp();
         int capacityMb = ExperienceSyringeItem.xpToMb(ExperienceSyringeItem.CAPACITY);
         int storedMb = ExperienceSyringeItem.xpToMb(stored);
-        long toInsert = Math.min(maxAmount, capacityMb - storedMb);
+        long toInsert = Math.min(FabricFluidUnits.toMb(maxAmount), capacityMb - storedMb); // syringe counts in mB
         if (toInsert <= 0) return 0;
 
         int newXp = ExperienceSyringeItem.mbToXp(storedMb + (int) toInsert);
         if (!setStoredXp(newXp, transaction)) return 0;
-        return toInsert;
+        return FabricFluidUnits.toDroplets(toInsert);
     }
 
     @Override
@@ -77,12 +78,12 @@ public final class FabricExperienceSyringeFluidStorage implements Storage<FluidV
         int stored = storedXp();
         if (stored <= 0) return 0;
         int storedMb = ExperienceSyringeItem.xpToMb(stored);
-        long toExtract = Math.min(maxAmount, storedMb);
+        long toExtract = Math.min(FabricFluidUnits.toMb(maxAmount), storedMb);
         if (toExtract <= 0) return 0;
 
         int newXp = ExperienceSyringeItem.mbToXp(storedMb - (int) toExtract);
         if (!setStoredXp(newXp, transaction)) return 0;
-        return toExtract;
+        return FabricFluidUnits.toDroplets(toExtract);
     }
 
     @Override
@@ -109,9 +110,11 @@ public final class FabricExperienceSyringeFluidStorage implements Storage<FluidV
         }
 
         @Override
-        public long getAmount() { return ExperienceSyringeItem.xpToMb(storedXp()); }
+        public long getAmount() { return FabricFluidUnits.toDroplets(ExperienceSyringeItem.xpToMb(storedXp())); }
 
         @Override
-        public long getCapacity() { return ExperienceSyringeItem.xpToMb(ExperienceSyringeItem.CAPACITY); }
+        public long getCapacity() {
+            return FabricFluidUnits.toDroplets(ExperienceSyringeItem.xpToMb(ExperienceSyringeItem.CAPACITY));
+        }
     }
 }

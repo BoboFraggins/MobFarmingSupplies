@@ -1,6 +1,7 @@
 package net.bobofraggins.mobfarmingsupplies.absorptionhopper;
 
 import dev.architectury.fluid.FluidStack;
+import net.bobofraggins.mobfarmingsupplies.fluid.fabric.FabricFluidUnits;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
@@ -67,13 +68,13 @@ public final class FabricAbsorptionHopperFluidStorage
             return 0;
         }
         long space = AbsorptionHopperBlockEntity.TANK_CAPACITY - be.tankAmount;
-        long toInsert = Math.min(maxAmount, space);
+        long toInsert = Math.min(FabricFluidUnits.toMb(maxAmount), space); // the hopper's tank counts in mB
         if (toInsert <= 0) return 0;
 
         updateSnapshots(transaction);
         if (be.tankFluid.isEmpty()) be.tankFluid = incoming;
         be.tankAmount += (int) toInsert;
-        return toInsert;
+        return FabricFluidUnits.toDroplets(toInsert);
     }
 
     @Override
@@ -81,7 +82,7 @@ public final class FabricAbsorptionHopperFluidStorage
         if (resource.isBlank() || maxAmount <= 0 || be.tankFluid.isEmpty()) return 0;
         FluidStack req = FluidStack.create(resource.getFluid(), 1, resource.getComponentsPatch());
         if (!be.tankFluid.isFluidEqual(req) || !be.tankFluid.isComponentEqual(req)) return 0;
-        long toExtract = Math.min(maxAmount, be.tankAmount);
+        long toExtract = Math.min(FabricFluidUnits.toMb(maxAmount), be.tankAmount);
         if (toExtract <= 0) return 0;
 
         updateSnapshots(transaction);
@@ -90,7 +91,7 @@ public final class FabricAbsorptionHopperFluidStorage
             be.tankAmount = 0;
             be.tankFluid = FluidStack.empty();
         }
-        return toExtract;
+        return FabricFluidUnits.toDroplets(toExtract);
     }
 
     @Override
@@ -126,9 +127,9 @@ public final class FabricAbsorptionHopperFluidStorage
         }
 
         @Override
-        public long getAmount() { return be.tankAmount; }
+        public long getAmount() { return FabricFluidUnits.toDroplets(be.tankAmount); }
 
         @Override
-        public long getCapacity() { return AbsorptionHopperBlockEntity.TANK_CAPACITY; }
+        public long getCapacity() { return FabricFluidUnits.toDroplets(AbsorptionHopperBlockEntity.TANK_CAPACITY); }
     }
 }

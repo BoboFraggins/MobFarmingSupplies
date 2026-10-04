@@ -1,7 +1,9 @@
 package net.bobofraggins.mobfarmingsupplies.tank;
 
 import dev.architectury.fluid.FluidStack;
+import net.bobofraggins.mobfarmingsupplies.fluid.fabric.FabricFluidUnits;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
+import net.bobofraggins.mobfarmingsupplies.tank.TankBlockItem;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
@@ -26,6 +28,11 @@ import java.util.Iterator;
 public final class FabricTankItemFluidStorage implements Storage<FluidVariant> {
 
     private final ContainerItemContext ctx;
+
+    /** This tank item's capacity in mB, from its tier. */
+    private long capacity() {
+        return TankBlockItem.capacityOf(ctx.getItemVariant().toStack());
+    }
 
     public FabricTankItemFluidStorage(ItemStack stack, ContainerItemContext ctx) {
         this.ctx = ctx;
@@ -63,13 +70,13 @@ public final class FabricTankItemFluidStorage implements Storage<FluidVariant> {
                 && (!c.storedFluid().isFluidEqual(incoming) || !c.storedFluid().isComponentEqual(incoming))) {
             return 0;
         }
-        long space = TankBlockEntity.CAPACITY - c.amount();
-        long toFill = Math.min(maxAmount, space);
+        long space = capacity() - c.amount();
+        long toFill = Math.min(FabricFluidUnits.toMb(maxAmount), space); // the tank counts in mB
         if (toFill <= 0) return 0;
 
         FluidStack newFluid = c.storedFluid().isEmpty() ? incoming.copyWithAmount(1) : c.storedFluid();
         TankContents updated = new TankContents(newFluid, c.amount() + toFill, c.bucketMode());
-        return updateContents(updated, transaction) ? toFill : 0;
+        return updateContents(updated, transaction) ? FabricFluidUnits.toDroplets(toFill) : 0;
     }
 
     @Override
@@ -79,11 +86,11 @@ public final class FabricTankItemFluidStorage implements Storage<FluidVariant> {
         if (c.storedFluid().isEmpty()) return 0;
         FluidStack req = FabricTankFluidStorage.fromFabric(resource, 1);
         if (!c.storedFluid().isFluidEqual(req) || !c.storedFluid().isComponentEqual(req)) return 0;
-        long toDrain = Math.min(maxAmount, c.amount());
+        long toDrain = Math.min(FabricFluidUnits.toMb(maxAmount), c.amount());
         if (toDrain <= 0) return 0;
 
         TankContents updated = new TankContents(c.storedFluid(), c.amount() - toDrain, c.bucketMode());
-        return updateContents(updated, transaction) ? toDrain : 0;
+        return updateContents(updated, transaction) ? FabricFluidUnits.toDroplets(toDrain) : 0;
     }
 
     @Override
@@ -111,9 +118,9 @@ public final class FabricTankItemFluidStorage implements Storage<FluidVariant> {
         }
 
         @Override
-        public long getAmount() { return contents().amount(); }
+        public long getAmount() { return FabricFluidUnits.toDroplets(contents().amount()); }
 
         @Override
-        public long getCapacity() { return TankBlockEntity.CAPACITY; }
+        public long getCapacity() { return FabricFluidUnits.toDroplets(capacity()); }
     }
 }

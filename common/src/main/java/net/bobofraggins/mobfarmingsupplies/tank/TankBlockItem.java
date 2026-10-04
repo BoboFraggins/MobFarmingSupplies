@@ -37,6 +37,12 @@ public class TankBlockItem extends BlockItem {
         super(block, properties);
     }
 
+    /** Capacity in mB of the tank {@code stack} is (a basic tank's if it isn't one). */
+    public static long capacityOf(ItemStack stack) {
+        return stack.getItem() instanceof BlockItem item && item.getBlock() instanceof TankBlock tank
+                ? tank.tier().capacity() : TankTier.BASIC.capacity();
+    }
+
     @SuppressWarnings("deprecation")
     @Override
     public void appendHoverText(
@@ -51,7 +57,7 @@ public class TankBlockItem extends BlockItem {
             tooltipAdder.accept(Component.translatable(
                             "item.mobfarmingsupplies.tank.tooltip",
                             contents.amount(),
-                            TankBlockEntity.CAPACITY,
+                            capacityOf(stack),
                             contents.storedFluid().getName())
                     .withStyle(ChatFormatting.GRAY));
         }
@@ -98,7 +104,7 @@ public class TankBlockItem extends BlockItem {
                     || (c.storedFluid().isFluidEqual(archWorldFluid)
                             && c.storedFluid().isComponentEqual(archWorldFluid));
 
-            if (canAccept && TankBlockEntity.CAPACITY - c.amount() >= BUCKET_VOLUME) {
+            if (canAccept && capacityOf(stack) - c.amount() >= BUCKET_VOLUME) {
                 if (!level.isClientSide()) {
                     Optional<SoundEvent> sound = bucketPickup.getPickupSound();
                     ItemStack picked = bucketPickup.pickupBlock(player, level, pos, state);

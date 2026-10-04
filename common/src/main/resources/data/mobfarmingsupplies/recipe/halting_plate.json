@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "FIF",
+    "FRF",
+    "FIF"
+  ],
+  "key": {
+    "F": "minecraft:rotten_flesh",
+    "I": "#c:ingots/iron",
+    "R": "minecraft:redstone"
+  },
+  "result": {
+    "id": "mobfarmingsupplies:halting_plate",
+    "count": 16
+  },
+  "category": "misc"
+}

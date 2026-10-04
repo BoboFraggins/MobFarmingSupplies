@@ -1,6 +1,7 @@
 package net.bobofraggins.mobfarmingsupplies.tank;
 
 import dev.architectury.fluid.FluidStack;
+import net.bobofraggins.mobfarmingsupplies.fluid.fabric.FabricFluidUnits;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
@@ -64,14 +65,14 @@ public final class FabricTankFluidStorage
                 && (!be.storedFluid.isFluidEqual(incoming) || !be.storedFluid.isComponentEqual(incoming))) {
             return 0;
         }
-        long space = TankBlockEntity.CAPACITY - be.amount;
-        long toInsert = Math.min(maxAmount, space);
+        long space = be.getCapacity() - be.amount;
+        long toInsert = Math.min(FabricFluidUnits.toMb(maxAmount), space); // the tank counts in mB
         if (toInsert <= 0) return 0;
 
         updateSnapshots(transaction);
         if (be.storedFluid.isEmpty()) be.storedFluid = incoming.copyWithAmount(1);
         be.amount += toInsert;
-        return toInsert;
+        return FabricFluidUnits.toDroplets(toInsert);
     }
 
     @Override
@@ -79,7 +80,7 @@ public final class FabricTankFluidStorage
         if (resource.isBlank() || maxAmount <= 0 || be.storedFluid.isEmpty()) return 0;
         FluidStack req = fromFabric(resource, 1);
         if (!be.storedFluid.isFluidEqual(req) || !be.storedFluid.isComponentEqual(req)) return 0;
-        long toExtract = Math.min(maxAmount, be.amount);
+        long toExtract = Math.min(FabricFluidUnits.toMb(maxAmount), be.amount);
         if (toExtract <= 0) return 0;
 
         updateSnapshots(transaction);
@@ -88,7 +89,7 @@ public final class FabricTankFluidStorage
             be.amount = 0;
             be.storedFluid = FluidStack.empty();
         }
-        return toExtract;
+        return FabricFluidUnits.toDroplets(toExtract);
     }
 
     @Override
@@ -124,9 +125,9 @@ public final class FabricTankFluidStorage
         }
 
         @Override
-        public long getAmount() { return be.amount; }
+        public long getAmount() { return FabricFluidUnits.toDroplets(be.amount); }
 
         @Override
-        public long getCapacity() { return TankBlockEntity.CAPACITY; }
+        public long getCapacity() { return FabricFluidUnits.toDroplets(be.getCapacity()); }
     }
 }

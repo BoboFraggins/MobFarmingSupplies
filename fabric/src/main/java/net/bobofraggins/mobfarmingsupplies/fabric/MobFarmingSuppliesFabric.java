@@ -53,7 +53,8 @@ public class MobFarmingSuppliesFabric implements ModInitializer {
         // Item-side fluid storage for the Tank block item.
         FluidStorage.ITEM.registerForItems(
                 (stack, ctx) -> new FabricTankItemFluidStorage(stack, ctx),
-                Registration.TANK_ITEM.get());
+                Registration.TANK_ITEM.get(), Registration.GOLD_TANK_ITEM.get(),
+                Registration.DIAMOND_TANK_ITEM.get(), Registration.EMERALD_TANK_ITEM.get());
 
         // Item-side fluid storage for the Experience Syringe.
         FluidStorage.ITEM.registerForItems(

@@ -9,6 +9,7 @@ import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import net.bobofraggins.mobfarmingsupplies.tank.TankBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.tank.TankContents;
+import net.bobofraggins.mobfarmingsupplies.tank.TankBlockItem;
 
 /**
  * {@link ResourceHandler}{@code <FluidResource>} for the Tank block item.
@@ -55,7 +56,7 @@ public class TankItemFluidHandler implements ResourceHandler<FluidResource> {
 
     @Override
     public long getCapacityAsLong(int index, FluidResource resource) {
-        return TankBlockEntity.CAPACITY;
+        return TankBlockItem.capacityOf(container);
     }
 
     @Override
@@ -71,7 +72,7 @@ public class TankItemFluidHandler implements ResourceHandler<FluidResource> {
     public int insert(int index, FluidResource resource, int amount, TransactionContext tx) {
         if (!isValid(index, resource) || amount <= 0) return 0;
         TankContents c = contents();
-        long space = TankBlockEntity.CAPACITY - c.amount();
+        long space = TankBlockItem.capacityOf(container) - c.amount();
         int toFill = (int) Math.min(amount, Math.min(space, Integer.MAX_VALUE));
         if (toFill <= 0) return 0;
         FluidStack newType = c.storedFluid().isEmpty()

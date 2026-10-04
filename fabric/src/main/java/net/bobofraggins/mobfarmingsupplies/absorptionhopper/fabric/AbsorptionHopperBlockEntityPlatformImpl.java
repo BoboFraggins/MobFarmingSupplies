@@ -3,6 +3,7 @@ package net.bobofraggins.mobfarmingsupplies.absorptionhopper.fabric;
 import dev.architectury.fluid.FluidStack;
 import net.bobofraggins.mobfarmingsupplies.absorptionhopper.AbsorptionHopperBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.absorptionhopper.IAbsorptionHopperBlockEntity;
+import net.bobofraggins.mobfarmingsupplies.fluid.fabric.FabricFluidUnits;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
@@ -64,7 +65,7 @@ public final class AbsorptionHopperBlockEntityPlatformImpl {
         FluidVariant variant = FluidVariant.of(be.tankFluid.getFluid(), be.tankFluid.getPatch());
         long sent;
         try (Transaction tx = Transaction.openOuter()) {
-            sent = dest.insert(variant, toSend, tx);
+            sent = FabricFluidUnits.insertMb(dest, variant, toSend, tx); // mB in, mB out
             if (sent > 0) tx.commit();
             else sent = 0;
         }

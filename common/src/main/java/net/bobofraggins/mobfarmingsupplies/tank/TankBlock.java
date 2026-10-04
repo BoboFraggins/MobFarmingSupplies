@@ -1,6 +1,7 @@
 package net.bobofraggins.mobfarmingsupplies.tank;
 
 import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.architectury.registry.menu.MenuRegistry;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.minecraft.core.BlockPos;
@@ -26,10 +27,19 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class TankBlock extends BaseEntityBlock {
 
-    public static final MapCodec<TankBlock> CODEC = simpleCodec(TankBlock::new);
+    public static final MapCodec<TankBlock> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
+            TankTier.CODEC.fieldOf("tier").forGetter(TankBlock::tier),
+            propertiesCodec()).apply(i, TankBlock::new));
 
-    public TankBlock(Properties props) {
+    private final TankTier tier;
+
+    public TankBlock(TankTier tier, Properties props) {
         super(props);
+        this.tier = tier;
+    }
+
+    public TankTier tier() {
+        return tier;
     }
 
     @Override

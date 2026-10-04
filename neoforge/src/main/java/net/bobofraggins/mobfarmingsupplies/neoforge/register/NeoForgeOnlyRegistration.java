@@ -133,7 +133,8 @@ public final class NeoForgeOnlyRegistration {
         event.registerItem(
                 Capabilities.Fluid.ITEM,
                 (stack, ctx) -> new TankItemFluidHandler(stack),
-                Registration.TANK_ITEM.get());
+                Registration.TANK_ITEM.get(), Registration.GOLD_TANK_ITEM.get(),
+                Registration.DIAMOND_TANK_ITEM.get(), Registration.EMERALD_TANK_ITEM.get());
 
         event.registerItem(
                 Capabilities.Fluid.ITEM,

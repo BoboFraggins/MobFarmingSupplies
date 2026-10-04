@@ -1,6 +1,7 @@
 package net.bobofraggins.mobfarmingsupplies.tank.fabric;
 
 import dev.architectury.fluid.FluidStack;
+import net.bobofraggins.mobfarmingsupplies.fluid.fabric.FabricFluidUnits;
 import net.bobofraggins.mobfarmingsupplies.tank.FabricTankFluidStorage;
 import net.bobofraggins.mobfarmingsupplies.tank.TankBlockEntity;
 import net.minecraft.core.BlockPos;
@@ -12,6 +13,7 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
+import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import org.jetbrains.annotations.Nullable;
 
@@ -20,9 +22,30 @@ public final class TankBlockEntityPlatformImpl {
 
     private TankBlockEntityPlatformImpl() {}
 
+    /** One slot holding the item being emptied or filled; it keeps whatever the transfer turns the item into. */
+    private static final class ItemSlot extends SingleVariantStorage<ItemVariant> {
+        ItemSlot(ItemStack stack) {
+            this.variant = ItemVariant.of(stack);
+            this.amount = stack.getCount();
+        }
+
+        @Override
+        protected ItemVariant getBlankVariant() {
+            return ItemVariant.blank();
+        }
+
+        @Override
+        protected long getCapacity(ItemVariant variant) {
+            return variant.isBlank() ? 1 : variant.toStack().getMaxStackSize();
+        }
+    }
+
     @Nullable
     public static ItemStack tryTransferFluidWithItem(TankBlockEntity be, ItemStack input) {
-        ContainerItemContext ctx = ContainerItemContext.withConstant(input);
+        // A real one-slot holder rather than ContainerItemContext.withConstant: a constant context
+        // throws away what the transfer does to the item, so an emptied bucket read back as still
+        // full and the fluid was duplicated. The result below is read back from this slot.
+        ContainerItemContext ctx = ContainerItemContext.ofSingleSlot(new ItemSlot(input));
         Storage<FluidVariant> storage = FluidStorage.ITEM.find(input, ctx);
         if (storage == null) return null;
 
@@ -41,11 +64,12 @@ public final class TankBlockEntityPlatformImpl {
                     continue;
                 }
 
-                long space = TankBlockEntity.CAPACITY - be.amount;
-                long toDrain = Math.min(view.getAmount(), space);
+                // The item's storage counts in droplets, the tank in mB.
+                long space = be.getCapacity() - be.amount;
+                long toDrain = Math.min(FabricFluidUnits.toMb(view.getAmount()), space);
                 if (toDrain <= 0) continue;
 
-                long extracted = storage.extract(variant, toDrain, peekTx);
+                long extracted = FabricFluidUnits.extractMb(storage, variant, toDrain, peekTx);
                 if (extracted > 0) {
                     be.insert(FluidStack.create(incoming, extracted), extracted, false);
                     peekTx.commit();
@@ -64,7 +88,7 @@ public final class TankBlockEntityPlatformImpl {
 
         FluidVariant toInsert = FabricTankFluidStorage.toFabric(be.storedFluid);
         try (Transaction fillTx = Transaction.openOuter()) {
-            long inserted = storage.insert(toInsert, be.amount, fillTx);
+            long inserted = FabricFluidUnits.insertMb(storage, toInsert, be.amount, fillTx);
             if (inserted > 0) {
                 be.extract(inserted, false);
                 fillTx.commit();

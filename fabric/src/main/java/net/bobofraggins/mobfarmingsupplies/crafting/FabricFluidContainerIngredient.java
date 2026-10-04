@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommon;
+import net.bobofraggins.mobfarmingsupplies.fluid.fabric.FabricFluidUnits;
 import net.bobofraggins.mobfarmingsupplies.register.MFSRegistryHelper;
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredient;
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredientSerializer;
@@ -85,8 +86,6 @@ public class FabricFluidContainerIngredient implements CustomIngredient {
                 }
             };
 
-    private static final long DROPLETS_PER_MB = 81L;
-
     private final TagKey<Fluid> fluidTag;
     private final int amount;
 
@@ -104,7 +103,7 @@ public class FabricFluidContainerIngredient implements CustomIngredient {
         for (StorageView<FluidVariant> view : storage.nonEmptyViews()) {
             FluidVariant variant = view.getResource();
             if (variant.getFluid().builtInRegistryHolder().is(fluidTag)
-                    && view.getAmount() >= (long) amount * DROPLETS_PER_MB) {
+                    && view.getAmount() >= FabricFluidUnits.toDroplets(amount)) {
                 return true;
             }
         }
