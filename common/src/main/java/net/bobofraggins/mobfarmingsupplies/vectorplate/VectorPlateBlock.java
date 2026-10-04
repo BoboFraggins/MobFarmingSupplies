@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.vectorplate;
 
+import net.bobofraggins.mobfarmingsupplies.shared.ForcedMovement;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.Entity;
@@ -121,21 +122,7 @@ public class VectorPlateBlock extends HorizontalDirectionalBlock {
         // so the push above never takes effect and they sit on the plate until they suffocate.
         // Move them directly instead, by the same amount the velocity would have.
         if (entity instanceof Squid && !entity.isInWater()) {
-            displace(level, entity, vx, vz);
-        }
-    }
-
-    /**
-     * Moves {@code entity} horizontally by ({@code dx}, {@code dz}) without relying on its own
-     * velocity, stopping at anything solid. Done in two half-steps so a thin block can't be
-     * skipped. Uses setPos rather than Entity#move, which mustn't be called from entityInside
-     * (it would add to the movement list Minecraft is iterating when it calls us).
-     */
-    private static void displace(Level level, Entity entity, double dx, double dz) {
-        for (int step = 0; step < 2; step++) {
-            double hx = dx / 2, hz = dz / 2;
-            if (!level.noCollision(entity, entity.getBoundingBox().move(hx, 0, hz))) return;
-            entity.setPos(entity.getX() + hx, entity.getY(), entity.getZ() + hz);
+            ForcedMovement.displace(level, entity, vx, 0, vz);
         }
     }
 }

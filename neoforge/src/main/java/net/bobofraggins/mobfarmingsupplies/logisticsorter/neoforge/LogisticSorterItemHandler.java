@@ -1,6 +1,7 @@
 package net.bobofraggins.mobfarmingsupplies.logisticsorter.neoforge;
 
 import net.bobofraggins.mobfarmingsupplies.logisticsorter.LogisticSorterBlockEntity;
+import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
@@ -24,9 +25,14 @@ public class LogisticSorterItemHandler implements ResourceHandler<ItemResource> 
 
     @Override public long getAmountAsLong(int index) { return 0; }
 
+    /**
+     * Never 0 for {@link ItemResource#EMPTY}: {@code ResourceHandlerUtil.isFull} compares the (always
+     * zero) amount against the capacity of the slot's current, empty resource, and NeoForge's hopper
+     * hook won't even try to insert into a handler it considers full.
+     */
     @Override
     public long getCapacityAsLong(int index, ItemResource resource) {
-        return resource.isEmpty() ? 0 : resource.toStack(1).getMaxStackSize();
+        return resource.isEmpty() ? Item.ABSOLUTE_MAX_STACK_SIZE : resource.toStack(1).getMaxStackSize();
     }
 
     @Override public boolean isValid(int index, ItemResource resource) { return !resource.isEmpty(); }

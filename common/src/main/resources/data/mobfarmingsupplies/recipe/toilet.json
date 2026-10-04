@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "QQQ",
+    "BWB",
+    "BBB"
+  ],
+  "key": {
+    "Q": "minecraft:quartz",
+    "B": "minecraft:white_terracotta",
+    "W": "minecraft:water_bucket"
+  },
+  "result": {
+    "id": "mobfarmingsupplies:toilet",
+    "count": 1
+  },
+  "category": "misc"
+}

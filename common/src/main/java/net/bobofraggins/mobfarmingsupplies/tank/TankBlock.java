@@ -25,8 +25,15 @@ import net.bobofraggins.mobfarmingsupplies.shared.menu.ExtendedMenus;
 
 public class TankBlock extends BaseEntityBlock {
 
-    public TankBlock(Properties props) {
+    private final TankTier tier;
+
+    public TankBlock(TankTier tier, Properties props) {
         super(props);
+        this.tier = tier;
+    }
+
+    public TankTier tier() {
+        return tier;
     }
 
     @Override

@@ -72,7 +72,7 @@ public final class FabricTankFluidStorage
                 && (!be.storedFluid.isFluidEqual(incoming) || !be.storedFluid.isComponentEqual(incoming))) {
             return 0;
         }
-        long spaceDroplets = (TankBlockEntity.CAPACITY - be.amount) * DROPLETS_PER_MB;
+        long spaceDroplets = (be.getCapacity() - be.amount) * DROPLETS_PER_MB;
         long toInsertMb = Math.min(maxAmount, spaceDroplets) / DROPLETS_PER_MB;
         if (toInsertMb <= 0) return 0;
 
@@ -135,6 +135,6 @@ public final class FabricTankFluidStorage
         public long getAmount() { return be.amount * DROPLETS_PER_MB; }
 
         @Override
-        public long getCapacity() { return TankBlockEntity.CAPACITY * DROPLETS_PER_MB; }
+        public long getCapacity() { return be.getCapacity() * DROPLETS_PER_MB; }
     }
 }

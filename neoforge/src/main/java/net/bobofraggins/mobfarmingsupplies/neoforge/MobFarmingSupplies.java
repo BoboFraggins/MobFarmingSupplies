@@ -19,6 +19,7 @@ import net.bobofraggins.mobfarmingsupplies.neoforge.mobharvester.MobHarvesterCli
 import net.bobofraggins.mobfarmingsupplies.neoforge.picnicbasket.PicnicBasketClientEvents;
 import net.bobofraggins.mobfarmingsupplies.neoforge.register.NeoForgeOnlyRegistration;
 import net.bobofraggins.mobfarmingsupplies.neoforge.tank.TankClientEvents;
+import net.bobofraggins.mobfarmingsupplies.neoforge.toilet.ToiletClientEvents;
 import net.bobofraggins.mobfarmingsupplies.neoforge.xpjuice.XpJuiceClientEvents;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
@@ -74,6 +75,7 @@ public class MobFarmingSupplies {
             if (curiosLoaded) {
                 MagicHatCurioSetup.onClientSetup(modEventBus);
             }
+            modEventBus.register(ToiletClientEvents.class);
         }
 
         MobFarmingSuppliesCommon.init();

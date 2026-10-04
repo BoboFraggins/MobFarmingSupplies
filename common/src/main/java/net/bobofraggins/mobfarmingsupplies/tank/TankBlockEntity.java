@@ -27,8 +27,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Stores a single fluid type, locked on first insertion. Capacity is fixed at
- * {@value #CAPACITY} mB (16 buckets). No tiers, no upgrades.
+ * Stores a single fluid type, locked on first insertion. Capacity comes from the block's
+ * {@link TankTier} (64 buckets for a basic tank, four times more for each tier above).
  *
  * <p>All fluid I/O exposed to automation goes through {@link TankFluidHandler}
  * (NeoForge) or the equivalent Fabric storage (Phase 7b).
@@ -36,8 +36,6 @@ import java.util.List;
  * bucket/bottle interaction via {@link TankBlockEntityPlatform}.
  */
 public class TankBlockEntity extends BlockEntity implements MenuProvider {
-
-    public static final long CAPACITY = 64_000L;
 
     /** Fluid type key — always stored with amount=1. {@link FluidStack#empty()} means unlocked. */
     public FluidStack storedFluid = FluidStack.empty();
@@ -119,7 +117,7 @@ public class TankBlockEntity extends BlockEntity implements MenuProvider {
     }
 
     public long getCapacity() {
-        return CAPACITY;
+        return getBlockState().getBlock() instanceof TankBlock tank ? tank.tier().capacity() : TankTier.BASIC.capacity();
     }
 
     // ── Mutation ───────────────────────────────────────────────────────────────
@@ -135,7 +133,7 @@ public class TankBlockEntity extends BlockEntity implements MenuProvider {
         if (!storedFluid.isEmpty()
                 && (!storedFluid.isFluidEqual(fluid) || !storedFluid.isComponentEqual(fluid))) return 0;
 
-        long space = CAPACITY - amount;
+        long space = getCapacity() - amount;
         long toInsert = Math.min(requested, space);
         if (toInsert <= 0) return 0;
 
@@ -175,7 +173,7 @@ public class TankBlockEntity extends BlockEntity implements MenuProvider {
 
     @Override
     public Component getDisplayName() {
-        return Component.translatable("block.mobfarmingsupplies.tank");
+        return getBlockState().getBlock().getName();
     }
 
     @Override

@@ -31,6 +31,16 @@ public final class MFSTags {
                 Registries.ENTITY_TYPE,
                 Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "no_dna_sampling"));
 
+        /**
+         * Mobs in this tag never sit down on a Toilet they walk onto (players never do anyway).
+         *
+         * <p>Defaults: {@code minecraft:shulker}, {@code minecraft:wither}, {@code minecraft:ender_dragon}.
+         * Extend via data pack with {@code "replace": false}.
+         */
+        public static final TagKey<EntityType<?>> CANNOT_USE_TOILET = TagKey.create(
+                Registries.ENTITY_TYPE,
+                Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "cannot_use_toilet"));
+
         private EntityTypes() {}
     }
 }

@@ -11,8 +11,8 @@ import java.util.function.BiFunction;
 public final class BlockEntityTypePlatformImpl {
 
     public static <T extends BlockEntity> BlockEntityType<T> create(
-            BiFunction<BlockPos, BlockState, T> factory, Block block) {
+            BiFunction<BlockPos, BlockState, T> factory, Block... blocks) {
         // NeoForge's patched jar has a public BlockEntityType constructor
-        return new BlockEntityType<>((pos, state) -> factory.apply(pos, state), block);
+        return new BlockEntityType<>((pos, state) -> factory.apply(pos, state), blocks);
     }
 }

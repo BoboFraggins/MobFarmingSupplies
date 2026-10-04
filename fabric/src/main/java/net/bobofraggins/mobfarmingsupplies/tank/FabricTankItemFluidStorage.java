@@ -2,6 +2,7 @@ package net.bobofraggins.mobfarmingsupplies.tank;
 
 import dev.architectury.fluid.FluidStack;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
+import net.bobofraggins.mobfarmingsupplies.tank.TankBlockItem;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
@@ -34,6 +35,11 @@ public final class FabricTankItemFluidStorage implements Storage<FluidVariant> {
     private static final long DROPLETS_PER_MB = 81L;
 
     private final ContainerItemContext ctx;
+
+    /** This tank item's capacity in mB, from its tier. */
+    private long capacity() {
+        return TankBlockItem.capacityOf(ctx.getItemVariant().toStack());
+    }
 
     public FabricTankItemFluidStorage(ItemStack stack, ContainerItemContext ctx) {
         this.ctx = ctx;
@@ -71,7 +77,7 @@ public final class FabricTankItemFluidStorage implements Storage<FluidVariant> {
                 && (!c.storedFluid().isFluidEqual(incoming) || !c.storedFluid().isComponentEqual(incoming))) {
             return 0;
         }
-        long spaceDroplets = (TankBlockEntity.CAPACITY - c.amount()) * DROPLETS_PER_MB;
+        long spaceDroplets = (capacity() - c.amount()) * DROPLETS_PER_MB;
         long toFillMb = Math.min(maxAmount, spaceDroplets) / DROPLETS_PER_MB;
         if (toFillMb <= 0) return 0;
 
@@ -122,6 +128,6 @@ public final class FabricTankItemFluidStorage implements Storage<FluidVariant> {
         public long getAmount() { return contents().amount() * DROPLETS_PER_MB; }
 
         @Override
-        public long getCapacity() { return TankBlockEntity.CAPACITY * DROPLETS_PER_MB; }
+        public long getCapacity() { return capacity() * DROPLETS_PER_MB; }
     }
 }

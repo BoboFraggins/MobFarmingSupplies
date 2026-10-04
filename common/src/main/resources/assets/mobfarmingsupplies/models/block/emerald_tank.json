@@ -1,0 +1,7 @@
+{
+  "parent": "mobfarmingsupplies:block/tank",
+  "textures": {
+    "0": "mobfarmingsupplies:block/tank_emerald",
+    "particle": "mobfarmingsupplies:block/tank_emerald"
+  }
+}

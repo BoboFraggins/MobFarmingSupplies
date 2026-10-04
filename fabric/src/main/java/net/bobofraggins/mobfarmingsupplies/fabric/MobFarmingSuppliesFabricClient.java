@@ -31,6 +31,9 @@ import net.minecraft.client.renderer.special.SpecialModelRenderers;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.entity.EntityTypes;
+import dev.architectury.registry.client.level.entity.EntityRendererRegistry;
+import net.bobofraggins.mobfarmingsupplies.toilet.ToiletBlockEntityRenderer;
+import net.minecraft.client.renderer.entity.NoopRenderer;
 
 public class MobFarmingSuppliesFabricClient implements ClientModInitializer {
 
@@ -61,6 +64,11 @@ public class MobFarmingSuppliesFabricClient implements ClientModInitializer {
         BlockEntityRendererRegistry.register(
                 Registration.PRESENT_BE_TYPE.get(),
                 PresentRenderer::new);
+        BlockEntityRendererRegistry.register(
+                Registration.TOILET_BE_TYPE.get(),
+                ToiletBlockEntityRenderer::new);
+        // The toilet seat is invisible: only its rider is drawn.
+        EntityRendererRegistry.register(Registration.TOILET_SEAT, NoopRenderer::new);
         ExtraBlockModelsImpl.registerModelLoadingPlugin();
         registerSpecialModelRenderers();
         registerMagicHatLayer();

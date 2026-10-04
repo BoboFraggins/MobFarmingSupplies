@@ -6,6 +6,7 @@ import net.bobofraggins.mobfarmingsupplies.fan.FanBlockEntityRenderer;
 import net.bobofraggins.mobfarmingsupplies.glamping.present.PresentRenderer;
 import net.bobofraggins.mobfarmingsupplies.mobharvester.MobHarvesterRenderer;
 import net.bobofraggins.mobfarmingsupplies.picnicbasket.PicnicBasketRenderer;
+import net.bobofraggins.mobfarmingsupplies.toilet.ToiletBlockEntityRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.resources.Identifier;
@@ -35,6 +36,7 @@ public final class ExtraBlockModelsImpl {
         register(PicnicBasketRenderer.LEFT_LID_MODEL_ID);
         register(PicnicBasketRenderer.RIGHT_LID_MODEL_ID);
         register(PresentRenderer.MODEL_ID);
+        register(ToiletBlockEntityRenderer.LID_MODEL_ID);
     }
 
     private ExtraBlockModelsImpl() {}

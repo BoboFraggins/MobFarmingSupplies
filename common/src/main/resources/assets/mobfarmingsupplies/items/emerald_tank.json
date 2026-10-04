@@ -1,0 +1,10 @@
+{
+  "model": {
+    "type": "minecraft:special",
+    "base": "mobfarmingsupplies:item/tank",
+    "model": {
+      "type": "mobfarmingsupplies:tank_renderer",
+      "tier": "emerald"
+    }
+  }
+}

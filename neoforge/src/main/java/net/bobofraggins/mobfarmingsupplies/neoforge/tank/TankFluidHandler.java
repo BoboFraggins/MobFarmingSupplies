@@ -65,7 +65,7 @@ public class TankFluidHandler implements ResourceHandler<FluidResource> {
 
     @Override
     public long getCapacityAsLong(int index, FluidResource resource) {
-        return TankBlockEntity.CAPACITY;
+        return be.getCapacity();
     }
 
     @Override
@@ -82,7 +82,7 @@ public class TankFluidHandler implements ResourceHandler<FluidResource> {
         FluidStack incoming = FluidStackHooksForge.fromForge(resource.toStack(1));
         if (!be.storedFluid.isEmpty()
                 && (!be.storedFluid.isFluidEqual(incoming) || !be.storedFluid.isComponentEqual(incoming))) return 0;
-        long space = TankBlockEntity.CAPACITY - be.amount;
+        long space = be.getCapacity() - be.amount;
         int toInsert = (int) Math.min(amount, Math.min(space, Integer.MAX_VALUE));
         if (toInsert <= 0) return 0;
 

@@ -1,0 +1,17 @@
+{
+  "type": "mobfarmingsupplies:tank_upgrade",
+  "pattern": [
+    "MMM",
+    "MTM",
+    "MMM"
+  ],
+  "key": {
+    "M": "minecraft:emerald",
+    "T": "mobfarmingsupplies:diamond_tank"
+  },
+  "result": {
+    "id": "mobfarmingsupplies:emerald_tank",
+    "count": 1
+  },
+  "category": "misc"
+}

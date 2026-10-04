@@ -1,0 +1,17 @@
+{
+  "type": "mobfarmingsupplies:tank_upgrade",
+  "pattern": [
+    "MMM",
+    "MTM",
+    "MMM"
+  ],
+  "key": {
+    "M": "minecraft:gold_ingot",
+    "T": "mobfarmingsupplies:tank"
+  },
+  "result": {
+    "id": "mobfarmingsupplies:gold_tank",
+    "count": 1
+  },
+  "category": "misc"
+}

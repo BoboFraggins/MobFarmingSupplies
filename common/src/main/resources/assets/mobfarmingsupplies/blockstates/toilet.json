@@ -1,0 +1,34 @@
+{
+  "variants": {
+    "facing=north,open=false": {
+      "model": "mobfarmingsupplies:block/toilet_bowl"
+    },
+    "facing=north,open=true": {
+      "model": "mobfarmingsupplies:block/toilet_bowl"
+    },
+    "facing=east,open=false": {
+      "model": "mobfarmingsupplies:block/toilet_bowl",
+      "y": 90
+    },
+    "facing=east,open=true": {
+      "model": "mobfarmingsupplies:block/toilet_bowl",
+      "y": 90
+    },
+    "facing=south,open=false": {
+      "model": "mobfarmingsupplies:block/toilet_bowl",
+      "y": 180
+    },
+    "facing=south,open=true": {
+      "model": "mobfarmingsupplies:block/toilet_bowl",
+      "y": 180
+    },
+    "facing=west,open=false": {
+      "model": "mobfarmingsupplies:block/toilet_bowl",
+      "y": 270
+    },
+    "facing=west,open=true": {
+      "model": "mobfarmingsupplies:block/toilet_bowl",
+      "y": 270
+    }
+  }
+}
