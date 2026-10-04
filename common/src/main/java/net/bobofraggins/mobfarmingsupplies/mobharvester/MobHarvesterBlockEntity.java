@@ -23,7 +23,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.AABB;
+
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -69,6 +72,8 @@ public class MobHarvesterBlockEntity extends BlockEntity implements MenuProvider
 
     private ItemStack cachedSword = null;
     private boolean swordDirty = true;
+    /** This harvester's fake player, reused across attacks; created by the platform code on first use. */
+    @Nullable private ServerPlayer fakePlayer = null;
 
     final SimpleContainer upgrades = new SimpleContainer(UPGRADE_SLOTS) {
         @Override
@@ -129,7 +134,7 @@ public class MobHarvesterBlockEntity extends BlockEntity implements MenuProvider
             swordDirty = false;
         }
 
-        MobHarvesterAttackPlatform.attackTargets(serverLevel, pos, cachedSword, targets);
+        fakePlayer = MobHarvesterAttackPlatform.attackTargets(serverLevel, pos, cachedSword, targets, fakePlayer);
     }
 
     private int getUpgradeCount(HarvesterUpgradeItem.UpgradeType type) {

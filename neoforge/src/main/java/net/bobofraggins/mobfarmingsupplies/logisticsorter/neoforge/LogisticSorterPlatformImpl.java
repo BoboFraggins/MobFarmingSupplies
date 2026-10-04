@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.logisticsorter.neoforge;
 
+import net.bobofraggins.mobfarmingsupplies.logisticsorter.EvenSplit;
 import net.bobofraggins.mobfarmingsupplies.logisticsorter.LogisticSorterBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.logisticsorter.SideMode;
 import net.minecraft.core.BlockPos;
@@ -25,26 +26,41 @@ public final class LogisticSorterPlatformImpl {
                 if (be.getSide(in) != SideMode.INPUT) continue;
                 ResourceHandler<ItemResource> source = handlerAt(level, pos, in);
                 if (source == null) continue;
-                int budget = LogisticSorterBlockEntity.PULL_PER_SIDE;
+                long budget = LogisticSorterBlockEntity.PULL_PER_SIDE;
                 for (boolean matching : new boolean[]{true, false}) {
-                    for (Direction out : be.outputs(matching)) {
-                        if (budget <= 0) break;
+                    if (budget <= 0) break;
+                    // Split what the source can actually give, not the whole budget - otherwise
+                    // 9 items over two outputs would all land in the first one's share of 32.
+                    int amount = available(source, be, matching, (int) budget);
+                    if (amount <= 0) continue;
+                    budget -= EvenSplit.distribute(be.outputs(matching), amount, (out, max) -> {
                         ResourceHandler<ItemResource> dest = handlerAt(level, pos, out);
-                        if (dest == null) continue;
+                        if (dest == null) return 0;
                         try (Transaction tx = Transaction.openRoot()) {
                             int moved = ResourceHandlerUtil.moveStacking(source, dest,
-                                    r -> be.matches(r.toStack(1)) == matching, budget, tx);
-                            if (moved > 0) {
-                                tx.commit();
-                                budget -= moved;
-                            }
+                                    r -> be.matches(r.toStack(1)) == matching, (int) max, tx);
+                            if (moved > 0) tx.commit();
+                            return moved;
                         }
-                    }
+                    });
                 }
             }
         } finally {
             be.endRouting();
         }
+    }
+
+    /** How many items (up to {@code max}) {@code source} can give that match or don't match the filters. */
+    private static int available(ResourceHandler<ItemResource> source, LogisticSorterBlockEntity be, boolean matching, int max) {
+        int found = 0;
+        try (Transaction simulation = Transaction.openRoot()) { // never committed
+            for (int slot = 0; slot < source.size() && found < max; slot++) {
+                ItemResource resource = source.getResource(slot);
+                if (resource.isEmpty() || be.matches(resource.toStack(1)) != matching) continue;
+                found += source.extract(slot, resource, max - found, simulation);
+            }
+        }
+        return found;
     }
 
     public static void invalidateCapabilities(Level level, BlockPos pos) {
@@ -60,14 +76,10 @@ public final class LogisticSorterPlatformImpl {
         if (level == null || resource.isEmpty() || amount <= 0 || !be.isActive()) return 0;
         if (!be.beginRouting()) return 0; // sorters feeding each other in a loop
         try {
-            int inserted = 0;
-            for (Direction out : be.outputsFor(resource.toStack(1))) {
+            return (int) EvenSplit.distribute(be.outputsFor(resource.toStack(1)), amount, (out, max) -> {
                 ResourceHandler<ItemResource> dest = handlerAt(level, be.getBlockPos(), out);
-                if (dest == null) continue;
-                inserted += dest.insert(resource, amount - inserted, tx);
-                if (inserted >= amount) break;
-            }
-            return inserted;
+                return dest == null ? 0 : dest.insert(resource, (int) max, tx);
+            });
         } finally {
             be.endRouting();
         }
