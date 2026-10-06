@@ -40,6 +40,23 @@ public final class PresentWrapEvents {
 
     public static void registerCommonEvents() {
         InteractionEvent.USE_ITEM_ON_BLOCK.register(PresentWrapEvents::onUseItemOnBlock);
+        InteractionEvent.RIGHT_CLICK_BLOCK.register(PresentWrapEvents::onRightClickBlock);
+    }
+
+    /**
+     * Sneak + empty main hand on a Present unwraps it, whatever is in the offhand. Handled here
+     * because vanilla never calls PresentBlock#useWithoutItem for a sneaking player holding
+     * anything in either hand. The client doesn't know a Present's contents, so it just forwards
+     * the click; the server decides.
+     */
+    private static EventResult onRightClickBlock(Player player, InteractionHand hand, BlockPos pos, Direction face) {
+        Level level = player.level();
+        if (hand != InteractionHand.MAIN_HAND || !player.isShiftKeyDown() || !player.getMainHandItem().isEmpty()
+                || !(level.getBlockState(pos).getBlock() instanceof PresentBlock)) {
+            return EventResult.pass();
+        }
+        if (level.isClientSide()) return EventResult.interruptTrue();
+        return PresentBlock.unwrap(level, pos, player) ? EventResult.interruptTrue() : EventResult.pass();
     }
 
     private static EventResult onUseItemOnBlock(

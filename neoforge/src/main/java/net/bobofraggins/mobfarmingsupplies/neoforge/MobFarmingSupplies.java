@@ -14,6 +14,7 @@ import net.bobofraggins.mobfarmingsupplies.neoforge.glamping.magichat.MagicHatCl
 import net.bobofraggins.mobfarmingsupplies.neoforge.glamping.magichat.MagicHatCurioSetup;
 import net.bobofraggins.mobfarmingsupplies.neoforge.glamping.magichat.MagicHatSpawnEvents;
 import net.bobofraggins.mobfarmingsupplies.neoforge.glamping.present.PresentClientEvents;
+import net.bobofraggins.mobfarmingsupplies.neoforge.glamping.present.PresentSpawnEvents;
 import net.bobofraggins.mobfarmingsupplies.neoforge.mobharvester.BeheadingDropHandler;
 import net.bobofraggins.mobfarmingsupplies.neoforge.mobharvester.MobHarvesterClientEvents;
 import net.bobofraggins.mobfarmingsupplies.neoforge.picnicbasket.PicnicBasketClientEvents;
@@ -44,6 +45,8 @@ public class MobFarmingSupplies {
         NeoForge.EVENT_BUS.register(new BeheadingDropHandler());
         // Magic Hat zombie easter egg — NeoForge has FinalizeSpawnEvent; Fabric uses a mixin.
         NeoForge.EVENT_BUS.register(new MagicHatSpawnEvents());
+        // Present enderman easter egg — same split as the Magic Hat.
+        NeoForge.EVENT_BUS.register(new PresentSpawnEvents());
         // Magic Hat Curios integration — soft dependency, registered only if Curios is present.
         // MUST check isLoaded() before ever calling into MagicHatCurioSetup: that class
         // references Curios API types, and simply loading it (even just to have this class's

@@ -2,7 +2,9 @@ package net.bobofraggins.mobfarmingsupplies.cloneomatic;
 
 import net.bobofraggins.mobfarmingsupplies.MFSConfig;
 import net.bobofraggins.mobfarmingsupplies.dna.IDnaSampleItem;
+import net.bobofraggins.mobfarmingsupplies.glamping.NaturalSpawnRolls;
 import net.bobofraggins.mobfarmingsupplies.glamping.magichat.MagicHatZombieHandler;
+import net.bobofraggins.mobfarmingsupplies.glamping.present.PresentEndermanHandler;
 import net.bobofraggins.mobfarmingsupplies.register.MFSRegistryHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -20,6 +22,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.animal.squid.GlowSquid;
 import net.minecraft.world.entity.animal.squid.Squid;
+import net.minecraft.world.entity.monster.Enderman;
 import net.minecraft.world.entity.monster.zombie.Zombie;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -170,14 +173,18 @@ public class CloneOMaticBlockEntity extends BlockEntity implements MenuProvider 
             }
 
             entity.setPos(sx, sy, sz);
-            // Spawn setup may hit the Magic Hat's natural-spawn hook (the Fabric mixin does; NeoForge's
-            // event doesn't fire for it). Skip that roll and use the Clone-O-Matic's own, lower chance.
+            // Spawn setup may hit the Magic Hat / Present natural-spawn hooks (the Fabric mixins do;
+            // NeoForge's event doesn't fire for it). Skip those rolls and use the Clone-O-Matic's
+            // own, lower chances.
             Entity spawned = entity;
-            MagicHatZombieHandler.withoutNaturalRoll(() ->
+            NaturalSpawnRolls.without(() ->
                     ((IDnaSampleItem) chosen.getItem()).onSpawnPositioned(chosen, serverLevel, spawned));
             if (entity instanceof Zombie zombie) {
                 MagicHatZombieHandler.tryEquipMagicHat(zombie, serverLevel.getRandom(),
                         MagicHatZombieHandler.CLONE_O_MATIC_CHANCE);
+            } else if (entity instanceof Enderman enderman) {
+                PresentEndermanHandler.tryGivePresent(enderman, serverLevel.getRandom(),
+                        PresentEndermanHandler.CLONE_O_MATIC_CHANCE);
             }
             serverLevel.addFreshEntityWithPassengers(entity);
         }

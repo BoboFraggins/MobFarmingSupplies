@@ -5,6 +5,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
@@ -33,6 +34,9 @@ public class ToiletSeatEntity extends Entity {
 
     /** Height of the seat point (a seated rider's hips) above the toilet's base: just above the 5-pixel rim. */
     private static final double SEAT_HEIGHT = 0.35;
+
+    /** How far a seated rider can turn to either side of straight ahead, in degrees. */
+    private static final float MAX_TURN = 45.0f;
 
     /** Set while a player takes a mob's place, so the mob getting up doesn't flush or close the lid. */
     private boolean swappingRider;
@@ -97,12 +101,19 @@ public class ToiletSeatEntity extends Entity {
     protected void addPassenger(Entity passenger) {
         super.addPassenger(passenger);
         if (passenger instanceof TamableAnimal pet) pet.setInSittingPose(true);
+        // Sit looking straight ahead, out of the bowl. Runs on both sides, so it also turns a
+        // player's own (client-controlled) view.
+        face(passenger, seatYaw());
+        passenger.setXRot(0.0f);
+        passenger.xRotO = 0.0f;
     }
 
     @Override
     protected void removePassenger(Entity passenger) {
         super.removePassenger(passenger);
         if (passenger instanceof TamableAnimal pet) pet.setInSittingPose(false);
+        // Stand up facing the toilet. The server's dismount teleport also carries this yaw.
+        face(passenger, seatYaw() + 180.0f);
         if (level().isClientSide() || swappingRider) return;
         // Flush on standing up - but not if the toilet itself has just been broken.
         BlockPos toiletPos = toiletPos();
@@ -115,10 +126,29 @@ public class ToiletSeatEntity extends Entity {
         ToiletBlock.setOpen(level(), toiletPos, false);
     }
 
+    /** The direction the toilet faces (out of the bowl), or the seat's own yaw if it's gone. */
+    private float seatYaw() {
+        BlockState toilet = level().getBlockState(toiletPos());
+        return toilet.getBlock() instanceof ToiletBlock ? toilet.getValue(ToiletBlock.FACING).toYRot() : getYRot();
+    }
+
+    /** Turns {@code entity} - body, head and view - to {@code yaw} at once, with no interpolated swing. */
+    private static void face(Entity entity, float yaw) {
+        entity.setYRot(yaw);
+        entity.yRotO = yaw;
+        entity.setYHeadRot(yaw);
+        if (entity instanceof LivingEntity living) {
+            living.yHeadRotO = yaw;
+            living.yBodyRot = yaw;
+            living.yBodyRotO = yaw;
+        }
+    }
+
     @Override
     protected void positionRider(Entity passenger, MoveFunction moveFunction) {
         if (!hasPassenger(passenger)) return;
         moveFunction.accept(passenger, getX(), getY() + ToiletSeatHeights.feetOffset(passenger, this), getZ());
+        clampRotation(passenger);
     }
 
     @Override
@@ -126,10 +156,27 @@ public class ToiletSeatEntity extends Entity {
         return Vec3.ZERO; // the seat entity's own position is the seat point
     }
 
-    /** Keep a seated mob's head turned with its body rather than swivelling on its own. */
+    /** A player turning their view while seated (called client-side as they turn). */
     @Override
     public void onPassengerTurned(Entity passenger) {
-        passenger.setYHeadRot(passenger.getYRot());
+        clampRotation(passenger);
+    }
+
+    /**
+     * Keeps the rider's body facing out of the bowl and lets them look at most
+     * {@link #MAX_TURN} degrees to either side. Same approach as vanilla's boat, applied every tick
+     * and whenever a player turns. The head is limited separately: a mob's AI turns its head rather
+     * than its view, and a player's head follows their view anyway.
+     */
+    private void clampRotation(Entity passenger) {
+        float seatYaw = seatYaw();
+        float offset = Mth.wrapDegrees(passenger.getYRot() - seatYaw);
+        float clamped = Mth.clamp(offset, -MAX_TURN, MAX_TURN);
+        passenger.yRotO += clamped - offset;
+        passenger.setYRot(passenger.getYRot() + clamped - offset);
+        float headOffset = Mth.wrapDegrees(passenger.getYHeadRot() - seatYaw);
+        passenger.setYHeadRot(seatYaw + Mth.clamp(headOffset, -MAX_TURN, MAX_TURN));
+        if (passenger instanceof LivingEntity living) living.setYBodyRot(seatYaw);
     }
 
     /** Get up in front of the bowl rather than on top of the toilet. */

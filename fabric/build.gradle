@@ -40,6 +40,10 @@ dependencies {
     compileOnly "maven.modrinth:jade:26.3.1+fabric"
     compileOnly "maven.modrinth:jei:NEDh7C1X"
     compileOnly "eu.pb4:trinkets:4.2.0+26.3"
+    // Trinkets declares Loom injected interfaces, so the dev Minecraft jar's LivingEntity
+    // implements a Trinkets type — runClient needs Trinkets on the classpath or it dies with
+    // NoClassDefFoundError. Dev runtime only; not a dependency of the released jar.
+    localRuntime "eu.pb4:trinkets:4.2.0+26.3"
 
     common(project(path: ':common')) { transitive false }
     shadowCommon(project(path: ':common', configuration: 'transformProductionFabric')) { transitive false }

@@ -5,6 +5,8 @@ import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -24,6 +26,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.storage.TagValueInput;
 import net.minecraft.world.level.storage.TagValueOutput;
@@ -47,16 +50,24 @@ public class PresentBlock extends BaseEntityBlock {
 
     public static final Property<Direction> FACING = BlockStateProperties.HORIZONTAL_FACING;
 
+    /**
+     * An enderman's Present, contents not yet rolled (see {@link PresentEndermanHandler}). Only
+     * ever carried by an enderman, or for the one tick after it sets the Present down. Has a real
+     * blockstate model, since an enderman draws its carried block from the blockstate model.
+     */
+    public static final BooleanProperty SURPRISE = BooleanProperty.create("surprise");
+
     private static final VoxelShape SHAPE = Block.box(0, 0, 0, 16, 16, 16);
 
     public PresentBlock(BlockBehaviour.Properties props) {
         super(props);
-        registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH));
+        registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(SURPRISE, false));
     }
+
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(FACING);
+        builder.add(FACING, SURPRISE);
     }
 
     @Override
@@ -93,9 +104,20 @@ public class PresentBlock extends BaseEntityBlock {
             BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
         if (!player.isCrouching()) return InteractionResult.PASS;
         if (level.isClientSide()) return InteractionResult.SUCCESS;
+        return unwrap(level, pos, player) ? InteractionResult.SUCCESS : InteractionResult.PASS;
+    }
 
-        if (!(level.getBlockEntity(pos) instanceof PresentBlockEntity present)) return InteractionResult.PASS;
-        if (!present.hasWrappedBlock()) return InteractionResult.PASS;
+    /**
+     * Server side: restores the wrapped block at {@code pos} and gives the player an empty
+     * Present. Returns false (and changes nothing) if there's no wrapped Present there.
+     *
+     * <p>Also called from {@link PresentWrapEvents}: vanilla skips {@link #useWithoutItem}
+     * entirely when a sneaking player holds anything in either hand, so an offhand torch or
+     * shield would otherwise make unwrapping silently do nothing.
+     */
+    static boolean unwrap(Level level, BlockPos pos, Player player) {
+        if (!(level.getBlockEntity(pos) instanceof PresentBlockEntity present)) return false;
+        if (!present.hasWrappedBlock()) return false;
 
         BlockState wrapped = present.getWrappedState();
         CompoundTag entityData = present.getWrappedEntityData();
@@ -117,13 +139,13 @@ public class PresentBlock extends BaseEntityBlock {
         }
 
         ItemStack presentItem = new ItemStack(Registration.PRESENT_ITEM.get());
-        // useWithoutItem means main hand is empty — put it there directly.
+        // Unwrapping requires an empty main hand — put it there directly.
         if (player.getMainHandItem().isEmpty()) {
             player.setItemInHand(InteractionHand.MAIN_HAND, presentItem);
         } else if (!player.addItem(presentItem)) {
             Block.popResource(level, pos, presentItem);
         }
-        return InteractionResult.SUCCESS;
+        return true;
     }
 
     // -------------------------------------------------------------------------
@@ -134,7 +156,13 @@ public class PresentBlock extends BaseEntityBlock {
     public List<ItemStack> getDrops(BlockState state, LootParams.Builder params) {
         List<ItemStack> drops = super.getDrops(state, params);
         BlockEntity be = params.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
-        if (be instanceof PresentBlockEntity present && present.hasWrappedBlock()) {
+        PresentBlockEntity present = be instanceof PresentBlockEntity p && p.hasWrappedBlock() ? p : null;
+        if (present == null && state.getValue(SURPRISE)) {
+            // An enderman's Present (dropped on death, so no block entity): roll its contents now.
+            present = new PresentBlockEntity(BlockPos.ZERO, state);
+            present.setWrappedBlock(PresentEndermanHandler.rollContents(params.getLevel().getRandom()), null);
+        }
+        if (present != null) {
             for (ItemStack drop : drops) {
                 if (drop.getItem() instanceof BlockItem) {
                     TagValueOutput beOut = TagValueOutput.createWithContext(
@@ -145,6 +173,26 @@ public class PresentBlock extends BaseEntityBlock {
             }
         }
         return drops;
+    }
+
+    // -------------------------------------------------------------------------
+    // Enderman set it down — roll its contents
+    // -------------------------------------------------------------------------
+
+    @Override
+    protected void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
+        super.onPlace(state, level, pos, oldState, movedByPiston);
+        // Next tick: the block entity may not exist yet while the block is being placed.
+        if (state.getValue(SURPRISE) && !level.isClientSide()) level.scheduleTick(pos, this, 1);
+    }
+
+    @Override
+    protected void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+        if (!state.getValue(SURPRISE)) return;
+        if (level.getBlockEntity(pos) instanceof PresentBlockEntity present && !present.hasWrappedBlock()) {
+            present.setWrappedBlock(PresentEndermanHandler.rollContents(random), null);
+        }
+        level.setBlock(pos, state.setValue(SURPRISE, false), Block.UPDATE_ALL);
     }
 
     // -------------------------------------------------------------------------

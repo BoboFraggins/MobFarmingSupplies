@@ -1,8 +1,34 @@
 {
   "variants": {
-    "facing=north": { "model": "mobfarmingsupplies:block/present_particle" },
-    "facing=south": { "model": "mobfarmingsupplies:block/present_particle", "y": 180 },
-    "facing=east":  { "model": "mobfarmingsupplies:block/present_particle", "y": 90 },
-    "facing=west":  { "model": "mobfarmingsupplies:block/present_particle", "y": 270 }
+    "facing=north,surprise=false": {
+      "model": "mobfarmingsupplies:block/present_particle"
+    },
+    "facing=south,surprise=false": {
+      "model": "mobfarmingsupplies:block/present_particle",
+      "y": 180
+    },
+    "facing=east,surprise=false": {
+      "model": "mobfarmingsupplies:block/present_particle",
+      "y": 90
+    },
+    "facing=west,surprise=false": {
+      "model": "mobfarmingsupplies:block/present_particle",
+      "y": 270
+    },
+    "facing=north,surprise=true": {
+      "model": "mobfarmingsupplies:block/present"
+    },
+    "facing=south,surprise=true": {
+      "model": "mobfarmingsupplies:block/present",
+      "y": 180
+    },
+    "facing=east,surprise=true": {
+      "model": "mobfarmingsupplies:block/present",
+      "y": 90
+    },
+    "facing=west,surprise=true": {
+      "model": "mobfarmingsupplies:block/present",
+      "y": 270
+    }
   }
 }

@@ -54,9 +54,8 @@ dependencies {
     compileOnly "maven.modrinth:jade:26.3.1+neoforge"
     compileOnly "maven.modrinth:jei:k98tjGYK"
 
-    // Curios soft dependency — no 26.3 build exists yet (same situation NeoForge itself was in
-    // during the 26.3 migration), so this pins the closest available API to compile against.
-    compileOnly "top.theillusivec4.curios:curios-neoforge:16.0.0+26.2:api"
+    // Curios soft dependency (26.3 builds are still betas).
+    compileOnly "top.theillusivec4.curios:curios-neoforge:17.0.0-beta.2+26.3:api"
 
     common(project(path: ':common')) { transitive false }
     shadowCommon(project(path: ':common', configuration: 'transformProductionNeoForge')) { transitive false }
