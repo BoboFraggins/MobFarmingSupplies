@@ -1,0 +1,36 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "particle": "mobfarmingsupplies:block/picnic_basket",
+    "texture": "mobfarmingsupplies:block/picnic_basket"
+  },
+  "texture_size": [16, 16],
+  "elements": [
+    {
+      "comment": "right lid inner strip",
+      "from": [7, 6, 5],
+      "to": [8, 7, 11],
+      "faces": {
+        "north": {"uv": [1.0, 12.5, 1.5, 13.0],   "texture": "#texture"},
+        "east":  {"uv": [10.5, 11.0, 13.5, 11.5], "texture": "#texture"},
+        "south": {"uv": [12.5, 1.0, 13.0, 1.5],   "texture": "#texture"},
+        "west":  {"uv": [11.5, 7.0, 14.5, 7.5],   "texture": "#texture"},
+        "up":    {"uv": [11.0, 14.5, 10.5, 11.5], "texture": "#texture"},
+        "down":  {"uv": [11.5, 11.5, 11.0, 14.5], "texture": "#texture"}
+      }
+    },
+    {
+      "comment": "right lid main",
+      "from": [3, 6, 4],
+      "to": [7, 7, 12],
+      "faces": {
+        "north": {"uv": [11.5, 8.5, 13.5, 9.0], "texture": "#texture"},
+        "east":  {"uv": [10.0, 10.0, 14.0, 10.5], "texture": "#texture"},
+        "south": {"uv": [11.5, 9.0, 13.5, 9.5], "texture": "#texture"},
+        "west":  {"uv": [10.0, 10.5, 14.0, 11.0], "texture": "#texture"},
+        "up":    {"uv": [11.0, 10.0, 9.0, 6.0], "texture": "#texture"},
+        "down":  {"uv": [12.0, 0.0, 10.0, 4.0], "texture": "#texture"}
+      }
+    }
+  ]
+}

@@ -3,7 +3,9 @@ package net.bobofraggins.mobfarmingsupplies.client.model.neoforge;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import net.bobofraggins.mobfarmingsupplies.fan.FanBlockEntityRenderer;
+import net.bobofraggins.mobfarmingsupplies.glamping.present.PresentRenderer;
 import net.bobofraggins.mobfarmingsupplies.mobharvester.MobHarvesterRenderer;
+import net.bobofraggins.mobfarmingsupplies.picnicbasket.PicnicBasketRenderer;
 import net.bobofraggins.mobfarmingsupplies.toilet.ToiletBlockEntityRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
@@ -30,6 +32,10 @@ public final class ExtraBlockModelsImpl {
         register(MobHarvesterRenderer.RIGHT_ARM_SIDE_MODEL_ID);
         register(MobHarvesterRenderer.RIGHT_ARM_REAR_MODEL_ID);
         register(MobHarvesterRenderer.HEAD_MODEL_ID);
+        register(PicnicBasketRenderer.BODY_MODEL_ID);
+        register(PicnicBasketRenderer.LEFT_LID_MODEL_ID);
+        register(PicnicBasketRenderer.RIGHT_LID_MODEL_ID);
+        register(PresentRenderer.MODEL_ID);
         register(ToiletBlockEntityRenderer.LID_MODEL_ID);
     }
 

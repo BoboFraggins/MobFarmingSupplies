@@ -36,6 +36,16 @@ loom {
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
+repositories {
+    maven {
+        name = 'Curios Maven'
+        url = 'https://maven.theillusivec4.top'
+        content {
+            includeGroup 'top.theillusivec4.curios'
+        }
+    }
+}
+
 dependencies {
     add('neoForge', "net.neoforged:neoforge:${neo_version}")
 
@@ -43,6 +53,9 @@ dependencies {
 
     compileOnly "maven.modrinth:jade:26.1.1+neoforge"
     compileOnly "maven.modrinth:jei:AisPQmQz"
+
+    // Curios soft dependency.
+    compileOnly "top.theillusivec4.curios:curios-neoforge:15.0.0+26.1.2:api"
 
     common(project(path: ':common')) { transitive false }
     shadowCommon(project(path: ':common', configuration: 'transformProductionNeoForge')) { transitive false }

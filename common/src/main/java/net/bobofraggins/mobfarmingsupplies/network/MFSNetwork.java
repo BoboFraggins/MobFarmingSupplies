@@ -30,6 +30,11 @@ public final class MFSNetwork {
                 SetInhibitorOffsetPacket::handle);
         NetworkManager.registerReceiver(
                 NetworkManager.c2s(),
+                OpenPicnicBasketPacket.TYPE,
+                OpenPicnicBasketPacket.STREAM_CODEC,
+                OpenPicnicBasketPacket::handle);
+        NetworkManager.registerReceiver(
+                NetworkManager.c2s(),
                 SetScribingStatePacket.TYPE,
                 SetScribingStatePacket.STREAM_CODEC,
                 SetScribingStatePacket::handle);

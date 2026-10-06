@@ -9,6 +9,13 @@
 * Fix mobs refusing to be moved via fans
 * Fix droplet <-> millibucket conversion on Fabric
 
+### 26.1.2 and 26.2 Only:
+
+* Brought Magic Hat (curio/mob yoinker) from 26.3
+* Brought Present (block yoinker) from 26.3
+* Brought Picnic Basket (curio that auto eats) from 26.3
+* Brought S'mores from 26.3
+
 ## 26.3.0.3, 26.2.0.4, 26.1.2.6
 
 * Added Silicon Clumps, Silicon and Silicon Wafers
