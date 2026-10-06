@@ -22,6 +22,16 @@ loom {
     }
 }
 
+repositories {
+    maven {
+        name = 'Nucleoid (Trinkets Updated)'
+        url = 'https://maven.nucleoid.xyz'
+        content {
+            includeGroup 'eu.pb4'
+        }
+    }
+}
+
 dependencies {
     implementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
     api "net.fabricmc.fabric-api:fabric-api:${fabric_api_version}"
@@ -29,6 +39,11 @@ dependencies {
 
     compileOnly "maven.modrinth:jade:26.1.0+fabric"
     compileOnly "maven.modrinth:jei:d3HeviSL"
+    compileOnly "eu.pb4:trinkets:4.1.1+26.2"
+    // Trinkets declares Loom injected interfaces, so the dev Minecraft jar's LivingEntity
+    // implements a Trinkets type — runClient needs Trinkets on the classpath or it dies with
+    // NoClassDefFoundError. Dev runtime only; not a dependency of the released jar.
+    localRuntime "eu.pb4:trinkets:4.1.1+26.2"
 
     common(project(path: ':common')) { transitive false }
     shadowCommon(project(path: ':common', configuration: 'transformProductionFabric')) { transitive false }

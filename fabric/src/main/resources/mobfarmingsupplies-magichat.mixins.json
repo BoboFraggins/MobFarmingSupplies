@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "net.bobofraggins.mobfarmingsupplies.glamping.magichat.fabric.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "ZombieFinalizeSpawnMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

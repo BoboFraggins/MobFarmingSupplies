@@ -1,0 +1,7 @@
+{
+  "size": 1,
+  "order": 20,
+  "icon": "mobfarmingsupplies:slot/picnic_basket",
+  "add_cosmetic": false,
+  "validators": ["curios:tag"]
+}

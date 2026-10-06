@@ -92,6 +92,9 @@ public final class MFSConfig {
     /** Default chance for DNA sample/booster packs to appear in "rare" tier chests (nether/end structures). */
     public static final double DEFAULT_DNA_SAMPLE_PACK_RARE_CHEST_CHANCE = 0.05;
 
+    /** Default chance for the Magic Hat to appear in chest loot tables. */
+    public static final double DEFAULT_MAGIC_HAT_CHEST_CHANCE = 0.02;
+
     // ── Platform-bridged accessors ────────────────────────────────────────────────
 
     /** Whether the fan's push range is only blocked by solid-collision blocks (default: false). */
@@ -144,4 +147,8 @@ public final class MFSConfig {
     /** Chance (0.0–1.0) for DNA sample/booster packs to appear in "rare" tier chests (default: 0.05). */
     @ExpectPlatform
     public static double getDnaSamplePackRareChestChance() { throw new AssertionError(); }
+
+    /** Chance (0.0–1.0) for the Magic Hat to appear in chest loot tables (default: 0.02). */
+    @ExpectPlatform
+    public static double getMagicHatChestChance() { throw new AssertionError(); }
 }

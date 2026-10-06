@@ -33,12 +33,20 @@ import net.bobofraggins.mobfarmingsupplies.fan.FanBlock;
 import net.bobofraggins.mobfarmingsupplies.fan.FanBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.fan.FanMenu;
 import net.bobofraggins.mobfarmingsupplies.fan.FanUpgradeItem;
+import net.bobofraggins.mobfarmingsupplies.glamping.magichat.MagicHatItem;
+import net.bobofraggins.mobfarmingsupplies.glamping.present.PresentBlock;
+import net.bobofraggins.mobfarmingsupplies.glamping.present.PresentBlockEntity;
+import net.bobofraggins.mobfarmingsupplies.glamping.present.PresentBlockItem;
 import net.bobofraggins.mobfarmingsupplies.haltingplate.HaltingPlateBlock;
 import net.bobofraggins.mobfarmingsupplies.mobharvester.HarvesterSword;
 import net.bobofraggins.mobfarmingsupplies.mobharvester.HarvesterUpgradeItem;
 import net.bobofraggins.mobfarmingsupplies.mobharvester.MobHarvesterBlock;
 import net.bobofraggins.mobfarmingsupplies.mobharvester.MobHarvesterBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.mobharvester.MobHarvesterMenu;
+import net.bobofraggins.mobfarmingsupplies.picnicbasket.PicnicBasketBlock;
+import net.bobofraggins.mobfarmingsupplies.picnicbasket.PicnicBasketBlockEntity;
+import net.bobofraggins.mobfarmingsupplies.picnicbasket.PicnicBasketItem;
+import net.bobofraggins.mobfarmingsupplies.picnicbasket.PicnicBasketMenu;
 import net.bobofraggins.mobfarmingsupplies.tank.TankBlock;
 import net.bobofraggins.mobfarmingsupplies.tank.TankBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.tank.TankBlockItem;
@@ -58,6 +66,7 @@ import net.bobofraggins.mobfarmingsupplies.vectorplate.VectorPlateBlock;
 import net.bobofraggins.mobfarmingsupplies.witherproofglass.WitherProofGlassBlock;
 import net.bobofraggins.mobfarmingsupplies.xpjuice.XpJuicePlatformHelper;
 import net.minecraft.core.component.DataComponentType;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.resources.Identifier;
@@ -65,12 +74,16 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.equipment.EquipmentAssets;
+import net.minecraft.world.item.equipment.Equippable;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.material.FlowingFluid;
@@ -235,6 +248,42 @@ public final class Registration {
                     () -> new DnaSampleItem(new Item.Properties()
                             .setId(itemKey("dna_sample"))
                             .stacksTo(1)));
+
+    // ── Magic Hat ────────────────────────────────────────────────────────────────
+
+    public static final RegistrySupplier<MagicHatItem> MAGIC_HAT_ITEM =
+            ITEMS.register("magic_hat",
+                    () -> new MagicHatItem(new Item.Properties()
+                            .setId(itemKey("magic_hat"))
+                            .stacksTo(1)
+                            .attributes(MagicHatItem.DEFAULT_MODIFIERS)
+                            .component(
+                                    DataComponents.EQUIPPABLE,
+                                    Equippable.builder(EquipmentSlot.HEAD)
+                                            .setAsset(ResourceKey.create(
+                                                    EquipmentAssets.ROOT_ID,
+                                                    Identifier.fromNamespaceAndPath(
+                                                            MobFarmingSuppliesCommon.MODID, "magic_hat")))
+                                            .build())));
+
+    // ── Present ──────────────────────────────────────────────────────────────────
+
+    public static final RegistrySupplier<PresentBlock> PRESENT =
+            BLOCKS.register("present",
+                    () -> new PresentBlock(BlockBehaviour.Properties.of()
+                            .setId(blockKey("present"))
+                            .strength(3.0f, 1000.0f)
+                            .sound(SoundType.WOOD)
+                            .noOcclusion()));
+
+    public static final RegistrySupplier<PresentBlockItem> PRESENT_ITEM =
+            ITEMS.register("present",
+                    () -> new PresentBlockItem(PRESENT.get(), new Item.Properties()
+                            .setId(itemKey("present"))));
+
+    public static final RegistrySupplier<BlockEntityType<PresentBlockEntity>> PRESENT_BE_TYPE =
+            BLOCK_ENTITIES.register("present",
+                    () -> BlockEntityTypePlatform.create(PresentBlockEntity::new, PRESENT.get()));
 
     // ── Mob Harvester ────────────────────────────────────────────────────────────
 
@@ -653,6 +702,67 @@ public final class Registration {
                             .stacksTo(1),
                             MFSConfig::getWrongMobsPackMobs));
 
+    // ── Picnic Basket ─────────────────────────────────────────────────────────────
+
+    public static final RegistrySupplier<PicnicBasketBlock> PICNIC_BASKET =
+            BLOCKS.register("picnic_basket",
+                    () -> new PicnicBasketBlock(BlockBehaviour.Properties.of()
+                            .setId(blockKey("picnic_basket"))
+                            .strength(2.5f)
+                            .sound(SoundType.WOOD)
+                            .noOcclusion()));
+
+    public static final RegistrySupplier<PicnicBasketItem> PICNIC_BASKET_ITEM =
+            ITEMS.register("picnic_basket",
+                    () -> new PicnicBasketItem(PICNIC_BASKET.get(), new Item.Properties()
+                            .setId(itemKey("picnic_basket"))
+                            .stacksTo(1)));
+
+    public static final RegistrySupplier<MenuType<PicnicBasketMenu>> PICNIC_BASKET_MENU =
+            MENUS.register("picnic_basket", () -> MenuRegistry.ofExtended(PicnicBasketMenu::new));
+
+    public static final RegistrySupplier<BlockEntityType<PicnicBasketBlockEntity>> PICNIC_BASKET_BE_TYPE =
+            BLOCK_ENTITIES.register("picnic_basket",
+                    () -> BlockEntityTypePlatform.create(PicnicBasketBlockEntity::new, PICNIC_BASKET.get()));
+
+    // ── S'mores ───────────────────────────────────────────────────────────────────
+
+    private static final FoodProperties SNACK_FOOD =
+            new FoodProperties.Builder().nutrition(2).saturationModifier(0.25f).build();
+
+    private static final FoodProperties SMORE_FOOD =
+            new FoodProperties.Builder().nutrition(10).saturationModifier(0.25f).build();
+
+    public static final RegistrySupplier<Item> GRAHAM_CRACKER =
+            ITEMS.register("graham_cracker",
+                    () -> new Item(new Item.Properties()
+                            .setId(itemKey("graham_cracker"))
+                            .food(SNACK_FOOD)));
+
+    public static final RegistrySupplier<Item> CHOCOLATE_BAR =
+            ITEMS.register("chocolate_bar",
+                    () -> new Item(new Item.Properties()
+                            .setId(itemKey("chocolate_bar"))
+                            .food(SNACK_FOOD)));
+
+    public static final RegistrySupplier<Item> MARSHMALLOW =
+            ITEMS.register("marshmallow",
+                    () -> new Item(new Item.Properties()
+                            .setId(itemKey("marshmallow"))
+                            .food(SNACK_FOOD)));
+
+    public static final RegistrySupplier<Item> TOASTED_MARSHMALLOW =
+            ITEMS.register("toasted_marshmallow",
+                    () -> new Item(new Item.Properties()
+                            .setId(itemKey("toasted_marshmallow"))
+                            .food(SNACK_FOOD)));
+
+    public static final RegistrySupplier<Item> SMORE =
+            ITEMS.register("smore",
+                    () -> new Item(new Item.Properties()
+                            .setId(itemKey("smore"))
+                            .food(SMORE_FOOD)));
+
     // ── Filter Scribing Terminal ──────────────────────────────────────────────────
 
     public static final RegistrySupplier<FilterScribingTerminalBlock> FILTER_SCRIBING_TERMINAL =
@@ -783,6 +893,14 @@ public final class Registration {
                         output.accept(DNA_SAMPLE_NETHER.get());
                         output.accept(DNA_SAMPLE_BABY.get());
                         output.accept(DNA_SAMPLE_WRONG.get());
+                        output.accept(MAGIC_HAT_ITEM.get());
+                        output.accept(PRESENT_ITEM.get());
+                        output.accept(PICNIC_BASKET_ITEM.get());
+                        output.accept(GRAHAM_CRACKER.get());
+                        output.accept(CHOCOLATE_BAR.get());
+                        output.accept(MARSHMALLOW.get());
+                        output.accept(TOASTED_MARSHMALLOW.get());
+                        output.accept(SMORE.get());
                         if (ModCompatRegistration.DNA_BOOSTER_AQUACULTURE != null)
                             output.accept(ModCompatRegistration.DNA_BOOSTER_AQUACULTURE.get());
                         if (ModCompatRegistration.DNA_BOOSTER_AETHER_PASSIVE != null)
@@ -793,13 +911,13 @@ public final class Registration {
                             output.accept(ModCompatRegistration.DNA_BOOSTER_EVILCRAFT.get());
                         output.accept(WITHER_PROOF_GLASS_ITEM.get());
                         output.accept(MOB_EXCLUSION_GLASS_ITEM.get());
-                        output.accept(ENDER_INHIBITOR_ITEM.get());
                         output.accept(TANK_ITEM.get());
                         output.accept(GOLD_TANK_ITEM.get());
                         output.accept(DIAMOND_TANK_ITEM.get());
                         output.accept(EMERALD_TANK_ITEM.get());
                         output.accept(EXPERIENCE_SYRINGE.get());
                         output.accept(XP_JUICE_BUCKET.get());
+                        output.accept(ENDER_INHIBITOR_ITEM.get());
                         output.accept(RED_ALERT_BUTTON_ITEM.get());
                         output.accept(DRAMATIC_BUTTON_ITEM.get());
                         output.accept(RIMSHOT_BUTTON_ITEM.get());

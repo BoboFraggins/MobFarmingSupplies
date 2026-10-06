@@ -65,4 +65,8 @@ public final class MFSConfigImpl {
     public static double getDnaSamplePackRareChestChance() {
         return MFSServerConfig.DNA_SAMPLE_PACK_RARE_CHEST_CHANCE.get();
     }
+
+    public static double getMagicHatChestChance() {
+        return MFSServerConfig.MAGIC_HAT_CHEST_CHANCE.get();
+    }
 }

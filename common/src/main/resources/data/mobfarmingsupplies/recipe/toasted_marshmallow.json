@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:campfire_cooking",
+  "category": "food",
+  "ingredient": "mobfarmingsupplies:marshmallow",
+  "result": {
+    "id": "mobfarmingsupplies:toasted_marshmallow"
+  },
+  "cookingtime": 600,
+  "experience": 0.35
+}

@@ -3,7 +3,10 @@ package net.bobofraggins.mobfarmingsupplies;
 import com.mojang.logging.LogUtils;
 import net.bobofraggins.mobfarmingsupplies.dna.DnaCollectorEvents;
 import net.bobofraggins.mobfarmingsupplies.enderinhibitor.EnderInhibitorEvents;
+import net.bobofraggins.mobfarmingsupplies.glamping.magichat.MagicHatCaptureEvents;
+import net.bobofraggins.mobfarmingsupplies.glamping.present.PresentWrapEvents;
 import net.bobofraggins.mobfarmingsupplies.network.MFSNetwork;
+import net.bobofraggins.mobfarmingsupplies.picnicbasket.PicnicBasketFeedHandler;
 import org.slf4j.Logger;
 
 public final class MobFarmingSuppliesCommon {
@@ -21,7 +24,10 @@ public final class MobFarmingSuppliesCommon {
     public static void init() {
         EnderInhibitorEvents.registerCommonEvents();
         DnaCollectorEvents.registerCommonEvents();
+        MagicHatCaptureEvents.registerCommonEvents();
+        PresentWrapEvents.registerCommonEvents();
         MFSNetwork.register();
+        PicnicBasketFeedHandler.register();
         LOGGER.info("MobFarmingSupplies initialized");
     }
 }

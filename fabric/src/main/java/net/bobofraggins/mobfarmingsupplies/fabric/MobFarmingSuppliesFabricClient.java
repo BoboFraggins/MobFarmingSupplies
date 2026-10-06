@@ -1,6 +1,7 @@
 package net.bobofraggins.mobfarmingsupplies.fabric;
 
 import com.mojang.serialization.MapCodec;
+import dev.architectury.platform.Platform;
 import dev.architectury.registry.client.rendering.BlockEntityRendererRegistry;
 import java.lang.reflect.Field;
 import net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommon;
@@ -10,16 +11,26 @@ import net.bobofraggins.mobfarmingsupplies.client.model.fabric.ExtraBlockModelsI
 import net.bobofraggins.mobfarmingsupplies.cloneomatic.CloneOMaticBlockEntityRenderer;
 import net.bobofraggins.mobfarmingsupplies.enderinhibitor.EnderInhibitorBlockEntityRenderer;
 import net.bobofraggins.mobfarmingsupplies.fan.FanBlockEntityRenderer;
+import net.bobofraggins.mobfarmingsupplies.glamping.magichat.MagicHatHelmetLayer;
+import net.bobofraggins.mobfarmingsupplies.glamping.magichat.fabric.MagicHatTrinketClientSetup;
+import net.bobofraggins.mobfarmingsupplies.glamping.present.PresentRenderer;
 import net.bobofraggins.mobfarmingsupplies.mobharvester.MobHarvesterRenderer;
+import net.bobofraggins.mobfarmingsupplies.picnicbasket.PicnicBasketRenderer;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.bobofraggins.mobfarmingsupplies.tank.fabric.TankItemRenderer;
 import net.bobofraggins.mobfarmingsupplies.logisticsorter.LogisticSorterItemRenderer;
 import net.bobofraggins.mobfarmingsupplies.tank.fabric.TankRenderer;
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityRenderLayerRegistrationCallback;
+import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.renderer.entity.LivingEntityRenderer;
+import net.minecraft.client.renderer.entity.player.AvatarRenderer;
+import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import net.minecraft.client.renderer.special.SpecialModelRenderers;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ExtraCodecs;
+import net.minecraft.world.entity.EntityTypes;
 import dev.architectury.registry.client.level.entity.EntityRendererRegistry;
 import net.bobofraggins.mobfarmingsupplies.toilet.ToiletBlockEntityRenderer;
 import net.minecraft.client.renderer.entity.NoopRenderer;
@@ -48,12 +59,48 @@ public class MobFarmingSuppliesFabricClient implements ClientModInitializer {
                 Registration.ABSORPTION_HOPPER_BE_TYPE.get(),
                 AbsorptionHopperBlockEntityRenderer::new);
         BlockEntityRendererRegistry.register(
+                Registration.PICNIC_BASKET_BE_TYPE.get(),
+                PicnicBasketRenderer::new);
+        BlockEntityRendererRegistry.register(
+                Registration.PRESENT_BE_TYPE.get(),
+                PresentRenderer::new);
+        BlockEntityRendererRegistry.register(
                 Registration.TOILET_BE_TYPE.get(),
                 ToiletBlockEntityRenderer::new);
         // The toilet seat is invisible: only its rider is drawn.
         EntityRendererRegistry.register(Registration.TOILET_SEAT, NoopRenderer::new);
         ExtraBlockModelsImpl.registerModelLoadingPlugin();
         registerSpecialModelRenderers();
+        registerMagicHatLayer();
+        // Magic Hat Trinkets Updated render layer — soft dependency, registered only if
+        // present. MUST check isModLoaded() before ever calling into MagicHatTrinketClientSetup:
+        // see that class's javadoc (and MagicHatTrinketSetup's) for why.
+        if (Platform.isModLoaded("trinkets_updated")) {
+            MagicHatTrinketClientSetup.registerClient();
+        }
+    }
+
+    /**
+     * Registers {@link MagicHatHelmetLayer} on players, armor stands, and zombies — the
+     * same three targets as NeoForge's {@code EntityRenderersEvent.AddLayers} listener,
+     * via Fabric API's per-renderer registration callback instead.
+     */
+    private static void registerMagicHatLayer() {
+        LivingEntityRenderLayerRegistrationCallback.EVENT.register((entityType, entityRenderer, registrationHelper, context) -> {
+            if (entityRenderer instanceof AvatarRenderer<?> avatarRenderer) {
+                addMagicHatLayer(avatarRenderer, registrationHelper);
+            } else if (entityType == EntityTypes.ARMOR_STAND || entityType == EntityTypes.ZOMBIE) {
+                addMagicHatLayer(entityRenderer, registrationHelper);
+            }
+        });
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <S extends HumanoidRenderState, M extends HumanoidModel<S>> void addMagicHatLayer(
+            LivingEntityRenderer<?, ?, ?> renderer,
+            LivingEntityRenderLayerRegistrationCallback.RegistrationHelper registrationHelper) {
+        LivingEntityRenderer<?, S, M> typed = (LivingEntityRenderer<?, S, M>) renderer;
+        registrationHelper.register(new MagicHatHelmetLayer<>(typed));
     }
 
     /**

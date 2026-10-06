@@ -96,6 +96,7 @@ public final class MFSServerConfig {
 
     /** Chance (0.0–1.0) for each toggle button to appear in chest loot tables. */
     public static final ModConfigSpec.DoubleValue TOGGLE_BUTTON_CHEST_CHANCE;
+    public static final ModConfigSpec.DoubleValue MAGIC_HAT_CHEST_CHANCE;
 
     static {
         ModConfigSpec.Builder b = new ModConfigSpec.Builder();
@@ -348,6 +349,12 @@ public final class MFSServerConfig {
         TOGGLE_BUTTON_CHEST_CHANCE = b
                 .comment("Chance (0.0-1.0) for each toggle button to appear in chest loot tables.")
                 .defineInRange("chestDropChance", MFSConfig.DEFAULT_TOGGLE_BUTTON_CHEST_CHANCE, 0.0, 1.0);
+        b.pop();
+
+        b.comment("Magic Hat settings").push("magicHat");
+        MAGIC_HAT_CHEST_CHANCE = b
+                .comment("Chance (0.0-1.0) for the Magic Hat to appear in chest loot tables.")
+                .defineInRange("chestDropChance", MFSConfig.DEFAULT_MAGIC_HAT_CHEST_CHANCE, 0.0, 1.0);
         b.pop();
 
         SPEC = b.build();

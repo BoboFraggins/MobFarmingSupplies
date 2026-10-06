@@ -57,6 +57,8 @@ public final class FabricLootModifiers {
                 addItem(tableBuilder, "mobfarmingsupplies:dramatic_button", toggleButtonChance);
                 addItem(tableBuilder, "mobfarmingsupplies:rimshot_button", toggleButtonChance);
                 addItem(tableBuilder, "mobfarmingsupplies:wilhelm_button", toggleButtonChance);
+
+                addItem(tableBuilder, "mobfarmingsupplies:magic_hat", (float) MFSConfig.getMagicHatChestChance());
             }
 
             if (Platform.isModLoaded("aether_ii")) {
