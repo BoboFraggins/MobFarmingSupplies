@@ -2,6 +2,7 @@ package net.bobofraggins.mobfarmingsupplies.glamping.present;
 
 import dev.architectury.event.EventResult;
 import dev.architectury.event.events.common.InteractionEvent;
+import net.bobofraggins.mobfarmingsupplies.register.MFSTags;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -103,6 +104,8 @@ public final class PresentWrapEvents {
         if (state.isAir()) return false;
         if (state.getBlock() instanceof PresentBlock) return false;
         if (state.getDestroySpeed(level, pos) < 0) return false;
+        // Blocks other mods have marked as not movable (multiblock parts and the like).
+        if (state.is(MFSTags.Blocks.RELOCATION_NOT_SUPPORTED)) return false;
         if (isMultiBlock(state)) return false;
         return true;
     }
