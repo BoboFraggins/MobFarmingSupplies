@@ -5,6 +5,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.level.block.Block;
 
 /**
  * Tag keys used by Mob Farming Supplies.
@@ -16,6 +17,19 @@ import net.minecraft.world.entity.EntityType;
 public final class MFSTags {
 
     private MFSTags() {}
+
+    public static final class Blocks {
+
+        /**
+         * The cross-mod convention tag for blocks that must not be picked up and moved (Carry On,
+         * Mekanism's Cardboard Box, ...). A Present won't wrap these. The Present itself is in it,
+         * so those mods leave it alone - their pick-up click is the Present's unwrap click.
+         */
+        public static final TagKey<Block> RELOCATION_NOT_SUPPORTED = TagKey.create(
+                Registries.BLOCK, Identifier.fromNamespaceAndPath("c", "relocation_not_supported"));
+
+        private Blocks() {}
+    }
 
     public static final class EntityTypes {
 
