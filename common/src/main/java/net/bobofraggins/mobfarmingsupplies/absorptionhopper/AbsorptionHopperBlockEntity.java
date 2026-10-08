@@ -93,6 +93,8 @@ public class AbsorptionHopperBlockEntity extends BlockEntity implements SideOrie
      * Bit 0 = UP, 1 = DOWN, 2 = NORTH, 3 = SOUTH, 4 = EAST, 5 = WEST.
      */
     private int pushSides = 0;
+    /** Push sides changed without the block state following (loaded, or set by NBT); synced next tick. */
+    private boolean stateDirty = true;
 
     private int offsetX = 0;
     private int offsetY = 0;
@@ -121,6 +123,7 @@ public class AbsorptionHopperBlockEntity extends BlockEntity implements SideOrie
     }
 
     private void tick(Level level, BlockPos pos) {
+        if (stateDirty) syncBlockState();
         if (++tickCounter % 3 != 0) return;
 
         pickupPhase(level, pos);
@@ -255,10 +258,13 @@ public class AbsorptionHopperBlockEntity extends BlockEntity implements SideOrie
      * {@link AbsorptionHopperBlock} push-side properties so the multipart model
      * can show/hide each connection pipe.
      *
-     * <p>Called server-side only — from {@link #setPushSides} and from {@link #onLoad}.
+     * <p>Server side only: from {@link #setPushSides}, and on the first tick after loading. Never
+     * from {@code setLevel}: that runs while the chunk is still loading, and changing a block there
+     * waits on the chunk forever (the server hangs on "Preparing spawn area").
      */
     private void syncBlockState() {
         if (level == null || level.isClientSide()) return;
+        stateDirty = false;
         BlockState current = getBlockState();
         BlockState updated = current
                 .setValue(AbsorptionHopperBlock.PUSH_UP,    (pushSides & (1 << 0)) != 0)
@@ -269,14 +275,6 @@ public class AbsorptionHopperBlockEntity extends BlockEntity implements SideOrie
                 .setValue(AbsorptionHopperBlock.PUSH_WEST,  (pushSides & (1 << 5)) != 0);
         if (!updated.equals(current)) {
             level.setBlock(worldPosition, updated, 2);
-        }
-    }
-
-    @Override
-    public void setLevel(net.minecraft.world.level.Level level) {
-        super.setLevel(level);
-        if (!level.isClientSide()) {
-            syncBlockState();
         }
     }
 
@@ -350,6 +348,7 @@ public class AbsorptionHopperBlockEntity extends BlockEntity implements SideOrie
         tankAmount = input.getIntOr("TankAmount", 0);
 
         pushSides = input.getIntOr("PushSides", 0);
+        stateDirty = true;
         offsetX   = input.getIntOr("OffsetX", 0);
         offsetY   = input.getIntOr("OffsetY", 0);
         offsetZ   = input.getIntOr("OffsetZ", 0);
