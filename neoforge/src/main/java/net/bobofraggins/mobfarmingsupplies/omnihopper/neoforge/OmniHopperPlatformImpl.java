@@ -4,7 +4,8 @@ import java.util.function.Predicate;
 import net.bobofraggins.mobfarmingsupplies.MFSConfig;
 import net.bobofraggins.mobfarmingsupplies.logisticsorter.EvenSplit;
 import net.bobofraggins.mobfarmingsupplies.omnihopper.HopperSide;
-import net.bobofraggins.mobfarmingsupplies.omnihopper.OmniHopperBlockEntity;
+import net.bobofraggins.mobfarmingsupplies.omnihopper.HopperNode;
+import net.bobofraggins.mobfarmingsupplies.omnihopper.HopperOutput;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
@@ -25,23 +26,25 @@ public final class OmniHopperPlatformImpl {
 
     private OmniHopperPlatformImpl() {}
 
-    public static void transfer(OmniHopperBlockEntity be, Level level, BlockPos pos, boolean itemTick) {
-        if (!be.beginRouting()) return;
+    public static void transfer(HopperNode node, boolean itemTick) {
+        Level level = node.getLevel();
+        if (level == null || !node.beginRouting()) return;
         try {
+            BlockPos pos = node.getBlockPos();
             if (itemTick) {
-                Predicate<ItemResource> items = r -> be.allowsItem(r.toStack(1));
-                moveResources(be, level, pos, Capabilities.Item.BLOCK, items,
+                Predicate<ItemResource> items = r -> node.allowsItem(r.toStack(1));
+                moveResources(node, level, pos, Capabilities.Item.BLOCK, items,
                         MFSConfig.getOmniHopperItemsPerTransfer(), true);
             }
-            moveResources(be, level, pos, Capabilities.Fluid.BLOCK, r -> true,
+            moveResources(node, level, pos, Capabilities.Fluid.BLOCK, r -> true,
                     MFSConfig.getOmniHopperFluidPerTick(), false);
-            moveEnergy(be, level, pos, MFSConfig.getOmniHopperEnergyPerTick());
+            moveEnergy(node, level, pos, MFSConfig.getOmniHopperEnergyPerTick());
             BlockCapability<ResourceHandler<Resource>, Direction> chemical = OmniHopperChemicals.capability();
             if (chemical != null) {
-                moveResources(be, level, pos, chemical, r -> true, MFSConfig.getOmniHopperChemicalPerTick(), false);
+                moveResources(node, level, pos, chemical, r -> true, MFSConfig.getOmniHopperChemicalPerTick(), false);
             }
         } finally {
-            be.endRouting();
+            node.endRouting();
         }
     }
 
@@ -53,10 +56,10 @@ public final class OmniHopperPlatformImpl {
 
     /**
      * Moves up to {@code perSide} of one kind of resource from each INPUT neighbour, split evenly
-     * across the OUTPUT neighbours. {@code stacking} prefers topping up partial stacks (items).
+     * across the node's OUTPUT targets. {@code stacking} prefers topping up partial stacks (items).
      */
     private static <T extends Resource> void moveResources(
-            OmniHopperBlockEntity be, Level level, BlockPos pos,
+            HopperNode be, Level level, BlockPos pos,
             BlockCapability<ResourceHandler<T>, Direction> cap, Predicate<T> filter, int perSide, boolean stacking) {
         for (Direction in : Direction.values()) {
             if (be.getSide(in) != HopperSide.INPUT) continue;
@@ -66,8 +69,8 @@ public final class OmniHopperPlatformImpl {
             // over two outputs would all land in the first one's share of 32.
             int amount = available(source, filter, perSide);
             if (amount <= 0) continue;
-            EvenSplit.distribute(be.outputs(), amount, (out, max) -> {
-                ResourceHandler<T> dest = handlerAt(level, pos, out, cap);
+            EvenSplit.distribute(be.outputTargets(), amount, (out, max) -> {
+                ResourceHandler<T> dest = handlerAt(out, cap);
                 if (dest == null) return 0;
                 try (Transaction tx = Transaction.openRoot()) {
                     int moved = stacking
@@ -93,7 +96,7 @@ public final class OmniHopperPlatformImpl {
         return found;
     }
 
-    private static void moveEnergy(OmniHopperBlockEntity be, Level level, BlockPos pos, int perSide) {
+    private static void moveEnergy(HopperNode be, Level level, BlockPos pos, int perSide) {
         for (Direction in : Direction.values()) {
             if (be.getSide(in) != HopperSide.INPUT) continue;
             EnergyHandler source = handlerAt(level, pos, in, Capabilities.Energy.BLOCK);
@@ -103,8 +106,8 @@ public final class OmniHopperPlatformImpl {
                 amount = source.extract(perSide, simulation);
             }
             if (amount <= 0) continue;
-            EvenSplit.distribute(be.outputs(), amount, (out, max) -> {
-                EnergyHandler dest = handlerAt(level, pos, out, Capabilities.Energy.BLOCK);
+            EvenSplit.distribute(be.outputTargets(), amount, (out, max) -> {
+                EnergyHandler dest = handlerAt(out, Capabilities.Energy.BLOCK);
                 if (dest == null) return 0;
                 try (Transaction tx = Transaction.openRoot()) {
                     int moved = EnergyHandlerUtil.move(source, dest, (int) max, tx);
@@ -118,17 +121,17 @@ public final class OmniHopperPlatformImpl {
     // ── Pushed-in resources ───────────────────────────────────────────────────────
 
     /**
-     * Routes a resource pushed into an INPUT side straight to the OUTPUT neighbours, inside the
+     * Routes a resource pushed into an INPUT side straight to the node's OUTPUT targets, inside the
      * caller's transaction. Returns how much was accepted.
      */
-    static <T extends Resource> int routeInsert(OmniHopperBlockEntity be,
+    static <T extends Resource> int routeInsert(HopperNode be,
             BlockCapability<ResourceHandler<T>, Direction> cap, T resource, int amount, TransactionContext tx) {
         Level level = be.getLevel();
         if (level == null || resource.isEmpty() || amount <= 0 || !be.isActive()) return 0;
         if (!be.beginRouting()) return 0; // hoppers feeding each other in a loop
         try {
-            return (int) EvenSplit.distribute(be.outputs(), amount, (out, max) -> {
-                ResourceHandler<T> dest = handlerAt(level, be.getBlockPos(), out, cap);
+            return (int) EvenSplit.distribute(be.outputTargets(), amount, (out, max) -> {
+                ResourceHandler<T> dest = handlerAt(out, cap);
                 return dest == null ? 0 : dest.insert(resource, (int) max, tx);
             });
         } finally {
@@ -137,13 +140,13 @@ public final class OmniHopperPlatformImpl {
     }
 
     /** Energy version of {@link #routeInsert}. */
-    static int routeEnergy(OmniHopperBlockEntity be, int amount, TransactionContext tx) {
+    static int routeEnergy(HopperNode be, int amount, TransactionContext tx) {
         Level level = be.getLevel();
         if (level == null || amount <= 0 || !be.isActive()) return 0;
         if (!be.beginRouting()) return 0;
         try {
-            return (int) EvenSplit.distribute(be.outputs(), amount, (out, max) -> {
-                EnergyHandler dest = handlerAt(level, be.getBlockPos(), out, Capabilities.Energy.BLOCK);
+            return (int) EvenSplit.distribute(be.outputTargets(), amount, (out, max) -> {
+                EnergyHandler dest = handlerAt(out, Capabilities.Energy.BLOCK);
                 return dest == null ? 0 : dest.insert((int) max, tx);
             });
         } finally {
@@ -153,6 +156,14 @@ public final class OmniHopperPlatformImpl {
 
     @Nullable
     private static <H> H handlerAt(Level level, BlockPos pos, Direction side, BlockCapability<H, Direction> cap) {
-        return level.getCapability(cap, pos.relative(side), side.getOpposite());
+        BlockPos neighbour = pos.relative(side);
+        // Never load a chunk just to look: a bridge's targets can be anywhere.
+        if (!level.isLoaded(neighbour)) return null;
+        return level.getCapability(cap, neighbour, side.getOpposite());
+    }
+
+    @Nullable
+    private static <H> H handlerAt(HopperOutput out, BlockCapability<H, Direction> cap) {
+        return handlerAt(out.level(), out.pos(), out.side(), cap);
     }
 }

@@ -2,7 +2,7 @@ package net.bobofraggins.mobfarmingsupplies.network;
 
 import dev.architectury.networking.NetworkManager;
 import net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommon;
-import net.bobofraggins.mobfarmingsupplies.omnihopper.OmniHopperBlockEntity;
+import net.bobofraggins.mobfarmingsupplies.omnihopper.HopperConfigurable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -39,7 +39,7 @@ public record SetOmniHopperConfigPacket(BlockPos pos, int sides, boolean andMode
         ctx.queue(() -> {
             if (!(ctx.getPlayer() instanceof ServerPlayer player)) return;
             if (player.blockPosition().distSqr(packet.pos()) > 64) return;
-            if (player.level().getBlockEntity(packet.pos()) instanceof OmniHopperBlockEntity be) {
+            if (player.level().getBlockEntity(packet.pos()) instanceof HopperConfigurable be) {
                 be.setConfig(packet.sides() & 0xFFF, packet.andMode());
             }
         });

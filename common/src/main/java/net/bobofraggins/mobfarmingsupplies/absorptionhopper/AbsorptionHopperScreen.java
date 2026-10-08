@@ -4,6 +4,7 @@ import net.bobofraggins.mobfarmingsupplies.network.SetHopperOffsetPacket;
 import net.bobofraggins.mobfarmingsupplies.shared.ui.Dialog;
 import net.bobofraggins.mobfarmingsupplies.shared.ui.IDialogPane;
 import net.bobofraggins.mobfarmingsupplies.shared.ui.PlayerInventoryPane;
+import net.bobofraggins.mobfarmingsupplies.shared.ui.SideGridPane;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
@@ -57,6 +58,7 @@ public class AbsorptionHopperScreen extends AbstractContainerScreen<AbsorptionHo
     private static final int GAUGE_COLOR_BORDER = 0xFF222222;
 
     private final Dialog dialog;
+    private final SideGridPane pushPane;
 
     private int cachedTankAmount    = 0;
     private int cachedTankCapacity  = AbsorptionHopperBlockEntity.TANK_CAPACITY;
@@ -65,7 +67,9 @@ public class AbsorptionHopperScreen extends AbstractContainerScreen<AbsorptionHo
     public AbsorptionHopperScreen(AbsorptionHopperMenu menu, Inventory inv, Component title) {
         IDialogPane slotsPane   = new HopperSlotsPane();
         IDialogPane offsetsPane = new OffsetControlsPane();
-        IDialogPane pushPane    = new PushSidesPane(menu.getPos());
+        SideGridPane pushPane   = new SideGridPane(menu.getPos(),
+                Component.translatable("gui.mobfarmingsupplies.absorption_hopper.push_directions"),
+                new PushSidesModel(menu.getPos()));
         Dialog dialog_ = new Dialog(
                 Dialog.blankPane(HopperSlotsPane.WIDTH, 8),           // PANE_TOP_GAP
                 slotsPane,                                              // PANE_SLOTS
@@ -80,6 +84,7 @@ public class AbsorptionHopperScreen extends AbstractContainerScreen<AbsorptionHo
                 new PlayerInventoryPane(AbsorptionHopperMenu.PLAYER_SLOT_LEFT)); // PANE_PLAYER
         super(menu, inv, title, dialog_.totalWidth(), dialog_.totalHeight());
         dialog = dialog_;
+        this.pushPane = pushPane;
     }
 
     // ── Init ────────────────────────────────────────────────────────────────────
@@ -147,6 +152,8 @@ public class AbsorptionHopperScreen extends AbstractContainerScreen<AbsorptionHo
         dialog.render(g, font, title, mouseX, mouseY, partialTick);
         renderFluidGauge(g);
         super.extractContents(g, mouseX, mouseY, partialTick);
+        Component tooltip = pushPane.hoverTooltip();
+        if (tooltip != null && menu.getCarried().isEmpty()) g.setTooltipForNextFrame(font, tooltip, mouseX, mouseY);
     }
 
     private static final int GAUGE_TICK_COLOR  = 0xFFDDDDDD;

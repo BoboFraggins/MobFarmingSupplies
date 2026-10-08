@@ -15,7 +15,7 @@ import net.bobofraggins.mobfarmingsupplies.logisticsorter.SideMode;
 import net.bobofraggins.mobfarmingsupplies.logisticsorter.fabric.LogisticSorterItemStorage;
 import net.bobofraggins.mobfarmingsupplies.register.ModCompatRegistration;
 import net.bobofraggins.mobfarmingsupplies.omnihopper.HopperSide;
-import net.bobofraggins.mobfarmingsupplies.omnihopper.OmniHopperBlockEntity;
+import net.bobofraggins.mobfarmingsupplies.omnihopper.HopperNode;
 import net.bobofraggins.mobfarmingsupplies.omnihopper.fabric.OmniHopperInsertStorage;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.bobofraggins.mobfarmingsupplies.tank.FabricTankFluidStorage;
@@ -24,6 +24,7 @@ import net.bobofraggins.mobfarmingsupplies.tank.TankBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.toilet.fabric.ToiletItemStorage;
 import net.bobofraggins.mobfarmingsupplies.toilet.fabric.ToiletWaterStorage;
 import net.fabricmc.api.ModInitializer;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredientSerializer;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
@@ -88,23 +89,9 @@ public class MobFarmingSuppliesFabric implements ModInitializer {
                 },
                 Registration.LOGISTIC_SORTER_BE_TYPE.get());
 
-        // Omnidirectional Hopper: insert-only items and fluids, only on INPUT sides.
-        ItemStorage.SIDED.registerForBlockEntities(
-                (be, direction) -> {
-                    OmniHopperBlockEntity hopper = (OmniHopperBlockEntity) be;
-                    return direction != null && hopper.getSide(direction) == HopperSide.INPUT
-                            ? new OmniHopperInsertStorage<>(hopper, ItemStorage.SIDED, v -> hopper.allowsItem(v.toStack()))
-                            : null;
-                },
-                Registration.OMNI_HOPPER_BE_TYPE.get());
-        FluidStorage.SIDED.registerForBlockEntities(
-                (be, direction) -> {
-                    OmniHopperBlockEntity hopper = (OmniHopperBlockEntity) be;
-                    return direction != null && hopper.getSide(direction) == HopperSide.INPUT
-                            ? new OmniHopperInsertStorage<>(hopper, FluidStorage.SIDED, v -> true)
-                            : null;
-                },
-                Registration.OMNI_HOPPER_BE_TYPE.get());
+        // Omnidirectional Hopper and Einstein-Rosen Bridge: insert-only items and fluids, only on INPUT sides.
+        registerHopperNodeStorages(Registration.OMNI_HOPPER_BE_TYPE.get());
+        registerHopperNodeStorages(Registration.BRIDGE_BE_TYPE.get());
 
         // Toilet: voids any item pushed in and supplies unlimited water, on every side.
         ItemStorage.SIDED.registerForBlockEntities(
@@ -113,5 +100,24 @@ public class MobFarmingSuppliesFabric implements ModInitializer {
         FluidStorage.SIDED.registerForBlockEntities(
                 (be, direction) -> ToiletWaterStorage.INSTANCE,
                 Registration.TOILET_BE_TYPE.get());
+    }
+
+    private static void registerHopperNodeStorages(BlockEntityType<?> type) {
+        ItemStorage.SIDED.registerForBlockEntities(
+                (be, direction) -> {
+                    HopperNode node = (HopperNode) be;
+                    return direction != null && node.getSide(direction) == HopperSide.INPUT
+                            ? new OmniHopperInsertStorage<>(node, ItemStorage.SIDED, v -> node.allowsItem(v.toStack()))
+                            : null;
+                },
+                type);
+        FluidStorage.SIDED.registerForBlockEntities(
+                (be, direction) -> {
+                    HopperNode node = (HopperNode) be;
+                    return direction != null && node.getSide(direction) == HopperSide.INPUT
+                            ? new OmniHopperInsertStorage<>(node, FluidStorage.SIDED, v -> true)
+                            : null;
+                },
+                type);
     }
 }

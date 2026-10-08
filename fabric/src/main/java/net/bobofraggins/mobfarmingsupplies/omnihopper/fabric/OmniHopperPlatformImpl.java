@@ -5,7 +5,8 @@ import net.bobofraggins.mobfarmingsupplies.MFSConfig;
 import net.bobofraggins.mobfarmingsupplies.fluid.fabric.FabricFluidUnits;
 import net.bobofraggins.mobfarmingsupplies.logisticsorter.EvenSplit;
 import net.bobofraggins.mobfarmingsupplies.omnihopper.HopperSide;
-import net.bobofraggins.mobfarmingsupplies.omnihopper.OmniHopperBlockEntity;
+import net.bobofraggins.mobfarmingsupplies.omnihopper.HopperNode;
+import net.bobofraggins.mobfarmingsupplies.omnihopper.HopperOutput;
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
@@ -31,18 +32,20 @@ public final class OmniHopperPlatformImpl {
 
     private OmniHopperPlatformImpl() {}
 
-    public static void transfer(OmniHopperBlockEntity be, Level level, BlockPos pos, boolean itemTick) {
-        if (!be.beginRouting()) return;
+    public static void transfer(HopperNode node, boolean itemTick) {
+        Level level = node.getLevel();
+        if (level == null || !node.beginRouting()) return;
         try {
+            BlockPos pos = node.getBlockPos();
             if (itemTick) {
-                Predicate<ItemVariant> items = v -> be.allowsItem(v.toStack());
-                moveResources(be, level, pos, ItemStorage.SIDED, items, MFSConfig.getOmniHopperItemsPerTransfer());
+                Predicate<ItemVariant> items = v -> node.allowsItem(v.toStack());
+                moveResources(node, level, pos, ItemStorage.SIDED, items, MFSConfig.getOmniHopperItemsPerTransfer());
             }
             // The mod counts fluid in mB; Fabric's Transfer API counts droplets.
-            moveResources(be, level, pos, FluidStorage.SIDED, v -> true,
+            moveResources(node, level, pos, FluidStorage.SIDED, v -> true,
                     FabricFluidUnits.toDroplets(MFSConfig.getOmniHopperFluidPerTick()));
         } finally {
-            be.endRouting();
+            node.endRouting();
         }
     }
 
@@ -50,9 +53,9 @@ public final class OmniHopperPlatformImpl {
         // Fabric's block API lookup isn't cached per side here — nothing to invalidate.
     }
 
-    /** Moves up to {@code perSide} from each INPUT neighbour, split evenly across the OUTPUT neighbours. */
+    /** Moves up to {@code perSide} from each INPUT neighbour, split evenly across the node's OUTPUT targets. */
     private static <T extends TransferVariant<?>> void moveResources(
-            OmniHopperBlockEntity be, Level level, BlockPos pos,
+            HopperNode be, Level level, BlockPos pos,
             BlockApiLookup<Storage<T>, Direction> lookup, Predicate<T> filter, long perSide) {
         for (Direction in : Direction.values()) {
             if (be.getSide(in) != HopperSide.INPUT) continue;
@@ -62,8 +65,8 @@ public final class OmniHopperPlatformImpl {
             // over two outputs would all land in the first one's share of 32.
             long amount = available(source, filter, perSide);
             if (amount <= 0) continue;
-            EvenSplit.distribute(be.outputs(), amount, (out, max) -> {
-                Storage<T> dest = storageAt(level, pos, out, lookup);
+            EvenSplit.distribute(be.outputTargets(), amount, (out, max) -> {
+                Storage<T> dest = storageAt(out, lookup);
                 if (dest == null) return 0;
                 try (Transaction tx = Transaction.openOuter()) {
                     long moved = StorageUtil.move(source, dest, filter, max, tx);
@@ -89,17 +92,17 @@ public final class OmniHopperPlatformImpl {
     }
 
     /**
-     * Routes a resource pushed into an INPUT side straight to the OUTPUT neighbours, inside the
+     * Routes a resource pushed into an INPUT side straight to the node's OUTPUT targets, inside the
      * caller's transaction. Returns how much was accepted.
      */
-    static <T extends TransferVariant<?>> long routeInsert(OmniHopperBlockEntity be,
+    static <T extends TransferVariant<?>> long routeInsert(HopperNode be,
             BlockApiLookup<Storage<T>, Direction> lookup, T variant, long amount, TransactionContext tx) {
         Level level = be.getLevel();
         if (level == null || variant.isBlank() || amount <= 0 || !be.isActive()) return 0;
         if (!be.beginRouting()) return 0; // hoppers feeding each other in a loop
         try {
-            return EvenSplit.distribute(be.outputs(), amount, (out, max) -> {
-                Storage<T> dest = storageAt(level, be.getBlockPos(), out, lookup);
+            return EvenSplit.distribute(be.outputTargets(), amount, (out, max) -> {
+                Storage<T> dest = storageAt(out, lookup);
                 return dest == null ? 0 : dest.insert(variant, max, tx);
             });
         } finally {
@@ -110,6 +113,14 @@ public final class OmniHopperPlatformImpl {
     @Nullable
     private static <T> Storage<T> storageAt(Level level, BlockPos pos, Direction side,
                                             BlockApiLookup<Storage<T>, Direction> lookup) {
-        return lookup.find(level, pos.relative(side), side.getOpposite());
+        BlockPos neighbour = pos.relative(side);
+        // Never load a chunk just to look: a bridge's targets can be anywhere.
+        if (!level.isLoaded(neighbour)) return null;
+        return lookup.find(level, neighbour, side.getOpposite());
+    }
+
+    @Nullable
+    private static <T> Storage<T> storageAt(HopperOutput out, BlockApiLookup<Storage<T>, Direction> lookup) {
+        return storageAt(out.level(), out.pos(), out.side(), lookup);
     }
 }

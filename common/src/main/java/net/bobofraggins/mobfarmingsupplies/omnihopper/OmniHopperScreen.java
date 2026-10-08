@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.omnihopper;
 
+import net.bobofraggins.mobfarmingsupplies.shared.ui.SideGridPane;
 import net.bobofraggins.mobfarmingsupplies.shared.ui.Dialog;
 import net.bobofraggins.mobfarmingsupplies.shared.ui.IDialogPane;
 import net.bobofraggins.mobfarmingsupplies.shared.ui.PlayerInventoryPane;
@@ -23,15 +24,17 @@ import net.minecraft.world.entity.player.Inventory;
  * </ul>
  * Slot positions live in {@link OmniHopperMenu} and must match these pane heights.
  */
-public class OmniHopperScreen extends AbstractContainerScreen<OmniHopperMenu> {
+public class OmniHopperScreen<M extends OmniHopperMenu> extends AbstractContainerScreen<M> {
 
     private final Dialog dialog;
-    private final HopperSidesPane sidesPane;
+    private final SideGridPane sidesPane;
 
-    public OmniHopperScreen(OmniHopperMenu menu, Inventory inv, Component title) {
+    public OmniHopperScreen(M menu, Inventory inv, Component title) {
         HopperConfigView config = new HopperConfigView(menu.getPos());
         int w = PlayerInventoryPane.WIDTH;
-        HopperSidesPane sides = new HopperSidesPane(config);
+        SideGridPane sides = new SideGridPane(menu.getPos(),
+                Component.translatable("container.mobfarmingsupplies.logistic_sorter.connections"),
+                config);
         Dialog d = new Dialog(
                 Dialog.blankPane(w, 4),
                 sides,

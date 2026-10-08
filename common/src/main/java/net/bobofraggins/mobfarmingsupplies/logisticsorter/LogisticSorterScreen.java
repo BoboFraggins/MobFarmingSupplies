@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.logisticsorter;
 
+import net.bobofraggins.mobfarmingsupplies.shared.ui.SideGridPane;
 import net.bobofraggins.mobfarmingsupplies.shared.ui.Dialog;
 import net.bobofraggins.mobfarmingsupplies.shared.ui.IDialogPane;
 import net.bobofraggins.mobfarmingsupplies.shared.ui.PlayerInventoryPane;
@@ -26,12 +27,14 @@ import net.minecraft.world.entity.player.Inventory;
 public class LogisticSorterScreen extends AbstractContainerScreen<LogisticSorterMenu> {
 
     private final Dialog dialog;
-    private final SorterSidesPane sidesPane;
+    private final SideGridPane sidesPane;
 
     public LogisticSorterScreen(LogisticSorterMenu menu, Inventory inv, Component title) {
         SorterConfigView config = new SorterConfigView(menu.getPos());
         int w = PlayerInventoryPane.WIDTH;
-        SorterSidesPane sides = new SorterSidesPane(config);
+        SideGridPane sides = new SideGridPane(menu.getPos(),
+                Component.translatable("container.mobfarmingsupplies.logistic_sorter.connections"),
+                config);
         Dialog d = new Dialog(
                 Dialog.blankPane(w, 4),
                 sides,

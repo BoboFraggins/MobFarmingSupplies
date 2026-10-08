@@ -43,6 +43,12 @@ import net.bobofraggins.mobfarmingsupplies.mobharvester.HarvesterUpgradeItem;
 import net.bobofraggins.mobfarmingsupplies.mobharvester.MobHarvesterBlock;
 import net.bobofraggins.mobfarmingsupplies.mobharvester.MobHarvesterBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.mobharvester.MobHarvesterMenu;
+import net.bobofraggins.mobfarmingsupplies.bridge.BridgeLinkRecipe;
+import net.bobofraggins.mobfarmingsupplies.bridge.BridgePairRecipe;
+import net.bobofraggins.mobfarmingsupplies.bridge.EinsteinRosenBridgeBlock;
+import net.bobofraggins.mobfarmingsupplies.bridge.EinsteinRosenBridgeBlockEntity;
+import net.bobofraggins.mobfarmingsupplies.bridge.EinsteinRosenBridgeBlockItem;
+import net.bobofraggins.mobfarmingsupplies.bridge.EinsteinRosenBridgeMenu;
 import net.bobofraggins.mobfarmingsupplies.omnihopper.OmniHopperBlock;
 import net.bobofraggins.mobfarmingsupplies.omnihopper.OmniHopperBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.omnihopper.OmniHopperBlockItem;
@@ -51,6 +57,7 @@ import net.bobofraggins.mobfarmingsupplies.picnicbasket.PicnicBasketBlock;
 import net.bobofraggins.mobfarmingsupplies.picnicbasket.PicnicBasketBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.picnicbasket.PicnicBasketItem;
 import net.bobofraggins.mobfarmingsupplies.picnicbasket.PicnicBasketMenu;
+import net.bobofraggins.mobfarmingsupplies.shared.sides.OrientedBlockItem;
 import net.bobofraggins.mobfarmingsupplies.tank.TankBlock;
 import net.bobofraggins.mobfarmingsupplies.tank.TankBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.tank.TankBlockItem;
@@ -175,6 +182,16 @@ public final class Registration {
             RECIPE_SERIALIZERS.register("tank_upgrade",
                     () -> new RecipeSerializer<>(TankUpgradeRecipe.MAP_CODEC, TankUpgradeRecipe.STREAM_CODEC));
 
+    /** Shaped recipe for a linked pair of Einstein-Rosen Bridges on a new random channel. */
+    public static final RegistrySupplier<RecipeSerializer<BridgePairRecipe>> BRIDGE_PAIR_SERIALIZER =
+            RECIPE_SERIALIZERS.register("bridge_pair",
+                    () -> new RecipeSerializer<>(BridgePairRecipe.MAP_CODEC, BridgePairRecipe.STREAM_CODEC));
+
+    /** Shapeless recipe adding another Einstein-Rosen Bridge to an existing bridge's channel. */
+    public static final RegistrySupplier<RecipeSerializer<BridgeLinkRecipe>> BRIDGE_LINK_SERIALIZER =
+            RECIPE_SERIALIZERS.register("bridge_link",
+                    () -> new RecipeSerializer<>(BridgeLinkRecipe.MAP_CODEC, BridgeLinkRecipe.STREAM_CODEC));
+
     // ── Sound events ─────────────────────────────────────────────────────────────
 
     public static final RegistrySupplier<SoundEvent> RED_ALERT_SOUND =
@@ -223,6 +240,14 @@ public final class Registration {
                     () -> DataComponentType.<Integer>builder()
                             .persistent(Codec.intRange(0, ExperienceSyringeItem.CAPACITY))
                             .networkSynchronized(ByteBufCodecs.VAR_INT)
+                            .build());
+
+    /** The Einstein-Rosen Bridge channel a bridge item is on (a random 32-bit number). */
+    public static final RegistrySupplier<DataComponentType<Integer>> BRIDGE_CHANNEL =
+            DATA_COMPONENTS.register("bridge_channel",
+                    () -> DataComponentType.<Integer>builder()
+                            .persistent(Codec.INT)
+                            .networkSynchronized(ByteBufCodecs.INT)
                             .build());
 
     public static final RegistrySupplier<DataComponentType<TankContents>> TANK_CONTENTS =
@@ -371,7 +396,7 @@ public final class Registration {
 
     public static final RegistrySupplier<BlockItem> ABSORPTION_HOPPER_ITEM =
             ITEMS.register("absorption_hopper",
-                    () -> new BlockItem(ABSORPTION_HOPPER.get(), new Item.Properties()
+                    () -> new OrientedBlockItem(ABSORPTION_HOPPER.get(), new Item.Properties()
                             .setId(itemKey("absorption_hopper"))));
 
     public static final RegistrySupplier<MenuType<AbsorptionHopperMenu>> ABSORPTION_HOPPER_MENU =
@@ -835,6 +860,29 @@ public final class Registration {
     public static final RegistrySupplier<MenuType<OmniHopperMenu>> OMNI_HOPPER_MENU =
             MENUS.register("omnidirectional_hopper", () -> MenuRegistry.ofExtended(OmniHopperMenu::new));
 
+    // ── Einstein-Rosen Bridge ────────────────────────────────────────────────────
+
+    public static final RegistrySupplier<EinsteinRosenBridgeBlock> EINSTEIN_ROSEN_BRIDGE =
+            BLOCKS.register("einstein_rosen_bridge",
+                    () -> new EinsteinRosenBridgeBlock(BlockBehaviour.Properties.of()
+                            .setId(blockKey("einstein_rosen_bridge"))
+                            .lightLevel(state -> 11) // like a nether portal
+                            .strength(3.5f)
+                            .sound(SoundType.METAL)
+                            .noOcclusion()));
+
+    public static final RegistrySupplier<BlockItem> EINSTEIN_ROSEN_BRIDGE_ITEM =
+            ITEMS.register("einstein_rosen_bridge",
+                    () -> new EinsteinRosenBridgeBlockItem(EINSTEIN_ROSEN_BRIDGE.get(), new Item.Properties()
+                            .setId(itemKey("einstein_rosen_bridge"))));
+
+    public static final RegistrySupplier<BlockEntityType<EinsteinRosenBridgeBlockEntity>> BRIDGE_BE_TYPE =
+            BLOCK_ENTITIES.register("einstein_rosen_bridge",
+                    () -> BlockEntityTypePlatform.create(EinsteinRosenBridgeBlockEntity::new, EINSTEIN_ROSEN_BRIDGE.get()));
+
+    public static final RegistrySupplier<MenuType<EinsteinRosenBridgeMenu>> BRIDGE_MENU =
+            MENUS.register("einstein_rosen_bridge", () -> MenuRegistry.ofExtended(EinsteinRosenBridgeMenu::new));
+
     // ── Toilet ────────────────────────────────────────────────────────────────────
 
     public static final RegistrySupplier<ToiletBlock> TOILET =
@@ -899,6 +947,7 @@ public final class Registration {
                     .displayItems((params, output) -> {
                         output.accept(ABSORPTION_HOPPER_ITEM.get());
                         output.accept(OMNI_HOPPER_ITEM.get());
+                        output.accept(EINSTEIN_ROSEN_BRIDGE_ITEM.get());
                         output.accept(LOGISTIC_SORTER_ITEM.get());
                         output.accept(SILICON_CLUMP.get());
                         output.accept(SILICON.get());

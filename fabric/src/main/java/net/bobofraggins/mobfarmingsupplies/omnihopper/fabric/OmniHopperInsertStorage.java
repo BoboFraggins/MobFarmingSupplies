@@ -1,7 +1,7 @@
 package net.bobofraggins.mobfarmingsupplies.omnihopper.fabric;
 
 import java.util.function.Predicate;
-import net.bobofraggins.mobfarmingsupplies.omnihopper.OmniHopperBlockEntity;
+import net.bobofraggins.mobfarmingsupplies.omnihopper.HopperNode;
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
@@ -17,11 +17,11 @@ import net.minecraft.core.Direction;
 @SuppressWarnings("UnstableApiUsage")
 public class OmniHopperInsertStorage<T extends TransferVariant<?>> implements InsertionOnlyStorage<T> {
 
-    private final OmniHopperBlockEntity be;
+    private final HopperNode be;
     private final BlockApiLookup<Storage<T>, Direction> lookup;
     private final Predicate<T> filter;
 
-    public OmniHopperInsertStorage(OmniHopperBlockEntity be, BlockApiLookup<Storage<T>, Direction> lookup,
+    public OmniHopperInsertStorage(HopperNode be, BlockApiLookup<Storage<T>, Direction> lookup,
                                    Predicate<T> filter) {
         this.be = be;
         this.lookup = lookup;

@@ -127,6 +127,9 @@ public class MobFarmingSuppliesFabricClient implements ClientModInitializer {
             idMapper.put(
                     Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "omnidirectional_hopper_renderer"),
                     OmniHopperItemRenderer.Unbaked.MAP_CODEC);
+            idMapper.put(
+                    Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "einstein_rosen_bridge_renderer"),
+                    OmniHopperItemRenderer.BridgeUnbaked.MAP_CODEC);
         } catch (ReflectiveOperationException e) {
             throw new RuntimeException("Failed to register mobfarmingsupplies special model renderers", e);
         }

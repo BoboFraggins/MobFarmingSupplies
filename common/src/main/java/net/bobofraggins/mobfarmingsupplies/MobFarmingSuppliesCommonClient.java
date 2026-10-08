@@ -7,6 +7,8 @@ import net.bobofraggins.mobfarmingsupplies.enderinhibitor.EnderInhibitorScreen;
 import net.bobofraggins.mobfarmingsupplies.fan.FanScreen;
 import net.bobofraggins.mobfarmingsupplies.filterscribingterminal.FilterScribingTerminalScreen;
 import net.bobofraggins.mobfarmingsupplies.logisticsorter.LogisticSorterScreen;
+import net.bobofraggins.mobfarmingsupplies.bridge.EinsteinRosenBridgeMenu;
+import net.bobofraggins.mobfarmingsupplies.omnihopper.OmniHopperMenu;
 import net.bobofraggins.mobfarmingsupplies.omnihopper.OmniHopperScreen;
 import net.bobofraggins.mobfarmingsupplies.mobharvester.MobHarvesterScreen;
 import net.bobofraggins.mobfarmingsupplies.picnicbasket.PicnicBasketKeybinds;
@@ -66,6 +68,9 @@ public final class MobFarmingSuppliesCommonClient {
                 LogisticSorterScreen::new);
         MenuScreenRegistry.registerScreenFactory(
                 Registration.OMNI_HOPPER_MENU.get(),
-                OmniHopperScreen::new);
+                OmniHopperScreen<OmniHopperMenu>::new);
+        MenuScreenRegistry.registerScreenFactory(
+                Registration.BRIDGE_MENU.get(),
+                OmniHopperScreen<EinsteinRosenBridgeMenu>::new);
     }
 }

@@ -1,5 +1,9 @@
 package net.bobofraggins.mobfarmingsupplies.omnihopper;
 
+import net.bobofraggins.mobfarmingsupplies.shared.sides.SideLayout;
+import net.bobofraggins.mobfarmingsupplies.shared.sides.SideOriented;
+import net.minecraft.core.FrontAndTop;
+import org.jetbrains.annotations.Nullable;
 import net.bobofraggins.mobfarmingsupplies.MFSConfig;
 import net.bobofraggins.mobfarmingsupplies.logisticsorter.SorterFilters;
 import net.bobofraggins.mobfarmingsupplies.register.MFSRegistryHelper;
@@ -39,7 +43,24 @@ import java.util.List;
  * <p>Items move every {@link MFSConfig#getOmniHopperTransferInterval()} ticks; fluids, energy and
  * chemicals move every tick. Rates are per INPUT side and configurable.
  */
-public class OmniHopperBlockEntity extends BlockEntity implements MenuProvider {
+public class OmniHopperBlockEntity extends BlockEntity implements SideOriented, MenuProvider, HopperNode, HopperConfigurable {
+
+    /** How it was placed, for its side grid (null = placed before orientations existed; see {@link SideLayout}). */
+    @Nullable private FrontAndTop sideOrientation;
+
+    @Override
+    @Nullable
+    public FrontAndTop getSideOrientation() { return sideOrientation; }
+
+    @Override
+    public void setSideOrientation(FrontAndTop orientation) {
+        sideOrientation = orientation;
+        setChanged();
+        if (level != null && !level.isClientSide()) {
+            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 2);
+        }
+    }
+
 
     public static final int FILTER_SLOTS = 9;
 
@@ -69,18 +90,20 @@ public class OmniHopperBlockEntity extends BlockEntity implements MenuProvider {
         if (be.stateDirty) be.syncBlockState();
         if (!be.isActive()) return;
         boolean itemTick = ++be.tickCounter % Math.max(1, MFSConfig.getOmniHopperTransferInterval()) == 0;
-        OmniHopperPlatform.transfer(be, level, pos, itemTick);
+        OmniHopperPlatform.transfer(be, itemTick);
     }
 
     // ── Configuration ─────────────────────────────────────────────────────────────
 
+    @Override
     public HopperSide getSide(Direction dir) { return sides[dir.get3DDataValue()]; }
 
+    @Override
     public boolean isAndMode() { return andMode; }
 
     public SimpleContainer getFilters() { return filters; }
 
-    /** Packs the six side modes, 2 bits each, indexed by {@link Direction#get3DDataValue}. */
+    @Override
     public int packedSides() {
         int packed = 0;
         for (int i = 0; i < 6; i++) packed |= sides[i].ordinal() << (2 * i);
@@ -91,13 +114,14 @@ public class OmniHopperBlockEntity extends BlockEntity implements MenuProvider {
         return HopperSide.byOrdinal((packed >> (2 * dir.get3DDataValue())) & 3);
     }
 
+    @Override
     public void setConfig(int packedSides, boolean andMode) {
         for (Direction d : Direction.values()) sides[d.get3DDataValue()] = unpackSide(packedSides, d);
         this.andMode = andMode;
         onConfigChanged();
     }
 
-    /** Has somewhere to take from and somewhere to put. */
+    @Override
     public boolean isActive() {
         boolean in = false, out = false;
         for (HopperSide m : sides) {
@@ -136,6 +160,7 @@ public class OmniHopperBlockEntity extends BlockEntity implements MenuProvider {
     // ── Routing ───────────────────────────────────────────────────────────────────
 
     /** Whether an item may move: with no filters installed, every item may. */
+    @Override
     public boolean allowsItem(ItemStack stack) {
         if (!SorterFilters.hasAnyFilter(filters)) return true;
         return SorterFilters.matches(filters, andMode, stack, level != null ? level.registryAccess() : null);
@@ -153,13 +178,21 @@ public class OmniHopperBlockEntity extends BlockEntity implements MenuProvider {
         return found;
     }
 
-    /** Guards against infinite loops when hoppers feed each other. Returns false if already routing. */
+    @Override
+    public List<HopperOutput> outputTargets() {
+        List<HopperOutput> targets = new ArrayList<>();
+        for (Direction d : outputs()) targets.add(new HopperOutput(level, worldPosition, d));
+        return targets;
+    }
+
+    @Override
     public boolean beginRouting() {
         if (routing) return false;
         routing = true;
         return true;
     }
 
+    @Override
     public void endRouting() { routing = false; }
 
     // ── MenuProvider ─────────────────────────────────────────────────────────────
@@ -179,6 +212,7 @@ public class OmniHopperBlockEntity extends BlockEntity implements MenuProvider {
     @Override
     protected void saveAdditional(ValueOutput output) {
         super.saveAdditional(output);
+        SideLayout.save(output, sideOrientation);
         output.putInt("Sides", packedSides());
         output.putBoolean("AndMode", andMode);
         List<ItemStack> stacks = new ArrayList<>(FILTER_SLOTS);
@@ -189,6 +223,7 @@ public class OmniHopperBlockEntity extends BlockEntity implements MenuProvider {
     @Override
     protected void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
+        sideOrientation = SideLayout.load(input);
         int packed = input.getIntOr("Sides", 0);
         for (Direction d : Direction.values()) sides[d.get3DDataValue()] = unpackSide(packed, d);
         andMode = input.getBooleanOr("AndMode", true);

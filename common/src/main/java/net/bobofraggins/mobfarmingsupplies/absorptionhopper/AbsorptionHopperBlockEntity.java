@@ -1,5 +1,9 @@
 package net.bobofraggins.mobfarmingsupplies.absorptionhopper;
 
+import net.bobofraggins.mobfarmingsupplies.shared.sides.SideLayout;
+import net.bobofraggins.mobfarmingsupplies.shared.sides.SideOriented;
+import net.minecraft.core.FrontAndTop;
+import org.jetbrains.annotations.Nullable;
 import dev.architectury.fluid.FluidStack;
 import net.bobofraggins.mobfarmingsupplies.register.MFSRegistryHelper;
 import net.minecraft.core.BlockPos;
@@ -43,7 +47,24 @@ import java.util.List;
  * destroyed instead of being left to pile up — a safety valve for when the collection system
  * downstream backs up. Items a player dropped are never voided.
  */
-public class AbsorptionHopperBlockEntity extends BlockEntity implements MenuProvider, IAbsorptionHopperBlockEntity {
+public class AbsorptionHopperBlockEntity extends BlockEntity implements SideOriented, MenuProvider, IAbsorptionHopperBlockEntity {
+
+    /** How it was placed, for its side grid (null = placed before orientations existed; see {@link SideLayout}). */
+    @Nullable private FrontAndTop sideOrientation;
+
+    @Override
+    @Nullable
+    public FrontAndTop getSideOrientation() { return sideOrientation; }
+
+    @Override
+    public void setSideOrientation(FrontAndTop orientation) {
+        sideOrientation = orientation;
+        setChanged();
+        if (level != null && !level.isClientSide()) {
+            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 2);
+        }
+    }
+
 
     // ── Constants ───────────────────────────────────────────────────────────────
 
@@ -295,6 +316,7 @@ public class AbsorptionHopperBlockEntity extends BlockEntity implements MenuProv
     @Override
     protected void saveAdditional(ValueOutput output) {
         super.saveAdditional(output);
+        SideLayout.save(output, sideOrientation);
         java.util.List<ItemStack> stacks = new java.util.ArrayList<>(SLOT_COUNT);
         for (int i = 0; i < SLOT_COUNT; i++) stacks.add(inventory.getItem(i));
         output.store("Items", ItemStack.OPTIONAL_CODEC.listOf(), stacks);
@@ -314,6 +336,7 @@ public class AbsorptionHopperBlockEntity extends BlockEntity implements MenuProv
     @Override
     protected void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
+        sideOrientation = SideLayout.load(input);
         input.read("Items", ItemStack.OPTIONAL_CODEC.listOf()).ifPresent(loaded -> {
             for (int i = 0; i < Math.min(loaded.size(), SLOT_COUNT); i++) {
                 inventory.setItem(i, loaded.get(i));

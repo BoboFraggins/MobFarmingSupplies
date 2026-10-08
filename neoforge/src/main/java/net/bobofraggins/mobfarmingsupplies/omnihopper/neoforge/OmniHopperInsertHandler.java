@@ -2,7 +2,7 @@ package net.bobofraggins.mobfarmingsupplies.omnihopper.neoforge;
 
 import java.util.function.Predicate;
 import java.util.function.ToLongFunction;
-import net.bobofraggins.mobfarmingsupplies.omnihopper.OmniHopperBlockEntity;
+import net.bobofraggins.mobfarmingsupplies.omnihopper.HopperNode;
 import net.minecraft.core.Direction;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.transfer.ResourceHandler;
@@ -10,13 +10,13 @@ import net.neoforged.neoforge.transfer.resource.Resource;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 /**
- * Insert-only handler exposed on an Omnidirectional Hopper's INPUT sides, for items, fluids or
+ * Insert-only handler exposed on an Omnidirectional Hopper's (or Einstein-Rosen Bridge's) INPUT sides, for items, fluids or
  * chemicals. The hopper holds nothing: whatever is inserted goes straight to an OUTPUT neighbour
  * within the same transaction, so an insert only succeeds if a destination accepts it.
  */
 public class OmniHopperInsertHandler<T extends Resource> implements ResourceHandler<T> {
 
-    private final OmniHopperBlockEntity be;
+    private final HopperNode be;
     private final BlockCapability<ResourceHandler<T>, Direction> capability;
     private final T empty;
     private final Predicate<T> filter;
@@ -27,7 +27,7 @@ public class OmniHopperInsertHandler<T extends Resource> implements ResourceHand
      *                 empty resource: {@code ResourceHandlerUtil.isFull} compares the (always zero)
      *                 amount against it, and NeoForge's hopper won't insert into a "full" handler.
      */
-    public OmniHopperInsertHandler(OmniHopperBlockEntity be, BlockCapability<ResourceHandler<T>, Direction> capability,
+    public OmniHopperInsertHandler(HopperNode be, BlockCapability<ResourceHandler<T>, Direction> capability,
                                    T empty, Predicate<T> filter, ToLongFunction<T> capacity) {
         this.be = be;
         this.capability = capability;

@@ -1,19 +1,19 @@
 package net.bobofraggins.mobfarmingsupplies.omnihopper.neoforge;
 
-import net.bobofraggins.mobfarmingsupplies.omnihopper.OmniHopperBlockEntity;
+import net.bobofraggins.mobfarmingsupplies.omnihopper.HopperNode;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 /**
- * Insert-only energy handler exposed on an Omnidirectional Hopper's INPUT sides: energy pushed in
+ * Insert-only energy handler exposed on an Omnidirectional Hopper's (or Einstein-Rosen Bridge's) INPUT sides: energy pushed in
  * goes straight to the OUTPUT neighbours within the same transaction. Reports an effectively
  * unlimited capacity (never full) so generators that check before pushing still push.
  */
 public class OmniHopperEnergyHandler implements EnergyHandler {
 
-    private final OmniHopperBlockEntity be;
+    private final HopperNode be;
 
-    public OmniHopperEnergyHandler(OmniHopperBlockEntity be) {
+    public OmniHopperEnergyHandler(HopperNode be) {
         this.be = be;
     }
 

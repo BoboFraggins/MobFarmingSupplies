@@ -1,10 +1,12 @@
 package net.bobofraggins.mobfarmingsupplies.omnihopper.neoforge;
 
 import net.bobofraggins.mobfarmingsupplies.omnihopper.HopperSide;
-import net.bobofraggins.mobfarmingsupplies.omnihopper.OmniHopperBlockEntity;
+import net.bobofraggins.mobfarmingsupplies.omnihopper.HopperNode;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
@@ -13,13 +15,18 @@ import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.resource.Resource;
 
-/** Registers the Omnidirectional Hopper's insert-only handlers, on its INPUT sides only. */
+/** Registers the Omnidirectional Hopper's and Einstein-Rosen Bridge's insert-only handlers, on INPUT sides only. */
 public final class OmniHopperCapabilities {
 
     private OmniHopperCapabilities() {}
 
     public static void register(RegisterCapabilitiesEvent event) {
-        var type = Registration.OMNI_HOPPER_BE_TYPE.get();
+        registerFor(event, Registration.OMNI_HOPPER_BE_TYPE.get());
+        registerFor(event, Registration.BRIDGE_BE_TYPE.get());
+    }
+
+    private static <B extends BlockEntity & HopperNode> void registerFor(RegisterCapabilitiesEvent event,
+                                                                        BlockEntityType<B> type) {
         event.registerBlockEntity(Capabilities.Item.BLOCK, type, (be, side) -> isInput(be, side)
                 ? new OmniHopperInsertHandler<>(be, Capabilities.Item.BLOCK, ItemResource.EMPTY,
                         r -> be.allowsItem(r.toStack(1)),
@@ -41,7 +48,7 @@ public final class OmniHopperCapabilities {
         }
     }
 
-    private static boolean isInput(OmniHopperBlockEntity be, Direction side) {
+    private static boolean isInput(HopperNode be, Direction side) {
         return side != null && be.getSide(side) == HopperSide.INPUT;
     }
 }

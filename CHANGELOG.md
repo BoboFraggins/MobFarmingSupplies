@@ -3,6 +3,10 @@
 ## 26.3.0.5, 26.2.0.6, 26.1.2.8
 
 * Added Omnidirectional Hopper
+* Added Einstein-Rosen Bridge (ender hopper)
+
+* Fix all four hoppers/sorters to respect player placement orientation
+  (This should not affect previously placed hoppers/sorters, just newly placed ones)
 
 ## 26.3.0.4, 26.2.0.5, 26.1.2.7
 

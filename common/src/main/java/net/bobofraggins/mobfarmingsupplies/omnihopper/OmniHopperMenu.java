@@ -2,6 +2,8 @@ package net.bobofraggins.mobfarmingsupplies.omnihopper;
 
 import net.bobofraggins.mobfarmingsupplies.logisticsorter.SorterFilters;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.Container;
@@ -41,6 +43,7 @@ public class OmniHopperMenu extends AbstractContainerMenu {
 
     private final BlockPos pos;
     private final Container filters;
+    private final Block block;
 
     /** Server-side constructor. */
     public OmniHopperMenu(int syncId, Inventory inv, OmniHopperBlockEntity be) {
@@ -53,9 +56,19 @@ public class OmniHopperMenu extends AbstractContainerMenu {
     }
 
     private OmniHopperMenu(int syncId, Inventory inv, BlockPos pos, Container filters) {
-        super(Registration.OMNI_HOPPER_MENU.get(), syncId);
+        this(Registration.OMNI_HOPPER_MENU.get(), Registration.OMNI_HOPPER.get(), syncId, inv, pos, filters);
+    }
+
+    /**
+     * Shared by the Einstein-Rosen Bridge's menu, which has the same layout.
+     *
+     * @param block the block this menu belongs to (closes when it's gone)
+     */
+    protected OmniHopperMenu(MenuType<?> type, Block block, int syncId, Inventory inv, BlockPos pos, Container filters) {
+        super(type, syncId);
         this.pos = pos;
         this.filters = filters;
+        this.block = block;
 
         for (int i = 0; i < FILTERS; i++) {
             addSlot(new Slot(filters, i, FILTER_LEFT + i * 18, FILTER_TOP) {
@@ -88,7 +101,7 @@ public class OmniHopperMenu extends AbstractContainerMenu {
     @Override
     public boolean stillValid(Player player) {
         return player.distanceToSqr(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5) <= 64
-                && player.level().getBlockState(pos).is(Registration.OMNI_HOPPER.get());
+                && player.level().getBlockState(pos).is(block);
     }
 
     @Override

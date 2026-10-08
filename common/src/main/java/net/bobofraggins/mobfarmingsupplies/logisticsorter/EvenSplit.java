@@ -1,6 +1,5 @@
 package net.bobofraggins.mobfarmingsupplies.logisticsorter;
 
-import net.minecraft.core.Direction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,23 +20,23 @@ public final class EvenSplit {
 
     /** Moves up to {@code max} items to {@code out} and returns how many actually moved. */
     @FunctionalInterface
-    public interface Sender {
-        long send(Direction out, long max);
+    public interface Sender<T> {
+        long send(T out, long max);
     }
 
     private EvenSplit() {}
 
     /** Distributes up to {@code amount} items across {@code outputs}; returns how many moved. */
-    public static long distribute(List<Direction> outputs, long amount, Sender sender) {
-        List<Direction> open = new ArrayList<>(outputs);
+    public static <T> long distribute(List<T> outputs, long amount, Sender<T> sender) {
+        List<T> open = new ArrayList<>(outputs);
         long left = amount;
         while (left > 0 && !open.isEmpty()) {
             long share = left / open.size();
             long extra = left % open.size();
             long movedThisRound = 0;
-            List<Direction> stillOpen = new ArrayList<>(open.size());
+            List<T> stillOpen = new ArrayList<>(open.size());
             for (int i = 0; i < open.size(); i++) {
-                Direction out = open.get(i);
+                T out = open.get(i);
                 long quota = share + (i < extra ? 1 : 0);
                 if (quota == 0) {
                     stillOpen.add(out); // fewer items than outputs: no turn this round
