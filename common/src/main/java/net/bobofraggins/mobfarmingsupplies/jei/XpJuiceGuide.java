@@ -30,7 +30,7 @@ public final class XpJuiceGuide {
     }
 
     public static GuideRecipe recipe() {
-        return new GuideRecipe(List.of(
+        return GuideRecipe.column(
                 new GuideRecipe.Step(
                         new ItemStack(Registration.EXPERIENCE_SYRINGE.get()),
                         RecipeIngredientRole.INPUT,
@@ -42,7 +42,7 @@ public final class XpJuiceGuide {
                 new GuideRecipe.Step(
                         new ItemStack(Registration.XP_JUICE_BUCKET.get()),
                         RecipeIngredientRole.OUTPUT,
-                        Component.translatable("jei.mobfarmingsupplies.xp_juice_guide.step.bucket"))));
+                        Component.translatable("jei.mobfarmingsupplies.xp_juice_guide.step.bucket")));
     }
 
     /** A Tank item stack shown full of XP Juice, matching the block form's own fluid rendering. */

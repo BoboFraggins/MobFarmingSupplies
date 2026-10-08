@@ -7,6 +7,7 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.registration.IGuiHandlerRegistration;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
+import mezz.jei.api.registration.ISubtypeRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommon;
 import net.bobofraggins.mobfarmingsupplies.filterscribingterminal.FilterScribingTerminalScreen;
@@ -44,7 +45,7 @@ public class MobFarmingSuppliesJeiPlugin implements IModPlugin {
     public void registerCategories(IRecipeCategoryRegistration reg) {
         IGuiHelper guiHelper = reg.getJeiHelpers().getGuiHelper();
         reg.addRecipeCategories(XpJuiceGuide.category(guiHelper), AnvilCrushingGuide.category(guiHelper),
-                new FilterScribingCategory(guiHelper));
+                new FilterScribingCategory(guiHelper), BeheadingGuide.category(guiHelper));
     }
 
     @Override
@@ -52,6 +53,13 @@ public class MobFarmingSuppliesJeiPlugin implements IModPlugin {
         reg.addRecipes(XpJuiceGuide.RECIPE_TYPE, List.of(XpJuiceGuide.recipe()));
         reg.addRecipes(AnvilCrushingGuide.RECIPE_TYPE, List.of(AnvilCrushingGuide.recipe()));
         reg.addRecipes(FilterScribingCategory.RECIPE_TYPE, List.of(FilterScribingExamples.create()));
+        reg.addRecipes(BeheadingGuide.RECIPE_TYPE, List.of(BeheadingGuide.recipe()));
+    }
+
+    /** Each mob's Mob Head is its own JEI entry (one item, told apart by its mob type). */
+    @Override
+    public void registerItemSubtypes(ISubtypeRegistration reg) {
+        reg.registerFromDataComponentTypes(Registration.MOB_HEAD_ITEM.get(), Registration.MOB_HEAD_TYPE.get());
     }
 
     /**
@@ -82,5 +90,7 @@ public class MobFarmingSuppliesJeiPlugin implements IModPlugin {
         }
         reg.addRecipeCatalyst(Registration.FILTER_SCRIBING_TERMINAL_ITEM.get().getDefaultInstance(),
                 FilterScribingCategory.RECIPE_TYPE);
+        reg.addRecipeCatalyst(Registration.MOB_HARVESTER_ITEM.get().getDefaultInstance(), BeheadingGuide.RECIPE_TYPE);
+        reg.addRecipeCatalyst(Registration.HARVESTER_UPGRADE_BEHEADING.get().getDefaultInstance(), BeheadingGuide.RECIPE_TYPE);
     }
 }

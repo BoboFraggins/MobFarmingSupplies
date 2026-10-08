@@ -53,6 +53,14 @@ import net.bobofraggins.mobfarmingsupplies.bridge.EinsteinRosenBridgeMenu;
 import net.bobofraggins.mobfarmingsupplies.loot.SetBridgeChannelFunction;
 import net.bobofraggins.mobfarmingsupplies.loot.SetSyringeLevelsFunction;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
+import net.bobofraggins.mobfarmingsupplies.mobhead.MobHeadBlock;
+import net.bobofraggins.mobfarmingsupplies.mobhead.MobHeadBlockEntity;
+import net.bobofraggins.mobfarmingsupplies.mobhead.MobHeadItem;
+import net.bobofraggins.mobfarmingsupplies.mobhead.MobHeads;
+import net.bobofraggins.mobfarmingsupplies.mobhead.MobWallHeadBlock;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.bobofraggins.mobfarmingsupplies.omnihopper.OmniHopperBlock;
 import net.bobofraggins.mobfarmingsupplies.omnihopper.OmniHopperBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.omnihopper.OmniHopperBlockItem;
@@ -255,6 +263,14 @@ public final class Registration {
                     () -> DataComponentType.<Integer>builder()
                             .persistent(Codec.intRange(0, ExperienceSyringeItem.CAPACITY))
                             .networkSynchronized(ByteBufCodecs.VAR_INT)
+                            .build());
+
+    /** Which mob a Mob Head is the head of. */
+    public static final RegistrySupplier<DataComponentType<EntityType<?>>> MOB_HEAD_TYPE =
+            DATA_COMPONENTS.register("mob_head_type",
+                    () -> DataComponentType.<EntityType<?>>builder()
+                            .persistent(BuiltInRegistries.ENTITY_TYPE.byNameCodec())
+                            .networkSynchronized(ByteBufCodecs.registry(Registries.ENTITY_TYPE))
                             .build());
 
     /** The Einstein-Rosen Bridge channel a bridge item is on (a random 32-bit number). */
@@ -898,6 +914,37 @@ public final class Registration {
     public static final RegistrySupplier<MenuType<EinsteinRosenBridgeMenu>> BRIDGE_MENU =
             MENUS.register("einstein_rosen_bridge", () -> MenuRegistry.ofExtended(EinsteinRosenBridgeMenu::new));
 
+    // ── Mob Heads ─────────────────────────────────────────────────────────────────
+
+    public static final RegistrySupplier<MobHeadBlock> MOB_HEAD =
+            BLOCKS.register("mob_head",
+                    () -> new MobHeadBlock(BlockBehaviour.Properties.of()
+                            .setId(blockKey("mob_head"))
+                            .instrument(NoteBlockInstrument.CUSTOM_HEAD)
+                            .strength(1.0f)
+                            .pushReaction(PushReaction.DESTROY)));
+
+    public static final RegistrySupplier<MobWallHeadBlock> MOB_WALL_HEAD =
+            BLOCKS.register("mob_wall_head",
+                    () -> new MobWallHeadBlock(BlockBehaviour.Properties.of()
+                            .setId(blockKey("mob_wall_head"))
+                            .instrument(NoteBlockInstrument.CUSTOM_HEAD)
+                            .strength(1.0f)
+                            .pushReaction(PushReaction.DESTROY)
+                            .overrideLootTable(MOB_HEAD.get().getLootTable())
+                            .overrideDescription(MOB_HEAD.get().getDescriptionId())));
+
+    public static final RegistrySupplier<MobHeadItem> MOB_HEAD_ITEM =
+            ITEMS.register("mob_head",
+                    () -> new MobHeadItem(MOB_HEAD.get(), MOB_WALL_HEAD.get(), new Item.Properties()
+                            .setId(itemKey("mob_head"))
+                            .rarity(Rarity.UNCOMMON)
+                            .equippableUnswappable(EquipmentSlot.HEAD)));
+
+    public static final RegistrySupplier<BlockEntityType<MobHeadBlockEntity>> MOB_HEAD_BE_TYPE =
+            BLOCK_ENTITIES.register("mob_head",
+                    () -> BlockEntityTypePlatform.create(MobHeadBlockEntity::new, MOB_HEAD.get(), MOB_WALL_HEAD.get()));
+
     // ── Toilet ────────────────────────────────────────────────────────────────────
 
     public static final RegistrySupplier<ToiletBlock> TOILET =
@@ -982,6 +1029,8 @@ public final class Registration {
                         output.accept(HARVESTER_UPGRADE_SHARPNESS.get());
                         output.accept(HARVESTER_UPGRADE_LOOTING.get());
                         output.accept(HARVESTER_UPGRADE_BEHEADING.get());
+                        // A Mob Head for every mob without a vanilla head (the ones Beheading drops).
+                        for (EntityType<?> type : MobHeads.MOD_HEADS) output.accept(MobHeads.modHead(type));
                         output.accept(DNA_COLLECTOR.get());
                         output.accept(DNA_SAMPLE.get());
                         output.accept(DNA_SAMPLE_COMMON_PASSIVE.get());

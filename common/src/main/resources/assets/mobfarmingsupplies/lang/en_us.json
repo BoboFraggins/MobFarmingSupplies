@@ -118,6 +118,9 @@
   "container.mobfarmingsupplies.omnidirectional_hopper.mode.output": "Output",
   "gui.mobfarmingsupplies.omnidirectional_hopper.everything": "Everything",
 
+  "block.mobfarmingsupplies.mob_head": "Mob Head",
+  "item.mobfarmingsupplies.mob_head": "Mob Head",
+  "item.mobfarmingsupplies.mob_head.named": "%s Head",
   "block.mobfarmingsupplies.einstein_rosen_bridge": "Einstein-Rosen Bridge",
   "block.mobfarmingsupplies.einstein_rosen_bridge.channel": "Einstein-Rosen Bridge (%s)",
   "item.mobfarmingsupplies.einstein_rosen_bridge": "Einstein-Rosen Bridge",
@@ -251,6 +254,10 @@
   "jade.mobfarmingsupplies.tank.contents": "%1$s / %2$s mB (%3$s)",
 
   "jei.mobfarmingsupplies.xp_juice_guide": "Getting XP Juice",
+  "jei.mobfarmingsupplies.beheading": "Beheading",
+  "jei.mobfarmingsupplies.beheading.step.harvester": "A Mob Harvester...",
+  "jei.mobfarmingsupplies.beheading.step.upgrade": "...with Beheading Upgrades: each one adds a 1 in 10 chance.",
+  "jei.mobfarmingsupplies.beheading.step.head": "What it kills drops its head (players too!). Babies keep theirs.",
   "jei.mobfarmingsupplies.xp_juice_guide.step.syringe": "Shift-right-click a player to store their XP as XP Juice.",
   "jei.mobfarmingsupplies.xp_juice_guide.step.tank": "Right-click a Tank with the syringe to empty it in.",
   "jei.mobfarmingsupplies.xp_juice_guide.step.bucket": "Right-click the Tank with a bucket to scoop out an XP Juice Bucket.",
