@@ -8,6 +8,7 @@ import net.bobofraggins.mobfarmingsupplies.neoforge.cloneomatic.CloneOMaticClien
 import net.bobofraggins.mobfarmingsupplies.neoforge.enderinhibitor.EnderInhibitorClientEvents;
 import net.bobofraggins.mobfarmingsupplies.neoforge.filterscribingterminal.FilterScribingTerminalClientEvents;
 import net.bobofraggins.mobfarmingsupplies.neoforge.logisticsorter.LogisticSorterClientEvents;
+import net.bobofraggins.mobfarmingsupplies.neoforge.omnihopper.OmniHopperClientEvents;
 import net.bobofraggins.mobfarmingsupplies.neoforge.enderinhibitor.NeoForgeEnderInhibitorEvents;
 import net.bobofraggins.mobfarmingsupplies.neoforge.fan.FanClientEvents;
 import net.bobofraggins.mobfarmingsupplies.neoforge.glamping.magichat.MagicHatClientEvents;
@@ -65,6 +66,7 @@ public class MobFarmingSupplies {
             modEventBus.register(EnderInhibitorClientEvents.class);
             modEventBus.register(FilterScribingTerminalClientEvents.class);
             modEventBus.register(LogisticSorterClientEvents.class);
+            modEventBus.register(OmniHopperClientEvents.class);
             modEventBus.register(TankClientEvents.class);
             modEventBus.register(XpJuiceClientEvents.class);
             modEventBus.register(AbsorptionHopperClientEvents.class);

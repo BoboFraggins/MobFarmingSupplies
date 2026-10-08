@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " H ",
+    "HRH",
+    " H "
+  ],
+  "key": {
+    "H": "minecraft:hopper",
+    "R": "minecraft:redstone_block"
+  },
+  "result": {
+    "id": "mobfarmingsupplies:omnidirectional_hopper",
+    "count": 1
+  },
+  "category": "misc"
+}

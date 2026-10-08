@@ -14,6 +14,9 @@ import net.bobofraggins.mobfarmingsupplies.logisticsorter.LogisticSorterBlockEnt
 import net.bobofraggins.mobfarmingsupplies.logisticsorter.SideMode;
 import net.bobofraggins.mobfarmingsupplies.logisticsorter.fabric.LogisticSorterItemStorage;
 import net.bobofraggins.mobfarmingsupplies.register.ModCompatRegistration;
+import net.bobofraggins.mobfarmingsupplies.omnihopper.HopperSide;
+import net.bobofraggins.mobfarmingsupplies.omnihopper.OmniHopperBlockEntity;
+import net.bobofraggins.mobfarmingsupplies.omnihopper.fabric.OmniHopperInsertStorage;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.bobofraggins.mobfarmingsupplies.tank.FabricTankFluidStorage;
 import net.bobofraggins.mobfarmingsupplies.tank.FabricTankItemFluidStorage;
@@ -84,6 +87,24 @@ public class MobFarmingSuppliesFabric implements ModInitializer {
                             ? new LogisticSorterItemStorage(sorter) : null;
                 },
                 Registration.LOGISTIC_SORTER_BE_TYPE.get());
+
+        // Omnidirectional Hopper: insert-only items and fluids, only on INPUT sides.
+        ItemStorage.SIDED.registerForBlockEntities(
+                (be, direction) -> {
+                    OmniHopperBlockEntity hopper = (OmniHopperBlockEntity) be;
+                    return direction != null && hopper.getSide(direction) == HopperSide.INPUT
+                            ? new OmniHopperInsertStorage<>(hopper, ItemStorage.SIDED, v -> hopper.allowsItem(v.toStack()))
+                            : null;
+                },
+                Registration.OMNI_HOPPER_BE_TYPE.get());
+        FluidStorage.SIDED.registerForBlockEntities(
+                (be, direction) -> {
+                    OmniHopperBlockEntity hopper = (OmniHopperBlockEntity) be;
+                    return direction != null && hopper.getSide(direction) == HopperSide.INPUT
+                            ? new OmniHopperInsertStorage<>(hopper, FluidStorage.SIDED, v -> true)
+                            : null;
+                },
+                Registration.OMNI_HOPPER_BE_TYPE.get());
 
         // Toilet: voids any item pushed in and supplies unlimited water, on every side.
         ItemStorage.SIDED.registerForBlockEntities(

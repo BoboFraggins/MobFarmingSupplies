@@ -10,6 +10,7 @@
     "mobfarmingsupplies:halting_plate",
     "mobfarmingsupplies:filter_scribing_terminal",
     "mobfarmingsupplies:logistic_sorter",
+    "mobfarmingsupplies:omnidirectional_hopper",
     "mobfarmingsupplies:red_alert_button",
     "mobfarmingsupplies:dramatic_button",
     "mobfarmingsupplies:rimshot_button",

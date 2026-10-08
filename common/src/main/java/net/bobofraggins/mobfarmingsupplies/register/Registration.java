@@ -43,6 +43,10 @@ import net.bobofraggins.mobfarmingsupplies.mobharvester.HarvesterUpgradeItem;
 import net.bobofraggins.mobfarmingsupplies.mobharvester.MobHarvesterBlock;
 import net.bobofraggins.mobfarmingsupplies.mobharvester.MobHarvesterBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.mobharvester.MobHarvesterMenu;
+import net.bobofraggins.mobfarmingsupplies.omnihopper.OmniHopperBlock;
+import net.bobofraggins.mobfarmingsupplies.omnihopper.OmniHopperBlockEntity;
+import net.bobofraggins.mobfarmingsupplies.omnihopper.OmniHopperBlockItem;
+import net.bobofraggins.mobfarmingsupplies.omnihopper.OmniHopperMenu;
 import net.bobofraggins.mobfarmingsupplies.picnicbasket.PicnicBasketBlock;
 import net.bobofraggins.mobfarmingsupplies.picnicbasket.PicnicBasketBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.picnicbasket.PicnicBasketItem;
@@ -809,6 +813,28 @@ public final class Registration {
     public static final RegistrySupplier<MenuType<LogisticSorterMenu>> LOGISTIC_SORTER_MENU =
             MENUS.register("logistic_sorter", () -> MenuRegistry.ofExtended(LogisticSorterMenu::new));
 
+    // ── Omnidirectional Hopper ───────────────────────────────────────────────────
+
+    public static final RegistrySupplier<OmniHopperBlock> OMNI_HOPPER =
+            BLOCKS.register("omnidirectional_hopper",
+                    () -> new OmniHopperBlock(BlockBehaviour.Properties.of()
+                            .setId(blockKey("omnidirectional_hopper"))
+                            .strength(3.5f)
+                            .sound(SoundType.METAL)
+                            .noOcclusion()));
+
+    public static final RegistrySupplier<BlockItem> OMNI_HOPPER_ITEM =
+            ITEMS.register("omnidirectional_hopper",
+                    () -> new OmniHopperBlockItem(OMNI_HOPPER.get(), new Item.Properties()
+                            .setId(itemKey("omnidirectional_hopper"))));
+
+    public static final RegistrySupplier<BlockEntityType<OmniHopperBlockEntity>> OMNI_HOPPER_BE_TYPE =
+            BLOCK_ENTITIES.register("omnidirectional_hopper",
+                    () -> BlockEntityTypePlatform.create(OmniHopperBlockEntity::new, OMNI_HOPPER.get()));
+
+    public static final RegistrySupplier<MenuType<OmniHopperMenu>> OMNI_HOPPER_MENU =
+            MENUS.register("omnidirectional_hopper", () -> MenuRegistry.ofExtended(OmniHopperMenu::new));
+
     // ── Toilet ────────────────────────────────────────────────────────────────────
 
     public static final RegistrySupplier<ToiletBlock> TOILET =
@@ -872,6 +898,15 @@ public final class Registration {
                     .icon(() -> FAN_ITEM.get().getDefaultInstance())
                     .displayItems((params, output) -> {
                         output.accept(ABSORPTION_HOPPER_ITEM.get());
+                        output.accept(OMNI_HOPPER_ITEM.get());
+                        output.accept(LOGISTIC_SORTER_ITEM.get());
+                        output.accept(SILICON_CLUMP.get());
+                        output.accept(SILICON.get());
+                        output.accept(SILICON_WAFER.get());
+                        output.accept(FILTER_SCRIBING_TERMINAL_ITEM.get());
+                        output.accept(BLANK_FILTER.get());
+                        output.accept(ITEM_FILTER.get());
+                        output.accept(TOILET_ITEM.get());
                         output.accept(FAN_ITEM.get());
                         output.accept(FAN_UPGRADE_WIDTH.get());
                         output.accept(FAN_UPGRADE_HEIGHT.get());
@@ -922,13 +957,6 @@ public final class Registration {
                         output.accept(DRAMATIC_BUTTON_ITEM.get());
                         output.accept(RIMSHOT_BUTTON_ITEM.get());
                         output.accept(WILHELM_BUTTON_ITEM.get());
-                        output.accept(SILICON_CLUMP.get());
-                        output.accept(SILICON.get());
-                        output.accept(SILICON_WAFER.get());
-                        output.accept(BLANK_FILTER.get());
-                        output.accept(FILTER_SCRIBING_TERMINAL_ITEM.get());
-                        output.accept(LOGISTIC_SORTER_ITEM.get());
-                        output.accept(TOILET_ITEM.get());
                     })
                     .build());
 

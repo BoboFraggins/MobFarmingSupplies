@@ -1,5 +1,9 @@
 # Mob Farming Supplies
 
+## 26.3.0.5, 26.2.0.6, 26.1.2.8
+
+* Added Omnidirectional Hopper
+
 ## 26.3.0.4, 26.2.0.5, 26.1.2.7
 
 * Added Toilet block that voids items sent to it and can have water extracted from it

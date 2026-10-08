@@ -90,3 +90,12 @@ type="optional"
 versionRange="[*,)"
 ordering="NONE"
 side="BOTH"
+
+# Mekanism is ordered first so its chemical capability exists before the Omnidirectional Hopper
+# looks it up by name (see OmniHopperChemicals).
+[[dependencies.${mod_id}]]
+modId="mekanism"
+type="optional"
+versionRange="[*,)"
+ordering="AFTER"
+side="BOTH"

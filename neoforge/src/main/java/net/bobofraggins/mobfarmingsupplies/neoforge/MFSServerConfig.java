@@ -98,6 +98,12 @@ public final class MFSServerConfig {
     public static final ModConfigSpec.DoubleValue TOGGLE_BUTTON_CHEST_CHANCE;
     public static final ModConfigSpec.DoubleValue MAGIC_HAT_CHEST_CHANCE;
 
+    public static final ModConfigSpec.IntValue OMNI_HOPPER_ITEMS_PER_TRANSFER;
+    public static final ModConfigSpec.IntValue OMNI_HOPPER_TRANSFER_INTERVAL;
+    public static final ModConfigSpec.IntValue OMNI_HOPPER_FLUID_PER_TICK;
+    public static final ModConfigSpec.IntValue OMNI_HOPPER_ENERGY_PER_TICK;
+    public static final ModConfigSpec.IntValue OMNI_HOPPER_CHEMICAL_PER_TICK;
+
     static {
         ModConfigSpec.Builder b = new ModConfigSpec.Builder();
 
@@ -355,6 +361,24 @@ public final class MFSServerConfig {
         MAGIC_HAT_CHEST_CHANCE = b
                 .comment("Chance (0.0-1.0) for the Magic Hat to appear in chest loot tables.")
                 .defineInRange("chestDropChance", MFSConfig.DEFAULT_MAGIC_HAT_CHEST_CHANCE, 0.0, 1.0);
+        b.pop();
+
+        b.comment("Omnidirectional Hopper settings (rates are per INPUT side)").push("omnidirectionalHopper");
+        OMNI_HOPPER_ITEMS_PER_TRANSFER = b
+                .comment("Items moved per INPUT side each item transfer.")
+                .defineInRange("itemsPerTransfer", MFSConfig.DEFAULT_OMNI_HOPPER_ITEMS_PER_TRANSFER, 1, 4096);
+        OMNI_HOPPER_TRANSFER_INTERVAL = b
+                .comment("Ticks between item transfers.")
+                .defineInRange("itemTransferIntervalTicks", MFSConfig.DEFAULT_OMNI_HOPPER_TRANSFER_INTERVAL, 1, 200);
+        OMNI_HOPPER_FLUID_PER_TICK = b
+                .comment("Fluid (mB) moved per INPUT side each tick.")
+                .defineInRange("fluidPerTick", MFSConfig.DEFAULT_OMNI_HOPPER_FLUID_PER_TICK, 1, Integer.MAX_VALUE);
+        OMNI_HOPPER_ENERGY_PER_TICK = b
+                .comment("Energy (FE) moved per INPUT side each tick.")
+                .defineInRange("energyPerTick", MFSConfig.DEFAULT_OMNI_HOPPER_ENERGY_PER_TICK, 1, Integer.MAX_VALUE);
+        OMNI_HOPPER_CHEMICAL_PER_TICK = b
+                .comment("Mekanism chemicals (mB) moved per INPUT side each tick.")
+                .defineInRange("chemicalPerTick", MFSConfig.DEFAULT_OMNI_HOPPER_CHEMICAL_PER_TICK, 1, Integer.MAX_VALUE);
         b.pop();
 
         SPEC = b.build();

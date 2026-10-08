@@ -43,5 +43,10 @@ public final class MFSNetwork {
                 SetSorterConfigPacket.TYPE,
                 SetSorterConfigPacket.STREAM_CODEC,
                 SetSorterConfigPacket::handle);
+        NetworkManager.registerReceiver(
+                NetworkManager.c2s(),
+                SetOmniHopperConfigPacket.TYPE,
+                SetOmniHopperConfigPacket.STREAM_CODEC,
+                SetOmniHopperConfigPacket::handle);
     }
 }

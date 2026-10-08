@@ -18,6 +18,7 @@ import net.bobofraggins.mobfarmingsupplies.picnicbasket.PicnicBasketRenderer;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.bobofraggins.mobfarmingsupplies.tank.fabric.TankItemRenderer;
 import net.bobofraggins.mobfarmingsupplies.logisticsorter.LogisticSorterItemRenderer;
+import net.bobofraggins.mobfarmingsupplies.omnihopper.OmniHopperItemRenderer;
 import net.bobofraggins.mobfarmingsupplies.tank.fabric.TankRenderer;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityRenderLayerRegistrationCallback;
@@ -100,7 +101,7 @@ public class MobFarmingSuppliesFabricClient implements ClientModInitializer {
     }
 
     /**
-     * Registers {@code mobfarmingsupplies:tank_renderer} and {@code logistic_sorter_renderer} (referenced by
+     * Registers {@code mobfarmingsupplies:tank_renderer} and {@code logistic_sorter_renderer} and {@code omnidirectional_hopper_renderer} (referenced by
      * {@code items/tank.json} and {@code items/logistic_sorter.json})
      * against vanilla's {@code SpecialModelRenderers.ID_MAPPER}.
      *
@@ -123,6 +124,9 @@ public class MobFarmingSuppliesFabricClient implements ClientModInitializer {
             idMapper.put(
                     Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "logistic_sorter_renderer"),
                     LogisticSorterItemRenderer.Unbaked.MAP_CODEC);
+            idMapper.put(
+                    Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "omnidirectional_hopper_renderer"),
+                    OmniHopperItemRenderer.Unbaked.MAP_CODEC);
         } catch (ReflectiveOperationException e) {
             throw new RuntimeException("Failed to register mobfarmingsupplies special model renderers", e);
         }

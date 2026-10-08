@@ -69,4 +69,14 @@ public final class MFSConfigImpl {
     public static double getMagicHatChestChance() {
         return MFSServerConfig.MAGIC_HAT_CHEST_CHANCE.get();
     }
+
+    public static int getOmniHopperItemsPerTransfer() { return MFSServerConfig.OMNI_HOPPER_ITEMS_PER_TRANSFER.get(); }
+
+    public static int getOmniHopperTransferInterval() { return MFSServerConfig.OMNI_HOPPER_TRANSFER_INTERVAL.get(); }
+
+    public static int getOmniHopperFluidPerTick() { return MFSServerConfig.OMNI_HOPPER_FLUID_PER_TICK.get(); }
+
+    public static int getOmniHopperEnergyPerTick() { return MFSServerConfig.OMNI_HOPPER_ENERGY_PER_TICK.get(); }
+
+    public static int getOmniHopperChemicalPerTick() { return MFSServerConfig.OMNI_HOPPER_CHEMICAL_PER_TICK.get(); }
 }

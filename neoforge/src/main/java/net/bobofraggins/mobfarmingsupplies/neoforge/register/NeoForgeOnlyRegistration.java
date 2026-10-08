@@ -19,6 +19,7 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.bobofraggins.mobfarmingsupplies.logisticsorter.SideMode;
 import net.bobofraggins.mobfarmingsupplies.logisticsorter.neoforge.LogisticSorterItemHandler;
+import net.bobofraggins.mobfarmingsupplies.omnihopper.neoforge.OmniHopperCapabilities;
 import net.neoforged.neoforge.common.SoundActions;
 import net.neoforged.neoforge.common.crafting.IngredientType;
 import net.neoforged.neoforge.common.loot.IGlobalLootModifier;
@@ -163,6 +164,9 @@ public final class NeoForgeOnlyRegistration {
                 Registration.LOGISTIC_SORTER_BE_TYPE.get(),
                 (be, side) -> side != null && be.getSide(side) == SideMode.INPUT
                         ? new LogisticSorterItemHandler(be) : null);
+
+        // Omnidirectional Hopper: insert-only items/fluids/energy/chemicals, only on INPUT sides.
+        OmniHopperCapabilities.register(event);
 
         // Toilet: voids any item pushed in and supplies unlimited water, on every side.
         event.registerBlockEntity(
