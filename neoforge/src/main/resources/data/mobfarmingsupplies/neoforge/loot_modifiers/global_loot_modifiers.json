@@ -13,6 +13,10 @@
     "mobfarmingsupplies:loot_modifiers/dramatic_button",
     "mobfarmingsupplies:loot_modifiers/rimshot_button",
     "mobfarmingsupplies:loot_modifiers/wilhelm_button",
-    "mobfarmingsupplies:loot_modifiers/magic_hat"
+    "mobfarmingsupplies:loot_modifiers/magic_hat",
+    "mobfarmingsupplies:loot_modifiers/smore",
+    "mobfarmingsupplies:loot_modifiers/inject_dungeon",
+    "mobfarmingsupplies:loot_modifiers/inject_nether_fortress",
+    "mobfarmingsupplies:loot_modifiers/inject_bastion"
   ]
 }

@@ -1,0 +1,9 @@
+{
+  "model": {
+    "type": "minecraft:special",
+    "base": "mobfarmingsupplies:item/einstein_rosen_bridge",
+    "model": {
+      "type": "mobfarmingsupplies:einstein_rosen_bridge_renderer"
+    }
+  }
+}

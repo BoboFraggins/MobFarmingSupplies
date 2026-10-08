@@ -1,5 +1,9 @@
 package net.bobofraggins.mobfarmingsupplies.absorptionhopper;
 
+import net.bobofraggins.mobfarmingsupplies.shared.sides.SideLayout;
+import net.bobofraggins.mobfarmingsupplies.shared.sides.SideOriented;
+import net.minecraft.core.FrontAndTop;
+import org.jetbrains.annotations.Nullable;
 import dev.architectury.fluid.FluidStack;
 import net.bobofraggins.mobfarmingsupplies.register.MFSRegistryHelper;
 import net.minecraft.core.BlockPos;
@@ -43,7 +47,24 @@ import java.util.List;
  * destroyed instead of being left to pile up — a safety valve for when the collection system
  * downstream backs up. Items a player dropped are never voided.
  */
-public class AbsorptionHopperBlockEntity extends BlockEntity implements MenuProvider, IAbsorptionHopperBlockEntity {
+public class AbsorptionHopperBlockEntity extends BlockEntity implements SideOriented, MenuProvider, IAbsorptionHopperBlockEntity {
+
+    /** How it was placed, for its side grid (null = placed before orientations existed; see {@link SideLayout}). */
+    @Nullable private FrontAndTop sideOrientation;
+
+    @Override
+    @Nullable
+    public FrontAndTop getSideOrientation() { return sideOrientation; }
+
+    @Override
+    public void setSideOrientation(FrontAndTop orientation) {
+        sideOrientation = orientation;
+        setChanged();
+        if (level != null && !level.isClientSide()) {
+            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 2);
+        }
+    }
+
 
     // ── Constants ───────────────────────────────────────────────────────────────
 
@@ -72,6 +93,8 @@ public class AbsorptionHopperBlockEntity extends BlockEntity implements MenuProv
      * Bit 0 = UP, 1 = DOWN, 2 = NORTH, 3 = SOUTH, 4 = EAST, 5 = WEST.
      */
     private int pushSides = 0;
+    /** Push sides changed without the block state following (loaded, or set by NBT); synced next tick. */
+    private boolean stateDirty = true;
 
     private int offsetX = 0;
     private int offsetY = 0;
@@ -100,6 +123,7 @@ public class AbsorptionHopperBlockEntity extends BlockEntity implements MenuProv
     }
 
     private void tick(Level level, BlockPos pos) {
+        if (stateDirty) syncBlockState();
         if (++tickCounter % 3 != 0) return;
 
         pickupPhase(level, pos);
@@ -234,10 +258,13 @@ public class AbsorptionHopperBlockEntity extends BlockEntity implements MenuProv
      * {@link AbsorptionHopperBlock} push-side properties so the multipart model
      * can show/hide each connection pipe.
      *
-     * <p>Called server-side only — from {@link #setPushSides} and from {@link #onLoad}.
+     * <p>Server side only: from {@link #setPushSides}, and on the first tick after loading. Never
+     * from {@code setLevel}: that runs while the chunk is still loading, and changing a block there
+     * waits on the chunk forever (the server hangs on "Preparing spawn area").
      */
     private void syncBlockState() {
         if (level == null || level.isClientSide()) return;
+        stateDirty = false;
         BlockState current = getBlockState();
         BlockState updated = current
                 .setValue(AbsorptionHopperBlock.PUSH_UP,    (pushSides & (1 << 0)) != 0)
@@ -248,14 +275,6 @@ public class AbsorptionHopperBlockEntity extends BlockEntity implements MenuProv
                 .setValue(AbsorptionHopperBlock.PUSH_WEST,  (pushSides & (1 << 5)) != 0);
         if (!updated.equals(current)) {
             level.setBlock(worldPosition, updated, 2);
-        }
-    }
-
-    @Override
-    public void setLevel(net.minecraft.world.level.Level level) {
-        super.setLevel(level);
-        if (!level.isClientSide()) {
-            syncBlockState();
         }
     }
 
@@ -295,6 +314,7 @@ public class AbsorptionHopperBlockEntity extends BlockEntity implements MenuProv
     @Override
     protected void saveAdditional(ValueOutput output) {
         super.saveAdditional(output);
+        SideLayout.save(output, sideOrientation);
         java.util.List<ItemStack> stacks = new java.util.ArrayList<>(SLOT_COUNT);
         for (int i = 0; i < SLOT_COUNT; i++) stacks.add(inventory.getItem(i));
         output.store("Items", ItemStack.OPTIONAL_CODEC.listOf(), stacks);
@@ -314,6 +334,7 @@ public class AbsorptionHopperBlockEntity extends BlockEntity implements MenuProv
     @Override
     protected void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
+        sideOrientation = SideLayout.load(input);
         input.read("Items", ItemStack.OPTIONAL_CODEC.listOf()).ifPresent(loaded -> {
             for (int i = 0; i < Math.min(loaded.size(), SLOT_COUNT); i++) {
                 inventory.setItem(i, loaded.get(i));
@@ -327,6 +348,7 @@ public class AbsorptionHopperBlockEntity extends BlockEntity implements MenuProv
         tankAmount = input.getIntOr("TankAmount", 0);
 
         pushSides = input.getIntOr("PushSides", 0);
+        stateDirty = true;
         offsetX   = input.getIntOr("OffsetX", 0);
         offsetY   = input.getIntOr("OffsetY", 0);
         offsetZ   = input.getIntOr("OffsetZ", 0);

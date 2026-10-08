@@ -1,17 +1,19 @@
 package net.bobofraggins.mobfarmingsupplies.logisticsorter;
 
 import dev.architectury.networking.NetworkManager;
+import net.bobofraggins.mobfarmingsupplies.shared.ui.SideGridPane;
 import net.bobofraggins.mobfarmingsupplies.network.SetSorterConfigPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 
 /**
  * Client-side view of a Logistic Sorter's side modes and AND/OR mode, shared by the screen's
  * panes. Changes apply immediately (optimistically) and are sent to the server; otherwise the
  * view follows the synced client block entity.
  */
-final class SorterConfigView {
+final class SorterConfigView implements SideGridPane.Model {
 
     /** How long a local change wins over (possibly stale) block entity data. */
     private static final long LOCAL_GRACE_MS = 500;
@@ -28,7 +30,8 @@ final class SorterConfigView {
 
     BlockPos pos() { return pos; }
 
-    void refresh() {
+    @Override
+    public void refresh() {
         if (System.currentTimeMillis() - lastLocalChange < LOCAL_GRACE_MS) return;
         var level = Minecraft.getInstance().level;
         if (level != null && level.getBlockEntity(pos) instanceof LogisticSorterBlockEntity be) {
@@ -39,9 +42,20 @@ final class SorterConfigView {
 
     SideMode side(Direction d) { return LogisticSorterBlockEntity.unpackSide(sides, d); }
 
+    @Override
+    public int modeOf(Direction side) { return side(side).ordinal(); }
+
+    @Override
+    public SideGridPane.SideStyle style(int mode) {
+        SideMode m = SideMode.byOrdinal(mode);
+        return new SideGridPane.SideStyle(m == SideMode.NONE ? 0 : m.color(), null,
+                Component.translatable("container.mobfarmingsupplies.logistic_sorter.mode." + m.getSerializedName()));
+    }
+
     boolean andMode() { return andMode; }
 
-    void cycle(Direction d) {
+    @Override
+    public void cycle(Direction d) {
         int shift = 2 * d.get3DDataValue();
         sides = (sides & ~(3 << shift)) | (side(d).next().ordinal() << shift);
         send();

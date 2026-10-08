@@ -1,6 +1,9 @@
 package net.bobofraggins.mobfarmingsupplies;
 
 import com.mojang.logging.LogUtils;
+import dev.architectury.event.events.common.LifecycleEvent;
+import net.bobofraggins.mobfarmingsupplies.bridge.BridgeNetworks;
+import net.bobofraggins.mobfarmingsupplies.mobhead.BeheadingDrops;
 import net.bobofraggins.mobfarmingsupplies.dna.DnaCollectorEvents;
 import net.bobofraggins.mobfarmingsupplies.enderinhibitor.EnderInhibitorEvents;
 import net.bobofraggins.mobfarmingsupplies.glamping.magichat.MagicHatCaptureEvents;
@@ -26,6 +29,9 @@ public final class MobFarmingSuppliesCommon {
         DnaCollectorEvents.registerCommonEvents();
         MagicHatCaptureEvents.registerCommonEvents();
         PresentWrapEvents.registerCommonEvents();
+        BeheadingDrops.register();
+        // Bridge networks hold loaded block entities; never carry them into the next world.
+        LifecycleEvent.SERVER_STOPPED.register(server -> BridgeNetworks.clear());
         MFSNetwork.register();
         PicnicBasketFeedHandler.register();
         LOGGER.info("MobFarmingSupplies initialized");

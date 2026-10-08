@@ -1,7 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.jei;
 
 import dev.architectury.fluid.FluidStack;
-import java.util.List;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.types.IRecipeType;
@@ -32,23 +31,23 @@ public final class XpJuiceGuide {
     }
 
     public static GuideRecipe bucket() {
-        return new GuideRecipe(List.of(
+        return GuideRecipe.column(
                 syringeStep(),
                 tankStep(),
                 new GuideRecipe.Step(
                         new ItemStack(Registration.XP_JUICE_BUCKET.get()),
                         RecipeIngredientRole.OUTPUT,
-                        Component.translatable("jei.mobfarmingsupplies.xp_juice_guide.step.bucket"))));
+                        Component.translatable("jei.mobfarmingsupplies.xp_juice_guide.step.bucket")));
     }
 
     public static GuideRecipe bottle() {
-        return new GuideRecipe(List.of(
+        return GuideRecipe.column(
                 syringeStep(),
                 tankStep(),
                 new GuideRecipe.Step(
                         new ItemStack(Items.EXPERIENCE_BOTTLE),
                         RecipeIngredientRole.OUTPUT,
-                        Component.translatable("jei.mobfarmingsupplies.xp_juice_guide.step.bottle"))));
+                        Component.translatable("jei.mobfarmingsupplies.xp_juice_guide.step.bottle")));
     }
 
     private static GuideRecipe.Step syringeStep() {

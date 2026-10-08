@@ -32,7 +32,7 @@ public final class AnvilCrushingGuide {
     }
 
     public static GuideRecipe recipe() {
-        return new GuideRecipe(List.of(
+        return GuideRecipe.column(
                 new GuideRecipe.Step(
                         List.of(new ItemStack(Items.ANVIL), new ItemStack(Items.CHIPPED_ANVIL),
                                 new ItemStack(Items.DAMAGED_ANVIL)),
@@ -45,6 +45,6 @@ public final class AnvilCrushingGuide {
                 new GuideRecipe.Step(
                         new ItemStack(Registration.SILICON_CLUMP.get()),
                         RecipeIngredientRole.OUTPUT,
-                        Component.translatable("jei.mobfarmingsupplies.anvil_crushing.step.clump"))));
+                        Component.translatable("jei.mobfarmingsupplies.anvil_crushing.step.clump")));
     }
 }

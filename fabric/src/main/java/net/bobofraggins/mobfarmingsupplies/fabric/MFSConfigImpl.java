@@ -38,6 +38,10 @@ public final class MFSConfigImpl {
     private static List<String> biomeSpawnDenyList = MFSConfig.DEFAULT_BIOME_SPAWN_DENY_LIST;
     private static double toggleButtonChestChance = MFSConfig.DEFAULT_TOGGLE_BUTTON_CHEST_CHANCE;
     private static double magicHatChestChance = MFSConfig.DEFAULT_MAGIC_HAT_CHEST_CHANCE;
+    private static double smoreChestChance = MFSConfig.DEFAULT_SMORE_CHEST_CHANCE;
+    private static int omniHopperItemsPerTransfer = MFSConfig.DEFAULT_OMNI_HOPPER_ITEMS_PER_TRANSFER;
+    private static int omniHopperTransferInterval = MFSConfig.DEFAULT_OMNI_HOPPER_TRANSFER_INTERVAL;
+    private static int omniHopperFluidPerTick = MFSConfig.DEFAULT_OMNI_HOPPER_FLUID_PER_TICK;
     private static double dnaSamplePackCommonChestChance = MFSConfig.DEFAULT_DNA_SAMPLE_PACK_COMMON_CHEST_CHANCE;
     private static double dnaSamplePackRareChestChance = MFSConfig.DEFAULT_DNA_SAMPLE_PACK_RARE_CHEST_CHANCE;
 
@@ -57,6 +61,13 @@ public final class MFSConfigImpl {
     public static List<String> getBiomeSpawnDenyList()   { return biomeSpawnDenyList; }
     public static double getToggleButtonChestChance()    { return toggleButtonChestChance; }
     public static double getMagicHatChestChance()        { return magicHatChestChance; }
+    public static double getSmoreChestChance()           { return smoreChestChance; }
+    public static int getOmniHopperItemsPerTransfer()    { return omniHopperItemsPerTransfer; }
+    public static int getOmniHopperTransferInterval()    { return omniHopperTransferInterval; }
+    public static int getOmniHopperFluidPerTick()        { return omniHopperFluidPerTick; }
+    // Energy and chemicals aren't moved on Fabric (no energy API in Fabric itself, no Mekanism).
+    public static int getOmniHopperEnergyPerTick()       { return 0; }
+    public static int getOmniHopperChemicalPerTick()     { return 0; }
     public static double getDnaSamplePackCommonChestChance() { return dnaSamplePackCommonChestChance; }
     public static double getDnaSamplePackRareChestChance()   { return dnaSamplePackRareChestChance; }
 
@@ -103,6 +114,22 @@ public final class MFSConfigImpl {
                 JsonObject mhc = root.getAsJsonObject("magicHat");
                 if (mhc.has("chestDropChance"))
                     magicHatChestChance = clamp(mhc.get("chestDropChance").getAsDouble(), 0.0, 1.0);
+            }
+
+            if (root.has("smores")) {
+                JsonObject sm = root.getAsJsonObject("smores");
+                if (sm.has("chestDropChance"))
+                    smoreChestChance = clamp(sm.get("chestDropChance").getAsDouble(), 0.0, 1.0);
+            }
+
+            if (root.has("omnidirectionalHopper")) {
+                JsonObject oh = root.getAsJsonObject("omnidirectionalHopper");
+                if (oh.has("itemsPerTransfer"))
+                    omniHopperItemsPerTransfer = clamp(oh.get("itemsPerTransfer").getAsInt(), 1, 4096);
+                if (oh.has("itemTransferIntervalTicks"))
+                    omniHopperTransferInterval = clamp(oh.get("itemTransferIntervalTicks").getAsInt(), 1, 200);
+                if (oh.has("fluidPerTick"))
+                    omniHopperFluidPerTick = clamp(oh.get("fluidPerTick").getAsInt(), 1, Integer.MAX_VALUE);
             }
 
             if (root.has("dnaSamplePacks")) {
@@ -178,6 +205,16 @@ public final class MFSConfigImpl {
         JsonObject mhc = new JsonObject();
         mhc.addProperty("chestDropChance", MFSConfig.DEFAULT_MAGIC_HAT_CHEST_CHANCE);
         root.add("magicHat", mhc);
+
+        JsonObject sm = new JsonObject();
+        sm.addProperty("chestDropChance", MFSConfig.DEFAULT_SMORE_CHEST_CHANCE);
+        root.add("smores", sm);
+
+        JsonObject oh = new JsonObject();
+        oh.addProperty("itemsPerTransfer", MFSConfig.DEFAULT_OMNI_HOPPER_ITEMS_PER_TRANSFER);
+        oh.addProperty("itemTransferIntervalTicks", MFSConfig.DEFAULT_OMNI_HOPPER_TRANSFER_INTERVAL);
+        oh.addProperty("fluidPerTick", MFSConfig.DEFAULT_OMNI_HOPPER_FLUID_PER_TICK);
+        root.add("omnidirectionalHopper", oh);
 
         JsonObject packs = new JsonObject();
         packs.add("commonHostile", toArray(MFSConfig.DEFAULT_COMMON_HOSTILE));

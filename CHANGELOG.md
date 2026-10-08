@@ -1,5 +1,15 @@
 # Mob Farming Supplies
 
+## 26.3.0.5, 26.2.0.6, 26.1.2.8
+
+* Added Omnidirectional Hopper
+* Added Einstein-Rosen Bridge (ender hopper)
+* Added lots of skulls to drop with the Beheading Upgrade
+
+* Fix all four hoppers/sorters to respect player placement orientation
+  (This should not affect previously placed hoppers/sorters, just newly placed ones)
+* Fix Beheading Upgrade on Fabric to actually drop skulls
+
 ## 26.3.0.4, 26.2.0.5, 26.1.2.7
 
 * Added Toilet block that voids items sent to it and can have water extracted from it

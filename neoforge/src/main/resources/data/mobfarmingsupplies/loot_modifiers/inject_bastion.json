@@ -1,0 +1,25 @@
+{
+  "type": "neoforge:add_table",
+  "condition": {
+    "type": "minecraft:any_of",
+    "terms": [
+      {
+        "type": "neoforge:loot_table_id",
+        "loot_table_id": "minecraft:chests/bastion_bridge"
+      },
+      {
+        "type": "neoforge:loot_table_id",
+        "loot_table_id": "minecraft:chests/bastion_hoglin_stable"
+      },
+      {
+        "type": "neoforge:loot_table_id",
+        "loot_table_id": "minecraft:chests/bastion_other"
+      },
+      {
+        "type": "neoforge:loot_table_id",
+        "loot_table_id": "minecraft:chests/bastion_treasure"
+      }
+    ]
+  },
+  "table": "mobfarmingsupplies:chests/inject/bastion"
+}

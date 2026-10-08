@@ -9,6 +9,7 @@ import net.bobofraggins.mobfarmingsupplies.crafting.FluidContainerIngredient;
 import net.bobofraggins.mobfarmingsupplies.neoforge.experiencesyringe.ExperienceSyringeFluidHandler;
 import net.bobofraggins.mobfarmingsupplies.neoforge.loot.DnaSamplePackChestLootModifier;
 import net.bobofraggins.mobfarmingsupplies.neoforge.loot.MagicHatChestLootModifier;
+import net.bobofraggins.mobfarmingsupplies.neoforge.loot.SmoreChestLootModifier;
 import net.bobofraggins.mobfarmingsupplies.neoforge.loot.ToggleButtonChestLootModifier;
 import net.bobofraggins.mobfarmingsupplies.neoforge.tank.TankFluidHandler;
 import net.bobofraggins.mobfarmingsupplies.neoforge.tank.TankItemFluidHandler;
@@ -19,6 +20,7 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.bobofraggins.mobfarmingsupplies.logisticsorter.SideMode;
 import net.bobofraggins.mobfarmingsupplies.logisticsorter.neoforge.LogisticSorterItemHandler;
+import net.bobofraggins.mobfarmingsupplies.omnihopper.neoforge.OmniHopperCapabilities;
 import net.neoforged.neoforge.common.SoundActions;
 import net.neoforged.neoforge.common.crafting.IngredientType;
 import net.neoforged.neoforge.common.loot.IGlobalLootModifier;
@@ -71,6 +73,11 @@ public final class NeoForgeOnlyRegistration {
             MapCodec<MagicHatChestLootModifier>> MAGIC_HAT_CHEST_LOOT_MODIFIER =
             LOOT_MODIFIER_SERIALIZERS.register("magic_hat_chest",
                     () -> MagicHatChestLootModifier.CODEC);
+
+    public static final net.neoforged.neoforge.registries.DeferredHolder<MapCodec<? extends IGlobalLootModifier>,
+            MapCodec<SmoreChestLootModifier>> SMORE_CHEST_LOOT_MODIFIER =
+            LOOT_MODIFIER_SERIALIZERS.register("smore_chest",
+                    () -> SmoreChestLootModifier.CODEC);
 
     // ── XP Juice fluid ────────────────────────────────────────────────────────────
 
@@ -164,6 +171,9 @@ public final class NeoForgeOnlyRegistration {
                 Registration.LOGISTIC_SORTER_BE_TYPE.get(),
                 (be, side) -> side != null && be.getSide(side) == SideMode.INPUT
                         ? new LogisticSorterItemHandler(be) : null);
+
+        // Omnidirectional Hopper: insert-only items/fluids/energy/chemicals, only on INPUT sides.
+        OmniHopperCapabilities.register(event);
 
         // Toilet: voids any item pushed in and supplies unlimited water, on every side.
         event.registerBlockEntity(
