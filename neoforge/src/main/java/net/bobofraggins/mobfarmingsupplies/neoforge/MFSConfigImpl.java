@@ -79,4 +79,8 @@ public final class MFSConfigImpl {
     public static int getOmniHopperEnergyPerTick() { return MFSServerConfig.OMNI_HOPPER_ENERGY_PER_TICK.get(); }
 
     public static int getOmniHopperChemicalPerTick() { return MFSServerConfig.OMNI_HOPPER_CHEMICAL_PER_TICK.get(); }
+
+    public static double getSmoreChestChance() {
+        return MFSServerConfig.SMORE_CHEST_CHANCE.get();
+    }
 }

@@ -29,6 +29,15 @@ public final class ChestLootTables {
             "minecraft:chests/shipwreck_treasure"
     );
 
+    /** Village house chests — mostly food (bread, apples, potatoes, ...). */
+    public static final Set<String> VILLAGE_HOUSE_CHESTS = Set.of(
+            "minecraft:chests/village/village_plains_house",
+            "minecraft:chests/village/village_desert_house",
+            "minecraft:chests/village/village_savanna_house",
+            "minecraft:chests/village/village_snowy_house",
+            "minecraft:chests/village/village_taiga_house"
+    );
+
     public static final Set<String> NETHER_END_CHESTS = Set.of(
             "minecraft:chests/nether_bridge",
             "minecraft:chests/bastion_bridge",

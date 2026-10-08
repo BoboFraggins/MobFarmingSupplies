@@ -1,6 +1,7 @@
 package net.bobofraggins.mobfarmingsupplies.register;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import dev.architectury.registry.menu.MenuRegistry;
 import dev.architectury.registry.registries.DeferredRegister;
 import dev.architectury.registry.registries.RegistrySupplier;
@@ -49,6 +50,9 @@ import net.bobofraggins.mobfarmingsupplies.bridge.EinsteinRosenBridgeBlock;
 import net.bobofraggins.mobfarmingsupplies.bridge.EinsteinRosenBridgeBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.bridge.EinsteinRosenBridgeBlockItem;
 import net.bobofraggins.mobfarmingsupplies.bridge.EinsteinRosenBridgeMenu;
+import net.bobofraggins.mobfarmingsupplies.loot.SetBridgeChannelFunction;
+import net.bobofraggins.mobfarmingsupplies.loot.SetSyringeLevelsFunction;
+import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
 import net.bobofraggins.mobfarmingsupplies.omnihopper.OmniHopperBlock;
 import net.bobofraggins.mobfarmingsupplies.omnihopper.OmniHopperBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.omnihopper.OmniHopperBlockItem;
@@ -160,6 +164,9 @@ public final class Registration {
     public static final DeferredRegister<RecipeType<?>> RECIPE_TYPES =
             DeferredRegister.create(MobFarmingSuppliesCommon.MODID, Registries.RECIPE_TYPE);
 
+    public static final DeferredRegister<MapCodec<? extends LootItemFunction>> LOOT_FUNCTIONS =
+            DeferredRegister.create(MobFarmingSuppliesCommon.MODID, Registries.LOOT_FUNCTION_TYPE);
+
     public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS =
             DeferredRegister.create(MobFarmingSuppliesCommon.MODID, Registries.RECIPE_SERIALIZER);
 
@@ -191,6 +198,14 @@ public final class Registration {
     public static final RegistrySupplier<RecipeSerializer<BridgeLinkRecipe>> BRIDGE_LINK_SERIALIZER =
             RECIPE_SERIALIZERS.register("bridge_link",
                     () -> new RecipeSerializer<>(BridgeLinkRecipe.MAP_CODEC, BridgeLinkRecipe.STREAM_CODEC));
+
+    // ── Loot functions (chest loot) ───────────────────────────────────────────────
+
+    public static final RegistrySupplier<MapCodec<SetSyringeLevelsFunction>> SET_SYRINGE_LEVELS =
+            LOOT_FUNCTIONS.register("set_syringe_levels", () -> SetSyringeLevelsFunction.CODEC);
+
+    public static final RegistrySupplier<MapCodec<SetBridgeChannelFunction>> SET_BRIDGE_CHANNEL =
+            LOOT_FUNCTIONS.register("set_bridge_channel", () -> SetBridgeChannelFunction.CODEC);
 
     // ── Sound events ─────────────────────────────────────────────────────────────
 
@@ -1029,5 +1044,6 @@ public final class Registration {
         SOUND_EVENTS.register();
         RECIPE_TYPES.register();
         RECIPE_SERIALIZERS.register();
+        LOOT_FUNCTIONS.register();
     }
 }

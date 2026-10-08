@@ -95,6 +95,9 @@ public final class MFSConfig {
     /** Default chance for the Magic Hat to appear in chest loot tables. */
     public static final double DEFAULT_MAGIC_HAT_CHEST_CHANCE = 0.02;
 
+    /** Default chance for S'mores (1-3) to appear in village house chests. */
+    public static final double DEFAULT_SMORE_CHEST_CHANCE = 0.25;
+
     /** Omnidirectional Hopper defaults: items per INPUT side per transfer, and ticks between item transfers. */
     public static final int DEFAULT_OMNI_HOPPER_ITEMS_PER_TRANSFER = 64;
     public static final int DEFAULT_OMNI_HOPPER_TRANSFER_INTERVAL = 8;
@@ -159,6 +162,10 @@ public final class MFSConfig {
     /** Chance (0.0–1.0) for the Magic Hat to appear in chest loot tables (default: 0.02). */
     @ExpectPlatform
     public static double getMagicHatChestChance() { throw new AssertionError(); }
+
+    /** Chance (0.0–1.0) for 1-3 S'mores to appear in village house chests (default: 0.25). */
+    @ExpectPlatform
+    public static double getSmoreChestChance() { throw new AssertionError(); }
 
     /** Items the Omnidirectional Hopper moves per INPUT side per transfer (default: 64). */
     @ExpectPlatform

@@ -97,6 +97,7 @@ public final class MFSServerConfig {
     /** Chance (0.0–1.0) for each toggle button to appear in chest loot tables. */
     public static final ModConfigSpec.DoubleValue TOGGLE_BUTTON_CHEST_CHANCE;
     public static final ModConfigSpec.DoubleValue MAGIC_HAT_CHEST_CHANCE;
+    public static final ModConfigSpec.DoubleValue SMORE_CHEST_CHANCE;
 
     public static final ModConfigSpec.IntValue OMNI_HOPPER_ITEMS_PER_TRANSFER;
     public static final ModConfigSpec.IntValue OMNI_HOPPER_TRANSFER_INTERVAL;
@@ -361,6 +362,12 @@ public final class MFSServerConfig {
         MAGIC_HAT_CHEST_CHANCE = b
                 .comment("Chance (0.0-1.0) for the Magic Hat to appear in chest loot tables.")
                 .defineInRange("chestDropChance", MFSConfig.DEFAULT_MAGIC_HAT_CHEST_CHANCE, 0.0, 1.0);
+        b.pop();
+
+        b.comment("S'mores settings").push("smores");
+        SMORE_CHEST_CHANCE = b
+                .comment("Chance (0.0-1.0) for 1-3 S'mores to appear in village house chests.")
+                .defineInRange("chestDropChance", MFSConfig.DEFAULT_SMORE_CHEST_CHANCE, 0.0, 1.0);
         b.pop();
 
         b.comment("Omnidirectional Hopper settings (rates are per INPUT side)").push("omnidirectionalHopper");

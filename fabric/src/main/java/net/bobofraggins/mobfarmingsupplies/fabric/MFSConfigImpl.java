@@ -38,6 +38,7 @@ public final class MFSConfigImpl {
     private static List<String> biomeSpawnDenyList = MFSConfig.DEFAULT_BIOME_SPAWN_DENY_LIST;
     private static double toggleButtonChestChance = MFSConfig.DEFAULT_TOGGLE_BUTTON_CHEST_CHANCE;
     private static double magicHatChestChance = MFSConfig.DEFAULT_MAGIC_HAT_CHEST_CHANCE;
+    private static double smoreChestChance = MFSConfig.DEFAULT_SMORE_CHEST_CHANCE;
     private static int omniHopperItemsPerTransfer = MFSConfig.DEFAULT_OMNI_HOPPER_ITEMS_PER_TRANSFER;
     private static int omniHopperTransferInterval = MFSConfig.DEFAULT_OMNI_HOPPER_TRANSFER_INTERVAL;
     private static int omniHopperFluidPerTick = MFSConfig.DEFAULT_OMNI_HOPPER_FLUID_PER_TICK;
@@ -60,6 +61,7 @@ public final class MFSConfigImpl {
     public static List<String> getBiomeSpawnDenyList()   { return biomeSpawnDenyList; }
     public static double getToggleButtonChestChance()    { return toggleButtonChestChance; }
     public static double getMagicHatChestChance()        { return magicHatChestChance; }
+    public static double getSmoreChestChance()           { return smoreChestChance; }
     public static int getOmniHopperItemsPerTransfer()    { return omniHopperItemsPerTransfer; }
     public static int getOmniHopperTransferInterval()    { return omniHopperTransferInterval; }
     public static int getOmniHopperFluidPerTick()        { return omniHopperFluidPerTick; }
@@ -112,6 +114,12 @@ public final class MFSConfigImpl {
                 JsonObject mhc = root.getAsJsonObject("magicHat");
                 if (mhc.has("chestDropChance"))
                     magicHatChestChance = clamp(mhc.get("chestDropChance").getAsDouble(), 0.0, 1.0);
+            }
+
+            if (root.has("smores")) {
+                JsonObject sm = root.getAsJsonObject("smores");
+                if (sm.has("chestDropChance"))
+                    smoreChestChance = clamp(sm.get("chestDropChance").getAsDouble(), 0.0, 1.0);
             }
 
             if (root.has("omnidirectionalHopper")) {
@@ -197,6 +205,10 @@ public final class MFSConfigImpl {
         JsonObject mhc = new JsonObject();
         mhc.addProperty("chestDropChance", MFSConfig.DEFAULT_MAGIC_HAT_CHEST_CHANCE);
         root.add("magicHat", mhc);
+
+        JsonObject sm = new JsonObject();
+        sm.addProperty("chestDropChance", MFSConfig.DEFAULT_SMORE_CHEST_CHANCE);
+        root.add("smores", sm);
 
         JsonObject oh = new JsonObject();
         oh.addProperty("itemsPerTransfer", MFSConfig.DEFAULT_OMNI_HOPPER_ITEMS_PER_TRANSFER);

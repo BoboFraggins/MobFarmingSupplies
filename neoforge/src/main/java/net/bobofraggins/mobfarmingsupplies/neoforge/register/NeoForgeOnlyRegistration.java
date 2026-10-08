@@ -9,6 +9,7 @@ import net.bobofraggins.mobfarmingsupplies.crafting.FluidContainerIngredient;
 import net.bobofraggins.mobfarmingsupplies.neoforge.experiencesyringe.ExperienceSyringeFluidHandler;
 import net.bobofraggins.mobfarmingsupplies.neoforge.loot.DnaSamplePackChestLootModifier;
 import net.bobofraggins.mobfarmingsupplies.neoforge.loot.MagicHatChestLootModifier;
+import net.bobofraggins.mobfarmingsupplies.neoforge.loot.SmoreChestLootModifier;
 import net.bobofraggins.mobfarmingsupplies.neoforge.loot.ToggleButtonChestLootModifier;
 import net.bobofraggins.mobfarmingsupplies.neoforge.tank.TankFluidHandler;
 import net.bobofraggins.mobfarmingsupplies.neoforge.tank.TankItemFluidHandler;
@@ -72,6 +73,11 @@ public final class NeoForgeOnlyRegistration {
             MapCodec<MagicHatChestLootModifier>> MAGIC_HAT_CHEST_LOOT_MODIFIER =
             LOOT_MODIFIER_SERIALIZERS.register("magic_hat_chest",
                     () -> MagicHatChestLootModifier.CODEC);
+
+    public static final net.neoforged.neoforge.registries.DeferredHolder<MapCodec<? extends IGlobalLootModifier>,
+            MapCodec<SmoreChestLootModifier>> SMORE_CHEST_LOOT_MODIFIER =
+            LOOT_MODIFIER_SERIALIZERS.register("smore_chest",
+                    () -> SmoreChestLootModifier.CODEC);
 
     // ── XP Juice fluid ────────────────────────────────────────────────────────────
 
