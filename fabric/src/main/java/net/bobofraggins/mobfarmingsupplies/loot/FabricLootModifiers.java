@@ -7,10 +7,15 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.storage.loot.LootPool;
+import net.minecraft.world.level.storage.loot.entries.NestedLootTable;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
+import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition;
+import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 
 /**
@@ -26,7 +31,8 @@ public final class FabricLootModifiers {
 
     public static void register() {
         LootTableEvents.MODIFY.register((id, tableBuilder, source, registries) -> {
-            String tableId = id.toString();
+            // The event hands over a ResourceKey, whose toString() isn't the plain id.
+            String tableId = id.identifier().toString();
 
             float commonChance = (float) MFSConfig.getDnaSamplePackCommonChestChance();
             float rareChance = (float) MFSConfig.getDnaSamplePackRareChestChance();
@@ -61,6 +67,20 @@ public final class FabricLootModifiers {
                 addItem(tableBuilder, "mobfarmingsupplies:magic_hat", (float) MFSConfig.getMagicHatChestChance());
             }
 
+            if (ChestLootTables.VILLAGE_HOUSE_CHESTS.contains(tableId)) {
+                addItem(tableBuilder, "mobfarmingsupplies:smore", (float) MFSConfig.getSmoreChestChance(), 1, 3);
+            }
+
+            // Shared inject tables (also used by NeoForge's add_table modifiers): XP Syringes in
+            // dungeons, Omnidirectional Hoppers in fortresses, linked bridge pairs in bastions.
+            switch (tableId) {
+                case "minecraft:chests/simple_dungeon" -> addTable(tableBuilder, "dungeon");
+                case "minecraft:chests/nether_bridge" -> addTable(tableBuilder, "nether_fortress");
+                case "minecraft:chests/bastion_bridge", "minecraft:chests/bastion_hoglin_stable",
+                     "minecraft:chests/bastion_other", "minecraft:chests/bastion_treasure" -> addTable(tableBuilder, "bastion");
+                default -> { }
+            }
+
             if (Platform.isModLoaded("aether_ii")) {
                 switch (tableId) {
                     case "aether_ii:chests/dungeons/sentry_ruins/common":
@@ -80,7 +100,21 @@ public final class FabricLootModifiers {
         });
     }
 
+    /** Adds a pool that rolls {@code mobfarmingsupplies:chests/inject/<name>} once. */
+    private static void addTable(LootTable.Builder tableBuilder, String name) {
+        ResourceKey<LootTable> inject = ResourceKey.create(Registries.LOOT_TABLE,
+                Identifier.fromNamespaceAndPath("mobfarmingsupplies", "chests/inject/" + name));
+        tableBuilder.withPool(LootPool.lootPool()
+                .setRolls(ConstantValue.exactly(1))
+                .add(NestedLootTable.lootTableReference(inject)));
+    }
+
     private static void addItem(LootTable.Builder tableBuilder, String itemId, float chance) {
+        addItem(tableBuilder, itemId, chance, 1, 1);
+    }
+
+    /** Adds a pool giving {@code min}-{@code max} of the item with the given chance. */
+    private static void addItem(LootTable.Builder tableBuilder, String itemId, float chance, int min, int max) {
         Identifier rl = Identifier.tryParse(itemId);
         if (rl == null) return;
         Item item = BuiltInRegistries.ITEM.getValue(rl);
@@ -88,6 +122,7 @@ public final class FabricLootModifiers {
         tableBuilder.withPool(LootPool.lootPool()
                 .setRolls(ConstantValue.exactly(1))
                 .add(LootItem.lootTableItem(item)
-                        .when(LootItemRandomChanceCondition.randomChance(chance))));
+                        .when(LootItemRandomChanceCondition.randomChance(chance))
+                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(min, max)))));
     }
 }

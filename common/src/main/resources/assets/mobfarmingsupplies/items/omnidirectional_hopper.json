@@ -1,0 +1,9 @@
+{
+  "model": {
+    "type": "minecraft:special",
+    "base": "mobfarmingsupplies:item/omnidirectional_hopper",
+    "model": {
+      "type": "mobfarmingsupplies:omnidirectional_hopper_renderer"
+    }
+  }
+}

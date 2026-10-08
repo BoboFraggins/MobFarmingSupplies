@@ -1,0 +1,167 @@
+{
+  "parent": "minecraft:block/block",
+  "texture_size": [
+    32,
+    32
+  ],
+  "textures": {
+    "0": "mobfarmingsupplies:block/omnidirectional_hopper_connector_output",
+    "particle": "mobfarmingsupplies:block/omnidirectional_hopper_texture"
+  },
+  "elements": [
+    {
+      "from": [
+        12,
+        6,
+        6
+      ],
+      "to": [
+        13,
+        10,
+        10
+      ],
+      "rotation": {
+        "angle": 0,
+        "axis": "y",
+        "origin": [
+          12,
+          6,
+          11
+        ]
+      },
+      "faces": {
+        "north": {
+          "uv": [
+            1.5,
+            13.5,
+            2,
+            15.5
+          ],
+          "texture": "#0"
+        },
+        "east": {
+          "uv": [
+            10,
+            4,
+            12,
+            6
+          ],
+          "texture": "#0"
+        },
+        "south": {
+          "uv": [
+            2,
+            13.5,
+            2.5,
+            15.5
+          ],
+          "texture": "#0"
+        },
+        "west": {
+          "uv": [
+            6,
+            10,
+            8,
+            12
+          ],
+          "texture": "#0"
+        },
+        "up": {
+          "uv": [
+            4,
+            13.5,
+            4.5,
+            15.5
+          ],
+          "texture": "#0"
+        },
+        "down": {
+          "uv": [
+            4.5,
+            13.5,
+            5,
+            15.5
+          ],
+          "texture": "#0"
+        }
+      }
+    },
+    {
+      "from": [
+        13,
+        7,
+        7
+      ],
+      "to": [
+        16,
+        9,
+        9
+      ],
+      "rotation": {
+        "angle": 0,
+        "axis": "y",
+        "origin": [
+          13,
+          7,
+          13
+        ]
+      },
+      "faces": {
+        "north": {
+          "uv": [
+            5,
+            12,
+            6.5,
+            13
+          ],
+          "texture": "#0"
+        },
+        "east": {
+          "uv": [
+            13.5,
+            0,
+            14.5,
+            1
+          ],
+          "texture": "#0"
+        },
+        "south": {
+          "uv": [
+            12,
+            5,
+            13.5,
+            6
+          ],
+          "texture": "#0"
+        },
+        "west": {
+          "uv": [
+            13.5,
+            2.5,
+            14.5,
+            3.5
+          ],
+          "texture": "#0"
+        },
+        "up": {
+          "uv": [
+            12,
+            6,
+            13.5,
+            7
+          ],
+          "texture": "#0"
+        },
+        "down": {
+          "uv": [
+            6.5,
+            12,
+            8,
+            13
+          ],
+          "texture": "#0"
+        }
+      }
+    }
+  ]
+}

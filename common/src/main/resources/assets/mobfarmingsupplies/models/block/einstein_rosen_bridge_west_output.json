@@ -1,0 +1,244 @@
+{
+  "parent": "minecraft:block/block",
+  "texture_size": [
+    64,
+    64
+  ],
+  "textures": {
+    "0": "mobfarmingsupplies:block/einstein_rosen_bridge_connector_output",
+    "particle": "mobfarmingsupplies:block/einstein-rosen_bridge_texture"
+  },
+  "elements": [
+    {
+      "from": [
+        4,
+        5,
+        5
+      ],
+      "to": [
+        5,
+        11,
+        11
+      ],
+      "rotation": {
+        "angle": 0,
+        "axis": "y",
+        "origin": [
+          3,
+          5,
+          5
+        ]
+      },
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            8.75,
+            0.25,
+            10.25
+          ],
+          "texture": "#0"
+        },
+        "east": {
+          "uv": [
+            4.5,
+            0,
+            6,
+            1.5
+          ],
+          "texture": "#0"
+        },
+        "south": {
+          "uv": [
+            0.25,
+            8.75,
+            0.5,
+            10.25
+          ],
+          "texture": "#0"
+        },
+        "west": {
+          "uv": [
+            1.5,
+            4.5,
+            3,
+            6
+          ],
+          "texture": "#0"
+        },
+        "up": {
+          "uv": [
+            0.5,
+            8.75,
+            0.75,
+            10.25
+          ],
+          "texture": "#0"
+        },
+        "down": {
+          "uv": [
+            7.25,
+            8.75,
+            7.5,
+            10.25
+          ],
+          "texture": "#0"
+        }
+      }
+    },
+    {
+      "from": [
+        3,
+        6,
+        6
+      ],
+      "to": [
+        4,
+        10,
+        10
+      ],
+      "rotation": {
+        "angle": 0,
+        "axis": "y",
+        "origin": [
+          2,
+          5,
+          5
+        ]
+      },
+      "faces": {
+        "north": {
+          "uv": [
+            5.25,
+            9.5,
+            5.5,
+            10.5
+          ],
+          "texture": "#0"
+        },
+        "east": {
+          "uv": [
+            3.5,
+            6,
+            4.5,
+            7
+          ],
+          "texture": "#0"
+        },
+        "south": {
+          "uv": [
+            9.5,
+            5.75,
+            9.75,
+            6.75
+          ],
+          "texture": "#0"
+        },
+        "west": {
+          "uv": [
+            6,
+            3.5,
+            7,
+            4.5
+          ],
+          "texture": "#0"
+        },
+        "up": {
+          "uv": [
+            8.5,
+            9.5,
+            8.75,
+            10.5
+          ],
+          "texture": "#0"
+        },
+        "down": {
+          "uv": [
+            8.75,
+            9.5,
+            9,
+            10.5
+          ],
+          "texture": "#0"
+        }
+      }
+    },
+    {
+      "from": [
+        0,
+        7,
+        7
+      ],
+      "to": [
+        3,
+        9,
+        9
+      ],
+      "rotation": {
+        "angle": 0,
+        "axis": "y",
+        "origin": [
+          1,
+          5,
+          5
+        ]
+      },
+      "faces": {
+        "north": {
+          "uv": [
+            8.75,
+            4.25,
+            9.5,
+            4.75
+          ],
+          "texture": "#0"
+        },
+        "east": {
+          "uv": [
+            9.5,
+            6.75,
+            10,
+            7.25
+          ],
+          "texture": "#0"
+        },
+        "south": {
+          "uv": [
+            8.5,
+            8.75,
+            9.25,
+            9.25
+          ],
+          "texture": "#0"
+        },
+        "west": {
+          "uv": [
+            9.5,
+            7.5,
+            10,
+            8
+          ],
+          "texture": "#0"
+        },
+        "up": {
+          "uv": [
+            9,
+            0.75,
+            9.75,
+            1.25
+          ],
+          "texture": "#0"
+        },
+        "down": {
+          "uv": [
+            2.5,
+            9,
+            3.25,
+            9.5
+          ],
+          "texture": "#0"
+        }
+      }
+    }
+  ]
+}

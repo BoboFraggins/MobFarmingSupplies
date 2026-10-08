@@ -14,6 +14,9 @@ import net.bobofraggins.mobfarmingsupplies.logisticsorter.LogisticSorterBlockEnt
 import net.bobofraggins.mobfarmingsupplies.logisticsorter.SideMode;
 import net.bobofraggins.mobfarmingsupplies.logisticsorter.fabric.LogisticSorterItemStorage;
 import net.bobofraggins.mobfarmingsupplies.register.ModCompatRegistration;
+import net.bobofraggins.mobfarmingsupplies.omnihopper.HopperSide;
+import net.bobofraggins.mobfarmingsupplies.omnihopper.HopperNode;
+import net.bobofraggins.mobfarmingsupplies.omnihopper.fabric.OmniHopperInsertStorage;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.bobofraggins.mobfarmingsupplies.tank.FabricTankFluidStorage;
 import net.bobofraggins.mobfarmingsupplies.tank.FabricTankItemFluidStorage;
@@ -21,9 +24,11 @@ import net.bobofraggins.mobfarmingsupplies.tank.TankBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.toilet.fabric.ToiletItemStorage;
 import net.bobofraggins.mobfarmingsupplies.toilet.fabric.ToiletWaterStorage;
 import net.fabricmc.api.ModInitializer;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredientSerializer;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
+import net.fabricmc.fabric.api.recipe.v1.sync.RecipeSynchronization;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.fluid.base.FullItemFluidStorage;
@@ -40,6 +45,12 @@ public class MobFarmingSuppliesFabric implements ModInitializer {
         ModCompatRegistration.register();
         Registration.register();
         CustomIngredientSerializer.register(FabricFluidContainerIngredient.SERIALIZER);
+        // Fabric only sends vanilla recipe types to clients; without this, JEI (which reads the
+        // client's copy) never sees the Tank Upgrade or Einstein-Rosen Bridge recipes.
+        RecipeSynchronization.synchronizeRecipeSerializer(Registration.TANK_UPGRADE_SERIALIZER.get());
+        RecipeSynchronization.synchronizeRecipeSerializer(Registration.BRIDGE_PAIR_SERIALIZER.get());
+        RecipeSynchronization.synchronizeRecipeSerializer(Registration.BRIDGE_LINK_SERIALIZER.get());
+        RecipeSynchronization.synchronizeRecipeSerializer(Registration.ANVIL_CRUSHING_SERIALIZER.get());
         FabricLootModifiers.register();
         registerStorages();
         // Magic Hat Trinkets Updated integration — soft dependency, registered only if present.
@@ -98,6 +109,10 @@ public class MobFarmingSuppliesFabric implements ModInitializer {
                 },
                 Registration.LOGISTIC_SORTER_BE_TYPE.get());
 
+        // Omnidirectional Hopper and Einstein-Rosen Bridge: insert-only items and fluids, only on INPUT sides.
+        registerHopperNodeStorages(Registration.OMNI_HOPPER_BE_TYPE.get());
+        registerHopperNodeStorages(Registration.BRIDGE_BE_TYPE.get());
+
         // Toilet: voids any item pushed in and supplies unlimited water, on every side.
         ItemStorage.SIDED.registerForBlockEntities(
                 (be, direction) -> ToiletItemStorage.INSTANCE,
@@ -105,5 +120,24 @@ public class MobFarmingSuppliesFabric implements ModInitializer {
         FluidStorage.SIDED.registerForBlockEntities(
                 (be, direction) -> ToiletWaterStorage.INSTANCE,
                 Registration.TOILET_BE_TYPE.get());
+    }
+
+    private static void registerHopperNodeStorages(BlockEntityType<?> type) {
+        ItemStorage.SIDED.registerForBlockEntities(
+                (be, direction) -> {
+                    HopperNode node = (HopperNode) be;
+                    return direction != null && node.getSide(direction) == HopperSide.INPUT
+                            ? new OmniHopperInsertStorage<>(node, ItemStorage.SIDED, v -> node.allowsItem(v.toStack()))
+                            : null;
+                },
+                type);
+        FluidStorage.SIDED.registerForBlockEntities(
+                (be, direction) -> {
+                    HopperNode node = (HopperNode) be;
+                    return direction != null && node.getSide(direction) == HopperSide.INPUT
+                            ? new OmniHopperInsertStorage<>(node, FluidStorage.SIDED, v -> true)
+                            : null;
+                },
+                type);
     }
 }

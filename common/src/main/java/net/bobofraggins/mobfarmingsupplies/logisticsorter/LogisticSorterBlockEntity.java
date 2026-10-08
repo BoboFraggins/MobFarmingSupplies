@@ -1,5 +1,9 @@
 package net.bobofraggins.mobfarmingsupplies.logisticsorter;
 
+import net.bobofraggins.mobfarmingsupplies.shared.sides.SideLayout;
+import net.bobofraggins.mobfarmingsupplies.shared.sides.SideOriented;
+import net.minecraft.core.FrontAndTop;
+import org.jetbrains.annotations.Nullable;
 import net.bobofraggins.mobfarmingsupplies.register.MFSRegistryHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -32,7 +36,24 @@ import java.util.List;
  * <p>Side modes, the AND/OR setting, and the nine filters are saved with the block and carried
  * on the item when broken (see {@link LogisticSorterBlock#getDrops}).
  */
-public class LogisticSorterBlockEntity extends BlockEntity implements MenuProvider {
+public class LogisticSorterBlockEntity extends BlockEntity implements SideOriented, MenuProvider {
+
+    /** How it was placed, for its side grid (null = placed before orientations existed; see {@link SideLayout}). */
+    @Nullable private FrontAndTop sideOrientation;
+
+    @Override
+    @Nullable
+    public FrontAndTop getSideOrientation() { return sideOrientation; }
+
+    @Override
+    public void setSideOrientation(FrontAndTop orientation) {
+        sideOrientation = orientation;
+        setChanged();
+        if (level != null && !level.isClientSide()) {
+            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 2);
+        }
+    }
+
 
     public static final int FILTER_SLOTS  = 9;
     public static final int PULL_INTERVAL = 8;  // ticks between pulls
@@ -180,6 +201,7 @@ public class LogisticSorterBlockEntity extends BlockEntity implements MenuProvid
     @Override
     protected void saveAdditional(ValueOutput output) {
         super.saveAdditional(output);
+        SideLayout.save(output, sideOrientation);
         output.putInt("Sides", packedSides());
         output.putBoolean("AndMode", andMode);
         List<ItemStack> stacks = new ArrayList<>(FILTER_SLOTS);
@@ -190,6 +212,7 @@ public class LogisticSorterBlockEntity extends BlockEntity implements MenuProvid
     @Override
     protected void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
+        sideOrientation = SideLayout.load(input);
         int packed = input.getIntOr("Sides", 0);
         for (Direction d : Direction.values()) sides[d.get3DDataValue()] = unpackSide(packed, d);
         andMode = input.getBooleanOr("AndMode", true);

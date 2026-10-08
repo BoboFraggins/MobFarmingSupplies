@@ -19,6 +19,9 @@ import net.bobofraggins.mobfarmingsupplies.picnicbasket.PicnicBasketRenderer;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.bobofraggins.mobfarmingsupplies.tank.fabric.TankItemRenderer;
 import net.bobofraggins.mobfarmingsupplies.logisticsorter.LogisticSorterItemRenderer;
+import net.bobofraggins.mobfarmingsupplies.omnihopper.OmniHopperItemRenderer;
+import net.bobofraggins.mobfarmingsupplies.mobhead.MobHeadBlockEntityRenderer;
+import net.bobofraggins.mobfarmingsupplies.mobhead.MobHeadItemRenderer;
 import net.bobofraggins.mobfarmingsupplies.tank.fabric.TankRenderer;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityRenderLayerRegistrationCallback;
@@ -65,6 +68,9 @@ public class MobFarmingSuppliesFabricClient implements ClientModInitializer {
                 Registration.PRESENT_BE_TYPE.get(),
                 PresentRenderer::new);
         BlockEntityRendererRegistry.register(
+                Registration.MOB_HEAD_BE_TYPE.get(),
+                MobHeadBlockEntityRenderer::new);
+        BlockEntityRendererRegistry.register(
                 Registration.TOILET_BE_TYPE.get(),
                 ToiletBlockEntityRenderer::new);
         // The toilet seat is invisible: only its rider is drawn.
@@ -104,7 +110,7 @@ public class MobFarmingSuppliesFabricClient implements ClientModInitializer {
     }
 
     /**
-     * Registers {@code mobfarmingsupplies:tank_renderer} and {@code logistic_sorter_renderer} (referenced by
+     * Registers {@code mobfarmingsupplies:tank_renderer} and {@code logistic_sorter_renderer} and {@code omnidirectional_hopper_renderer} (referenced by
      * {@code items/tank.json} and {@code items/logistic_sorter.json})
      * against vanilla's {@code SpecialModelRenderers.ID_MAPPER}.
      *
@@ -127,6 +133,15 @@ public class MobFarmingSuppliesFabricClient implements ClientModInitializer {
             idMapper.put(
                     Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "logistic_sorter_renderer"),
                     LogisticSorterItemRenderer.Unbaked.MAP_CODEC);
+            idMapper.put(
+                    Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "omnidirectional_hopper_renderer"),
+                    OmniHopperItemRenderer.Unbaked.MAP_CODEC);
+            idMapper.put(
+                    Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "einstein_rosen_bridge_renderer"),
+                    OmniHopperItemRenderer.BridgeUnbaked.MAP_CODEC);
+            idMapper.put(
+                    Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "mob_head_renderer"),
+                    MobHeadItemRenderer.Unbaked.MAP_CODEC);
         } catch (ReflectiveOperationException e) {
             throw new RuntimeException("Failed to register mobfarmingsupplies special model renderers", e);
         }

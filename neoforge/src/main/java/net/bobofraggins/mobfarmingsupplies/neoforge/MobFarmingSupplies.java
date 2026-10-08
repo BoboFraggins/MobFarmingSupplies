@@ -8,6 +8,7 @@ import net.bobofraggins.mobfarmingsupplies.neoforge.cloneomatic.CloneOMaticClien
 import net.bobofraggins.mobfarmingsupplies.neoforge.enderinhibitor.EnderInhibitorClientEvents;
 import net.bobofraggins.mobfarmingsupplies.neoforge.filterscribingterminal.FilterScribingTerminalClientEvents;
 import net.bobofraggins.mobfarmingsupplies.neoforge.logisticsorter.LogisticSorterClientEvents;
+import net.bobofraggins.mobfarmingsupplies.neoforge.omnihopper.OmniHopperClientEvents;
 import net.bobofraggins.mobfarmingsupplies.neoforge.enderinhibitor.NeoForgeEnderInhibitorEvents;
 import net.bobofraggins.mobfarmingsupplies.neoforge.fan.FanClientEvents;
 import net.bobofraggins.mobfarmingsupplies.neoforge.glamping.magichat.MagicHatClientEvents;
@@ -15,12 +16,12 @@ import net.bobofraggins.mobfarmingsupplies.neoforge.glamping.magichat.MagicHatCu
 import net.bobofraggins.mobfarmingsupplies.neoforge.glamping.magichat.MagicHatSpawnEvents;
 import net.bobofraggins.mobfarmingsupplies.neoforge.glamping.present.PresentClientEvents;
 import net.bobofraggins.mobfarmingsupplies.neoforge.glamping.present.PresentSpawnEvents;
-import net.bobofraggins.mobfarmingsupplies.neoforge.mobharvester.BeheadingDropHandler;
 import net.bobofraggins.mobfarmingsupplies.neoforge.mobharvester.MobHarvesterClientEvents;
 import net.bobofraggins.mobfarmingsupplies.neoforge.picnicbasket.PicnicBasketClientEvents;
 import net.bobofraggins.mobfarmingsupplies.neoforge.register.NeoForgeOnlyRegistration;
 import net.bobofraggins.mobfarmingsupplies.neoforge.tank.TankClientEvents;
 import net.bobofraggins.mobfarmingsupplies.neoforge.toilet.ToiletClientEvents;
+import net.bobofraggins.mobfarmingsupplies.neoforge.mobhead.MobHeadClientEvents;
 import net.bobofraggins.mobfarmingsupplies.neoforge.xpjuice.XpJuiceClientEvents;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
@@ -41,8 +42,6 @@ public class MobFarmingSupplies {
 
         // EnderTeleport suppression — NeoForge-specific (no Architectury equivalent)
         NeoForge.EVENT_BUS.register(NeoForgeEnderInhibitorEvents.class);
-        // Beheading drops — stays NeoForge until HarvesterFakePlayer is abstracted (Phase 5)
-        NeoForge.EVENT_BUS.register(new BeheadingDropHandler());
         // Magic Hat zombie easter egg — NeoForge has FinalizeSpawnEvent; Fabric uses a mixin.
         NeoForge.EVENT_BUS.register(new MagicHatSpawnEvents());
         // Present enderman easter egg — same split as the Magic Hat.
@@ -65,6 +64,7 @@ public class MobFarmingSupplies {
             modEventBus.register(EnderInhibitorClientEvents.class);
             modEventBus.register(FilterScribingTerminalClientEvents.class);
             modEventBus.register(LogisticSorterClientEvents.class);
+            modEventBus.register(OmniHopperClientEvents.class);
             modEventBus.register(TankClientEvents.class);
             modEventBus.register(XpJuiceClientEvents.class);
             modEventBus.register(AbsorptionHopperClientEvents.class);
@@ -79,6 +79,7 @@ public class MobFarmingSupplies {
                 MagicHatCurioSetup.onClientSetup(modEventBus);
             }
             modEventBus.register(ToiletClientEvents.class);
+            modEventBus.register(MobHeadClientEvents.class);
         }
 
         MobFarmingSuppliesCommon.init();

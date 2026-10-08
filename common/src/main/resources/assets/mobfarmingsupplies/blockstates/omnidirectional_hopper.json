@@ -1,0 +1,105 @@
+{
+  "multipart": [
+    {
+      "apply": {
+        "model": "mobfarmingsupplies:block/omnidirectional_hopper_body"
+      }
+    },
+    {
+      "when": {
+        "north": "input"
+      },
+      "apply": {
+        "model": "mobfarmingsupplies:block/omnidirectional_hopper_north_input"
+      }
+    },
+    {
+      "when": {
+        "north": "output"
+      },
+      "apply": {
+        "model": "mobfarmingsupplies:block/omnidirectional_hopper_north_output"
+      }
+    },
+    {
+      "when": {
+        "south": "input"
+      },
+      "apply": {
+        "model": "mobfarmingsupplies:block/omnidirectional_hopper_south_input"
+      }
+    },
+    {
+      "when": {
+        "south": "output"
+      },
+      "apply": {
+        "model": "mobfarmingsupplies:block/omnidirectional_hopper_south_output"
+      }
+    },
+    {
+      "when": {
+        "east": "input"
+      },
+      "apply": {
+        "model": "mobfarmingsupplies:block/omnidirectional_hopper_east_input"
+      }
+    },
+    {
+      "when": {
+        "east": "output"
+      },
+      "apply": {
+        "model": "mobfarmingsupplies:block/omnidirectional_hopper_east_output"
+      }
+    },
+    {
+      "when": {
+        "west": "input"
+      },
+      "apply": {
+        "model": "mobfarmingsupplies:block/omnidirectional_hopper_west_input"
+      }
+    },
+    {
+      "when": {
+        "west": "output"
+      },
+      "apply": {
+        "model": "mobfarmingsupplies:block/omnidirectional_hopper_west_output"
+      }
+    },
+    {
+      "when": {
+        "up": "input"
+      },
+      "apply": {
+        "model": "mobfarmingsupplies:block/omnidirectional_hopper_up_input"
+      }
+    },
+    {
+      "when": {
+        "up": "output"
+      },
+      "apply": {
+        "model": "mobfarmingsupplies:block/omnidirectional_hopper_up_output"
+      }
+    },
+    {
+      "when": {
+        "down": "input"
+      },
+      "apply": {
+        "model": "mobfarmingsupplies:block/omnidirectional_hopper_down_input"
+      }
+    },
+    {
+      "when": {
+        "down": "output"
+      },
+      "apply": {
+        "model": "mobfarmingsupplies:block/omnidirectional_hopper_down_output"
+      }
+    }
+  ]
+}
