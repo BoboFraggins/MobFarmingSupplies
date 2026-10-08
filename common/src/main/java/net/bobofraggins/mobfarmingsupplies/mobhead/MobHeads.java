@@ -28,26 +28,25 @@ public final class MobHeads {
             EntityType.CREEPER, Items.CREEPER_HEAD,
             EntityType.WITHER_SKELETON, Items.WITHER_SKELETON_SKULL,
             EntityType.PIGLIN, Items.PIGLIN_HEAD,
+            EntityType.GIANT, Items.ZOMBIE_HEAD,
             EntityType.ENDER_DRAGON, Items.DRAGON_HEAD);
 
     /**
-     * Mobs given a Mob Head by this mod: those whose model has a {@code head} part that looks right
-     * drawn on its own with the mob's base texture. Ids, so a mob missing from a version is skipped.
+     * Mobs given a Mob Head by this mod: those whose model has a head part that looks right drawn
+     * on its own (with a few extra layers for some; see {@code MobHeadModels}). Ids, so a mob missing
+     * from a version is skipped. Kept in alphabetical order, which is the order they're listed in
+     * the creative tab and JEI.
      */
     private static final List<String> MOD_HEAD_IDS = List.of(
-            // Farm and wild animals
-            "pig", "cow", "chicken", "goat", "llama", "trader_llama", "horse", "donkey", "mule",
-            "skeleton_horse", "zombie_horse", "camel", "panda", "polar_bear", "wolf", "fox", "cat",
-            "ocelot", "rabbit", "parrot", "bat", "armadillo", "axolotl", "frog", "turtle", "dolphin",
-            "sniffer",
-            // Hostile and neutral mobs
-            "spider", "cave_spider", "blaze", "breeze", "warden", "hoglin", "zoglin", "ravager",
-            "shulker", "creaking", "phantom", "guardian", "elder_guardian", "husk", "stray", "bogged",
-            "zombified_piglin", "piglin_brute", "vex",
-            // Illagers and villager-likes
-            "pillager", "vindicator", "evoker", "illusioner", "witch", "wandering_trader",
-            // Golems and helpers
-            "iron_golem", "copper_golem", "allay");
+            "allay", "armadillo", "axolotl", "bat", "blaze", "bogged", "breeze", "camel",
+            "camel_husk", "cat", "cave_spider", "chicken", "copper_golem", "cow", "creaking",
+            "dolphin", "donkey", "drowned", "elder_guardian", "enderman", "evoker", "fox", "frog",
+            "ghast", "goat", "guardian", "happy_ghast", "hoglin", "horse", "husk", "illusioner",
+            "iron_golem", "llama", "magma_cube", "mooshroom", "mule", "ocelot", "panda", "parched",
+            "parrot", "phantom", "pig", "piglin_brute", "pillager", "polar_bear", "rabbit",
+            "ravager", "sheep", "shulker", "skeleton_horse", "slime", "sniffer", "spider", "stray",
+            "trader_llama", "turtle", "vex", "villager", "vindicator", "wandering_trader", "warden",
+            "witch", "wolf", "zoglin", "zombie_horse", "zombie_villager", "zombified_piglin");
 
     /** The entity types in {@link #MOD_HEAD_IDS} that exist in this version, in that order. */
     public static final List<EntityType<?>> MOD_HEADS = MOD_HEAD_IDS.stream()

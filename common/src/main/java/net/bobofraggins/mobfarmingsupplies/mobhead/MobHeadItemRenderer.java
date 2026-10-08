@@ -1,6 +1,7 @@
 package net.bobofraggins.mobfarmingsupplies.mobhead;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
 import com.mojang.serialization.MapCodec;
 import java.util.function.Consumer;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
@@ -31,8 +32,9 @@ public class MobHeadItemRenderer implements SpecialModelRenderer<EntityType<?>> 
                        int packedLight, int packedOverlay, boolean hasFoil, int tint) {
         if (type == null) return;
         poseStack.pushPose();
+        // The same transform vanilla's head items use (translate, then 180 degrees about x).
         poseStack.translate(0.5f, 0.0f, 0.5f);
-        poseStack.scale(-1.0f, -1.0f, 1.0f);
+        poseStack.mulPose(Axis.XP.rotationDegrees(180f));
         MobHeadModels.submit(type, poseStack, collector, packedLight);
         poseStack.popPose();
     }

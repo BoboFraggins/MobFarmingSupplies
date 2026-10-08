@@ -46,7 +46,7 @@ public class MobHeadBlock extends BaseEntityBlock {
 
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext ctx) {
-        return defaultBlockState().setValue(ROTATION, RotationSegment.convertToSegment(ctx.getRotation() + 180));
+        return defaultBlockState().setValue(ROTATION, RotationSegment.convertToSegment(ctx.getRotation())); // as vanilla SkullBlock: faces the placer
     }
 
     @Override

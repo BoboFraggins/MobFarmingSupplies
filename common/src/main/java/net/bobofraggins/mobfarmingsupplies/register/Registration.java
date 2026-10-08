@@ -1029,8 +1029,6 @@ public final class Registration {
                         output.accept(HARVESTER_UPGRADE_SHARPNESS.get());
                         output.accept(HARVESTER_UPGRADE_LOOTING.get());
                         output.accept(HARVESTER_UPGRADE_BEHEADING.get());
-                        // A Mob Head for every mob without a vanilla head (the ones Beheading drops).
-                        for (EntityType<?> type : MobHeads.MOD_HEADS) output.accept(MobHeads.modHead(type));
                         output.accept(DNA_COLLECTOR.get());
                         output.accept(DNA_SAMPLE.get());
                         output.accept(DNA_SAMPLE_COMMON_PASSIVE.get());
@@ -1070,6 +1068,8 @@ public final class Registration {
                         output.accept(DRAMATIC_BUTTON_ITEM.get());
                         output.accept(RIMSHOT_BUTTON_ITEM.get());
                         output.accept(WILHELM_BUTTON_ITEM.get());
+                        // A Mob Head for every mob without a vanilla head (the ones Beheading drops).
+                        for (EntityType<?> type : MobHeads.MOD_HEADS) output.accept(MobHeads.modHead(type));
                     })
                     .build());
 
