@@ -1,0 +1,31 @@
+{
+  "parent": "mobfarmingsupplies:mob_farming/heads_will_roll",
+  "criteria": {
+    "heads": {
+      "trigger": "mobfarmingsupplies:heads_collected",
+      "conditions": {
+        "min": 25
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "mobfarmingsupplies:mob_head",
+      "components": {
+        "mobfarmingsupplies:mob_head_type": "minecraft:warden"
+      }
+    },
+    "title": {
+      "translate": "advancements.mobfarmingsupplies.head_of_the_class.title"
+    },
+    "description": {
+      "translate": "advancements.mobfarmingsupplies.head_of_the_class.description"
+    },
+    "frame": "challenge"
+  },
+  "requirements": [
+    [
+      "heads"
+    ]
+  ]
+}

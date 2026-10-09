@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.bridge;
 
+import net.bobofraggins.mobfarmingsupplies.advancement.MFSTriggers;
 import net.bobofraggins.mobfarmingsupplies.shared.sides.SideLayout;
 import net.bobofraggins.mobfarmingsupplies.shared.sides.SideOriented;
 import net.minecraft.core.FrontAndTop;
@@ -216,6 +217,14 @@ public class EinsteinRosenBridgeBlockEntity extends BlockEntity implements SideO
 
     @Override
     public void endRouting() { BridgeNetworks.endRouting(channel); }
+
+    /** "Spooky Action at a Distance": a delivery into another dimension credits players near either end. */
+    @Override
+    public void delivered(HopperOutput out) {
+        if (level == null || out.level() == level) return;
+        MFSTriggers.triggerNear(MFSTriggers.BRIDGE_CROSSED_DIMENSIONS, level, worldPosition, "");
+        MFSTriggers.triggerNear(MFSTriggers.BRIDGE_CROSSED_DIMENSIONS, out.level(), out.pos(), "");
+    }
 
     // ── MenuProvider ─────────────────────────────────────────────────────────────
 

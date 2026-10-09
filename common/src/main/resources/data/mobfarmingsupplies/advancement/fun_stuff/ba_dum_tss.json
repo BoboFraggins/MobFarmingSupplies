@@ -1,0 +1,27 @@
+{
+  "parent": "mobfarmingsupplies:root",
+  "criteria": {
+    "pressed": {
+      "trigger": "mobfarmingsupplies:button_pressed",
+      "conditions": {
+        "variant": "mobfarmingsupplies:rimshot_button"
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "mobfarmingsupplies:rimshot_button"
+    },
+    "title": {
+      "translate": "advancements.mobfarmingsupplies.ba_dum_tss.title"
+    },
+    "description": {
+      "translate": "advancements.mobfarmingsupplies.ba_dum_tss.description"
+    }
+  },
+  "requirements": [
+    [
+      "pressed"
+    ]
+  ]
+}

@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.mobhead;
 
+import net.bobofraggins.mobfarmingsupplies.advancement.MFSTriggers;
 import dev.architectury.event.EventResult;
 import dev.architectury.event.events.common.EntityEvent;
 import net.bobofraggins.mobfarmingsupplies.mobharvester.HarvesterSword;
@@ -36,7 +37,10 @@ public final class BeheadingDrops {
         if (!(entity instanceof Player) && !level.getGameRules().get(GameRules.MOB_DROPS)) return EventResult.pass();
 
         ItemStack head = MobHeads.headFor(entity);
-        if (!head.isEmpty()) entity.spawnAtLocation(level, head);
+        if (!head.isEmpty()) {
+            entity.spawnAtLocation(level, head);
+            MFSTriggers.triggerNear(MFSTriggers.MOB_BEHEADED, level, entity.blockPosition(), "");
+        }
         return EventResult.pass();
     }
 }

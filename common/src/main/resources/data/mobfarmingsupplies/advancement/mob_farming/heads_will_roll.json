@@ -1,0 +1,24 @@
+{
+  "parent": "mobfarmingsupplies:mob_farming/send_in_the_clones",
+  "criteria": {
+    "beheaded": {
+      "trigger": "mobfarmingsupplies:mob_beheaded"
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "minecraft:creeper_head"
+    },
+    "title": {
+      "translate": "advancements.mobfarmingsupplies.heads_will_roll.title"
+    },
+    "description": {
+      "translate": "advancements.mobfarmingsupplies.heads_will_roll.description"
+    }
+  },
+  "requirements": [
+    [
+      "beheaded"
+    ]
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "parent": "mobfarmingsupplies:logistics/which_way_is_up",
+  "criteria": {
+    "crossed": {
+      "trigger": "mobfarmingsupplies:bridge_crossed_dimensions"
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "mobfarmingsupplies:einstein_rosen_bridge"
+    },
+    "title": {
+      "translate": "advancements.mobfarmingsupplies.spooky_action_at_a_distance.title"
+    },
+    "description": {
+      "translate": "advancements.mobfarmingsupplies.spooky_action_at_a_distance.description"
+    },
+    "frame": "challenge"
+  },
+  "requirements": [
+    [
+      "crossed"
+    ]
+  ]
+}

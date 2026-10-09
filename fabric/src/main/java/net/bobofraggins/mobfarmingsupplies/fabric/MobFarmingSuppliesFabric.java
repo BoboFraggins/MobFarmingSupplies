@@ -102,7 +102,7 @@ public class MobFarmingSuppliesFabric implements ModInitializer {
 
         // Toilet: voids any item pushed in and supplies unlimited water, on every side.
         ItemStorage.SIDED.registerForBlockEntities(
-                (be, direction) -> ToiletItemStorage.INSTANCE,
+                (be, direction) -> new ToiletItemStorage(be.getLevel(), be.getBlockPos()),
                 Registration.TOILET_BE_TYPE.get());
         FluidStorage.SIDED.registerForBlockEntities(
                 (be, direction) -> ToiletWaterStorage.INSTANCE,

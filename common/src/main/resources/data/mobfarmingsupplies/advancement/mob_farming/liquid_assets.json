@@ -1,0 +1,31 @@
+{
+  "parent": "mobfarmingsupplies:mob_farming/waste_not_want_not",
+  "criteria": {
+    "bucket": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:xp_juice_bucket"
+          }
+        ]
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "mobfarmingsupplies:xp_juice_bucket"
+    },
+    "title": {
+      "translate": "advancements.mobfarmingsupplies.liquid_assets.title"
+    },
+    "description": {
+      "translate": "advancements.mobfarmingsupplies.liquid_assets.description"
+    }
+  },
+  "requirements": [
+    [
+      "bucket"
+    ]
+  ]
+}

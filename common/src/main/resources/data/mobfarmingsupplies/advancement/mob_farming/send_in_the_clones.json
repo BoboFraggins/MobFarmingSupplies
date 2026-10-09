@@ -1,0 +1,25 @@
+{
+  "parent": "mobfarmingsupplies:mob_farming/liquid_assets",
+  "criteria": {
+    "cloned": {
+      "trigger": "mobfarmingsupplies:clone_spawned"
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "mobfarmingsupplies:clone_o_matic"
+    },
+    "title": {
+      "translate": "advancements.mobfarmingsupplies.send_in_the_clones.title"
+    },
+    "description": {
+      "translate": "advancements.mobfarmingsupplies.send_in_the_clones.description"
+    },
+    "frame": "goal"
+  },
+  "requirements": [
+    [
+      "cloned"
+    ]
+  ]
+}

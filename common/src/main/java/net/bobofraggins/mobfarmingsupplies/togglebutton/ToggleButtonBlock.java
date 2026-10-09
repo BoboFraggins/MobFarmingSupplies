@@ -1,5 +1,8 @@
 package net.bobofraggins.mobfarmingsupplies.togglebutton;
 
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.bobofraggins.mobfarmingsupplies.advancement.MFSTriggers;
 import com.mojang.serialization.MapCodec;
 import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.core.BlockPos;
@@ -153,6 +156,9 @@ public class ToggleButtonBlock extends FaceAttachedHorizontalDirectionalBlock {
 
         if (powered) {
             level.playSound(null, pos, activationSound.get(), SoundSource.BLOCKS, 1.0f, 1.0f);
+            if (player instanceof ServerPlayer serverPlayer) {
+                MFSTriggers.BUTTON_PRESSED.get().trigger(serverPlayer, BuiltInRegistries.BLOCK.getKey(this).toString());
+            }
         } else {
             level.playSound(null, pos, SoundEvents.LEVER_CLICK, SoundSource.BLOCKS, 0.3f, 0.5f);
         }

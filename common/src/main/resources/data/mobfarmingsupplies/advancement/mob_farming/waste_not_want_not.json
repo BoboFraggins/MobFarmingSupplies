@@ -1,0 +1,36 @@
+{
+  "parent": "mobfarmingsupplies:mob_farming/some_assembly_required",
+  "criteria": {
+    "store": {
+      "trigger": "mobfarmingsupplies:syringe_used",
+      "conditions": {
+        "variant": "store"
+      }
+    },
+    "withdraw": {
+      "trigger": "mobfarmingsupplies:syringe_used",
+      "conditions": {
+        "variant": "withdraw"
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "mobfarmingsupplies:experience_syringe"
+    },
+    "title": {
+      "translate": "advancements.mobfarmingsupplies.waste_not_want_not.title"
+    },
+    "description": {
+      "translate": "advancements.mobfarmingsupplies.waste_not_want_not.description"
+    }
+  },
+  "requirements": [
+    [
+      "store"
+    ],
+    [
+      "withdraw"
+    ]
+  ]
+}

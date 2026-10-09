@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.omnihopper.neoforge;
 
+import net.bobofraggins.mobfarmingsupplies.neoforge.transfer.CommitCallbacks;
 import java.util.function.Predicate;
 import net.bobofraggins.mobfarmingsupplies.MFSConfig;
 import net.bobofraggins.mobfarmingsupplies.logisticsorter.EvenSplit;
@@ -76,7 +77,10 @@ public final class OmniHopperPlatformImpl {
                     int moved = stacking
                             ? ResourceHandlerUtil.moveStacking(source, dest, filter, (int) max, tx)
                             : ResourceHandlerUtil.move(source, dest, filter, (int) max, tx);
-                    if (moved > 0) tx.commit();
+                    if (moved > 0) {
+                        tx.commit();
+                        be.delivered(out);
+                    }
                     return moved;
                 }
             });
@@ -111,7 +115,10 @@ public final class OmniHopperPlatformImpl {
                 if (dest == null) return 0;
                 try (Transaction tx = Transaction.openRoot()) {
                     int moved = EnergyHandlerUtil.move(source, dest, (int) max, tx);
-                    if (moved > 0) tx.commit();
+                    if (moved > 0) {
+                        tx.commit();
+                        be.delivered(out);
+                    }
                     return moved;
                 }
             });
@@ -132,7 +139,9 @@ public final class OmniHopperPlatformImpl {
         try {
             return (int) EvenSplit.distribute(be.outputTargets(), amount, (out, max) -> {
                 ResourceHandler<T> dest = handlerAt(out, cap);
-                return dest == null ? 0 : dest.insert(resource, (int) max, tx);
+                int inserted = dest == null ? 0 : dest.insert(resource, (int) max, tx);
+                if (inserted > 0) CommitCallbacks.onCommit(tx, () -> be.delivered(out));
+                return inserted;
             });
         } finally {
             be.endRouting();
@@ -147,7 +156,9 @@ public final class OmniHopperPlatformImpl {
         try {
             return (int) EvenSplit.distribute(be.outputTargets(), amount, (out, max) -> {
                 EnergyHandler dest = handlerAt(out, Capabilities.Energy.BLOCK);
-                return dest == null ? 0 : dest.insert((int) max, tx);
+                int inserted = dest == null ? 0 : dest.insert((int) max, tx);
+                if (inserted > 0) CommitCallbacks.onCommit(tx, () -> be.delivered(out));
+                return inserted;
             });
         } finally {
             be.endRouting();

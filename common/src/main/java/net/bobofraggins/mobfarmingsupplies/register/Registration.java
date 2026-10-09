@@ -1094,5 +1094,6 @@ public final class Registration {
         RECIPE_TYPES.register();
         RECIPE_SERIALIZERS.register();
         LOOT_FUNCTIONS.register();
+        net.bobofraggins.mobfarmingsupplies.advancement.MFSTriggers.TRIGGERS.register();
     }
 }

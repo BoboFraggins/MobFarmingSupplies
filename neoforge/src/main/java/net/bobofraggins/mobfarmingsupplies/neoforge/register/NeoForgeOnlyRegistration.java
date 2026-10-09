@@ -178,7 +178,7 @@ public final class NeoForgeOnlyRegistration {
         event.registerBlockEntity(
                 Capabilities.Item.BLOCK,
                 Registration.TOILET_BE_TYPE.get(),
-                (be, side) -> ToiletItemHandler.INSTANCE);
+                (be, side) -> new ToiletItemHandler(be.getLevel(), be.getBlockPos()));
 
         event.registerBlockEntity(
                 Capabilities.Fluid.BLOCK,

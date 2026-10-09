@@ -1,0 +1,24 @@
+{
+  "parent": "mobfarmingsupplies:fun_stuff/ba_dum_tss",
+  "criteria": {
+    "hat_trick": {
+      "trigger": "mobfarmingsupplies:hat_trick"
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "mobfarmingsupplies:magic_hat"
+    },
+    "title": {
+      "translate": "advancements.mobfarmingsupplies.hat_trick.title"
+    },
+    "description": {
+      "translate": "advancements.mobfarmingsupplies.hat_trick.description"
+    }
+  },
+  "requirements": [
+    [
+      "hat_trick"
+    ]
+  ]
+}
