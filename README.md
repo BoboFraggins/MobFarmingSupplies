@@ -6,9 +6,28 @@ a handful of things that are simply fun to have.
 
 It runs on NeoForge and Fabric, built with [Architectury](https://docs.architectury.dev/).
 
+## Logistics
+
+Four specialized hoppers move resources, and all four are configured with the same placement-aware
+side grid.
+
+The Absorption Hopper collects from the world and pushes to whichever sides you choose. The
+Logistic Sorter reads Item Filters and routes each item to a matching side or a non-matching side,
+holding nothing itself, so it can't jam or lose items. The Omnidirectional Hopper pulls and pushes
+on any side and moves fluids as well as items, along with energy and Mekanism chemicals on
+NeoForge, splitting evenly across its outputs. The Einstein-Rosen Bridge is an Omnidirectional
+Hopper that works at a distance: bridges crafted as a pair share a channel and move resources
+between each other across any distance, including between dimensions, as long as both ends
+are chunk-loaded.
+
+Filtering is done with Item Filters, scribed at the Filter Scribing Terminal from Blank Filters.
+A filter can match an exact item, a similar item, everything from a given mod, a common tag such
+as ores or ingots, or a property such as being enchanted or damaged. The Sorter, Omnidirectional
+Hopper and Bridge each combine their filters with AND or OR.
+
 ## Mob farming
 
-The Mob Harvester is the centre of most farms. Powered by redstone, it attacks every mob in a
+The Mob Harvester is the center of most farms. Powered by redstone, it attacks every mob in a
 3x3x3 area, and the mobs drop their loot and experience as if a player had killed
 them. Its nine upgrade slots take Sharpness, Looting and Beheading Upgrades. Beheading gives a
 chance for the mob's head to drop, and almost every mob in the game has one, not just the handful
@@ -44,24 +63,6 @@ The Tank holds any fluid and keeps its contents when broken. It upgrades in plac
 64 buckets to Gold, Diamond and Emerald tiers, the last holding 4,096 buckets by default, and the
 upgrade recipe keeps whatever is inside. Both the starting size and the growth per tier are
 configurable.
-
-## Logistics
-
-Four blocks move resources, and all four are configured with the same placement-aware side grid.
-
-The Absorption Hopper collects from the world and pushes to whichever sides you choose. The
-Logistic Sorter reads Item Filters and routes each item to a matching side or a non-matching side,
-holding nothing itself, so it can't jam or lose items. The Omnidirectional Hopper pulls and pushes
-on any side and moves fluids as well as items, along with energy and Mekanism chemicals on
-NeoForge, splitting evenly across its outputs. The Einstein-Rosen Bridge is an Omnidirectional
-Hopper that works at a distance: bridges crafted as a pair share a channel and move resources
-between each other across any distance, including between dimensions, as long as both ends
-are chunk-loaded.
-
-Filtering is done with Item Filters, scribed at the Filter Scribing Terminal from Blank Filters.
-A filter can match an exact item, a similar item, everything from a given mod, a common tag such
-as ores or ingots, or a property such as being enchanted or damaged. The Sorter, Omnidirectional Hopper and
-Bridge each combine their filters with AND or OR.
 
 ## Everything else
 
