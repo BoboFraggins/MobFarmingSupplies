@@ -44,7 +44,7 @@ import org.jetbrains.annotations.Nullable;
  * {@value MobHarvesterBlockEntity#KILL_HEIGHT}×
  * {@value MobHarvesterBlockEntity#KILL_WIDTH} area above the block every
  * {@value MobHarvesterBlockEntity#ATTACK_INTERVAL_TICKS} ticks.
- * Attack damage scales with upgrades placed in the nine upgrade slots.
+ * Attack damage scales with upgrades placed in the three upgrade slots.
  *
  * <p>Mobs drop items and XP orbs naturally; pair with an {@link
  * net.bobofraggins.mobfarmingsupplies.absorptionhopper.AbsorptionHopperBlock}

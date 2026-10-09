@@ -29,16 +29,17 @@ log lists each file it wrote. Existing images with the same name are replaced.
 
 ## Rendering particular items
 
-To render only some items, list their ids in `MFS_RENDER_ICONS_ITEMS`, separated by commas. Any
-item works, including other mods' items and plain items such as `mobfarmingsupplies:smore`:
+To render only some items, list them in `MFS_RENDER_ICONS_ITEMS`, separated by commas. Items are
+written as for `/give`, so components can be included, and any item works, including other mods'
+items. Each file is named after the item unless the entry starts with `name=`:
 
 ```sh
-MFS_RENDER_ICONS="$PWD/docs/imgs" MFS_RENDER_ICONS_ITEMS="mobfarmingsupplies:tank,mobfarmingsupplies:smore" \
+MFS_RENDER_ICONS="$PWD/docs/imgs" MFS_RENDER_ICONS_ITEMS="mobfarmingsupplies:smore,cow_head=mobfarmingsupplies:mob_head[mobfarmingsupplies:mob_head_type=\"minecraft:cow\"]" \
   ./gradlew :neoforge:runClient --args="--quickPlaySingleplayer icons"
 ```
 
-Mob Heads are left out of the default set and can't be listed this way, because a Mob Head needs a
-mob type that an item id alone doesn't carry.
+Mob Heads are left out of the default set because each needs its mob type, given as above. The
+grid of heads in the guide book (`textures/gui/book/mob_heads.png`) was made this way.
 
 ## Changing the size
 

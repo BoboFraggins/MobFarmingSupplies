@@ -1,5 +1,8 @@
 package net.bobofraggins.mobfarmingsupplies.client.devtools;
 
+import net.minecraft.commands.arguments.item.ItemParser;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.StringReader;
 import com.mojang.blaze3d.buffers.GpuBuffer;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.systems.CommandEncoder;
@@ -41,8 +44,9 @@ import org.slf4j.LoggerFactory;
  * <p>Only active in a development environment with the {@code MFS_RENDER_ICONS} environment
  * variable set to an output folder. Once a world is open it renders each block, one per tick,
  * then closes the game. (Items can't be created before a world loads: their components aren't
- * bound until then.) {@code MFS_RENDER_ICONS_ITEMS} (comma-separated item ids) renders
- * just those items instead of every block item in the mod.
+ * bound until then.) {@code MFS_RENDER_ICONS_ITEMS} renders just the listed items instead of
+ * every block item in the mod: a comma-separated list of items written as for {@code /give},
+ * components included, each optionally prefixed with {@code name=} to choose its file name.
  *
  * <p>Each item is drawn into its own {@link GuiItemAtlas} with a single large slot. That is the
  * class the GUI uses for every item icon, so the angle, lighting and orthographic projection
@@ -61,7 +65,10 @@ public final class BlockIconRenderer {
     private static final int RENDER_SIZE = 1024;
 
     private static Path outputDir;
-    private static Deque<ItemStack> queue;
+    /** An item to render and the file name (without extension) to save it as. */
+    private record Icon(String name, ItemStack stack) {}
+
+    private static Deque<Icon> queue;
     private static final AtomicInteger pending = new AtomicInteger();
     private static int written;
     private static int worldTicks;
@@ -81,14 +88,14 @@ public final class BlockIconRenderer {
         if (mc.level == null || mc.player == null) return;
         if (queue == null) {
             if (++worldTicks < 40) return; // let the world settle first
-            queue = new ArrayDeque<>(itemsToRender());
+            queue = new ArrayDeque<>(itemsToRender(mc));
         }
-        ItemStack next = queue.poll();
+        Icon next = queue.poll();
         if (next != null) {
             try {
                 render(mc, next);
             } catch (Exception e) {
-                LOGGER.error("Couldn't render {}", BuiltInRegistries.ITEM.getKey(next.getItem()), e);
+                LOGGER.error("Couldn't render {}", next.name(), e);
             }
         } else if (pending.get() == 0 && !finished) {
             finished = true;
@@ -97,30 +104,60 @@ public final class BlockIconRenderer {
         }
     }
 
-    private static List<ItemStack> itemsToRender() {
-        List<ItemStack> stacks = new ArrayList<>();
+    private static List<Icon> itemsToRender(Minecraft mc) {
+        List<Icon> icons = new ArrayList<>();
         String only = System.getenv("MFS_RENDER_ICONS_ITEMS");
         if (only != null && !only.isBlank()) {
-            for (String id : only.split(",")) {
-                Identifier key = Identifier.tryParse(id.trim());
-                Item item = key == null ? null : BuiltInRegistries.ITEM.getValue(key);
-                if (item != null && item != net.minecraft.world.item.Items.AIR) stacks.add(new ItemStack(item));
-                else LOGGER.warn("Unknown item {}", id);
+            ItemParser parser = new ItemParser(mc.level.registryAccess());
+            for (String entry : splitTopLevel(only)) {
+                String name = null, spec = entry;
+                int eq = entry.indexOf('='), bracket = entry.indexOf('[');
+                if (eq > 0 && (bracket < 0 || eq < bracket) && entry.substring(0, eq).matches("[a-z0-9_]+")) {
+                    name = entry.substring(0, eq);
+                    spec = entry.substring(eq + 1);
+                }
+                try {
+                    ItemStack stack = parser.parse(new StringReader(spec)).createItemStack(1);
+                    icons.add(new Icon(name != null ? name : BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath(), stack));
+                } catch (CommandSyntaxException e) {
+                    LOGGER.warn("Couldn't read item {}: {}", spec, e.getMessage());
+                }
             }
-            return stacks;
+            return icons;
         }
         for (Item item : BuiltInRegistries.ITEM) {
             Identifier key = BuiltInRegistries.ITEM.getKey(item);
-            // Mob Heads need a world and a mob type to draw anything; render specific ones by id instead.
+            // Mob Heads need a mob type to draw anything; list specific ones with their component instead.
             if (key.getNamespace().equals(MobFarmingSuppliesCommon.MODID) && item instanceof BlockItem
                     && !key.getPath().equals("mob_head")) {
-                stacks.add(new ItemStack(item));
+                icons.add(new Icon(key.getPath(), new ItemStack(item)));
             }
         }
-        return stacks;
+        return icons;
     }
 
-    private static void render(Minecraft mc, ItemStack stack) throws ReflectiveOperationException {
+    /** Splits on commas that aren't inside component brackets or quotes. */
+    private static List<String> splitTopLevel(String list) {
+        List<String> parts = new ArrayList<>();
+        int depth = 0, start = 0;
+        boolean quoted = false;
+        for (int i = 0; i < list.length(); i++) {
+            char c = list.charAt(i);
+            if (c == '"' && (i == 0 || list.charAt(i - 1) != '\\')) quoted = !quoted;
+            else if (!quoted && (c == '[' || c == '{')) depth++;
+            else if (!quoted && (c == ']' || c == '}')) depth--;
+            else if (!quoted && depth == 0 && c == ',') {
+                parts.add(list.substring(start, i).trim());
+                start = i + 1;
+            }
+        }
+        parts.add(list.substring(start).trim());
+        parts.removeIf(String::isEmpty);
+        return parts;
+    }
+
+    private static void render(Minecraft mc, Icon icon) throws ReflectiveOperationException {
+        ItemStack stack = icon.stack();
         GuiRenderer gui = (GuiRenderer) field(mc.gameRenderer, "guiRenderer");
         GuiItemAtlas atlas = new GuiItemAtlas(
                 (SubmitNodeCollector) field(gui, "submitNodeCollector"),
@@ -136,7 +173,7 @@ public final class BlockIconRenderer {
         atlas.getOrUpdate(state);
         atlas.endFrame();
 
-        String name = BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath();
+        String name = icon.name();
         GpuTexture texture = (GpuTexture) field(atlas, "texture");
         int pixelSize = texture.getFormat().pixelSize();
         GpuBuffer buffer = RenderSystem.getDevice().createBuffer(

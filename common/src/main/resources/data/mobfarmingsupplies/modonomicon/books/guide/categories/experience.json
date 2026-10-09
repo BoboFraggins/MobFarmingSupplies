@@ -1,0 +1,8 @@
+{
+  "name": "book.mobfarmingsupplies.guide.experience.name",
+  "icon": {
+    "id": "mobfarmingsupplies:tank"
+  },
+  "display_mode": "index",
+  "sort_number": 2
+}

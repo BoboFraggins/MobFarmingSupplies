@@ -1,0 +1,42 @@
+{
+  "type": "modonomicon:content",
+  "id": "mobfarmingsupplies:fun_stuff/smores",
+  "category": "mobfarmingsupplies:fun_stuff",
+  "name": "book.mobfarmingsupplies.guide.fun_stuff.smores.name",
+  "description": "book.mobfarmingsupplies.guide.fun_stuff.smores.description",
+  "icon": {
+    "id": "mobfarmingsupplies:smore"
+  },
+  "x": 0,
+  "y": 0,
+  "sort_number": 3,
+  "pages": [
+    {
+      "id": "p0",
+      "sort_number": 0,
+      "type": "modonomicon:text",
+      "title": "book.mobfarmingsupplies.guide.fun_stuff.smores.p0.title",
+      "text": "book.mobfarmingsupplies.guide.fun_stuff.smores.p0.text"
+    },
+    {
+      "id": "p1",
+      "sort_number": 1,
+      "type": "modonomicon:crafting_recipe",
+      "recipe_id_1": "mobfarmingsupplies:marshmallow",
+      "recipe_id_2": "mobfarmingsupplies:graham_cracker"
+    },
+    {
+      "id": "p2",
+      "sort_number": 2,
+      "type": "modonomicon:crafting_recipe",
+      "recipe_id_1": "mobfarmingsupplies:chocolate_bar",
+      "recipe_id_2": "mobfarmingsupplies:smore"
+    },
+    {
+      "id": "p3",
+      "sort_number": 3,
+      "type": "modonomicon:campfire_cooking_recipe",
+      "recipe_id_1": "mobfarmingsupplies:toasted_marshmallow"
+    }
+  ]
+}

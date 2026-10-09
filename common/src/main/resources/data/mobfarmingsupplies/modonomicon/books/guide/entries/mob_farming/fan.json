@@ -1,0 +1,41 @@
+{
+  "type": "modonomicon:content",
+  "id": "mobfarmingsupplies:mob_farming/fan",
+  "category": "mobfarmingsupplies:mob_farming",
+  "name": "book.mobfarmingsupplies.guide.mob_farming.fan.name",
+  "description": "book.mobfarmingsupplies.guide.mob_farming.fan.description",
+  "icon": {
+    "id": "mobfarmingsupplies:fan"
+  },
+  "x": 0,
+  "y": 0,
+  "sort_number": 3,
+  "pages": [
+    {
+      "id": "p0",
+      "sort_number": 0,
+      "type": "modonomicon:text",
+      "title": "book.mobfarmingsupplies.guide.mob_farming.fan.p0.title",
+      "text": "book.mobfarmingsupplies.guide.mob_farming.fan.p0.text"
+    },
+    {
+      "id": "p1",
+      "sort_number": 1,
+      "type": "modonomicon:crafting_recipe",
+      "recipe_id_1": "mobfarmingsupplies:fan"
+    },
+    {
+      "id": "p2",
+      "sort_number": 2,
+      "type": "modonomicon:crafting_recipe",
+      "recipe_id_1": "mobfarmingsupplies:fan_upgrade_width",
+      "recipe_id_2": "mobfarmingsupplies:fan_upgrade_height"
+    },
+    {
+      "id": "p3",
+      "sort_number": 3,
+      "type": "modonomicon:crafting_recipe",
+      "recipe_id_1": "mobfarmingsupplies:fan_upgrade_distance"
+    }
+  ]
+}

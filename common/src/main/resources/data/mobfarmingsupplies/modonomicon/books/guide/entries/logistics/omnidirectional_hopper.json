@@ -9,30 +9,30 @@
   },
   "x": 0,
   "y": 0,
-  "sort_number": 0,
+  "sort_number": 4,
   "pages": [
     {
-      "type": "modonomicon:spotlight",
-      "id": "intro",
+      "id": "p0",
       "sort_number": 0,
-      "title": "book.mobfarmingsupplies.guide.logistics.omnidirectional_hopper.intro.title",
-      "text": "book.mobfarmingsupplies.guide.logistics.omnidirectional_hopper.intro.text",
+      "type": "modonomicon:spotlight",
       "item": {
         "id": "mobfarmingsupplies:omnidirectional_hopper"
-      }
+      },
+      "title": "book.mobfarmingsupplies.guide.logistics.omnidirectional_hopper.p0.title",
+      "text": "book.mobfarmingsupplies.guide.logistics.omnidirectional_hopper.p0.text"
     },
     {
-      "type": "modonomicon:crafting_recipe",
-      "id": "recipe",
+      "id": "p1",
       "sort_number": 1,
+      "type": "modonomicon:crafting_recipe",
       "recipe_id_1": "mobfarmingsupplies:omnidirectional_hopper"
     },
     {
-      "type": "modonomicon:text",
-      "id": "mekanism",
+      "id": "p2",
       "sort_number": 2,
-      "title": "book.mobfarmingsupplies.guide.logistics.omnidirectional_hopper.mekanism.title",
-      "text": "book.mobfarmingsupplies.guide.logistics.omnidirectional_hopper.mekanism.text",
+      "type": "modonomicon:text",
+      "title": "book.mobfarmingsupplies.guide.logistics.omnidirectional_hopper.p2.title",
+      "text": "book.mobfarmingsupplies.guide.logistics.omnidirectional_hopper.p2.text",
       "condition": {
         "type": "modonomicon:mod_loaded",
         "mod_id": "mekanism"

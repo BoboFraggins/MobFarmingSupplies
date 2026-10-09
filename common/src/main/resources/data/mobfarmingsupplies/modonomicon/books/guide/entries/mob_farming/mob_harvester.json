@@ -12,18 +12,18 @@
   "sort_number": 0,
   "pages": [
     {
-      "type": "modonomicon:text",
-      "id": "intro",
+      "id": "p0",
       "sort_number": 0,
-      "title": "book.mobfarmingsupplies.guide.mob_farming.mob_harvester.intro.title",
-      "text": "book.mobfarmingsupplies.guide.mob_farming.mob_harvester.intro.text"
+      "type": "modonomicon:text",
+      "title": "book.mobfarmingsupplies.guide.mob_farming.mob_harvester.p0.title",
+      "text": "book.mobfarmingsupplies.guide.mob_farming.mob_harvester.p0.text"
     },
     {
-      "type": "modonomicon:crafting_recipe",
-      "id": "recipe",
+      "id": "p1",
       "sort_number": 1,
-      "text": "book.mobfarmingsupplies.guide.mob_farming.mob_harvester.recipe.text",
-      "recipe_id_1": "mobfarmingsupplies:mob_harvester"
+      "type": "modonomicon:crafting_recipe",
+      "recipe_id_1": "mobfarmingsupplies:mob_harvester",
+      "text": "book.mobfarmingsupplies.guide.mob_farming.mob_harvester.p1.text"
     }
   ]
 }

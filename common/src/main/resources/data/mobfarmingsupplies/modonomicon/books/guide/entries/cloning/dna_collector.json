@@ -1,0 +1,28 @@
+{
+  "type": "modonomicon:content",
+  "id": "mobfarmingsupplies:cloning/dna_collector",
+  "category": "mobfarmingsupplies:cloning",
+  "name": "book.mobfarmingsupplies.guide.cloning.dna_collector.name",
+  "description": "book.mobfarmingsupplies.guide.cloning.dna_collector.description",
+  "icon": {
+    "id": "mobfarmingsupplies:dna_collector"
+  },
+  "x": 0,
+  "y": 0,
+  "sort_number": 0,
+  "pages": [
+    {
+      "id": "p0",
+      "sort_number": 0,
+      "type": "modonomicon:text",
+      "title": "book.mobfarmingsupplies.guide.cloning.dna_collector.p0.title",
+      "text": "book.mobfarmingsupplies.guide.cloning.dna_collector.p0.text"
+    },
+    {
+      "id": "p1",
+      "sort_number": 1,
+      "type": "modonomicon:crafting_recipe",
+      "recipe_id_1": "mobfarmingsupplies:dna_collector"
+    }
+  ]
+}

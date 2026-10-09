@@ -29,7 +29,7 @@ Hopper and Bridge each combine their filters with AND or OR.
 
 The Mob Harvester is the center of most farms. Powered by redstone, it attacks every mob in a
 3x3x3 area, and the mobs drop their loot and experience as if a player had killed
-them. Its nine upgrade slots take Sharpness, Looting and Beheading Upgrades. Beheading gives a
+them. Its three upgrade slots take Sharpness, Looting and Beheading Upgrades. Beheading gives a
 chance for the mob's head to drop, and almost every mob in the game has one, not just the handful
 vanilla provides. Players are not exempt.
 
@@ -46,7 +46,7 @@ everything else. The Ender Inhibitor stops Endermen teleporting anywhere near it
 
 ## Cloning
 
-A DNA Collector captures a mob's complete data, including its variant, equipment and name, into a
+A DNA Collector captures a mob's complete data, including its variant and name, into a
 DNA Sample. Feed samples to a powered Clone-O-Matic and it spawns fresh copies of those mobs around
 itself, choosing open space so it never jams. DNA Sample Packs, found in chest loot, hold
 collections of common, aquatic, Nether, rare and baby mobs, with mob lists that can be configured.

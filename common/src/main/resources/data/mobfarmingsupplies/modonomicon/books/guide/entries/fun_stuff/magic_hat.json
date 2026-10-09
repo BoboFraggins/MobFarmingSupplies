@@ -12,35 +12,35 @@
   "sort_number": 0,
   "pages": [
     {
-      "type": "modonomicon:text",
-      "id": "intro",
+      "id": "p0",
       "sort_number": 0,
-      "title": "book.mobfarmingsupplies.guide.fun_stuff.magic_hat.intro.title",
-      "text": "book.mobfarmingsupplies.guide.fun_stuff.magic_hat.intro.text"
+      "type": "modonomicon:text",
+      "title": "book.mobfarmingsupplies.guide.fun_stuff.magic_hat.p0.title",
+      "text": "book.mobfarmingsupplies.guide.fun_stuff.magic_hat.p0.text"
     },
     {
-      "type": "modonomicon:crafting_recipe",
-      "id": "recipe",
+      "id": "p1",
       "sort_number": 1,
+      "type": "modonomicon:crafting_recipe",
       "recipe_id_1": "mobfarmingsupplies:magic_hat"
     },
     {
-      "type": "modonomicon:text",
-      "id": "curios",
+      "id": "p2",
       "sort_number": 2,
-      "title": "book.mobfarmingsupplies.guide.fun_stuff.magic_hat.curios.title",
-      "text": "book.mobfarmingsupplies.guide.fun_stuff.magic_hat.curios.text",
+      "type": "modonomicon:text",
+      "title": "book.mobfarmingsupplies.guide.fun_stuff.magic_hat.p2.title",
+      "text": "book.mobfarmingsupplies.guide.fun_stuff.magic_hat.p2.text",
       "condition": {
         "type": "modonomicon:mod_loaded",
         "mod_id": "curios"
       }
     },
     {
-      "type": "modonomicon:text",
-      "id": "trinkets",
+      "id": "p3",
       "sort_number": 3,
-      "title": "book.mobfarmingsupplies.guide.fun_stuff.magic_hat.trinkets.title",
-      "text": "book.mobfarmingsupplies.guide.fun_stuff.magic_hat.trinkets.text",
+      "type": "modonomicon:text",
+      "title": "book.mobfarmingsupplies.guide.fun_stuff.magic_hat.p3.title",
+      "text": "book.mobfarmingsupplies.guide.fun_stuff.magic_hat.p3.text",
       "condition": {
         "type": "modonomicon:mod_loaded",
         "mod_id": "trinkets_updated"
