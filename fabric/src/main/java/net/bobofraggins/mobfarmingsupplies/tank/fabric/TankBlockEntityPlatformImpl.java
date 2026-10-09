@@ -65,7 +65,7 @@ public final class TankBlockEntityPlatformImpl {
                 }
 
                 // The item's storage counts in droplets, the tank in mB.
-                long space = be.getCapacity() - be.amount;
+                long space = Math.max(0, be.getCapacity() - be.amount);
                 long toDrain = Math.min(FabricFluidUnits.toMb(view.getAmount()), space);
                 if (toDrain <= 0) continue;
 

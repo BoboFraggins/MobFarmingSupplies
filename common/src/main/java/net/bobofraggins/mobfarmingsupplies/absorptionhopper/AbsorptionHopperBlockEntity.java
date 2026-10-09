@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.absorptionhopper;
 
+import net.bobofraggins.mobfarmingsupplies.MFSConfig;
 import net.bobofraggins.mobfarmingsupplies.shared.sides.SideLayout;
 import net.bobofraggins.mobfarmingsupplies.shared.sides.SideOriented;
 import net.minecraft.core.FrontAndTop;
@@ -35,13 +36,10 @@ import java.util.List;
 /**
  * Block entity for the Absorption Hopper.
  *
- * <p>Ticks every 3 server ticks to:
- * <ol>
- *   <li>Vacuum {@link ItemEntity}s and {@link ExperienceOrb}s from a 7×7×7 pickup area (offset by
- *       {@code offsetX/Y/Z}).</li>
- *   <li>Push items (one full stack) and fluid (up to {@value #PUSH_FLUID_MB} mB) to every enabled
- *       adjacent side — delegated to {@link AbsorptionHopperBlockEntityPlatform#outputPhase}.</li>
- * </ol>
+ * <p>Every 3 server ticks it vacuums {@link ItemEntity}s and {@link ExperienceOrb}s from a 7×7×7
+ * pickup area (offset by {@code offsetX/Y/Z}). It pushes to every enabled adjacent side at the
+ * rates shared by all hoppers ({@link MFSConfig}): items every item-transfer interval, XP Juice
+ * every tick (see {@link AbsorptionHopperBlockEntityPlatform#outputPhase}).
  *
  * <p>With {@link #voidExcess} on, items and XP orbs in the pickup area that don't fit are
  * destroyed instead of being left to pile up — a safety valve for when the collection system
@@ -72,7 +70,6 @@ public class AbsorptionHopperBlockEntity extends BlockEntity implements SideOrie
     public static final int TANK_CAPACITY = 16_000;
 
     private static final int    MB_PER_XP     = 20;
-    public static final int     PUSH_FLUID_MB  = 1_000;
     private static final double PICKUP_RADIUS  = 3.5;
     private static final int    OFFSET_MAX     = 8;
 
@@ -124,10 +121,12 @@ public class AbsorptionHopperBlockEntity extends BlockEntity implements SideOrie
 
     private void tick(Level level, BlockPos pos) {
         if (stateDirty) syncBlockState();
-        if (++tickCounter % 3 != 0) return;
+        tickCounter++;
+        boolean itemTick = tickCounter % Math.max(1, MFSConfig.getHopperTransferInterval()) == 0;
+        AbsorptionHopperBlockEntityPlatform.outputPhase(this, level, pos, itemTick);
+        if (tickCounter % 3 != 0) return;
 
         pickupPhase(level, pos);
-        AbsorptionHopperBlockEntityPlatform.outputPhase(this, level, pos);
         if (clientSyncPending) {
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
             clientSyncPending = false;

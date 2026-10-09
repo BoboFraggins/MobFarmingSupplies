@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.logisticsorter.fabric;
 
+import net.bobofraggins.mobfarmingsupplies.MFSConfig;
 import net.bobofraggins.mobfarmingsupplies.logisticsorter.EvenSplit;
 import net.bobofraggins.mobfarmingsupplies.logisticsorter.LogisticSorterBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.logisticsorter.SideMode;
@@ -28,7 +29,7 @@ public final class LogisticSorterPlatformImpl {
                 if (be.getSide(in) != SideMode.INPUT) continue;
                 Storage<ItemVariant> source = storageAt(level, pos, in);
                 if (source == null) continue;
-                long budget = LogisticSorterBlockEntity.PULL_PER_SIDE;
+                long budget = MFSConfig.getHopperItemsPerTransfer();
                 for (boolean matching : new boolean[]{true, false}) {
                     if (budget <= 0) break;
                     // Split what the source can actually give, not the whole budget - otherwise

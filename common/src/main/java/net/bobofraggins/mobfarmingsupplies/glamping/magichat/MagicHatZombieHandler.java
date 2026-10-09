@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.glamping.magichat;
 
+import net.bobofraggins.mobfarmingsupplies.MFSConfig;
 import net.bobofraggins.mobfarmingsupplies.glamping.NaturalSpawnRolls;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.minecraft.core.component.DataComponents;
@@ -42,6 +43,7 @@ public final class MagicHatZombieHandler {
     }
 
     public static void tryEquipMagicHat(Zombie zombie, RandomSource random, float chance) {
+        if (!MFSConfig.getMagicHatZombiesWearHats()) return;
         if (random.nextFloat() >= chance) return;
 
         EntityType<?> mobType = pickMobType(random);

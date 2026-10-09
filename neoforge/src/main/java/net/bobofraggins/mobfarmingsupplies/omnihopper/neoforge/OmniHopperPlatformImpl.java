@@ -35,14 +35,14 @@ public final class OmniHopperPlatformImpl {
             if (itemTick) {
                 Predicate<ItemResource> items = r -> node.allowsItem(r.toStack(1));
                 moveResources(node, level, pos, Capabilities.Item.BLOCK, items,
-                        MFSConfig.getOmniHopperItemsPerTransfer(), true);
+                        MFSConfig.getHopperItemsPerTransfer(), true);
             }
             moveResources(node, level, pos, Capabilities.Fluid.BLOCK, r -> true,
-                    MFSConfig.getOmniHopperFluidPerTick(), false);
-            moveEnergy(node, level, pos, MFSConfig.getOmniHopperEnergyPerTick());
+                    MFSConfig.getHopperFluidPerTick(), false);
+            moveEnergy(node, level, pos, MFSConfig.getHopperEnergyPerTick());
             BlockCapability<ResourceHandler<Resource>, Direction> chemical = OmniHopperChemicals.capability();
             if (chemical != null) {
-                moveResources(node, level, pos, chemical, r -> true, MFSConfig.getOmniHopperChemicalPerTick(), false);
+                moveResources(node, level, pos, chemical, r -> true, MFSConfig.getHopperChemicalPerTick(), false);
             }
         } finally {
             node.endRouting();

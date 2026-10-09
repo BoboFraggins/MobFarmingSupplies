@@ -39,11 +39,11 @@ public final class OmniHopperPlatformImpl {
             BlockPos pos = node.getBlockPos();
             if (itemTick) {
                 Predicate<ItemVariant> items = v -> node.allowsItem(v.toStack());
-                moveResources(node, level, pos, ItemStorage.SIDED, items, MFSConfig.getOmniHopperItemsPerTransfer());
+                moveResources(node, level, pos, ItemStorage.SIDED, items, MFSConfig.getHopperItemsPerTransfer());
             }
             // The mod counts fluid in mB; Fabric's Transfer API counts droplets.
             moveResources(node, level, pos, FluidStorage.SIDED, v -> true,
-                    FabricFluidUnits.toDroplets(MFSConfig.getOmniHopperFluidPerTick()));
+                    FabricFluidUnits.toDroplets(MFSConfig.getHopperFluidPerTick()));
         } finally {
             node.endRouting();
         }

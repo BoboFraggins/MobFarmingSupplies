@@ -65,7 +65,7 @@ public final class FabricTankFluidStorage
                 && (!be.storedFluid.isFluidEqual(incoming) || !be.storedFluid.isComponentEqual(incoming))) {
             return 0;
         }
-        long space = be.getCapacity() - be.amount;
+        long space = Math.max(0, be.getCapacity() - be.amount);
         long toInsert = Math.min(FabricFluidUnits.toMb(maxAmount), space); // the tank counts in mB
         if (toInsert <= 0) return 0;
 

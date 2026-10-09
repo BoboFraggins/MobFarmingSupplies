@@ -70,15 +70,23 @@ public final class MFSConfigImpl {
         return MFSServerConfig.MAGIC_HAT_CHEST_CHANCE.get();
     }
 
-    public static int getOmniHopperItemsPerTransfer() { return MFSServerConfig.OMNI_HOPPER_ITEMS_PER_TRANSFER.get(); }
+    public static int getHopperItemsPerTransfer() { return MFSServerConfig.OMNI_HOPPER_ITEMS_PER_TRANSFER.get(); }
 
-    public static int getOmniHopperTransferInterval() { return MFSServerConfig.OMNI_HOPPER_TRANSFER_INTERVAL.get(); }
+    public static int getHopperTransferInterval() { return MFSServerConfig.OMNI_HOPPER_TRANSFER_INTERVAL.get(); }
 
-    public static int getOmniHopperFluidPerTick() { return MFSServerConfig.OMNI_HOPPER_FLUID_PER_TICK.get(); }
+    public static int getHopperFluidPerTick() { return MFSServerConfig.OMNI_HOPPER_FLUID_PER_TICK.get(); }
 
-    public static int getOmniHopperEnergyPerTick() { return MFSServerConfig.OMNI_HOPPER_ENERGY_PER_TICK.get(); }
+    public static int getHopperEnergyPerTick() { return MFSServerConfig.OMNI_HOPPER_ENERGY_PER_TICK.get(); }
 
-    public static int getOmniHopperChemicalPerTick() { return MFSServerConfig.OMNI_HOPPER_CHEMICAL_PER_TICK.get(); }
+    public static int getHopperChemicalPerTick() { return MFSServerConfig.OMNI_HOPPER_CHEMICAL_PER_TICK.get(); }
+
+    public static int getTankBaseCapacity() { return MFSServerConfig.TANK_BASE_CAPACITY.get(); }
+
+    public static int getTankUpgradeMultiplier() { return MFSServerConfig.TANK_UPGRADE_MULTIPLIER.get(); }
+
+    public static boolean getMagicHatZombiesWearHats() { return MFSServerConfig.MAGIC_HAT_ZOMBIES_WEAR_HATS.get(); }
+
+    public static boolean getPresentEndermenCarryPresents() { return MFSServerConfig.PRESENT_ENDERMEN_CARRY_PRESENTS.get(); }
 
     public static double getSmoreChestChance() {
         return MFSServerConfig.SMORE_CHEST_CHANCE.get();

@@ -70,7 +70,7 @@ public final class FabricTankItemFluidStorage implements Storage<FluidVariant> {
                 && (!c.storedFluid().isFluidEqual(incoming) || !c.storedFluid().isComponentEqual(incoming))) {
             return 0;
         }
-        long space = capacity() - c.amount();
+        long space = Math.max(0, capacity() - c.amount());
         long toFill = Math.min(FabricFluidUnits.toMb(maxAmount), space); // the tank counts in mB
         if (toFill <= 0) return 0;
 

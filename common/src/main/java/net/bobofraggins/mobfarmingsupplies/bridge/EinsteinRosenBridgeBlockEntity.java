@@ -89,7 +89,7 @@ public class EinsteinRosenBridgeBlockEntity extends BlockEntity implements SideO
         be.joinNetwork();
         if (be.stateDirty) be.syncBlockState();
         if (!be.isActive()) return;
-        boolean itemTick = ++be.tickCounter % Math.max(1, MFSConfig.getOmniHopperTransferInterval()) == 0;
+        boolean itemTick = ++be.tickCounter % Math.max(1, MFSConfig.getHopperTransferInterval()) == 0;
         OmniHopperPlatform.transfer(be, itemTick);
     }
 

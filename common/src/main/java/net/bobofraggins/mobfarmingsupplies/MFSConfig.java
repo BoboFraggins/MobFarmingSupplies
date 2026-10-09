@@ -98,13 +98,20 @@ public final class MFSConfig {
     /** Default chance for S'mores (1-3) to appear in village house chests. */
     public static final double DEFAULT_SMORE_CHEST_CHANCE = 0.25;
 
-    /** Omnidirectional Hopper defaults: items per INPUT side per transfer, and ticks between item transfers. */
-    public static final int DEFAULT_OMNI_HOPPER_ITEMS_PER_TRANSFER = 64;
-    public static final int DEFAULT_OMNI_HOPPER_TRANSFER_INTERVAL = 8;
-    /** Omnidirectional Hopper defaults per INPUT side per tick: fluid (mB), energy (FE), chemicals (mB). */
-    public static final int DEFAULT_OMNI_HOPPER_FLUID_PER_TICK = 1000;
-    public static final int DEFAULT_OMNI_HOPPER_ENERGY_PER_TICK = 10000;
-    public static final int DEFAULT_OMNI_HOPPER_CHEMICAL_PER_TICK = 1000;
+    /**
+     * Defaults shared by all four hoppers (Absorption Hopper, Logistic Sorter, Omnidirectional Hopper,
+     * Einstein-Rosen Bridge): items per side per transfer, and ticks between item transfers.
+     */
+    public static final int DEFAULT_HOPPER_ITEMS_PER_TRANSFER = 64;
+    public static final int DEFAULT_HOPPER_TRANSFER_INTERVAL = 8;
+    /** Hopper defaults per side per tick: fluid (mB), energy (FE), chemicals (mB). */
+    public static final int DEFAULT_HOPPER_FLUID_PER_TICK = 1000;
+    public static final int DEFAULT_HOPPER_ENERGY_PER_TICK = 10000;
+    public static final int DEFAULT_HOPPER_CHEMICAL_PER_TICK = 1000;
+
+    /** Tank defaults: the basic tank's size in buckets, and the multiplier per upgrade tier. */
+    public static final int DEFAULT_TANK_BASE_CAPACITY = 64;
+    public static final int DEFAULT_TANK_UPGRADE_MULTIPLIER = 4;
 
     // ── Platform-bridged accessors ────────────────────────────────────────────────
 
@@ -163,27 +170,43 @@ public final class MFSConfig {
     @ExpectPlatform
     public static double getMagicHatChestChance() { throw new AssertionError(); }
 
+    /** The basic Tank's capacity in buckets (default: 64). */
+    @ExpectPlatform
+    public static int getTankBaseCapacity() { throw new AssertionError(); }
+
+    /** How many times larger each Tank upgrade tier is than the one below (default: 4). */
+    @ExpectPlatform
+    public static int getTankUpgradeMultiplier() { throw new AssertionError(); }
+
+    /** Whether zombies sometimes spawn wearing a Magic Hat with a mob inside (default: true). */
+    @ExpectPlatform
+    public static boolean getMagicHatZombiesWearHats() { throw new AssertionError(); }
+
+    /** Whether Endermen sometimes spawn carrying a surprise Present (default: true). */
+    @ExpectPlatform
+    public static boolean getPresentEndermenCarryPresents() { throw new AssertionError(); }
+
     /** Chance (0.0–1.0) for 1-3 S'mores to appear in village house chests (default: 0.25). */
     @ExpectPlatform
     public static double getSmoreChestChance() { throw new AssertionError(); }
 
-    /** Items the Omnidirectional Hopper moves per INPUT side per transfer (default: 64). */
+    /** Items every hopper moves per side per transfer (default: 64). */
     @ExpectPlatform
-    public static int getOmniHopperItemsPerTransfer() { throw new AssertionError(); }
+    public static int getHopperItemsPerTransfer() { throw new AssertionError(); }
 
-    /** Ticks between the Omnidirectional Hopper's item transfers (default: 8). */
+    /** Ticks between every hopper's item transfers (default: 8). */
     @ExpectPlatform
-    public static int getOmniHopperTransferInterval() { throw new AssertionError(); }
+    public static int getHopperTransferInterval() { throw new AssertionError(); }
 
-    /** Fluid (mB) the Omnidirectional Hopper moves per INPUT side per tick (default: 1000). */
+    /** Fluid (mB) every hopper moves per side per tick (default: 1000). */
     @ExpectPlatform
-    public static int getOmniHopperFluidPerTick() { throw new AssertionError(); }
+    public static int getHopperFluidPerTick() { throw new AssertionError(); }
 
-    /** Energy (FE) the Omnidirectional Hopper moves per INPUT side per tick (default: 10000; NeoForge only). */
+    /** Energy (FE) the Omnidirectional Hopper and Bridge move per input side per tick (default: 10000; NeoForge only). */
     @ExpectPlatform
-    public static int getOmniHopperEnergyPerTick() { throw new AssertionError(); }
+    public static int getHopperEnergyPerTick() { throw new AssertionError(); }
 
-    /** Mekanism chemicals (mB) the Omnidirectional Hopper moves per INPUT side per tick (default: 1000; NeoForge only). */
+    /** Mekanism chemicals (mB) the Omnidirectional Hopper and Bridge move per input side per tick (default: 1000; NeoForge only). */
     @ExpectPlatform
-    public static int getOmniHopperChemicalPerTick() { throw new AssertionError(); }
+    public static int getHopperChemicalPerTick() { throw new AssertionError(); }
 }

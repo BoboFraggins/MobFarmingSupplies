@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.absorptionhopper.neoforge;
 
+import net.bobofraggins.mobfarmingsupplies.MFSConfig;
 import dev.architectury.fluid.FluidStack;
 import dev.architectury.hooks.fluid.forge.FluidStackHooksForge;
 import net.bobofraggins.mobfarmingsupplies.absorptionhopper.AbsorptionHopperBlockEntity;
@@ -18,7 +19,7 @@ public final class AbsorptionHopperBlockEntityPlatformImpl {
 
     private AbsorptionHopperBlockEntityPlatformImpl() {}
 
-    public static void outputPhase(AbsorptionHopperBlockEntity be, Level level, BlockPos pos) {
+    public static void outputPhase(AbsorptionHopperBlockEntity be, Level level, BlockPos pos, boolean itemTick) {
         int sides = be.getPushSides();
         for (int bit = 0; bit < 6; bit++) {
             if ((sides & (1 << bit)) == 0) continue;
@@ -26,9 +27,11 @@ public final class AbsorptionHopperBlockEntityPlatformImpl {
             BlockPos adj = pos.relative(dir);
             Direction fromSide = dir.getOpposite();
 
-            ResourceHandler<ItemResource> itemH =
-                    level.getCapability(Capabilities.Item.BLOCK, adj, fromSide);
-            if (itemH != null) pushItems(be, itemH);
+            if (itemTick) {
+                ResourceHandler<ItemResource> itemH =
+                        level.getCapability(Capabilities.Item.BLOCK, adj, fromSide);
+                if (itemH != null) pushItems(be, itemH);
+            }
 
             if (be.tankAmount > 0 && !be.tankFluid.isEmpty()) {
                 ResourceHandler<FluidResource> fluidH =
@@ -38,13 +41,15 @@ public final class AbsorptionHopperBlockEntityPlatformImpl {
         }
     }
 
+    /** Pushes up to the hoppers' items-per-transfer into {@code dest}, from as many slots as it takes. */
     private static boolean pushItems(AbsorptionHopperBlockEntity be, ResourceHandler<ItemResource> dest) {
-        for (int slot = 0; slot < AbsorptionHopperBlockEntity.SLOT_COUNT; slot++) {
+        int budget = MFSConfig.getHopperItemsPerTransfer();
+        boolean movedAny = false;
+        for (int slot = 0; slot < AbsorptionHopperBlockEntity.SLOT_COUNT && budget > 0; slot++) {
             ItemStack stack = be.inventory.getItem(slot);
             if (stack.isEmpty()) continue;
-
             ItemResource res = ItemResource.of(stack);
-            int toSend = stack.getCount();
+            int toSend = Math.min(stack.getCount(), budget);
             int sent = 0;
             try (Transaction tx = Transaction.openRoot()) {
                 for (int d = 0; d < dest.size() && sent < toSend; d++) {
@@ -55,14 +60,15 @@ public final class AbsorptionHopperBlockEntityPlatformImpl {
             if (sent > 0) {
                 be.inventory.removeItem(slot, sent);
                 be.setChanged();
-                return true;
+                budget -= sent;
+                movedAny = true;
             }
         }
-        return false;
+        return movedAny;
     }
 
     private static boolean pushFluid(AbsorptionHopperBlockEntity be, ResourceHandler<FluidResource> dest) {
-        int toSend = Math.min(AbsorptionHopperBlockEntity.PUSH_FLUID_MB, be.tankAmount);
+        int toSend = Math.min(MFSConfig.getHopperFluidPerTick(), be.tankAmount);
         FluidResource res = FluidResource.of(FluidStackHooksForge.toForge(be.tankFluid));
         int sent = 0;
         try (Transaction tx = Transaction.openRoot()) {

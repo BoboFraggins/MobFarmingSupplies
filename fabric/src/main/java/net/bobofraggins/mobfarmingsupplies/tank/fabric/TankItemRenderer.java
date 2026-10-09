@@ -97,7 +97,7 @@ public class TankItemRenderer implements SpecialModelRenderer<TankContents> {
 
         if (data == null || data.isEmpty()) return;
 
-        float fillFrac = Math.max(0.01f, (float) data.amount() / tier.capacity());
+        float fillFrac = Math.min(1f, Math.max(0.01f, (float) data.amount() / tier.capacity()));
         FluidStack archFluid = data.storedFluid();
 
         var fluidModel = mc.getModelManager()
