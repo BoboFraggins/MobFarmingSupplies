@@ -1,0 +1,8 @@
+{
+  "name": "book.mobfarmingsupplies.guide.logistics.name",
+  "icon": {
+    "id": "mobfarmingsupplies:omnidirectional_hopper"
+  },
+  "display_mode": "index",
+  "sort_number": 1
+}

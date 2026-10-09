@@ -1,0 +1,50 @@
+{
+  "type": "modonomicon:content",
+  "id": "mobfarmingsupplies:fun_stuff/magic_hat",
+  "category": "mobfarmingsupplies:fun_stuff",
+  "name": "book.mobfarmingsupplies.guide.fun_stuff.magic_hat.name",
+  "description": "book.mobfarmingsupplies.guide.fun_stuff.magic_hat.description",
+  "icon": {
+    "id": "mobfarmingsupplies:magic_hat"
+  },
+  "x": 0,
+  "y": 0,
+  "sort_number": 0,
+  "pages": [
+    {
+      "type": "modonomicon:text",
+      "id": "intro",
+      "sort_number": 0,
+      "title": "book.mobfarmingsupplies.guide.fun_stuff.magic_hat.intro.title",
+      "text": "book.mobfarmingsupplies.guide.fun_stuff.magic_hat.intro.text"
+    },
+    {
+      "type": "modonomicon:crafting_recipe",
+      "id": "recipe",
+      "sort_number": 1,
+      "recipe_id_1": "mobfarmingsupplies:magic_hat"
+    },
+    {
+      "type": "modonomicon:text",
+      "id": "curios",
+      "sort_number": 2,
+      "title": "book.mobfarmingsupplies.guide.fun_stuff.magic_hat.curios.title",
+      "text": "book.mobfarmingsupplies.guide.fun_stuff.magic_hat.curios.text",
+      "condition": {
+        "type": "modonomicon:mod_loaded",
+        "mod_id": "curios"
+      }
+    },
+    {
+      "type": "modonomicon:text",
+      "id": "trinkets",
+      "sort_number": 3,
+      "title": "book.mobfarmingsupplies.guide.fun_stuff.magic_hat.trinkets.title",
+      "text": "book.mobfarmingsupplies.guide.fun_stuff.magic_hat.trinkets.text",
+      "condition": {
+        "type": "modonomicon:mod_loaded",
+        "mod_id": "trinkets_updated"
+      }
+    }
+  ]
+}

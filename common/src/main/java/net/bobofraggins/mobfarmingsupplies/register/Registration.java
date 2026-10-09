@@ -1,5 +1,7 @@
 package net.bobofraggins.mobfarmingsupplies.register;
 
+import net.minecraft.world.item.ItemStack;
+import net.bobofraggins.mobfarmingsupplies.guide.GuideBook;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import dev.architectury.registry.menu.MenuRegistry;
@@ -1007,6 +1009,9 @@ public final class Registration {
                     .title(Component.translatable("itemGroup.mobfarmingsupplies"))
                     .icon(() -> FAN_ITEM.get().getDefaultInstance())
                     .displayItems((params, output) -> {
+                        // The guide comes first when Modonomicon is installed to show it.
+                        ItemStack guide = GuideBook.stack(params.holders());
+                        if (!guide.isEmpty()) output.accept(guide);
                         output.accept(ABSORPTION_HOPPER_ITEM.get());
                         output.accept(OMNI_HOPPER_ITEM.get());
                         output.accept(EINSTEIN_ROSEN_BRIDGE_ITEM.get());

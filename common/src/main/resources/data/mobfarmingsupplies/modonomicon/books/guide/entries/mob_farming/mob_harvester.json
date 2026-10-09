@@ -1,0 +1,29 @@
+{
+  "type": "modonomicon:content",
+  "id": "mobfarmingsupplies:mob_farming/mob_harvester",
+  "category": "mobfarmingsupplies:mob_farming",
+  "name": "book.mobfarmingsupplies.guide.mob_farming.mob_harvester.name",
+  "description": "book.mobfarmingsupplies.guide.mob_farming.mob_harvester.description",
+  "icon": {
+    "id": "mobfarmingsupplies:mob_harvester"
+  },
+  "x": 0,
+  "y": 0,
+  "sort_number": 0,
+  "pages": [
+    {
+      "type": "modonomicon:text",
+      "id": "intro",
+      "sort_number": 0,
+      "title": "book.mobfarmingsupplies.guide.mob_farming.mob_harvester.intro.title",
+      "text": "book.mobfarmingsupplies.guide.mob_farming.mob_harvester.intro.text"
+    },
+    {
+      "type": "modonomicon:crafting_recipe",
+      "id": "recipe",
+      "sort_number": 1,
+      "text": "book.mobfarmingsupplies.guide.mob_farming.mob_harvester.recipe.text",
+      "recipe_id_1": "mobfarmingsupplies:mob_harvester"
+    }
+  ]
+}

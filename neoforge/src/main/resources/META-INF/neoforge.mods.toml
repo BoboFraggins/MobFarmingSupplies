@@ -99,3 +99,11 @@ type="optional"
 versionRange="[*,)"
 ordering="AFTER"
 side="BOTH"
+
+# Modonomicon shows the in-game guide book (data only, no code dependency).
+[[dependencies.${mod_id}]]
+modId="modonomicon"
+type="optional"
+versionRange="[*,)"
+ordering="NONE"
+side="BOTH"
