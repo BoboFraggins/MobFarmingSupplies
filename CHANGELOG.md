@@ -15,7 +15,6 @@
   (This should not affect previously placed hoppers/sorters, just newly placed ones)
 * Fix Beheading Upgrade on Fabric to actually drop skulls
 
-
 ### 26.1.2 and 26.2 Only:
 
 * Brought Magic Hat (curio/mob yoinker) from 26.3
