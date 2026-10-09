@@ -15,15 +15,6 @@
   (This should not affect previously placed hoppers/sorters, just newly placed ones)
 * Fix Beheading Upgrade on Fabric to actually drop skulls
 
-## 26.3.0.4, 26.2.0.5, 26.1.2.7
-
-* Added Toilet block that voids items sent to it and can have water extracted from it
-* Added Halting Plate to trap mobs (sneak to move like Vector Plate)
-* Added Gold, Diamond, and Emerald tiers of Tanks
-
-* Fix mobs refusing to be moved via fans
-* Fix droplet <-> millibucket conversion on Fabric
-
 ### 26.1.2 and 26.2 Only:
 
 * Brought Magic Hat (curio/mob yoinker) from 26.3
