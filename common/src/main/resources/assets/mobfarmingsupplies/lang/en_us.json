@@ -397,6 +397,8 @@
   "book.mobfarmingsupplies.guide.experience.tank.description": "Holds fluids, and grows.",
   "book.mobfarmingsupplies.guide.experience.tank.p0.title": "Tank",
   "book.mobfarmingsupplies.guide.experience.tank.p0.text": "A Tank holds 64 buckets of any fluid and keeps its contents when broken. Use a bucket or bottle on it, or use its transfer slot.\n\nSurrounding a Tank with gold, diamonds or emeralds upgrades it to the next tier, which holds four times as much, contents and all. Server settings can change these sizes.",
+  "book.mobfarmingsupplies.guide.experience.tank.p1.title": "Carrying a Tank",
+  "book.mobfarmingsupplies.guide.experience.tank.p1.text": "A Tank item has two modes, shown in its tooltip. Right-click while not pointing at any block to switch between them.\n\nIn Block Mode, right-clicking places the Tank, or exchanges fluid with whatever you click if it holds fluid. In Bucket Mode, the Tank works like a very large bucket: right-click a fluid to scoop up a bucket of it, or anywhere else to pour one out.",
   "book.mobfarmingsupplies.guide.logistics.side_settings.name": "Setting Up Sides",
   "book.mobfarmingsupplies.guide.logistics.side_settings.description": "How the four hoppers are configured.",
   "book.mobfarmingsupplies.guide.logistics.side_settings.p0.title": "Setting Up Sides",

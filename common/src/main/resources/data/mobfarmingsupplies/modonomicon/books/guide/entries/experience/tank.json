@@ -21,19 +21,26 @@
     {
       "id": "p1",
       "sort_number": 1,
-      "type": "modonomicon:crafting_recipe",
-      "recipe_id_1": "mobfarmingsupplies:tank"
+      "type": "modonomicon:text",
+      "title": "book.mobfarmingsupplies.guide.experience.tank.p1.title",
+      "text": "book.mobfarmingsupplies.guide.experience.tank.p1.text"
     },
     {
       "id": "p2",
       "sort_number": 2,
       "type": "modonomicon:crafting_recipe",
-      "recipe_id_1": "mobfarmingsupplies:gold_tank",
-      "recipe_id_2": "mobfarmingsupplies:diamond_tank"
+      "recipe_id_1": "mobfarmingsupplies:tank"
     },
     {
       "id": "p3",
       "sort_number": 3,
+      "type": "modonomicon:crafting_recipe",
+      "recipe_id_1": "mobfarmingsupplies:gold_tank",
+      "recipe_id_2": "mobfarmingsupplies:diamond_tank"
+    },
+    {
+      "id": "p4",
+      "sort_number": 4,
       "type": "modonomicon:crafting_recipe",
       "recipe_id_1": "mobfarmingsupplies:emerald_tank"
     }
