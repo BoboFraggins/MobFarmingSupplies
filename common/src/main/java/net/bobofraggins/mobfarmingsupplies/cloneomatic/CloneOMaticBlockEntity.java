@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.cloneomatic;
 
+import net.bobofraggins.mobfarmingsupplies.advancement.MFSTriggers;
 import net.bobofraggins.mobfarmingsupplies.MFSConfig;
 import net.bobofraggins.mobfarmingsupplies.dna.IDnaSampleItem;
 import net.bobofraggins.mobfarmingsupplies.glamping.NaturalSpawnRolls;
@@ -187,6 +188,7 @@ public class CloneOMaticBlockEntity extends BlockEntity implements MenuProvider 
                         PresentEndermanHandler.CLONE_O_MATIC_CHANCE);
             }
             serverLevel.addFreshEntityWithPassengers(entity);
+            MFSTriggers.triggerNear(MFSTriggers.CLONE_SPAWNED, serverLevel, pos, "");
         }
     }
 

@@ -4,15 +4,12 @@ import dev.architectury.event.EventResult;
 import dev.architectury.event.events.common.InteractionEvent;
 import net.bobofraggins.mobfarmingsupplies.register.MFSTags;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Prediction;
-import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.storage.TagValueOutput;
 
 /**
  * Wires the DNA Collector's sampling logic into {@link InteractionEvent#INTERACT_ENTITY},
@@ -52,21 +49,7 @@ public final class DnaCollectorEvents {
             return EventResult.interruptTrue();
         }
 
-        // ── Serialize entity ──────────────────────────────────────────────────────
-        TagValueOutput output = TagValueOutput.createWithContext(
-                ProblemReporter.DISCARDING, player.level().registryAccess());
-        target.save(output);
-        CompoundTag entityNbt = DnaSampleItem.stripSampleNbt(output.buildResult());
-
-        // ── Compute display name ──────────────────────────────────────────────────
-        String mobName = target.hasCustomName()
-                ? target.getCustomName().getString()
-                : target.getType().getDescription().getString();
-
-        // ── Build sample item ─────────────────────────────────────────────────────
-        ItemStack sampleStack = new ItemStack(Registration.DNA_SAMPLE.get());
-        sampleStack.set(Registration.DNA_SAMPLE_CONTENTS.get(),
-                new DnaSampleContents(entityNbt, mobName));
+        ItemStack sampleStack = DnaSampleItem.createSample(target);
 
         // Give to player (auto-stacks into existing slots; overflow is dropped).
         player.getInventory().placeItemBackInInventory(sampleStack, Prediction.SERVER_ONLY);

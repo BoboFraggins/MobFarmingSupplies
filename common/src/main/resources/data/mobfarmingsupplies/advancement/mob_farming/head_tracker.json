@@ -1,0 +1,1156 @@
+{
+  "criteria": {
+    "zombie_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:zombie_head"
+          }
+        ]
+      }
+    },
+    "skeleton_skull": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:skeleton_skull"
+          }
+        ]
+      }
+    },
+    "wither_skeleton_skull": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:wither_skeleton_skull"
+          }
+        ]
+      }
+    },
+    "creeper_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:creeper_head"
+          }
+        ]
+      }
+    },
+    "piglin_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:piglin_head"
+          }
+        ]
+      }
+    },
+    "dragon_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:dragon_head"
+          }
+        ]
+      }
+    },
+    "allay_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:mob_head",
+            "components": {
+              "mobfarmingsupplies:mob_head_type": "minecraft:allay"
+            }
+          }
+        ]
+      }
+    },
+    "armadillo_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:mob_head",
+            "components": {
+              "mobfarmingsupplies:mob_head_type": "minecraft:armadillo"
+            }
+          }
+        ]
+      }
+    },
+    "axolotl_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:mob_head",
+            "components": {
+              "mobfarmingsupplies:mob_head_type": "minecraft:axolotl"
+            }
+          }
+        ]
+      }
+    },
+    "bat_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:mob_head",
+            "components": {
+              "mobfarmingsupplies:mob_head_type": "minecraft:bat"
+            }
+          }
+        ]
+      }
+    },
+    "blaze_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:mob_head",
+            "components": {
+              "mobfarmingsupplies:mob_head_type": "minecraft:blaze"
+            }
+          }
+        ]
+      }
+    },
+    "bogged_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:mob_head",
+            "components": {
+              "mobfarmingsupplies:mob_head_type": "minecraft:bogged"
+            }
+          }
+        ]
+      }
+    },
+    "breeze_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:mob_head",
+            "components": {
+              "mobfarmingsupplies:mob_head_type": "minecraft:breeze"
+            }
+          }
+        ]
+      }
+    },
+    "camel_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:mob_head",
+            "components": {
+              "mobfarmingsupplies:mob_head_type": "minecraft:camel"
+            }
+          }
+        ]
+      }
+    },
+    "camel_husk_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:mob_head",
+            "components": {
+              "mobfarmingsupplies:mob_head_type": "minecraft:camel_husk"
+            }
+          }
+        ]
+      }
+    },
+    "cat_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:mob_head",
+            "components": {
+              "mobfarmingsupplies:mob_head_type": "minecraft:cat"
+            }
+          }
+        ]
+      }
+    },
+    "cave_spider_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:mob_head",
+            "components": {
+              "mobfarmingsupplies:mob_head_type": "minecraft:cave_spider"
+            }
+          }
+        ]
+      }
+    },
+    "chicken_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:mob_head",
+            "components": {
+              "mobfarmingsupplies:mob_head_type": "minecraft:chicken"
+            }
+          }
+        ]
+      }
+    },
+    "copper_golem_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:mob_head",
+            "components": {
+              "mobfarmingsupplies:mob_head_type": "minecraft:copper_golem"
+            }
+          }
+        ]
+      }
+    },
+    "cow_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:mob_head",
+            "components": {
+              "mobfarmingsupplies:mob_head_type": "minecraft:cow"
+            }
+          }
+        ]
+      }
+    },
+    "creaking_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:mob_head",
+            "components": {
+              "mobfarmingsupplies:mob_head_type": "minecraft:creaking"
+            }
+          }
+        ]
+      }
+    },
+    "dolphin_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:mob_head",
+            "components": {
+              "mobfarmingsupplies:mob_head_type": "minecraft:dolphin"
+            }
+          }
+        ]
+      }
+    },
+    "donkey_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:mob_head",
+            "components": {
+              "mobfarmingsupplies:mob_head_type": "minecraft:donkey"
+            }
+          }
+        ]
+      }
+    },
+    "drowned_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:mob_head",
+            "components": {
+              "mobfarmingsupplies:mob_head_type": "minecraft:drowned"
+            }
+          }
+        ]
+      }
+    },
+    "elder_guardian_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:mob_head",
+            "components": {
+              "mobfarmingsupplies:mob_head_type": "minecraft:elder_guardian"
+            }
+          }
+        ]
+      }
+    },
+    "enderman_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:mob_head",
+            "components": {
+              "mobfarmingsupplies:mob_head_type": "minecraft:enderman"
+            }
+          }
+        ]
+      }
+    },
+    "evoker_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:mob_head",
+            "components": {
+              "mobfarmingsupplies:mob_head_type": "minecraft:evoker"
+            }
+          }
+        ]
+      }
+    },
+    "fox_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:mob_head",
+            "components": {
+              "mobfarmingsupplies:mob_head_type": "minecraft:fox"
+            }
+          }
+        ]
+      }
+    },
+    "frog_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:mob_head",
+            "components": {
+              "mobfarmingsupplies:mob_head_type": "minecraft:frog"
+            }
+          }
+        ]
+      }
+    },
+    "ghast_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:mob_head",
+            "components": {
+              "mobfarmingsupplies:mob_head_type": "minecraft:ghast"
+            }
+          }
+        ]
+      }
+    },
+    "goat_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:mob_head",
+            "components": {
+              "mobfarmingsupplies:mob_head_type": "minecraft:goat"
+            }
+          }
+        ]
+      }
+    },
+    "guardian_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:mob_head",
+            "components": {
+              "mobfarmingsupplies:mob_head_type": "minecraft:guardian"
+            }
+          }
+        ]
+      }
+    },
+    "happy_ghast_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:mob_head",
+            "components": {
+              "mobfarmingsupplies:mob_head_type": "minecraft:happy_ghast"
+            }
+          }
+        ]
+      }
+    },
+    "hoglin_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:mob_head",
+            "components": {
+              "mobfarmingsupplies:mob_head_type": "minecraft:hoglin"
+            }
+          }
+        ]
+      }
+    },
+    "horse_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:mob_head",
+            "components": {
+              "mobfarmingsupplies:mob_head_type": "minecraft:horse"
+            }
+          }
+        ]
+      }
+    },
+    "husk_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:mob_head",
+            "components": {
+              "mobfarmingsupplies:mob_head_type": "minecraft:husk"
+            }
+          }
+        ]
+      }
+    },
+    "illusioner_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:mob_head",
+            "components": {
+              "mobfarmingsupplies:mob_head_type": "minecraft:illusioner"
+            }
+          }
+        ]
+      }
+    },
+    "iron_golem_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:mob_head",
+            "components": {
+              "mobfarmingsupplies:mob_head_type": "minecraft:iron_golem"
+            }
+          }
+        ]
+      }
+    },
+    "llama_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:mob_head",
+            "components": {
+              "mobfarmingsupplies:mob_head_type": "minecraft:llama"
+            }
+          }
+        ]
+      }
+    },
+    "magma_cube_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:mob_head",
+            "components": {
+              "mobfarmingsupplies:mob_head_type": "minecraft:magma_cube"
+            }
+          }
+        ]
+      }
+    },
+    "mooshroom_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:mob_head",
+            "components": {
+              "mobfarmingsupplies:mob_head_type": "minecraft:mooshroom"
+            }
+          }
+        ]
+      }
+    },
+    "mule_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:mob_head",
+            "components": {
+              "mobfarmingsupplies:mob_head_type": "minecraft:mule"
+            }
+          }
+        ]
+      }
+    },
+    "ocelot_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:mob_head",
+            "components": {
+              "mobfarmingsupplies:mob_head_type": "minecraft:ocelot"
+            }
+          }
+        ]
+      }
+    },
+    "panda_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:mob_head",
+            "components": {
+              "mobfarmingsupplies:mob_head_type": "minecraft:panda"
+            }
+          }
+        ]
+      }
+    },
+    "parched_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:mob_head",
+            "components": {
+              "mobfarmingsupplies:mob_head_type": "minecraft:parched"
+            }
+          }
+        ]
+      }
+    },
+    "parrot_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:mob_head",
+            "components": {
+              "mobfarmingsupplies:mob_head_type": "minecraft:parrot"
+            }
+          }
+        ]
+      }
+    },
+    "phantom_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:mob_head",
+            "components": {
+              "mobfarmingsupplies:mob_head_type": "minecraft:phantom"
+            }
+          }
+        ]
+      }
+    },
+    "pig_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:mob_head",
+            "components": {
+              "mobfarmingsupplies:mob_head_type": "minecraft:pig"
+            }
+          }
+        ]
+      }
+    },
+    "piglin_brute_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:mob_head",
+            "components": {
+              "mobfarmingsupplies:mob_head_type": "minecraft:piglin_brute"
+            }
+          }
+        ]
+      }
+    },
+    "pillager_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:mob_head",
+            "components": {
+              "mobfarmingsupplies:mob_head_type": "minecraft:pillager"
+            }
+          }
+        ]
+      }
+    },
+    "polar_bear_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:mob_head",
+            "components": {
+              "mobfarmingsupplies:mob_head_type": "minecraft:polar_bear"
+            }
+          }
+        ]
+      }
+    },
+    "rabbit_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:mob_head",
+            "components": {
+              "mobfarmingsupplies:mob_head_type": "minecraft:rabbit"
+            }
+          }
+        ]
+      }
+    },
+    "ravager_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:mob_head",
+            "components": {
+              "mobfarmingsupplies:mob_head_type": "minecraft:ravager"
+            }
+          }
+        ]
+      }
+    },
+    "sheep_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:mob_head",
+            "components": {
+              "mobfarmingsupplies:mob_head_type": "minecraft:sheep"
+            }
+          }
+        ]
+      }
+    },
+    "shulker_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:mob_head",
+            "components": {
+              "mobfarmingsupplies:mob_head_type": "minecraft:shulker"
+            }
+          }
+        ]
+      }
+    },
+    "skeleton_horse_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:mob_head",
+            "components": {
+              "mobfarmingsupplies:mob_head_type": "minecraft:skeleton_horse"
+            }
+          }
+        ]
+      }
+    },
+    "slime_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:mob_head",
+            "components": {
+              "mobfarmingsupplies:mob_head_type": "minecraft:slime"
+            }
+          }
+        ]
+      }
+    },
+    "sniffer_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:mob_head",
+            "components": {
+              "mobfarmingsupplies:mob_head_type": "minecraft:sniffer"
+            }
+          }
+        ]
+      }
+    },
+    "spider_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:mob_head",
+            "components": {
+              "mobfarmingsupplies:mob_head_type": "minecraft:spider"
+            }
+          }
+        ]
+      }
+    },
+    "stray_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:mob_head",
+            "components": {
+              "mobfarmingsupplies:mob_head_type": "minecraft:stray"
+            }
+          }
+        ]
+      }
+    },
+    "trader_llama_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:mob_head",
+            "components": {
+              "mobfarmingsupplies:mob_head_type": "minecraft:trader_llama"
+            }
+          }
+        ]
+      }
+    },
+    "turtle_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:mob_head",
+            "components": {
+              "mobfarmingsupplies:mob_head_type": "minecraft:turtle"
+            }
+          }
+        ]
+      }
+    },
+    "vex_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:mob_head",
+            "components": {
+              "mobfarmingsupplies:mob_head_type": "minecraft:vex"
+            }
+          }
+        ]
+      }
+    },
+    "villager_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:mob_head",
+            "components": {
+              "mobfarmingsupplies:mob_head_type": "minecraft:villager"
+            }
+          }
+        ]
+      }
+    },
+    "vindicator_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:mob_head",
+            "components": {
+              "mobfarmingsupplies:mob_head_type": "minecraft:vindicator"
+            }
+          }
+        ]
+      }
+    },
+    "wandering_trader_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:mob_head",
+            "components": {
+              "mobfarmingsupplies:mob_head_type": "minecraft:wandering_trader"
+            }
+          }
+        ]
+      }
+    },
+    "warden_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:mob_head",
+            "components": {
+              "mobfarmingsupplies:mob_head_type": "minecraft:warden"
+            }
+          }
+        ]
+      }
+    },
+    "witch_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:mob_head",
+            "components": {
+              "mobfarmingsupplies:mob_head_type": "minecraft:witch"
+            }
+          }
+        ]
+      }
+    },
+    "wolf_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:mob_head",
+            "components": {
+              "mobfarmingsupplies:mob_head_type": "minecraft:wolf"
+            }
+          }
+        ]
+      }
+    },
+    "zoglin_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:mob_head",
+            "components": {
+              "mobfarmingsupplies:mob_head_type": "minecraft:zoglin"
+            }
+          }
+        ]
+      }
+    },
+    "zombie_horse_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:mob_head",
+            "components": {
+              "mobfarmingsupplies:mob_head_type": "minecraft:zombie_horse"
+            }
+          }
+        ]
+      }
+    },
+    "zombie_villager_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:mob_head",
+            "components": {
+              "mobfarmingsupplies:mob_head_type": "minecraft:zombie_villager"
+            }
+          }
+        ]
+      }
+    },
+    "zombified_piglin_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:mob_head",
+            "components": {
+              "mobfarmingsupplies:mob_head_type": "minecraft:zombified_piglin"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "zombie_head"
+    ],
+    [
+      "skeleton_skull"
+    ],
+    [
+      "wither_skeleton_skull"
+    ],
+    [
+      "creeper_head"
+    ],
+    [
+      "piglin_head"
+    ],
+    [
+      "dragon_head"
+    ],
+    [
+      "allay_head"
+    ],
+    [
+      "armadillo_head"
+    ],
+    [
+      "axolotl_head"
+    ],
+    [
+      "bat_head"
+    ],
+    [
+      "blaze_head"
+    ],
+    [
+      "bogged_head"
+    ],
+    [
+      "breeze_head"
+    ],
+    [
+      "camel_head"
+    ],
+    [
+      "camel_husk_head"
+    ],
+    [
+      "cat_head"
+    ],
+    [
+      "cave_spider_head"
+    ],
+    [
+      "chicken_head"
+    ],
+    [
+      "copper_golem_head"
+    ],
+    [
+      "cow_head"
+    ],
+    [
+      "creaking_head"
+    ],
+    [
+      "dolphin_head"
+    ],
+    [
+      "donkey_head"
+    ],
+    [
+      "drowned_head"
+    ],
+    [
+      "elder_guardian_head"
+    ],
+    [
+      "enderman_head"
+    ],
+    [
+      "evoker_head"
+    ],
+    [
+      "fox_head"
+    ],
+    [
+      "frog_head"
+    ],
+    [
+      "ghast_head"
+    ],
+    [
+      "goat_head"
+    ],
+    [
+      "guardian_head"
+    ],
+    [
+      "happy_ghast_head"
+    ],
+    [
+      "hoglin_head"
+    ],
+    [
+      "horse_head"
+    ],
+    [
+      "husk_head"
+    ],
+    [
+      "illusioner_head"
+    ],
+    [
+      "iron_golem_head"
+    ],
+    [
+      "llama_head"
+    ],
+    [
+      "magma_cube_head"
+    ],
+    [
+      "mooshroom_head"
+    ],
+    [
+      "mule_head"
+    ],
+    [
+      "ocelot_head"
+    ],
+    [
+      "panda_head"
+    ],
+    [
+      "parched_head"
+    ],
+    [
+      "parrot_head"
+    ],
+    [
+      "phantom_head"
+    ],
+    [
+      "pig_head"
+    ],
+    [
+      "piglin_brute_head"
+    ],
+    [
+      "pillager_head"
+    ],
+    [
+      "polar_bear_head"
+    ],
+    [
+      "rabbit_head"
+    ],
+    [
+      "ravager_head"
+    ],
+    [
+      "sheep_head"
+    ],
+    [
+      "shulker_head"
+    ],
+    [
+      "skeleton_horse_head"
+    ],
+    [
+      "slime_head"
+    ],
+    [
+      "sniffer_head"
+    ],
+    [
+      "spider_head"
+    ],
+    [
+      "stray_head"
+    ],
+    [
+      "trader_llama_head"
+    ],
+    [
+      "turtle_head"
+    ],
+    [
+      "vex_head"
+    ],
+    [
+      "villager_head"
+    ],
+    [
+      "vindicator_head"
+    ],
+    [
+      "wandering_trader_head"
+    ],
+    [
+      "warden_head"
+    ],
+    [
+      "witch_head"
+    ],
+    [
+      "wolf_head"
+    ],
+    [
+      "zoglin_head"
+    ],
+    [
+      "zombie_horse_head"
+    ],
+    [
+      "zombie_villager_head"
+    ],
+    [
+      "zombified_piglin_head"
+    ]
+  ]
+}

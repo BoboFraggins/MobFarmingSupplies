@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies;
 
+import net.bobofraggins.mobfarmingsupplies.tank.TankCapacities;
 import com.mojang.logging.LogUtils;
 import dev.architectury.event.events.common.LifecycleEvent;
 import net.bobofraggins.mobfarmingsupplies.bridge.BridgeNetworks;
@@ -33,6 +34,7 @@ public final class MobFarmingSuppliesCommon {
         // Bridge networks hold loaded block entities; never carry them into the next world.
         LifecycleEvent.SERVER_STOPPED.register(server -> BridgeNetworks.clear());
         MFSNetwork.register();
+        TankCapacities.register();
         PicnicBasketFeedHandler.register();
         LOGGER.info("MobFarmingSupplies initialized");
     }

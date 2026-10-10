@@ -60,7 +60,7 @@ public final class TankBlockEntityPlatformImpl {
                     continue;
                 }
 
-                long spaceDroplets = (be.getCapacity() - be.amount) * DROPLETS_PER_MB;
+                long spaceDroplets = Math.max(0, be.getCapacity() - be.amount) * DROPLETS_PER_MB;
                 long toDrainDroplets = Math.min(view.getAmount(), spaceDroplets);
                 if (toDrainDroplets <= 0) continue;
 

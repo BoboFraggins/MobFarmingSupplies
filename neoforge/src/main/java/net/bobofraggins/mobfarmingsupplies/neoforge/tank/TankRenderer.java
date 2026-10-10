@@ -65,7 +65,7 @@ public class TankRenderer
         FluidStack fluid = be.getStoredFluid();
         if (fluid.isEmpty()) return;
 
-        float fillFrac = Math.max(0.01f, (float) be.getAmount() / (float) be.getCapacity());
+        float fillFrac = Math.min(1f, Math.max(0.01f, (float) be.getAmount() / (float) be.getCapacity()));
         state.fillTop = FLOOR + fillFrac * H;
 
         var fluidModel = Minecraft.getInstance()

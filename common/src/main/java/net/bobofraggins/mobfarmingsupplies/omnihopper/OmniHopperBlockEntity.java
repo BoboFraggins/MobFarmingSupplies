@@ -40,7 +40,7 @@ import java.util.List;
  * <p>Up to nine Item Filters (combined with AND or OR) limit which items move; with none
  * installed every item moves. Filters don't apply to fluids, energy or chemicals.
  *
- * <p>Items move every {@link MFSConfig#getOmniHopperTransferInterval()} ticks; fluids, energy and
+ * <p>Items move every {@link MFSConfig#getHopperTransferInterval()} ticks; fluids, energy and
  * chemicals move every tick. Rates are per INPUT side and configurable.
  */
 public class OmniHopperBlockEntity extends BlockEntity implements SideOriented, MenuProvider, HopperNode, HopperConfigurable {
@@ -89,7 +89,7 @@ public class OmniHopperBlockEntity extends BlockEntity implements SideOriented, 
     public static void serverTick(Level level, BlockPos pos, BlockState state, OmniHopperBlockEntity be) {
         if (be.stateDirty) be.syncBlockState();
         if (!be.isActive()) return;
-        boolean itemTick = ++be.tickCounter % Math.max(1, MFSConfig.getOmniHopperTransferInterval()) == 0;
+        boolean itemTick = ++be.tickCounter % Math.max(1, MFSConfig.getHopperTransferInterval()) == 0;
         OmniHopperPlatform.transfer(be, itemTick);
     }
 

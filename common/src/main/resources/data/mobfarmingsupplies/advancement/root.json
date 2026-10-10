@@ -1,0 +1,33 @@
+{
+  "criteria": {
+    "has_item": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "#mobfarmingsupplies:all_items"
+          }
+        ]
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "mobfarmingsupplies:mob_harvester"
+    },
+    "title": {
+      "translate": "advancements.mobfarmingsupplies.root.title"
+    },
+    "description": {
+      "translate": "advancements.mobfarmingsupplies.root.description"
+    },
+    "background": "minecraft:gui/advancements/backgrounds/husbandry",
+    "show_toast": false,
+    "announce_to_chat": false
+  },
+  "requirements": [
+    [
+      "has_item"
+    ]
+  ]
+}

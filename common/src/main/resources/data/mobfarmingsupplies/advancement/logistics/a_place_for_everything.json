@@ -1,0 +1,24 @@
+{
+  "parent": "mobfarmingsupplies:logistics/read_the_fine_print",
+  "criteria": {
+    "filter_installed": {
+      "trigger": "mobfarmingsupplies:filter_installed"
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "mobfarmingsupplies:logistic_sorter"
+    },
+    "title": {
+      "translate": "advancements.mobfarmingsupplies.a_place_for_everything.title"
+    },
+    "description": {
+      "translate": "advancements.mobfarmingsupplies.a_place_for_everything.description"
+    }
+  },
+  "requirements": [
+    [
+      "filter_installed"
+    ]
+  ]
+}

@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.logisticsorter;
 
+import net.bobofraggins.mobfarmingsupplies.MFSConfig;
 import net.bobofraggins.mobfarmingsupplies.shared.sides.SideLayout;
 import net.bobofraggins.mobfarmingsupplies.shared.sides.SideOriented;
 import net.minecraft.core.FrontAndTop;
@@ -56,8 +57,6 @@ public class LogisticSorterBlockEntity extends BlockEntity implements SideOrient
 
 
     public static final int FILTER_SLOTS  = 9;
-    public static final int PULL_INTERVAL = 8;  // ticks between pulls
-    public static final int PULL_PER_SIDE = 64; // max items pulled per INPUT side per pull
 
     private final SideMode[] sides = new SideMode[6]; // indexed by Direction#get3DDataValue
     private boolean andMode = true;
@@ -83,7 +82,7 @@ public class LogisticSorterBlockEntity extends BlockEntity implements SideOrient
 
     public static void serverTick(Level level, BlockPos pos, BlockState state, LogisticSorterBlockEntity be) {
         if (be.stateDirty) be.syncBlockState();
-        if (++be.tickCounter % PULL_INTERVAL == 0 && be.isActive()) {
+        if (++be.tickCounter % Math.max(1, MFSConfig.getHopperTransferInterval()) == 0 && be.isActive()) {
             LogisticSorterPlatform.pullPhase(be, level, pos);
         }
     }

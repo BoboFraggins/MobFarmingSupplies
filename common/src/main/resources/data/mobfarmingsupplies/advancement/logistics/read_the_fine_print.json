@@ -1,0 +1,31 @@
+{
+  "parent": "mobfarmingsupplies:logistics/crushing_it",
+  "criteria": {
+    "item_filter": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:item_filter"
+          }
+        ]
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "mobfarmingsupplies:item_filter"
+    },
+    "title": {
+      "translate": "advancements.mobfarmingsupplies.read_the_fine_print.title"
+    },
+    "description": {
+      "translate": "advancements.mobfarmingsupplies.read_the_fine_print.description"
+    }
+  },
+  "requirements": [
+    [
+      "item_filter"
+    ]
+  ]
+}

@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.glamping.present;
 
+import net.bobofraggins.mobfarmingsupplies.MFSConfig;
 import java.util.List;
 import net.bobofraggins.mobfarmingsupplies.glamping.NaturalSpawnRolls;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
@@ -56,6 +57,7 @@ public final class PresentEndermanHandler {
     }
 
     public static void tryGivePresent(Enderman enderman, RandomSource random, float chance) {
+        if (!MFSConfig.getPresentEndermenCarryPresents()) return;
         if (enderman.getCarriedBlock() != null) return;
         if (random.nextFloat() >= chance) return;
         enderman.setCarriedBlock(Registration.PRESENT.get().defaultBlockState().setValue(PresentBlock.SURPRISE, true));

@@ -1,0 +1,42 @@
+{
+  "type": "modonomicon:content",
+  "id": "mobfarmingsupplies:logistics/omnidirectional_hopper",
+  "category": "mobfarmingsupplies:logistics",
+  "name": "book.mobfarmingsupplies.guide.logistics.omnidirectional_hopper.name",
+  "description": "book.mobfarmingsupplies.guide.logistics.omnidirectional_hopper.description",
+  "icon": {
+    "id": "mobfarmingsupplies:omnidirectional_hopper"
+  },
+  "x": 0,
+  "y": 0,
+  "sort_number": 4,
+  "pages": [
+    {
+      "id": "p0",
+      "sort_number": 0,
+      "type": "modonomicon:spotlight",
+      "item": {
+        "id": "mobfarmingsupplies:omnidirectional_hopper"
+      },
+      "title": "book.mobfarmingsupplies.guide.logistics.omnidirectional_hopper.p0.title",
+      "text": "book.mobfarmingsupplies.guide.logistics.omnidirectional_hopper.p0.text"
+    },
+    {
+      "id": "p1",
+      "sort_number": 1,
+      "type": "modonomicon:crafting_recipe",
+      "recipe_id_1": "mobfarmingsupplies:omnidirectional_hopper"
+    },
+    {
+      "id": "p2",
+      "sort_number": 2,
+      "type": "modonomicon:text",
+      "title": "book.mobfarmingsupplies.guide.logistics.omnidirectional_hopper.p2.title",
+      "text": "book.mobfarmingsupplies.guide.logistics.omnidirectional_hopper.p2.text",
+      "condition": {
+        "type": "modonomicon:mod_loaded",
+        "mod_id": "mekanism"
+      }
+    }
+  ]
+}

@@ -18,6 +18,8 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Mirror;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -43,7 +45,7 @@ import net.bobofraggins.mobfarmingsupplies.shared.menu.ExtendedMenus;
  * {@value MobHarvesterBlockEntity#KILL_HEIGHT}×
  * {@value MobHarvesterBlockEntity#KILL_WIDTH} area above the block every
  * {@value MobHarvesterBlockEntity#ATTACK_INTERVAL_TICKS} ticks.
- * Attack damage scales with upgrades placed in the nine upgrade slots.
+ * Attack damage scales with upgrades placed in the three upgrade slots.
  *
  * <p>Mobs drop items and XP orbs naturally; pair with an {@link
  * net.bobofraggins.mobfarmingsupplies.absorptionhopper.AbsorptionHopperBlock}
@@ -70,6 +72,16 @@ public class MobHarvesterBlock extends BaseEntityBlock {
 
     /** Full two-block-tall hitbox (0–16 px wide/deep, 0–32 px tall). */
     private static final VoxelShape SHAPE = Block.box(0, 0, 0, 16, 32, 16);
+
+    @Override
+    protected BlockState rotate(BlockState state, Rotation rotation) {
+        return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
+    }
+
+    @Override
+    protected BlockState mirror(BlockState state, Mirror mirror) {
+        return state.rotate(mirror.getRotation(state.getValue(FACING)));
+    }
 
     @Override
     protected VoxelShape getShape(BlockState state, net.minecraft.world.level.BlockGetter level,

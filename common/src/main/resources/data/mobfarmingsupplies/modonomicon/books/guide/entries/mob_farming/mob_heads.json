@@ -1,0 +1,33 @@
+{
+  "type": "modonomicon:content",
+  "id": "mobfarmingsupplies:mob_farming/mob_heads",
+  "category": "mobfarmingsupplies:mob_farming",
+  "name": "book.mobfarmingsupplies.guide.mob_farming.mob_heads.name",
+  "description": "book.mobfarmingsupplies.guide.mob_farming.mob_heads.description",
+  "icon": {
+    "id": "minecraft:creeper_head"
+  },
+  "x": 0,
+  "y": 0,
+  "sort_number": 2,
+  "pages": [
+    {
+      "id": "p0",
+      "sort_number": 0,
+      "type": "modonomicon:text",
+      "title": "book.mobfarmingsupplies.guide.mob_farming.mob_heads.p0.title",
+      "text": "book.mobfarmingsupplies.guide.mob_farming.mob_heads.p0.text"
+    },
+    {
+      "id": "p1",
+      "sort_number": 1,
+      "type": "modonomicon:image",
+      "images": [
+        "mobfarmingsupplies:textures/gui/book/mob_heads.png"
+      ],
+      "border": true,
+      "title": "book.mobfarmingsupplies.guide.mob_farming.mob_heads.p1.title",
+      "text": "book.mobfarmingsupplies.guide.mob_farming.mob_heads.p1.text"
+    }
+  ]
+}

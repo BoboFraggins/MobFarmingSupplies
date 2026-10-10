@@ -1,0 +1,30 @@
+{
+  "parent": "mobfarmingsupplies:root",
+  "criteria": {
+    "placed": {
+      "trigger": "minecraft:placed_block",
+      "conditions": {
+        "location": {
+          "type": "minecraft:match_block",
+          "blocks": "mobfarmingsupplies:mob_harvester"
+        }
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "mobfarmingsupplies:mob_harvester"
+    },
+    "title": {
+      "translate": "advancements.mobfarmingsupplies.some_assembly_required.title"
+    },
+    "description": {
+      "translate": "advancements.mobfarmingsupplies.some_assembly_required.description"
+    }
+  },
+  "requirements": [
+    [
+      "placed"
+    ]
+  ]
+}

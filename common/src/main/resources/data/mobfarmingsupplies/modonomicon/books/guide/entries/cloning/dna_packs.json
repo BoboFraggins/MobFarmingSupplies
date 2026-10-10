@@ -1,0 +1,69 @@
+{
+  "type": "modonomicon:content",
+  "id": "mobfarmingsupplies:cloning/dna_packs",
+  "category": "mobfarmingsupplies:cloning",
+  "name": "book.mobfarmingsupplies.guide.cloning.dna_packs.name",
+  "description": "book.mobfarmingsupplies.guide.cloning.dna_packs.description",
+  "icon": {
+    "id": "mobfarmingsupplies:dna_sample_common_hostile"
+  },
+  "x": 0,
+  "y": 0,
+  "sort_number": 2,
+  "pages": [
+    {
+      "id": "p0",
+      "sort_number": 0,
+      "type": "modonomicon:text",
+      "title": "book.mobfarmingsupplies.guide.cloning.dna_packs.p0.title",
+      "text": "book.mobfarmingsupplies.guide.cloning.dna_packs.p0.text"
+    },
+    {
+      "id": "p1",
+      "sort_number": 1,
+      "type": "modonomicon:crafting_recipe",
+      "recipe_id_1": "mobfarmingsupplies:dna_sample_common_hostile",
+      "recipe_id_2": "mobfarmingsupplies:dna_sample_common_passive"
+    },
+    {
+      "id": "p2",
+      "sort_number": 2,
+      "type": "modonomicon:crafting_recipe",
+      "recipe_id_1": "mobfarmingsupplies:dna_sample_aquatic",
+      "recipe_id_2": "mobfarmingsupplies:dna_sample_nether"
+    },
+    {
+      "id": "p3",
+      "sort_number": 3,
+      "type": "modonomicon:text",
+      "title": "book.mobfarmingsupplies.guide.cloning.dna_packs.p3.title",
+      "text": "book.mobfarmingsupplies.guide.cloning.dna_packs.p3.text",
+      "condition": {
+        "type": "modonomicon:mod_loaded",
+        "mod_id": "aquaculture"
+      }
+    },
+    {
+      "id": "p4",
+      "sort_number": 4,
+      "type": "modonomicon:text",
+      "title": "book.mobfarmingsupplies.guide.cloning.dna_packs.p4.title",
+      "text": "book.mobfarmingsupplies.guide.cloning.dna_packs.p4.text",
+      "condition": {
+        "type": "modonomicon:mod_loaded",
+        "mod_id": "evilcraft"
+      }
+    },
+    {
+      "id": "p5",
+      "sort_number": 5,
+      "type": "modonomicon:text",
+      "title": "book.mobfarmingsupplies.guide.cloning.dna_packs.p5.title",
+      "text": "book.mobfarmingsupplies.guide.cloning.dna_packs.p5.text",
+      "condition": {
+        "type": "modonomicon:mod_loaded",
+        "mod_id": "aether_ii"
+      }
+    }
+  ]
+}

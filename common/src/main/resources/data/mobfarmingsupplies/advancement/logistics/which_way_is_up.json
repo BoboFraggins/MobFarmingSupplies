@@ -1,0 +1,31 @@
+{
+  "parent": "mobfarmingsupplies:logistics/a_place_for_everything",
+  "criteria": {
+    "placed": {
+      "trigger": "minecraft:placed_block",
+      "conditions": {
+        "location": {
+          "type": "minecraft:match_block",
+          "blocks": "mobfarmingsupplies:omnidirectional_hopper"
+        }
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "mobfarmingsupplies:omnidirectional_hopper"
+    },
+    "title": {
+      "translate": "advancements.mobfarmingsupplies.which_way_is_up.title"
+    },
+    "description": {
+      "translate": "advancements.mobfarmingsupplies.which_way_is_up.description"
+    },
+    "frame": "goal"
+  },
+  "requirements": [
+    [
+      "placed"
+    ]
+  ]
+}

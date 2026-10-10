@@ -1,109 +1,88 @@
 # Mob Farming Supplies
 
-Mob processing utilities for Minecraft — a toolkit of machines and items for building
-automated mob farms: harvest mobs for drops and XP, vacuum up the loot, clone mobs from
-DNA samples, and keep your farm contained and wither-proof.
+Mob Farming Supplies is a toolkit for building automated mob farms in Minecraft: machines that
+move, hold and kill mobs, a cloning system, item and fluid logistics with real filtering, and
+a handful of things that are simply fun to have.
 
-Built with [Architectury](https://docs.architectury.dev/) for **NeoForge** and **Fabric**.
+It runs on NeoForge and Fabric, built with [Architectury](https://docs.architectury.dev/).
 
-## Features
+## Logistics
 
-### Mob Harvester
+Four specialized hoppers move resources, and all four are configured with the same placement-aware
+side grid.
 
-Place inside a mob grinder. When powered by redstone, it attacks everything in a 3×3×3 area.
-Killed mobs drop items and XP orbs as normal — pair with an Absorption Hopper to collect
-everything automatically.
+The Absorption Hopper collects from the world and pushes to whichever sides you choose. The
+Logistic Sorter reads Item Filters and routes each item to a matching side or a non-matching side,
+holding nothing itself, so it can't jam or lose items. The Omnidirectional Hopper pulls and pushes
+on any side and moves fluids as well as items, along with energy and Mekanism chemicals on
+NeoForge, splitting evenly across its outputs. The Einstein-Rosen Bridge is an Omnidirectional
+Hopper that works at a distance: bridges crafted as a pair share a channel and move resources
+between each other across any distance, including between dimensions, as long as both ends
+are chunk-loaded.
 
-Nine upgrade slots accept:
+Filtering is done with Item Filters, scribed at the Filter Scribing Terminal from Blank Filters.
+A filter can match an exact item, a similar item, everything from a given mod, a common tag such
+as ores or ingots, or a property such as being enchanted or damaged. The Sorter, Omnidirectional
+Hopper and Bridge each combine their filters with AND or OR.
 
-- **Sharpness Upgrade** — increases attack damage
-- **Looting Upgrade** — increases drop rates
-- **Beheading Upgrade** — chance to drop mob heads
+## Mob farming
 
-### Clone-O-Matic
+The Mob Harvester is the center of most farms. Powered by redstone, it attacks every mob in a
+3x3x3 area, and the mobs drop their loot and experience as if a player had killed
+them. Its three upgrade slots take Sharpness, Looting and Beheading Upgrades. Beheading gives a
+chance for the mob's head to drop, and almost every mob in the game has one, not just the handful
+vanilla provides. Players are not exempt.
 
-A redstone-powered mob duplicator. Place DNA Samples or DNA Sample Packs into its nine
-DNA slots; while continuously powered, it periodically attempts to spawn a clone of one
-of the stored mobs in the space around the block. Spawn attempts respect block collisions,
-so the Clone-O-Matic won't jam itself by trying to spawn a mob inside a wall — but it
-ignores nearby entities, so it keeps working even in a crowded farm.
+Getting mobs to the harvester is the job of the movement blocks. A Fan pushes entities away from
+its face when powered, with upgrades that extend its reach in width, height and distance. A Vector
+Plate carries anything standing on it in the direction it faces while keeping it centred in its
+lane, which makes conveyors simple to build. A Halting Plate does the opposite: it draws a mob to
+its centre and holds it there, which is useful for keeping a target exactly where the harvester
+can reach it.
 
-### DNA Collector & DNA Samples
+The farm itself can be built to stay intact. Wither-Proof Glass survives explosions and the
+Wither. Mob Exclusion Glass is just as tough but lets players walk through while staying solid to
+everything else. The Ender Inhibitor stops Endermen teleporting anywhere near it.
 
-- **DNA Collector** — a single-use tool. Right-click any non-player mob to
-  capture its full save data (type, equipment, name, variant, etc.) into a **DNA
-  Sample** item.
-- **DNA Sample** — a unique item representing one specific captured mob. Feed it to a
-  Clone-O-Matic to spawn fresh copies of that exact mob (each clone gets its own
-  identity, so the mob cap isn't accidentally bypassed or blocked).
-- **DNA Sample Packs / DNA Booster Packs** — pre-rolled collections of common mobs
-  (Common Hostile, Common Passive, Aquatic, Nether, Baby, Rare Hostile/Passive, "Wrong
-  Mobs Only", and packs for supported mod-compat mobs) that can be found in dungeon
-  loot. Mob lists are configurable.
+## Cloning
 
-### Absorption Hopper
+A DNA Collector captures a mob's complete data, including its variant and name, into a
+DNA Sample. Feed samples to a powered Clone-O-Matic and it spawns fresh copies of those mobs around
+itself, choosing open space so it never jams. DNA Sample Packs, found in chest loot, hold
+collections of common, aquatic, Nether, rare and baby mobs, with mob lists that can be configured.
 
-A block that vacuums up nearby item entities and XP orbs into internal storage, then
-automatically pushes collected items and XP fluid out to adjacent inventories and tanks.
-Each of its six sides can be individually toggled on/off for output via the in-game UI —
-handy for routing items to specific pipes/chests while keeping XP flowing elsewhere.
+## Experience
 
-### Tank
+Experience is a fluid here, called XP Juice. The Absorption Hopper vacuums up nearby items and
+experience orbs and pushes them out to neighbouring inventories and tanks. The Experience Syringe
+stores your own levels for later: shift-click to bank your progress, click to take back enough for
+the next level. Empty either into a Tank and the experience can be bottled, piped or carried in a
+bucket.
 
-A fluid storage block (also usable as a large bucket) that holds **XP Juice** and other
-fluids. Right-click with a bucket to fill/drain.
+The Tank holds any fluid and keeps its contents when broken. It upgrades in place from the basic
+64 buckets to Gold, Diamond and Emerald tiers, the last holding 4,096 buckets by default, and the
+upgrade recipe keeps whatever is inside. Both the starting size and the growth per tier are
+configurable.
 
-### XP Juice & Experience Syringe
+## Everything else
 
-- **XP Juice** — a fluid representation of player experience. Produced by Absorption
-  Hoppers collecting XP orbs and stored in Tanks.
-- **Experience Syringe** — a portable XP container to store your player levels for future
-  use. Right-click to withdraw enough XP to complete your current level; shift+right-click to
-  deposit your current level's progress back into the syringe.
+The Present relocates blocks. Use it on almost any block, including a full chest or a machine, to
+wrap it up with its contents intact, carry it anywhere, and unwrap it in its new home. The Magic
+Hat yoinks mobs: right-click one to catch it, right-click again to let it out wherever you are,
+and it can be worn on the head or in an accessory slot. The Picnic Basket stores food and feeds you
+automatically when you get hungry, and a campfire, some marshmallows and a few ingredients make
+S'mores. The Toilet destroys anything piped into it, provides endless water, and can be sat on.
+The four novelty buttons play a red alert, a dramatic sting, a rimshot or a Wilhelm scream.
 
-### Ender Inhibitor
+The mod has its own advancement tab, and JEI pages explain the processes that don't use a crafting
+table.
 
-A torch-like block that mounts on any surface (floor, ceiling, or wall) and suppresses
-all Enderman teleportation within an 8-block radius of itself.
-Useful for keeping Endermen penned in a farm instead of teleporting away.
+## Documentation
 
-### Fan
-
-A directional block that, when powered by redstone, pushes entities away from its face
-in a configurable column. Three upgrade slots (up to 5 each) extend the push **width**,
-**height**, and **distance** of the airflow — useful for funneling mobs or items toward
-a collection point.
-
-### Vector Plate
-
-A thin, directional plate block. Any entity standing on it is continuously pushed
-in the plate's facing direction and gently centered on the lane perpendicular to that
-direction — useful for building mob-transport conveyors.
-
-### Wither-Proof Glass
-
-A transparent glass block that is immune to all explosions and cannot be destroyed
-directly by the Wither.
-
-### Mob Exclusion Glass
-
-Behaves exactly like Wither-Proof Glass (explosion-proof, Wither-proof) **except
-players can walk straight through it**, while it remains completely solid to every
-other entity.
-
-## Credits
-
-Inspired by "Mob Grinding Utils": https://github.com/vadis365/Mob-Grinding-Utils
-
-Dramatic Chipmunk Sound: https://notification-sounds.com/2298-dramatic-chipmunk.html -- License: Creative Commons
-
-Red Alert Sound: Red Alert_Nuclear_Buzzer.mp3 by imagery2 -- https://freesound.org/s/458570/ -- License: Creative Commons 0
-
-Rimshot Sound: Rimshot Joke Funny by deleted_user_7146007 -- https://freesound.org/s/383898/ -- License: Creative Commons 0
-
-Wilhelm Scream: https://notification-sounds.com/784-wilhelm-scream.html -- License: Creative Commons
-
-Toilet Flush: https://notification-sounds.com/1586-toilet-flush-sound.html -- License: Creative Commons
+[Configuration](docs/CONFIGURATION.md) lists the server config options.
+[For modpack authors](docs/MODPACK_AUTHORS.md) covers loot, tags, compatibility and the sample
+quest chapter.
+[Credits](docs/CREDITS.md) acknowledges the work this mod builds on.
 
 ## License
 

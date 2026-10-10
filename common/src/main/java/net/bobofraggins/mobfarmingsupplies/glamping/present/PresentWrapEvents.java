@@ -1,5 +1,7 @@
 package net.bobofraggins.mobfarmingsupplies.glamping.present;
 
+import net.minecraft.server.level.ServerPlayer;
+import net.bobofraggins.mobfarmingsupplies.advancement.MFSTriggers;
 import dev.architectury.event.EventResult;
 import dev.architectury.event.events.common.InteractionEvent;
 import net.bobofraggins.mobfarmingsupplies.register.MFSTags;
@@ -86,6 +88,7 @@ public final class PresentWrapEvents {
             if (level.getBlockEntity(pos) instanceof PresentBlockEntity present) {
                 present.setWrappedBlock(state, entityData);
             }
+            if (player instanceof ServerPlayer serverPlayer) MFSTriggers.PRESENT_WRAPPED.get().trigger(serverPlayer);
 
             if (!player.isCreative()) {
                 // Mutating the event's own ItemStack parameter is not reliable — fetch the

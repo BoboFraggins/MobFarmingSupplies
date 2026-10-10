@@ -1,0 +1,14 @@
+{
+  "values": [
+    {
+      "id": "#c:primary_wood_type/oak",
+      "required": false
+    },
+    "minecraft:plains",
+    "minecraft:sunflower_plains",
+    {
+      "id": "#c:is_plains",
+      "required": false
+    }
+  ]
+}

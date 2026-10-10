@@ -1,5 +1,7 @@
 package net.bobofraggins.mobfarmingsupplies.logisticsorter;
 
+import net.minecraft.server.level.ServerPlayer;
+import net.bobofraggins.mobfarmingsupplies.advancement.MFSTriggers;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.Container;
@@ -39,6 +41,9 @@ public class LogisticSorterMenu extends AbstractContainerMenu {
 
     private final BlockPos pos;
     private final Container filters;
+    private final Player player;
+    /** Item Filters installed when last checked (server side), to spot a player adding one. */
+    private int installedFilters;
 
     /** Server-side constructor. */
     public LogisticSorterMenu(int syncId, Inventory inv, LogisticSorterBlockEntity be) {
@@ -54,6 +59,8 @@ public class LogisticSorterMenu extends AbstractContainerMenu {
         super(Registration.LOGISTIC_SORTER_MENU.get(), syncId);
         this.pos = pos;
         this.filters = filters;
+        this.player = inv.player;
+        this.installedFilters = countFilters();
 
         for (int i = 0; i < FILTERS; i++) {
             addSlot(new Slot(filters, i, FILTER_LEFT + i * 18, FILTER_TOP) {
@@ -84,6 +91,25 @@ public class LogisticSorterMenu extends AbstractContainerMenu {
     public boolean stillValid(Player player) {
         return player.distanceToSqr(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5) <= 64
                 && player.level().getBlockState(pos).is(Registration.LOGISTIC_SORTER.get());
+    }
+
+    /** Called every tick on the server: credits the player when they install an Item Filter. */
+    @Override
+    public void broadcastChanges() {
+        super.broadcastChanges();
+        int now = countFilters();
+        if (now > installedFilters && player instanceof ServerPlayer serverPlayer) {
+            MFSTriggers.FILTER_INSTALLED.get().trigger(serverPlayer);
+        }
+        installedFilters = now;
+    }
+
+    private int countFilters() {
+        int count = 0;
+        for (int i = 0; i < filters.getContainerSize(); i++) {
+            if (SorterFilters.isFilter(filters.getItem(i))) count++;
+        }
+        return count;
     }
 
     @Override

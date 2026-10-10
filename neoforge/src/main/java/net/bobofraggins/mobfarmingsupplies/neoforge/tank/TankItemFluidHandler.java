@@ -72,7 +72,7 @@ public class TankItemFluidHandler implements ResourceHandler<FluidResource> {
     public int insert(int index, FluidResource resource, int amount, TransactionContext tx) {
         if (!isValid(index, resource) || amount <= 0) return 0;
         TankContents c = contents();
-        long space = TankBlockItem.capacityOf(container) - c.amount();
+        long space = Math.max(0, TankBlockItem.capacityOf(container) - c.amount());
         int toFill = (int) Math.min(amount, Math.min(space, Integer.MAX_VALUE));
         if (toFill <= 0) return 0;
         FluidStack newType = c.storedFluid().isEmpty()

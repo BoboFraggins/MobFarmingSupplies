@@ -1,5 +1,7 @@
 package net.bobofraggins.mobfarmingsupplies.experiencesyringe;
 
+import net.minecraft.server.level.ServerPlayer;
+import net.bobofraggins.mobfarmingsupplies.advancement.MFSTriggers;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -74,6 +76,7 @@ public class ExperienceSyringeItem extends Item {
                 player.giveExperiencePoints(-toStore);
                 stack.set(Registration.EXPERIENCE_SYRINGE_STORED_XP.get(), stored + toStore);
                 playXpSound(level, player);
+                if (player instanceof ServerPlayer serverPlayer) MFSTriggers.SYRINGE_USED.get().trigger(serverPlayer, "store");
             }
         } else {
             // Withdraw: give the player exactly enough XP to reach their next whole level.
@@ -84,6 +87,7 @@ public class ExperienceSyringeItem extends Item {
                 player.giveExperiencePoints(toGive);
                 stack.set(Registration.EXPERIENCE_SYRINGE_STORED_XP.get(), stored - toGive);
                 playXpSound(level, player);
+                if (player instanceof ServerPlayer serverPlayer) MFSTriggers.SYRINGE_USED.get().trigger(serverPlayer, "withdraw");
             }
         }
 

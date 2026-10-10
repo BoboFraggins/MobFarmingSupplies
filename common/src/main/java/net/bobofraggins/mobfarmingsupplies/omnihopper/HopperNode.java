@@ -33,4 +33,10 @@ public interface HopperNode {
     boolean beginRouting();
 
     void endRouting();
+
+    /**
+     * Called after something is delivered to {@code out} for real (never for a simulation or a
+     * transfer that's rolled back).
+     */
+    default void delivered(HopperOutput out) {}
 }

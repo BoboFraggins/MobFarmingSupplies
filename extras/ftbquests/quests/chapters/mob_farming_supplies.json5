@@ -1,0 +1,501 @@
+{
+  id: "3CE8D6EA98959768",
+  group: "",
+  order_index: 0,
+  icon: {
+    id: "mobfarmingsupplies:mob_harvester",
+    count: 1,
+  },
+  filename: "mob_farming_supplies",
+  default_quest_shape: "",
+  default_hide_dependency_lines: false,
+  quests: [
+    {
+      icon: {
+        id: "mobfarmingsupplies:mob_harvester",
+        count: 1,
+      },
+      x: -3.0,
+      y: 0.0,
+      shape: "gear",
+      size: 2.0,
+      id: "4E11D6BBB7E7C998",
+      tasks: [
+        {
+          id: "468AAE3681B2388D",
+          type: "advancement",
+          advancement: "mobfarmingsupplies:root",
+          criterion: "",
+        },
+      ],
+      rewards: [
+        {
+          id: "1C78879C35A1D290",
+          type: "xp",
+          xp: 10,
+        },
+      ],
+    },
+    {
+      icon: {
+        id: "mobfarmingsupplies:silicon_clump",
+        count: 1,
+      },
+      x: 0.0,
+      y: -2.5,
+      dependencies: [
+        "4E11D6BBB7E7C998",
+      ],
+      size: 1.0,
+      id: "6A8DF2999CD70183",
+      tasks: [
+        {
+          id: "45F989F8F5E1CD08",
+          type: "advancement",
+          advancement: "mobfarmingsupplies:logistics/crushing_it",
+          criterion: "",
+        },
+      ],
+      rewards: [
+        {
+          id: "1DAC5AE0B7117E1E",
+          type: "xp",
+          xp: 25,
+        },
+      ],
+    },
+    {
+      icon: {
+        id: "mobfarmingsupplies:item_filter",
+        count: 1,
+      },
+      x: 1.5,
+      y: -2.5,
+      dependencies: [
+        "6A8DF2999CD70183",
+      ],
+      size: 1.0,
+      id: "478AB4382BBF7378",
+      tasks: [
+        {
+          id: "56BEC9D74DA00E96",
+          type: "advancement",
+          advancement: "mobfarmingsupplies:logistics/read_the_fine_print",
+          criterion: "",
+        },
+      ],
+      rewards: [
+        {
+          id: "53D90743AA72A15B",
+          type: "xp",
+          xp: 25,
+        },
+      ],
+    },
+    {
+      icon: {
+        id: "mobfarmingsupplies:logistic_sorter",
+        count: 1,
+      },
+      x: 3.0,
+      y: -2.5,
+      dependencies: [
+        "478AB4382BBF7378",
+      ],
+      size: 1.0,
+      id: "63FB1D2B18954C06",
+      tasks: [
+        {
+          id: "54792E42F27A6D8B",
+          type: "advancement",
+          advancement: "mobfarmingsupplies:logistics/a_place_for_everything",
+          criterion: "",
+        },
+      ],
+      rewards: [
+        {
+          id: "1F34B8AF76885B45",
+          type: "xp",
+          xp: 25,
+        },
+      ],
+    },
+    {
+      icon: {
+        id: "mobfarmingsupplies:omnidirectional_hopper",
+        count: 1,
+      },
+      x: 4.5,
+      y: -2.5,
+      shape: "hexagon",
+      dependencies: [
+        "63FB1D2B18954C06",
+      ],
+      size: 1.25,
+      id: "5CBB7D677384D6FC",
+      tasks: [
+        {
+          id: "13B8862BB300581A",
+          type: "advancement",
+          advancement: "mobfarmingsupplies:logistics/which_way_is_up",
+          criterion: "",
+        },
+      ],
+      rewards: [
+        {
+          id: "232D398E1334918E",
+          type: "xp",
+          xp: 50,
+        },
+      ],
+    },
+    {
+      icon: {
+        id: "mobfarmingsupplies:einstein_rosen_bridge",
+        count: 1,
+      },
+      x: 6.0,
+      y: -2.5,
+      shape: "octagon",
+      dependencies: [
+        "5CBB7D677384D6FC",
+      ],
+      size: 1.5,
+      id: "4C799A84D50EA814",
+      tasks: [
+        {
+          id: "1DA66B022419887A",
+          type: "advancement",
+          advancement: "mobfarmingsupplies:logistics/spooky_action_at_a_distance",
+          criterion: "",
+        },
+      ],
+      rewards: [
+        {
+          id: "19F4C473BEF63C10",
+          type: "xp",
+          xp: 100,
+        },
+      ],
+    },
+    {
+      icon: {
+        id: "mobfarmingsupplies:mob_harvester",
+        count: 1,
+      },
+      x: 0.0,
+      y: 0.0,
+      dependencies: [
+        "4E11D6BBB7E7C998",
+      ],
+      size: 1.0,
+      id: "2A7E7D1AD1F43950",
+      tasks: [
+        {
+          id: "68C1B226DD80587E",
+          type: "advancement",
+          advancement: "mobfarmingsupplies:mob_farming/some_assembly_required",
+          criterion: "",
+        },
+      ],
+      rewards: [
+        {
+          id: "7028570328164BC5",
+          type: "xp",
+          xp: 25,
+        },
+      ],
+    },
+    {
+      icon: {
+        id: "mobfarmingsupplies:experience_syringe",
+        count: 1,
+      },
+      x: 1.5,
+      y: 0.0,
+      dependencies: [
+        "2A7E7D1AD1F43950",
+      ],
+      size: 1.0,
+      id: "1DF963DF9573D939",
+      tasks: [
+        {
+          id: "6A4306F6F3BAF65A",
+          type: "advancement",
+          advancement: "mobfarmingsupplies:mob_farming/waste_not_want_not",
+          criterion: "",
+        },
+      ],
+      rewards: [
+        {
+          id: "1CFBFCA4E6658C24",
+          type: "xp",
+          xp: 25,
+        },
+      ],
+    },
+    {
+      icon: {
+        id: "mobfarmingsupplies:xp_juice_bucket",
+        count: 1,
+      },
+      x: 3.0,
+      y: 0.0,
+      dependencies: [
+        "1DF963DF9573D939",
+      ],
+      size: 1.0,
+      id: "10DC489C1ACFF826",
+      tasks: [
+        {
+          id: "16DA064C5D6FD146",
+          type: "advancement",
+          advancement: "mobfarmingsupplies:mob_farming/liquid_assets",
+          criterion: "",
+        },
+      ],
+      rewards: [
+        {
+          id: "4E5BECBBAAEFFCC8",
+          type: "xp",
+          xp: 25,
+        },
+      ],
+    },
+    {
+      icon: {
+        id: "mobfarmingsupplies:clone_o_matic",
+        count: 1,
+      },
+      x: 4.5,
+      y: 0.0,
+      shape: "hexagon",
+      dependencies: [
+        "10DC489C1ACFF826",
+      ],
+      size: 1.25,
+      id: "5074A1D1D4B99B96",
+      tasks: [
+        {
+          id: "363A34BC9C74A5A3",
+          type: "advancement",
+          advancement: "mobfarmingsupplies:mob_farming/send_in_the_clones",
+          criterion: "",
+        },
+      ],
+      rewards: [
+        {
+          id: "16F43897771BE895",
+          type: "xp",
+          xp: 50,
+        },
+      ],
+    },
+    {
+      icon: {
+        id: "minecraft:creeper_head",
+        count: 1,
+      },
+      x: 6.0,
+      y: 0.0,
+      dependencies: [
+        "5074A1D1D4B99B96",
+      ],
+      size: 1.0,
+      id: "1E056AE1C1969AF1",
+      tasks: [
+        {
+          id: "2B46AD62FA1ABB10",
+          type: "advancement",
+          advancement: "mobfarmingsupplies:mob_farming/heads_will_roll",
+          criterion: "",
+        },
+      ],
+      rewards: [
+        {
+          id: "2F16DFC9C929C39C",
+          type: "xp",
+          xp: 25,
+        },
+      ],
+    },
+    {
+      icon: {
+        id: "mobfarmingsupplies:mob_head",
+        count: 1,
+        components: {
+          "mobfarmingsupplies:mob_head_type": "minecraft:warden",
+        },
+      },
+      x: 7.5,
+      y: 0.0,
+      shape: "octagon",
+      dependencies: [
+        "1E056AE1C1969AF1",
+      ],
+      size: 1.5,
+      id: "1AE082A987E981CF",
+      tasks: [
+        {
+          id: "18D38F2C6227BE12",
+          type: "advancement",
+          advancement: "mobfarmingsupplies:mob_farming/head_of_the_class",
+          criterion: "",
+        },
+      ],
+      rewards: [
+        {
+          id: "32BB35EF4515CFEF",
+          type: "xp",
+          xp: 100,
+        },
+      ],
+    },
+    {
+      icon: {
+        id: "mobfarmingsupplies:rimshot_button",
+        count: 1,
+      },
+      x: 0.0,
+      y: 2.5,
+      dependencies: [
+        "4E11D6BBB7E7C998",
+      ],
+      size: 1.0,
+      id: "3F6935A10C0D7088",
+      tasks: [
+        {
+          id: "20F09D185C36A08E",
+          type: "advancement",
+          advancement: "mobfarmingsupplies:fun_stuff/ba_dum_tss",
+          criterion: "",
+        },
+      ],
+      rewards: [
+        {
+          id: "2EFCC9707194910B",
+          type: "xp",
+          xp: 25,
+        },
+      ],
+    },
+    {
+      icon: {
+        id: "mobfarmingsupplies:magic_hat",
+        count: 1,
+      },
+      x: 1.5,
+      y: 2.5,
+      dependencies: [
+        "3F6935A10C0D7088",
+      ],
+      size: 1.0,
+      id: "14E28112AF5A5080",
+      tasks: [
+        {
+          id: "39BADFA6F6E50AA8",
+          type: "advancement",
+          advancement: "mobfarmingsupplies:fun_stuff/hat_trick",
+          criterion: "",
+        },
+      ],
+      rewards: [
+        {
+          id: "39B9C1F5E1D34AB4",
+          type: "xp",
+          xp: 25,
+        },
+      ],
+    },
+    {
+      icon: {
+        id: "mobfarmingsupplies:present",
+        count: 1,
+      },
+      x: 3.0,
+      y: 2.5,
+      dependencies: [
+        "14E28112AF5A5080",
+      ],
+      size: 1.0,
+      id: "1FFFBEB8312AF1AC",
+      tasks: [
+        {
+          id: "10A080D46F94CEB9",
+          type: "advancement",
+          advancement: "mobfarmingsupplies:fun_stuff/its_the_thought_that_counts",
+          criterion: "",
+        },
+      ],
+      rewards: [
+        {
+          id: "193975CF9650C3F6",
+          type: "xp",
+          xp: 25,
+        },
+      ],
+    },
+    {
+      icon: {
+        id: "mobfarmingsupplies:smore",
+        count: 1,
+      },
+      x: 4.5,
+      y: 2.5,
+      shape: "hexagon",
+      dependencies: [
+        "1FFFBEB8312AF1AC",
+      ],
+      size: 1.25,
+      id: "3973C58EFD097C00",
+      tasks: [
+        {
+          id: "7D4B2CB2D2910D07",
+          type: "advancement",
+          advancement: "mobfarmingsupplies:fun_stuff/smore_please",
+          criterion: "",
+        },
+      ],
+      rewards: [
+        {
+          id: "253B0C2C28805091",
+          type: "xp",
+          xp: 50,
+        },
+      ],
+    },
+    {
+      icon: {
+        id: "mobfarmingsupplies:toilet",
+        count: 1,
+      },
+      x: 6.0,
+      y: 2.5,
+      shape: "octagon",
+      dependencies: [
+        "3973C58EFD097C00",
+      ],
+      size: 1.5,
+      id: "1CDE9657427F42AF",
+      tasks: [
+        {
+          id: "5C64C17824F14B7B",
+          type: "advancement",
+          advancement: "mobfarmingsupplies:fun_stuff/royal_flush",
+          criterion: "",
+        },
+      ],
+      rewards: [
+        {
+          id: "1F6C8B408F78783B",
+          type: "xp",
+          xp: 100,
+        },
+      ],
+    },
+  ],
+  quest_links: [
+  ],
+  images: [
+  ],
+}

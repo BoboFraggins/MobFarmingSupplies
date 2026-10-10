@@ -1,0 +1,35 @@
+{
+  "parent": "mobfarmingsupplies:fun_stuff/smore_please",
+  "criteria": {
+    "diamond": {
+      "trigger": "mobfarmingsupplies:toilet_flushed",
+      "conditions": {
+        "variant": "minecraft:diamond"
+      }
+    },
+    "diamond_block": {
+      "trigger": "mobfarmingsupplies:toilet_flushed",
+      "conditions": {
+        "variant": "minecraft:diamond_block"
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "mobfarmingsupplies:toilet"
+    },
+    "title": {
+      "translate": "advancements.mobfarmingsupplies.royal_flush.title"
+    },
+    "description": {
+      "translate": "advancements.mobfarmingsupplies.royal_flush.description"
+    },
+    "frame": "challenge"
+  },
+  "requirements": [
+    [
+      "diamond",
+      "diamond_block"
+    ]
+  ]
+}
