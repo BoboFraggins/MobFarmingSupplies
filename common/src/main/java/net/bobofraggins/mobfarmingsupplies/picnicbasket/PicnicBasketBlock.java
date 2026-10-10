@@ -16,6 +16,8 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Mirror;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -72,6 +74,16 @@ public class PicnicBasketBlock extends BaseEntityBlock {
     }
 
     @Override
+    protected BlockState rotate(BlockState state, Rotation rotation) {
+        return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
+    }
+
+    @Override
+    protected BlockState mirror(BlockState state, Mirror mirror) {
+        return state.rotate(mirror.getRotation(state.getValue(FACING)));
+    }
+
+    @Override
     public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         return SHAPE;
     }
@@ -124,6 +136,7 @@ public class PicnicBasketBlock extends BaseEntityBlock {
                             ? "message.mobfarmingsupplies.picnic_basket.autofeed_on"
                             : "message.mobfarmingsupplies.picnic_basket.autofeed_off"));
                 } else {
+                    be.unpackLootTable(player);
                     be.startOpen(player);
                     ExtendedMenus.open(sp, be, Optional.of(pos), ExtendedMenus.OPTIONAL_POS);
                 }
@@ -139,6 +152,7 @@ public class PicnicBasketBlock extends BaseEntityBlock {
         List<ItemStack> drops = super.getDrops(state, params);
         BlockEntity be = params.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
         if (be instanceof PicnicBasketBlockEntity basket) {
+            basket.unpackLootTable(params.getOptionalParameter(LootContextParams.THIS_ENTITY) instanceof Player p ? p : null);
             for (ItemStack drop : drops) {
                 if (drop.getItem() instanceof BlockItem) {
                     TagValueOutput beOut = TagValueOutput.createWithContext(

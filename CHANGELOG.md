@@ -4,6 +4,7 @@
 
 * Added achievements
 * Added Modonomicon documentation
+* Added some structures to appear randomly in the world
 
 ## 26.3.0.4, 26.2.0.5, 26.1.2.7
 

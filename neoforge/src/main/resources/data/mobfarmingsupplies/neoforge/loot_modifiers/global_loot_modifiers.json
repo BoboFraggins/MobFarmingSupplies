@@ -17,6 +17,7 @@
     "mobfarmingsupplies:loot_modifiers/smore",
     "mobfarmingsupplies:loot_modifiers/inject_dungeon",
     "mobfarmingsupplies:loot_modifiers/inject_nether_fortress",
-    "mobfarmingsupplies:loot_modifiers/inject_bastion"
+    "mobfarmingsupplies:loot_modifiers/inject_bastion",
+    "mobfarmingsupplies:loot_modifiers/inject_outhouse_guide"
   ]
 }

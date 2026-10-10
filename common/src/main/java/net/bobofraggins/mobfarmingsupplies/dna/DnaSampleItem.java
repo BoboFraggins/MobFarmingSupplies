@@ -1,5 +1,7 @@
 package net.bobofraggins.mobfarmingsupplies.dna;
 
+import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.util.ProblemReporter;
 import net.bobofraggins.mobfarmingsupplies.mixin.MobFarmAccessor;
 import net.bobofraggins.mobfarmingsupplies.register.MFSTags;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
@@ -83,6 +85,22 @@ public class DnaSampleItem extends Item implements IDnaSampleItem {
      * circular import issues.
      */
     @Nullable
+    /**
+     * A DNA Sample of {@code entity}: its save data (minus carried items and transient state) and
+     * its name. Used by the DNA Collector and by the {@code set_dna_sample} loot function.
+     */
+    public static ItemStack createSample(Entity entity) {
+        TagValueOutput output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, entity.level().registryAccess());
+        entity.save(output);
+        CompoundTag entityNbt = stripSampleNbt(output.buildResult());
+        String mobName = entity.hasCustomName()
+                ? entity.getCustomName().getString()
+                : entity.getType().getDescription().getString();
+        ItemStack sample = new ItemStack(Registration.DNA_SAMPLE.get());
+        sample.set(Registration.DNA_SAMPLE_CONTENTS.get(), new DnaSampleContents(entityNbt, mobName));
+        return sample;
+    }
+
     public static DnaSampleContents getContents(ItemStack stack) {
         return stack.get(Registration.DNA_SAMPLE_CONTENTS.get());
     }

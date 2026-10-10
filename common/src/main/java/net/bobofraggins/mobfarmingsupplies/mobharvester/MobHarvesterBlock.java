@@ -20,6 +20,8 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Mirror;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -78,6 +80,16 @@ public class MobHarvesterBlock extends BaseEntityBlock {
 
     /** Full two-block-tall hitbox (0–16 px wide/deep, 0–32 px tall). */
     private static final VoxelShape SHAPE = Block.box(0, 0, 0, 16, 32, 16);
+
+    @Override
+    protected BlockState rotate(BlockState state, Rotation rotation) {
+        return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
+    }
+
+    @Override
+    protected BlockState mirror(BlockState state, Mirror mirror) {
+        return state.rotate(mirror.getRotation(state.getValue(FACING)));
+    }
 
     @Override
     protected VoxelShape getShape(BlockState state, net.minecraft.world.level.BlockGetter level,

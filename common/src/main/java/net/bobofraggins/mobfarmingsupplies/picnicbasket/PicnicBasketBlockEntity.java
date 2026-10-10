@@ -1,6 +1,7 @@
 package net.bobofraggins.mobfarmingsupplies.picnicbasket;
 
 import net.bobofraggins.mobfarmingsupplies.register.MFSRegistryHelper;
+import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -8,8 +9,12 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Util;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -22,6 +27,12 @@ import net.minecraft.world.level.block.entity.ContainerOpenersCounter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.level.storage.loot.LootParams;
+import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
+import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +50,11 @@ public class PicnicBasketBlockEntity extends BlockEntity implements MenuProvider
     public final SimpleContainer inventory = new SimpleContainer(SLOT_COUNT);
 
     private boolean autoFeed = true;
+
+    /** Loot table to fill the basket from on first open or break, as set by a structure. */
+    @Nullable
+    private ResourceKey<LootTable> lootTable;
+    private long lootTableSeed;
 
     // ── Lid animation state (client-side only) ──────────────────────────────────
 
@@ -131,6 +147,30 @@ public class PicnicBasketBlockEntity extends BlockEntity implements MenuProvider
         setChanged();
     }
 
+    // ── Loot ─────────────────────────────────────────────────────────────────────
+
+    /** Fills the basket from its loot table, if it has one, the way vanilla chests do. */
+    public void unpackLootTable(@Nullable Player player) {
+        if (lootTable == null || !(level instanceof ServerLevel serverLevel)) return;
+        LootTable table = serverLevel.getServer().reloadableRegistries().getLootTable(lootTable);
+        if (player instanceof ServerPlayer sp) CriteriaTriggers.GENERATE_LOOT.trigger(sp, lootTable);
+        lootTable = null;
+        LootParams.Builder params = new LootParams.Builder(serverLevel)
+                .withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(worldPosition));
+        if (player != null) {
+            params.withLuck(player.getLuck()).withParameter(LootContextParams.THIS_ENTITY, player);
+        }
+        // Unlike LootTable.fill, keeps each rolled stack whole in a random empty slot.
+        List<Integer> empty = new ArrayList<>();
+        for (int i = 0; i < SLOT_COUNT; i++) if (inventory.getItem(i).isEmpty()) empty.add(i);
+        Util.shuffle(empty, serverLevel.getRandom());
+        for (ItemStack stack : table.getRandomItems(params.create(LootContextParamSets.CHEST), lootTableSeed)) {
+            if (empty.isEmpty()) break;
+            inventory.setItem(empty.removeLast(), stack);
+        }
+        setChanged();
+    }
+
     // ── MenuProvider ─────────────────────────────────────────────────────────────
 
     @Override
@@ -162,6 +202,10 @@ public class PicnicBasketBlockEntity extends BlockEntity implements MenuProvider
         for (int i = 0; i < SLOT_COUNT; i++) stacks.add(inventory.getItem(i));
         output.store("Items", ItemStack.OPTIONAL_CODEC.listOf(), stacks);
         output.putBoolean("AutoFeed", autoFeed);
+        if (lootTable != null) {
+            output.store("LootTable", LootTable.KEY_CODEC, lootTable);
+            if (lootTableSeed != 0L) output.putLong("LootTableSeed", lootTableSeed);
+        }
     }
 
     @Override
@@ -173,6 +217,8 @@ public class PicnicBasketBlockEntity extends BlockEntity implements MenuProvider
             }
         });
         autoFeed = input.getBooleanOr("AutoFeed", true);
+        lootTable = input.read("LootTable", LootTable.KEY_CODEC).orElse(null);
+        lootTableSeed = input.getLongOr("LootTableSeed", 0L);
     }
 
     // ── Client sync ───────────────────────────────────────────────────────────────

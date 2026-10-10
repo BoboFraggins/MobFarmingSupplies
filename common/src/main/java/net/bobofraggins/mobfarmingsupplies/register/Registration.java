@@ -217,6 +217,9 @@ public final class Registration {
     public static final RegistrySupplier<MapCodec<SetBridgeChannelFunction>> SET_BRIDGE_CHANNEL =
             LOOT_FUNCTIONS.register("set_bridge_channel", () -> SetBridgeChannelFunction.CODEC);
 
+    public static final RegistrySupplier<MapCodec<net.bobofraggins.mobfarmingsupplies.loot.SetDnaSampleFunction>> SET_DNA_SAMPLE =
+            LOOT_FUNCTIONS.register("set_dna_sample", () -> net.bobofraggins.mobfarmingsupplies.loot.SetDnaSampleFunction.CODEC);
+
     // ── Sound events ─────────────────────────────────────────────────────────────
 
     public static final RegistrySupplier<SoundEvent> RED_ALERT_SOUND =
