@@ -27,6 +27,10 @@ public final class MFSConfigImpl {
     private static boolean fanStrongerBlades = false;
     private static int harvesterMaxUpgrade = 10;
     private static int cloneOMaticSpawnInterval = 5;
+    private static int tankBaseCapacity = MFSConfig.DEFAULT_TANK_BASE_CAPACITY;
+    private static int tankUpgradeMultiplier = MFSConfig.DEFAULT_TANK_UPGRADE_MULTIPLIER;
+    private static boolean magicHatZombiesWearHats = true;
+    private static boolean presentEndermenCarryPresents = true;
     private static List<String> commonHostilePackMobs = MFSConfig.DEFAULT_COMMON_HOSTILE;
     private static List<String> commonPassivePackMobs = MFSConfig.DEFAULT_COMMON_PASSIVE;
     private static List<String> aquaticPackMobs = MFSConfig.DEFAULT_AQUATIC;
@@ -39,9 +43,9 @@ public final class MFSConfigImpl {
     private static double toggleButtonChestChance = MFSConfig.DEFAULT_TOGGLE_BUTTON_CHEST_CHANCE;
     private static double magicHatChestChance = MFSConfig.DEFAULT_MAGIC_HAT_CHEST_CHANCE;
     private static double smoreChestChance = MFSConfig.DEFAULT_SMORE_CHEST_CHANCE;
-    private static int omniHopperItemsPerTransfer = MFSConfig.DEFAULT_OMNI_HOPPER_ITEMS_PER_TRANSFER;
-    private static int omniHopperTransferInterval = MFSConfig.DEFAULT_OMNI_HOPPER_TRANSFER_INTERVAL;
-    private static int omniHopperFluidPerTick = MFSConfig.DEFAULT_OMNI_HOPPER_FLUID_PER_TICK;
+    private static int hopperItemsPerTransfer = MFSConfig.DEFAULT_HOPPER_ITEMS_PER_TRANSFER;
+    private static int hopperTransferInterval = MFSConfig.DEFAULT_HOPPER_TRANSFER_INTERVAL;
+    private static int hopperFluidPerTick = MFSConfig.DEFAULT_HOPPER_FLUID_PER_TICK;
     private static double dnaSamplePackCommonChestChance = MFSConfig.DEFAULT_DNA_SAMPLE_PACK_COMMON_CHEST_CHANCE;
     private static double dnaSamplePackRareChestChance = MFSConfig.DEFAULT_DNA_SAMPLE_PACK_RARE_CHEST_CHANCE;
 
@@ -62,12 +66,16 @@ public final class MFSConfigImpl {
     public static double getToggleButtonChestChance()    { return toggleButtonChestChance; }
     public static double getMagicHatChestChance()        { return magicHatChestChance; }
     public static double getSmoreChestChance()           { return smoreChestChance; }
-    public static int getOmniHopperItemsPerTransfer()    { return omniHopperItemsPerTransfer; }
-    public static int getOmniHopperTransferInterval()    { return omniHopperTransferInterval; }
-    public static int getOmniHopperFluidPerTick()        { return omniHopperFluidPerTick; }
+    public static boolean getMagicHatZombiesWearHats()     { return magicHatZombiesWearHats; }
+    public static boolean getPresentEndermenCarryPresents() { return presentEndermenCarryPresents; }
+    public static int getTankBaseCapacity()              { return tankBaseCapacity; }
+    public static int getTankUpgradeMultiplier()         { return tankUpgradeMultiplier; }
+    public static int getHopperItemsPerTransfer()    { return hopperItemsPerTransfer; }
+    public static int getHopperTransferInterval()    { return hopperTransferInterval; }
+    public static int getHopperFluidPerTick()        { return hopperFluidPerTick; }
     // Energy and chemicals aren't moved on Fabric (no energy API in Fabric itself, no Mekanism).
-    public static int getOmniHopperEnergyPerTick()       { return 0; }
-    public static int getOmniHopperChemicalPerTick()     { return 0; }
+    public static int getHopperEnergyPerTick()       { return 0; }
+    public static int getHopperChemicalPerTick()     { return 0; }
     public static double getDnaSamplePackCommonChestChance() { return dnaSamplePackCommonChestChance; }
     public static double getDnaSamplePackRareChestChance()   { return dnaSamplePackRareChestChance; }
 
@@ -104,6 +112,14 @@ public final class MFSConfigImpl {
                     cloneOMaticSpawnInterval = clamp(com.get("spawnInterval").getAsInt(), 1, 200);
             }
 
+            if (root.has("tank")) {
+                JsonObject tank = root.getAsJsonObject("tank");
+                if (tank.has("baseCapacity"))
+                    tankBaseCapacity = clamp(tank.get("baseCapacity").getAsInt(), 1, 2_000_000);
+                if (tank.has("upgradeMultiplier"))
+                    tankUpgradeMultiplier = clamp(tank.get("upgradeMultiplier").getAsInt(), 1, 16);
+            }
+
             if (root.has("toggleButtons")) {
                 JsonObject tb = root.getAsJsonObject("toggleButtons");
                 if (tb.has("chestDropChance"))
@@ -114,6 +130,14 @@ public final class MFSConfigImpl {
                 JsonObject mhc = root.getAsJsonObject("magicHat");
                 if (mhc.has("chestDropChance"))
                     magicHatChestChance = clamp(mhc.get("chestDropChance").getAsDouble(), 0.0, 1.0);
+                if (mhc.has("zombiesWearHats"))
+                    magicHatZombiesWearHats = mhc.get("zombiesWearHats").getAsBoolean();
+            }
+
+            if (root.has("present")) {
+                JsonObject pr = root.getAsJsonObject("present");
+                if (pr.has("endermenCarryPresents"))
+                    presentEndermenCarryPresents = pr.get("endermenCarryPresents").getAsBoolean();
             }
 
             if (root.has("smores")) {
@@ -122,14 +146,16 @@ public final class MFSConfigImpl {
                     smoreChestChance = clamp(sm.get("chestDropChance").getAsDouble(), 0.0, 1.0);
             }
 
-            if (root.has("omnidirectionalHopper")) {
-                JsonObject oh = root.getAsJsonObject("omnidirectionalHopper");
+            // "hoppers" covers all four hoppers; older files called the section "omnidirectionalHopper".
+            String hopperKey = root.has("hoppers") ? "hoppers" : "omnidirectionalHopper";
+            if (root.has(hopperKey)) {
+                JsonObject oh = root.getAsJsonObject(hopperKey);
                 if (oh.has("itemsPerTransfer"))
-                    omniHopperItemsPerTransfer = clamp(oh.get("itemsPerTransfer").getAsInt(), 1, 4096);
+                    hopperItemsPerTransfer = clamp(oh.get("itemsPerTransfer").getAsInt(), 1, 4096);
                 if (oh.has("itemTransferIntervalTicks"))
-                    omniHopperTransferInterval = clamp(oh.get("itemTransferIntervalTicks").getAsInt(), 1, 200);
+                    hopperTransferInterval = clamp(oh.get("itemTransferIntervalTicks").getAsInt(), 1, 200);
                 if (oh.has("fluidPerTick"))
-                    omniHopperFluidPerTick = clamp(oh.get("fluidPerTick").getAsInt(), 1, Integer.MAX_VALUE);
+                    hopperFluidPerTick = clamp(oh.get("fluidPerTick").getAsInt(), 1, Integer.MAX_VALUE);
             }
 
             if (root.has("dnaSamplePacks")) {
@@ -198,23 +224,33 @@ public final class MFSConfigImpl {
         com.addProperty("spawnInterval", 5);
         root.add("cloneOMatic", com);
 
+        JsonObject tank = new JsonObject();
+        tank.addProperty("baseCapacity", MFSConfig.DEFAULT_TANK_BASE_CAPACITY);
+        tank.addProperty("upgradeMultiplier", MFSConfig.DEFAULT_TANK_UPGRADE_MULTIPLIER);
+        root.add("tank", tank);
+
         JsonObject tb = new JsonObject();
         tb.addProperty("chestDropChance", MFSConfig.DEFAULT_TOGGLE_BUTTON_CHEST_CHANCE);
         root.add("toggleButtons", tb);
 
         JsonObject mhc = new JsonObject();
         mhc.addProperty("chestDropChance", MFSConfig.DEFAULT_MAGIC_HAT_CHEST_CHANCE);
+        mhc.addProperty("zombiesWearHats", true);
         root.add("magicHat", mhc);
+
+        JsonObject pr = new JsonObject();
+        pr.addProperty("endermenCarryPresents", true);
+        root.add("present", pr);
 
         JsonObject sm = new JsonObject();
         sm.addProperty("chestDropChance", MFSConfig.DEFAULT_SMORE_CHEST_CHANCE);
         root.add("smores", sm);
 
         JsonObject oh = new JsonObject();
-        oh.addProperty("itemsPerTransfer", MFSConfig.DEFAULT_OMNI_HOPPER_ITEMS_PER_TRANSFER);
-        oh.addProperty("itemTransferIntervalTicks", MFSConfig.DEFAULT_OMNI_HOPPER_TRANSFER_INTERVAL);
-        oh.addProperty("fluidPerTick", MFSConfig.DEFAULT_OMNI_HOPPER_FLUID_PER_TICK);
-        root.add("omnidirectionalHopper", oh);
+        oh.addProperty("itemsPerTransfer", MFSConfig.DEFAULT_HOPPER_ITEMS_PER_TRANSFER);
+        oh.addProperty("itemTransferIntervalTicks", MFSConfig.DEFAULT_HOPPER_TRANSFER_INTERVAL);
+        oh.addProperty("fluidPerTick", MFSConfig.DEFAULT_HOPPER_FLUID_PER_TICK);
+        root.add("hoppers", oh);
 
         JsonObject packs = new JsonObject();
         packs.add("commonHostile", toArray(MFSConfig.DEFAULT_COMMON_HOSTILE));

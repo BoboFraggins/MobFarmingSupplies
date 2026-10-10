@@ -1,0 +1,8 @@
+{
+  "name": "book.mobfarmingsupplies.guide.fun_stuff.name",
+  "icon": {
+    "id": "mobfarmingsupplies:magic_hat"
+  },
+  "display_mode": "index",
+  "sort_number": 4
+}

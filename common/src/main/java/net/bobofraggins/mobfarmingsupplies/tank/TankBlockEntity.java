@@ -133,7 +133,7 @@ public class TankBlockEntity extends BlockEntity implements MenuProvider {
         if (!storedFluid.isEmpty()
                 && (!storedFluid.isFluidEqual(fluid) || !storedFluid.isComponentEqual(fluid))) return 0;
 
-        long space = getCapacity() - amount;
+        long space = Math.max(0, getCapacity() - amount); // never negative, even if the configured size was lowered
         long toInsert = Math.min(requested, space);
         if (toInsert <= 0) return 0;
 

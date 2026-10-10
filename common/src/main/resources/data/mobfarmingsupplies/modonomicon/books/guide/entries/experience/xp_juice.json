@@ -1,0 +1,22 @@
+{
+  "type": "modonomicon:content",
+  "id": "mobfarmingsupplies:experience/xp_juice",
+  "category": "mobfarmingsupplies:experience",
+  "name": "book.mobfarmingsupplies.guide.experience.xp_juice.name",
+  "description": "book.mobfarmingsupplies.guide.experience.xp_juice.description",
+  "icon": {
+    "id": "mobfarmingsupplies:xp_juice_bucket"
+  },
+  "x": 0,
+  "y": 0,
+  "sort_number": 0,
+  "pages": [
+    {
+      "id": "p0",
+      "sort_number": 0,
+      "type": "modonomicon:text",
+      "title": "book.mobfarmingsupplies.guide.experience.xp_juice.p0.title",
+      "text": "book.mobfarmingsupplies.guide.experience.xp_juice.p0.text"
+    }
+  ]
+}

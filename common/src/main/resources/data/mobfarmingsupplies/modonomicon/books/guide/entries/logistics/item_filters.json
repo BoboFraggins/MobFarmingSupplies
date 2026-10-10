@@ -1,0 +1,48 @@
+{
+  "type": "modonomicon:content",
+  "id": "mobfarmingsupplies:logistics/item_filters",
+  "category": "mobfarmingsupplies:logistics",
+  "name": "book.mobfarmingsupplies.guide.logistics.item_filters.name",
+  "description": "book.mobfarmingsupplies.guide.logistics.item_filters.description",
+  "icon": {
+    "id": "mobfarmingsupplies:item_filter"
+  },
+  "x": 0,
+  "y": 0,
+  "sort_number": 2,
+  "pages": [
+    {
+      "id": "p0",
+      "sort_number": 0,
+      "type": "modonomicon:text",
+      "title": "book.mobfarmingsupplies.guide.logistics.item_filters.p0.title",
+      "text": "book.mobfarmingsupplies.guide.logistics.item_filters.p0.text"
+    },
+    {
+      "id": "p1",
+      "sort_number": 1,
+      "type": "modonomicon:smelting_recipe",
+      "recipe_id_1": "mobfarmingsupplies:silicon_from_smelting"
+    },
+    {
+      "id": "p2",
+      "sort_number": 2,
+      "type": "modonomicon:stonecutting_recipe",
+      "recipe_id_1": "mobfarmingsupplies:silicon_wafer"
+    },
+    {
+      "id": "p3",
+      "sort_number": 3,
+      "type": "modonomicon:crafting_recipe",
+      "recipe_id_1": "mobfarmingsupplies:blank_filter",
+      "recipe_id_2": "mobfarmingsupplies:filter_scribing_terminal"
+    },
+    {
+      "id": "p4",
+      "sort_number": 4,
+      "type": "modonomicon:text",
+      "title": "book.mobfarmingsupplies.guide.logistics.item_filters.p4.title",
+      "text": "book.mobfarmingsupplies.guide.logistics.item_filters.p4.text"
+    }
+  ]
+}

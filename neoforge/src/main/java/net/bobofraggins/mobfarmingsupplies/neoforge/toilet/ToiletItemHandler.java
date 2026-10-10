@@ -1,5 +1,10 @@
 package net.bobofraggins.mobfarmingsupplies.neoforge.toilet;
 
+import net.minecraft.world.level.Level;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.BlockPos;
+import net.bobofraggins.mobfarmingsupplies.neoforge.transfer.CommitCallbacks;
+import net.bobofraggins.mobfarmingsupplies.advancement.MFSTriggers;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
@@ -10,9 +15,13 @@ import net.neoforged.neoforge.transfer.transaction.TransactionContext;
  */
 public class ToiletItemHandler implements ResourceHandler<ItemResource> {
 
-    public static final ToiletItemHandler INSTANCE = new ToiletItemHandler();
+    private final Level level;
+    private final BlockPos pos;
 
-    private ToiletItemHandler() {}
+    public ToiletItemHandler(Level level, BlockPos pos) {
+        this.level = level;
+        this.pos = pos;
+    }
 
     @Override public int size() { return 1; }
 
@@ -34,7 +43,11 @@ public class ToiletItemHandler implements ResourceHandler<ItemResource> {
 
     @Override
     public int insert(int index, ItemResource resource, int amount, TransactionContext tx) {
-        return resource.isEmpty() ? 0 : Math.max(amount, 0);
+        if (resource.isEmpty() || amount <= 0) return 0;
+        // "Royal Flush": credit nearby players for what actually went down, not for simulations.
+        String item = BuiltInRegistries.ITEM.getKey(resource.getItem()).toString();
+        CommitCallbacks.onCommit(tx, () -> MFSTriggers.triggerNear(MFSTriggers.TOILET_FLUSHED, level, pos, item));
+        return amount;
     }
 
     @Override

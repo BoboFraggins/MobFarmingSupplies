@@ -1,0 +1,50 @@
+{
+  "structures": [
+    {
+      "structure": "mobfarmingsupplies:oak_outhouse",
+      "weight": 1
+    },
+    {
+      "structure": "mobfarmingsupplies:spruce_outhouse",
+      "weight": 1
+    },
+    {
+      "structure": "mobfarmingsupplies:birch_outhouse",
+      "weight": 1
+    },
+    {
+      "structure": "mobfarmingsupplies:jungle_outhouse",
+      "weight": 1
+    },
+    {
+      "structure": "mobfarmingsupplies:acacia_outhouse",
+      "weight": 1
+    },
+    {
+      "structure": "mobfarmingsupplies:dark_oak_outhouse",
+      "weight": 1
+    },
+    {
+      "structure": "mobfarmingsupplies:mangrove_outhouse",
+      "weight": 1
+    },
+    {
+      "structure": "mobfarmingsupplies:cherry_outhouse",
+      "weight": 1
+    },
+    {
+      "structure": "mobfarmingsupplies:pale_oak_outhouse",
+      "weight": 1
+    },
+    {
+      "structure": "mobfarmingsupplies:bamboo_outhouse",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "spacing": 12,
+    "separation": 4,
+    "salt": 1843275519
+  }
+}

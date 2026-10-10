@@ -1,0 +1,24 @@
+{
+  "parent": "mobfarmingsupplies:fun_stuff/hat_trick",
+  "criteria": {
+    "wrapped": {
+      "trigger": "mobfarmingsupplies:present_wrapped"
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "mobfarmingsupplies:present"
+    },
+    "title": {
+      "translate": "advancements.mobfarmingsupplies.its_the_thought_that_counts.title"
+    },
+    "description": {
+      "translate": "advancements.mobfarmingsupplies.its_the_thought_that_counts.description"
+    }
+  },
+  "requirements": [
+    [
+      "wrapped"
+    ]
+  ]
+}

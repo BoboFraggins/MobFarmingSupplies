@@ -34,6 +34,12 @@ public final class MFSServerConfig {
     /** Ticks between spawn attempts while the Clone-O-Matic is continuously powered (1–200). */
     public static final ModConfigSpec.IntValue CLONE_O_MATIC_SPAWN_INTERVAL;
 
+    // ── Tank ─────────────────────────────────────────────────────────────────────
+    /** The basic Tank's capacity in buckets. */
+    public static final ModConfigSpec.IntValue TANK_BASE_CAPACITY;
+    /** How many times larger each Tank upgrade tier is than the one below. */
+    public static final ModConfigSpec.IntValue TANK_UPGRADE_MULTIPLIER;
+
     // ── DNA Sample Packs ─────────────────────────────────────────────────────────
 
     /**
@@ -97,6 +103,8 @@ public final class MFSServerConfig {
     /** Chance (0.0–1.0) for each toggle button to appear in chest loot tables. */
     public static final ModConfigSpec.DoubleValue TOGGLE_BUTTON_CHEST_CHANCE;
     public static final ModConfigSpec.DoubleValue MAGIC_HAT_CHEST_CHANCE;
+    public static final ModConfigSpec.BooleanValue MAGIC_HAT_ZOMBIES_WEAR_HATS;
+    public static final ModConfigSpec.BooleanValue PRESENT_ENDERMEN_CARRY_PRESENTS;
     public static final ModConfigSpec.DoubleValue SMORE_CHEST_CHANCE;
 
     public static final ModConfigSpec.IntValue OMNI_HOPPER_ITEMS_PER_TRANSFER;
@@ -125,6 +133,16 @@ public final class MFSServerConfig {
         CLONE_O_MATIC_SPAWN_INTERVAL = b
                 .comment("Ticks between spawn attempts while continuously powered (1–200).")
                 .defineInRange("spawnInterval", 5, 1, 200);
+        b.pop();
+
+        b.comment("Tank settings").push("tank");
+        TANK_BASE_CAPACITY = b
+                .comment("Capacity of the basic Tank, in buckets.")
+                .defineInRange("baseCapacity", MFSConfig.DEFAULT_TANK_BASE_CAPACITY, 1, 2_000_000);
+        TANK_UPGRADE_MULTIPLIER = b
+                .comment("Each upgrade tier (Gold, Diamond, Emerald) holds this many times the tier below.",
+                         "Capacities are capped at about 2.1 million buckets.")
+                .defineInRange("upgradeMultiplier", MFSConfig.DEFAULT_TANK_UPGRADE_MULTIPLIER, 1, 16);
         b.pop();
 
         b.comment("DNA Sample Pack mob lists").push("dnaSamplePacks");
@@ -362,6 +380,17 @@ public final class MFSServerConfig {
         MAGIC_HAT_CHEST_CHANCE = b
                 .comment("Chance (0.0-1.0) for the Magic Hat to appear in chest loot tables.")
                 .defineInRange("chestDropChance", MFSConfig.DEFAULT_MAGIC_HAT_CHEST_CHANCE, 0.0, 1.0);
+        MAGIC_HAT_ZOMBIES_WEAR_HATS = b
+                .comment("If true, zombies sometimes spawn wearing a Magic Hat with a mob inside,",
+                         "both naturally and from the Clone-O-Matic.")
+                .define("zombiesWearHats", true);
+        b.pop();
+
+        b.comment("Present settings").push("present");
+        PRESENT_ENDERMEN_CARRY_PRESENTS = b
+                .comment("If true, Endermen sometimes spawn carrying a surprise Present,",
+                         "both naturally and from the Clone-O-Matic.")
+                .define("endermenCarryPresents", true);
         b.pop();
 
         b.comment("S'mores settings").push("smores");
@@ -370,22 +399,24 @@ public final class MFSServerConfig {
                 .defineInRange("chestDropChance", MFSConfig.DEFAULT_SMORE_CHEST_CHANCE, 0.0, 1.0);
         b.pop();
 
-        b.comment("Omnidirectional Hopper settings (rates are per INPUT side)").push("omnidirectionalHopper");
+        b.comment("Hopper settings, shared by the Absorption Hopper, Logistic Sorter, Omnidirectional Hopper",
+                  "and Einstein-Rosen Bridge. Rates are per side: each input side, or each push side of an",
+                  "Absorption Hopper.").push("hoppers");
         OMNI_HOPPER_ITEMS_PER_TRANSFER = b
-                .comment("Items moved per INPUT side each item transfer.")
-                .defineInRange("itemsPerTransfer", MFSConfig.DEFAULT_OMNI_HOPPER_ITEMS_PER_TRANSFER, 1, 4096);
+                .comment("Items moved per side each item transfer.")
+                .defineInRange("itemsPerTransfer", MFSConfig.DEFAULT_HOPPER_ITEMS_PER_TRANSFER, 1, 4096);
         OMNI_HOPPER_TRANSFER_INTERVAL = b
                 .comment("Ticks between item transfers.")
-                .defineInRange("itemTransferIntervalTicks", MFSConfig.DEFAULT_OMNI_HOPPER_TRANSFER_INTERVAL, 1, 200);
+                .defineInRange("itemTransferIntervalTicks", MFSConfig.DEFAULT_HOPPER_TRANSFER_INTERVAL, 1, 200);
         OMNI_HOPPER_FLUID_PER_TICK = b
-                .comment("Fluid (mB) moved per INPUT side each tick.")
-                .defineInRange("fluidPerTick", MFSConfig.DEFAULT_OMNI_HOPPER_FLUID_PER_TICK, 1, Integer.MAX_VALUE);
+                .comment("Fluid (mB) moved per side each tick (Omnidirectional Hopper, Bridge, and the Absorption Hopper's XP).")
+                .defineInRange("fluidPerTick", MFSConfig.DEFAULT_HOPPER_FLUID_PER_TICK, 1, Integer.MAX_VALUE);
         OMNI_HOPPER_ENERGY_PER_TICK = b
-                .comment("Energy (FE) moved per INPUT side each tick.")
-                .defineInRange("energyPerTick", MFSConfig.DEFAULT_OMNI_HOPPER_ENERGY_PER_TICK, 1, Integer.MAX_VALUE);
+                .comment("Energy (FE) moved per input side each tick (Omnidirectional Hopper and Bridge).")
+                .defineInRange("energyPerTick", MFSConfig.DEFAULT_HOPPER_ENERGY_PER_TICK, 1, Integer.MAX_VALUE);
         OMNI_HOPPER_CHEMICAL_PER_TICK = b
-                .comment("Mekanism chemicals (mB) moved per INPUT side each tick.")
-                .defineInRange("chemicalPerTick", MFSConfig.DEFAULT_OMNI_HOPPER_CHEMICAL_PER_TICK, 1, Integer.MAX_VALUE);
+                .comment("Mekanism chemicals (mB) moved per input side each tick (Omnidirectional Hopper and Bridge).")
+                .defineInRange("chemicalPerTick", MFSConfig.DEFAULT_HOPPER_CHEMICAL_PER_TICK, 1, Integer.MAX_VALUE);
         b.pop();
 
         SPEC = b.build();

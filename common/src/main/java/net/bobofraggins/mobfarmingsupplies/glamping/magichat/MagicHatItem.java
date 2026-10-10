@@ -1,5 +1,7 @@
 package net.bobofraggins.mobfarmingsupplies.glamping.magichat;
 
+import net.minecraft.server.level.ServerPlayer;
+import net.bobofraggins.mobfarmingsupplies.advancement.MFSTriggers;
 import net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommon;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -17,6 +19,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntitySpawnRequest;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -110,6 +113,10 @@ public class MagicHatItem extends Item {
         });
         if (entity != null) {
             serverLevel.addFreshEntityWithPassengers(entity);
+            if (entity.getType() == EntityTypes.RABBIT && player instanceof ServerPlayer serverPlayer
+                    && !serverLevel.getEntities(EntityTypes.VILLAGER, entity.getBoundingBox().inflate(3), e -> true).isEmpty()) {
+                MFSTriggers.HAT_TRICK.get().trigger(serverPlayer);
+            }
             serverLevel.playSound(
                     null, spawnX, spawnY, spawnZ, SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.NEUTRAL, 1.0f, 1.0f);
         }

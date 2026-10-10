@@ -1,0 +1,36 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "modonomicon"
+    }
+  ],
+  "fabric:load_conditions": [
+    {
+      "condition": "fabric:all_mods_loaded",
+      "values": [
+        "modonomicon"
+      ]
+    }
+  ],
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "modonomicon:modonomicon",
+          "functions": [
+            {
+              "function": "minecraft:set_components",
+              "components": {
+                "modonomicon:book_id": "mobfarmingsupplies:guide"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

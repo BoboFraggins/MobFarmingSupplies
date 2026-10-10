@@ -1,0 +1,9 @@
+{
+  "name": "book.mobfarmingsupplies.guide.name",
+  "tooltip": "book.mobfarmingsupplies.guide.tooltip",
+  "description": "book.mobfarmingsupplies.guide.description",
+  "display_mode": "index",
+  "generate_book_item": true,
+  "model": "modonomicon:modonomicon_green",
+  "creative_tab": "modonomicon:modonomicon"
+}

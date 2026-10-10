@@ -19,7 +19,7 @@ public final class LogisticSorterPlatform {
     /**
      * Pulls items from the inventory on each INPUT side and moves them to a MATCH side
      * (items passing the filters) or a NO_MATCH side (the rest), up to
-     * {@link LogisticSorterBlockEntity#PULL_PER_SIDE} items per INPUT side.
+     * {@link net.bobofraggins.mobfarmingsupplies.MFSConfig#getHopperItemsPerTransfer()} items per INPUT side.
      */
     @ExpectPlatform
     public static void pullPhase(LogisticSorterBlockEntity be, Level level, BlockPos pos) {

@@ -5,28 +5,26 @@ import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.minecraft.util.StringRepresentable;
 
 /**
- * Tank tiers. Each holds four times the one below; a tank is upgraded by surrounding it with the
- * next tier's material (see {@link TankUpgradeRecipe}), keeping its contents.
+ * Tank tiers. Each holds the configured multiplier times the one below (see {@link TankCapacities}).
+ * A tank is upgraded by surrounding it with the next tier's material (see {@link TankUpgradeRecipe}), keeping its contents.
  */
 public enum TankTier implements StringRepresentable {
-    BASIC("basic", 64_000L),
-    GOLD("gold", 256_000L),
-    DIAMOND("diamond", 1_024_000L),
-    EMERALD("emerald", 4_096_000L);
+    BASIC("basic"),
+    GOLD("gold"),
+    DIAMOND("diamond"),
+    EMERALD("emerald");
 
     public static final Codec<TankTier> CODEC = StringRepresentable.fromEnum(TankTier::values);
 
     private final String name;
-    private final long capacity;
 
-    TankTier(String name, long capacity) {
+    TankTier(String name) {
         this.name = name;
-        this.capacity = capacity;
     }
 
     /** Capacity in mB. */
     public long capacity() {
-        return capacity;
+        return TankCapacities.of(this);
     }
 
     /** This tier's tank block. Only call after registration (e.g. at render time). */

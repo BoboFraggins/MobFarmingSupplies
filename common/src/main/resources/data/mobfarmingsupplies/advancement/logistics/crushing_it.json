@@ -1,0 +1,31 @@
+{
+  "parent": "mobfarmingsupplies:root",
+  "criteria": {
+    "silicon_clump": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:silicon_clump"
+          }
+        ]
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "mobfarmingsupplies:silicon_clump"
+    },
+    "title": {
+      "translate": "advancements.mobfarmingsupplies.crushing_it.title"
+    },
+    "description": {
+      "translate": "advancements.mobfarmingsupplies.crushing_it.description"
+    }
+  },
+  "requirements": [
+    [
+      "silicon_clump"
+    ]
+  ]
+}

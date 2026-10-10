@@ -1,0 +1,8 @@
+{
+  "name": "book.mobfarmingsupplies.guide.cloning.name",
+  "icon": {
+    "id": "mobfarmingsupplies:clone_o_matic"
+  },
+  "display_mode": "index",
+  "sort_number": 1
+}

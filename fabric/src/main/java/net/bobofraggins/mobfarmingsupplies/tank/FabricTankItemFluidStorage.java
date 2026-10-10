@@ -77,7 +77,7 @@ public final class FabricTankItemFluidStorage implements Storage<FluidVariant> {
                 && (!c.storedFluid().isFluidEqual(incoming) || !c.storedFluid().isComponentEqual(incoming))) {
             return 0;
         }
-        long spaceDroplets = (capacity() - c.amount()) * DROPLETS_PER_MB;
+        long spaceDroplets = Math.max(0, capacity() - c.amount()) * DROPLETS_PER_MB;
         long toFillMb = Math.min(maxAmount, spaceDroplets) / DROPLETS_PER_MB;
         if (toFillMb <= 0) return 0;
 

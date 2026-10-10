@@ -1,0 +1,30 @@
+{
+  "parent": "mobfarmingsupplies:fun_stuff/its_the_thought_that_counts",
+  "criteria": {
+    "ate": {
+      "trigger": "minecraft:consume_item",
+      "conditions": {
+        "item": {
+          "items": "mobfarmingsupplies:smore"
+        }
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "mobfarmingsupplies:smore"
+    },
+    "title": {
+      "translate": "advancements.mobfarmingsupplies.smore_please.title"
+    },
+    "description": {
+      "translate": "advancements.mobfarmingsupplies.smore_please.description"
+    },
+    "frame": "goal"
+  },
+  "requirements": [
+    [
+      "ate"
+    ]
+  ]
+}

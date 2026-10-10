@@ -30,6 +30,7 @@
     "architectury": ">=${architectury_version}"
   },
   "suggests": {
+    "modonomicon": "*",
     "jade": "*",
     "jei": "*",
     "aquaculture": "*",

@@ -7,7 +7,8 @@
     "GoalSelectorAccessor",
     "MobFarmAccessor",
     "AnvilBlockMixin",
-    "EnderManPresentMixin"
+    "EnderManPresentMixin",
+    "InventoryChangeTriggerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

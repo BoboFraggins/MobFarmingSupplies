@@ -41,11 +41,11 @@ public final class OmniHopperPlatformImpl {
             BlockPos pos = node.getBlockPos();
             if (itemTick) {
                 Predicate<ItemVariant> items = v -> node.allowsItem(v.toStack());
-                moveResources(node, level, pos, ItemStorage.SIDED, items, MFSConfig.getOmniHopperItemsPerTransfer());
+                moveResources(node, level, pos, ItemStorage.SIDED, items, MFSConfig.getHopperItemsPerTransfer());
             }
             // The mod counts fluid in mB; Fabric's Transfer API counts droplets.
             moveResources(node, level, pos, FluidStorage.SIDED, v -> true,
-                    MFSConfig.getOmniHopperFluidPerTick() * DROPLETS_PER_MB);
+                    MFSConfig.getHopperFluidPerTick() * DROPLETS_PER_MB);
         } finally {
             node.endRouting();
         }
@@ -72,7 +72,10 @@ public final class OmniHopperPlatformImpl {
                 if (dest == null) return 0;
                 try (Transaction tx = Transaction.openOuter()) {
                     long moved = StorageUtil.move(source, dest, filter, max, tx);
-                    if (moved > 0) tx.commit();
+                    if (moved > 0) {
+                        tx.commit();
+                        be.delivered(out);
+                    }
                     return moved;
                 }
             });
@@ -105,7 +108,11 @@ public final class OmniHopperPlatformImpl {
         try {
             return EvenSplit.distribute(be.outputTargets(), amount, (out, max) -> {
                 Storage<T> dest = storageAt(out, lookup);
-                return dest == null ? 0 : dest.insert(variant, max, tx);
+                long inserted = dest == null ? 0 : dest.insert(variant, max, tx);
+                if (inserted > 0) {
+                    tx.addOuterCloseCallback(result -> { if (result.wasCommitted()) be.delivered(out); });
+                }
+                return inserted;
             });
         } finally {
             be.endRouting();

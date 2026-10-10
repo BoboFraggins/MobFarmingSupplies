@@ -1,0 +1,61 @@
+{
+  "type": "modonomicon:content",
+  "id": "mobfarmingsupplies:fun_stuff/picnic_basket",
+  "category": "mobfarmingsupplies:fun_stuff",
+  "name": "book.mobfarmingsupplies.guide.fun_stuff.picnic_basket.name",
+  "description": "book.mobfarmingsupplies.guide.fun_stuff.picnic_basket.description",
+  "icon": {
+    "id": "mobfarmingsupplies:picnic_basket"
+  },
+  "x": 0,
+  "y": 0,
+  "sort_number": 2,
+  "pages": [
+    {
+      "id": "p0",
+      "sort_number": 0,
+      "type": "modonomicon:text",
+      "title": "book.mobfarmingsupplies.guide.fun_stuff.picnic_basket.p0.title",
+      "text": "book.mobfarmingsupplies.guide.fun_stuff.picnic_basket.p0.text"
+    },
+    {
+      "id": "p1",
+      "sort_number": 1,
+      "type": "modonomicon:crafting_recipe",
+      "recipe_id_1": "mobfarmingsupplies:picnic_basket"
+    },
+    {
+      "id": "p2",
+      "sort_number": 2,
+      "type": "modonomicon:text",
+      "title": "book.mobfarmingsupplies.guide.fun_stuff.picnic_basket.p2.title",
+      "text": "book.mobfarmingsupplies.guide.fun_stuff.picnic_basket.p2.text",
+      "condition": {
+        "type": "modonomicon:mod_loaded",
+        "mod_id": "curios"
+      }
+    },
+    {
+      "id": "p3",
+      "sort_number": 3,
+      "type": "modonomicon:text",
+      "title": "book.mobfarmingsupplies.guide.fun_stuff.picnic_basket.p3.title",
+      "text": "book.mobfarmingsupplies.guide.fun_stuff.picnic_basket.p3.text",
+      "condition": {
+        "type": "modonomicon:mod_loaded",
+        "mod_id": "trinkets_updated"
+      }
+    },
+    {
+      "id": "p4",
+      "sort_number": 4,
+      "type": "modonomicon:text",
+      "title": "book.mobfarmingsupplies.guide.fun_stuff.picnic_basket.p4.title",
+      "text": "book.mobfarmingsupplies.guide.fun_stuff.picnic_basket.p4.text",
+      "condition": {
+        "type": "modonomicon:mod_loaded",
+        "mod_id": "solcarrot"
+      }
+    }
+  ]
+}

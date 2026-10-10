@@ -1,13 +1,25 @@
 package net.bobofraggins.mobfarmingsupplies.network;
 
+import dev.architectury.utils.Env;
+import dev.architectury.platform.Platform;
 import dev.architectury.networking.NetworkManager;
 
-/** Registers all server-bound network payloads. Called from {@link net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommon#init()}. */
+/** Registers all network payloads. Called from {@link net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommon#init()}. */
 public final class MFSNetwork {
 
     private MFSNetwork() {}
 
     public static void register() {
+        // Server to client: the client registers the receiver, a dedicated server just the type.
+        if (Platform.getEnvironment() == Env.CLIENT) {
+            NetworkManager.registerReceiver(
+                    NetworkManager.s2c(),
+                    TankCapacitiesPacket.TYPE,
+                    TankCapacitiesPacket.STREAM_CODEC,
+                    TankCapacitiesPacket::handle);
+        } else {
+            NetworkManager.registerS2CPayloadType(TankCapacitiesPacket.TYPE, TankCapacitiesPacket.STREAM_CODEC);
+        }
         NetworkManager.registerReceiver(
                 NetworkManager.c2s(),
                 SetPushSidesPacket.TYPE,

@@ -38,7 +38,7 @@ public final class TankBlockEntityPlatformImpl {
                     && (!be.storedFluid.isFluidEqual(archFluid) || !be.storedFluid.isComponentEqual(archFluid))) {
                 return null;
             }
-            long space = be.getCapacity() - be.amount;
+            long space = Math.max(0, be.getCapacity() - be.amount);
             int toDrain = (int) Math.min(containedAmt, Math.min(space, Integer.MAX_VALUE));
             if (toDrain <= 0) return null;
 
