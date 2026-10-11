@@ -36,6 +36,8 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.levelgen.GenerationStep;
+import net.bobofraggins.mobfarmingsupplies.stirlingengine.fabric.StirlingEngineEnergyStorage;
+import team.reborn.energy.api.EnergyStorage;
 
 @SuppressWarnings("UnstableApiUsage")
 public class MobFarmingSuppliesFabric implements ModInitializer {
@@ -54,10 +56,12 @@ public class MobFarmingSuppliesFabric implements ModInitializer {
         RecipeSynchronization.synchronizeRecipeSerializer(Registration.BRIDGE_LINK_SERIALIZER.get());
         RecipeSynchronization.synchronizeRecipeSerializer(Registration.ANVIL_CRUSHING_SERIALIZER.get());
         FabricLootModifiers.register();
-        // NeoForge adds the ore with a biome modifier (data/mobfarmingsupplies/neoforge/biome_modifier).
-        BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(), GenerationStep.Decoration.UNDERGROUND_ORES,
-                ResourceKey.create(Registries.PLACED_FEATURE,
-                        Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "tritanium_ore")));
+        // NeoForge adds the ores with biome modifiers (data/mobfarmingsupplies/neoforge/biome_modifier).
+        for (String ore : new String[] {"tritanium_ore", "dilithium_ore"}) {
+            BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(), GenerationStep.Decoration.UNDERGROUND_ORES,
+                    ResourceKey.create(Registries.PLACED_FEATURE,
+                            Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, ore)));
+        }
         registerStorages();
         // Magic Hat Trinkets Updated integration — soft dependency, registered only if present.
         // MUST check isModLoaded() before ever calling into MagicHatTrinketSetup: that class
@@ -71,6 +75,11 @@ public class MobFarmingSuppliesFabric implements ModInitializer {
     }
 
     private static void registerStorages() {
+        // The Stirling Engine's energy, through Team Reborn Energy (bundled in the jar).
+        EnergyStorage.SIDED.registerForBlockEntity(
+                (be, direction) -> StirlingEngineEnergyStorage.of(be),
+                Registration.STIRLING_ENGINE_BE_TYPE.get());
+
         // Block-side fluid storage for TankBlockEntity.
         FluidStorage.SIDED.registerForBlockEntities(
                 (be, direction) -> new FabricTankFluidStorage((TankBlockEntity) be),

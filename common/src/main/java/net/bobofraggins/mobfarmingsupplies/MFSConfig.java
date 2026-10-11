@@ -190,6 +190,10 @@ public final class MFSConfig {
     @ExpectPlatform
     public static boolean getTritaniumOreGenerates() { throw new AssertionError(); }
 
+    /** Whether Dilithium Ore generates in new chunks (default: true). */
+    @ExpectPlatform
+    public static boolean getDilithiumOreGenerates() { throw new AssertionError(); }
+
     /** Whether mobs sometimes spawn holding Tritanium Alloy tools (default: true). */
     @ExpectPlatform
     public static boolean getTritaniumMobsCarryTools() { throw new AssertionError(); }

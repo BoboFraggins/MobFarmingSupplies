@@ -19,6 +19,7 @@ import net.minecraft.client.resources.model.ResolvableModel;
 import net.minecraft.client.resources.model.SimpleModelWrapper;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
+import net.bobofraggins.mobfarmingsupplies.stirlingengine.StirlingEngineRenderer;
 
 /**
  * Fabric implementation of {@code ExtraBlockModels}, backed by the
@@ -42,6 +43,10 @@ public final class ExtraBlockModelsImpl {
         register(PicnicBasketRenderer.RIGHT_LID_MODEL_ID);
         register(PresentRenderer.MODEL_ID);
         register(ToiletBlockEntityRenderer.LID_MODEL_ID);
+        register(StirlingEngineRenderer.BODY_MODEL_ID);
+        register(StirlingEngineRenderer.FLYWHEEL_MODEL_ID);
+        register(StirlingEngineRenderer.PISTON_MODEL_ID);
+        register(StirlingEngineRenderer.ROD_MODEL_ID);
     }
 
     private ExtraBlockModelsImpl() {}

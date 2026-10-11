@@ -14,6 +14,7 @@ import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.client.model.standalone.SimpleUnbakedStandaloneModel;
 import net.neoforged.neoforge.client.model.standalone.StandaloneModelKey;
 import org.jetbrains.annotations.Nullable;
+import net.bobofraggins.mobfarmingsupplies.stirlingengine.StirlingEngineRenderer;
 
 /**
  * NeoForge implementation of {@code ExtraBlockModels}, backed by the
@@ -37,6 +38,10 @@ public final class ExtraBlockModelsImpl {
         register(PicnicBasketRenderer.RIGHT_LID_MODEL_ID);
         register(PresentRenderer.MODEL_ID);
         register(ToiletBlockEntityRenderer.LID_MODEL_ID);
+        register(StirlingEngineRenderer.BODY_MODEL_ID);
+        register(StirlingEngineRenderer.FLYWHEEL_MODEL_ID);
+        register(StirlingEngineRenderer.PISTON_MODEL_ID);
+        register(StirlingEngineRenderer.ROD_MODEL_ID);
     }
 
     private ExtraBlockModelsImpl() {}

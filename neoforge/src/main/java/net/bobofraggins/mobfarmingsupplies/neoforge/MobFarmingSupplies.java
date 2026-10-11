@@ -33,6 +33,7 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommon;
 import net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommonClient;
 import net.bobofraggins.mobfarmingsupplies.neoforge.tritanium.MoltenMetalClientEvents;
+import net.bobofraggins.mobfarmingsupplies.neoforge.stirlingengine.StirlingEngineClientEvents;
 
 @Mod(MobFarmingSuppliesCommon.MODID)
 public class MobFarmingSupplies {
@@ -83,6 +84,7 @@ public class MobFarmingSupplies {
                 MagicHatCurioSetup.onClientSetup(modEventBus);
             }
             modEventBus.register(ToiletClientEvents.class);
+            modEventBus.register(StirlingEngineClientEvents.class);
             modEventBus.register(MobHeadClientEvents.class);
         }
 

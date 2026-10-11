@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "mobfarmingsupplies:block/dilithium_ore"
+  }
+}

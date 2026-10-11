@@ -40,6 +40,10 @@ dependencies {
     compileOnly "maven.modrinth:jade:26.1.0+fabric"
     compileOnly "maven.modrinth:jei:jZ7OgHsw"
     compileOnly "eu.pb4:trinkets:4.0.1+26.1"
+    // Team Reborn Energy: the Stirling Engine's energy on Fabric. Bundled in the jar, as
+    // Fabric tech mods do, so it works without players installing it.
+    implementation "teamreborn:energy:5.0.0"
+    include "teamreborn:energy:5.0.0"
     // Trinkets declares Loom injected interfaces, so the dev Minecraft jar's LivingEntity
     // implements a Trinkets type — runClient needs Trinkets on the classpath or it dies with
     // NoClassDefFoundError. Dev runtime only; not a dependency of the released jar.
@@ -71,6 +75,32 @@ shadowJar {
     configurations = [project.configurations.shadowCommon]
     archiveBaseName = mod_id
     archiveClassifier = 'fabric'
+
+    // Loom nests `include`d jars (Team Reborn Energy) only into `jar`, listing them in that jar's
+    // fabric.mod.json. Copy them and that file into this jar, which is the one that ships. It's
+    // done after the jar is built because Shadow would unpack a nested jar into loose classes.
+    dependsOn jar
+    doLast {
+        def dev = java.nio.file.FileSystems.newFileSystem(jar.archiveFile.get().asFile.toPath(), (ClassLoader) null)
+        def out = java.nio.file.FileSystems.newFileSystem(archiveFile.get().asFile.toPath(), (ClassLoader) null)
+        try {
+            def jars = dev.getPath('META-INF/jars')
+            if (java.nio.file.Files.exists(jars)) {
+                java.nio.file.Files.createDirectories(out.getPath('META-INF/jars'))
+                java.nio.file.Files.list(jars).withCloseable { stream ->
+                    stream.forEach { nested ->
+                        java.nio.file.Files.copy(nested, out.getPath('META-INF/jars', nested.fileName.toString()),
+                                java.nio.file.StandardCopyOption.REPLACE_EXISTING)
+                    }
+                }
+            }
+            java.nio.file.Files.copy(dev.getPath('fabric.mod.json'), out.getPath('fabric.mod.json'),
+                    java.nio.file.StandardCopyOption.REPLACE_EXISTING)
+        } finally {
+            out.close()
+            dev.close()
+        }
+    }
 }
 
 jar {

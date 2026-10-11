@@ -359,6 +359,22 @@
   "item.mobfarmingsupplies.tritanium_alloy_leggings": "Tritanium Alloy Leggings",
   "item.mobfarmingsupplies.tritanium_alloy_boots": "Tritanium Alloy Boots",
 
+  "block.mobfarmingsupplies.stirling_engine": "Stirling Engine",
+  "item.mobfarmingsupplies.stirling_engine": "Stirling Engine",
+  "block.mobfarmingsupplies.iron_stirling_engine": "Iron Stirling Engine",
+  "item.mobfarmingsupplies.iron_stirling_engine": "Iron Stirling Engine",
+  "block.mobfarmingsupplies.gold_stirling_engine": "Gold Stirling Engine",
+  "item.mobfarmingsupplies.gold_stirling_engine": "Gold Stirling Engine",
+  "block.mobfarmingsupplies.diamond_stirling_engine": "Diamond Stirling Engine",
+  "item.mobfarmingsupplies.diamond_stirling_engine": "Diamond Stirling Engine",
+  "block.mobfarmingsupplies.emerald_stirling_engine": "Emerald Stirling Engine",
+  "item.mobfarmingsupplies.emerald_stirling_engine": "Emerald Stirling Engine",
+  "item.mobfarmingsupplies.stirling_engine.tooltip": "Makes %s energy a tick over lava, %s over magma or %s over a lit campfire",
+
+  "block.mobfarmingsupplies.dilithium_ore": "Dilithium Ore",
+  "block.mobfarmingsupplies.deepslate_dilithium_ore": "Deepslate Dilithium Ore",
+  "item.mobfarmingsupplies.dilithium_crystal": "Dilithium Crystal",
+
   "book.mobfarmingsupplies.guide.name": "Mob Farming Supplies Guide",
   "book.mobfarmingsupplies.guide.tooltip": "Everything the mod does, and how to use it.",
   "book.mobfarmingsupplies.guide.description": "A guide to every block and item in Mob Farming Supplies. Every section is open from the start; pick one to begin.",

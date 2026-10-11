@@ -4,6 +4,8 @@
     "mobfarmingsupplies:deepslate_tritanium_ore",
     "mobfarmingsupplies:tritanium_block",
     "mobfarmingsupplies:raw_tritanium_block",
-    "mobfarmingsupplies:tritanium_alloy_block"
+    "mobfarmingsupplies:tritanium_alloy_block",
+    "mobfarmingsupplies:dilithium_ore",
+    "mobfarmingsupplies:deepslate_dilithium_ore"
   ]
 }

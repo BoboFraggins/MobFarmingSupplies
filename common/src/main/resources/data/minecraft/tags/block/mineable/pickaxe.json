@@ -21,6 +21,13 @@
     "mobfarmingsupplies:deepslate_tritanium_ore",
     "mobfarmingsupplies:tritanium_block",
     "mobfarmingsupplies:raw_tritanium_block",
-    "mobfarmingsupplies:tritanium_alloy_block"
+    "mobfarmingsupplies:tritanium_alloy_block",
+    "mobfarmingsupplies:stirling_engine",
+    "mobfarmingsupplies:iron_stirling_engine",
+    "mobfarmingsupplies:gold_stirling_engine",
+    "mobfarmingsupplies:diamond_stirling_engine",
+    "mobfarmingsupplies:emerald_stirling_engine",
+    "mobfarmingsupplies:dilithium_ore",
+    "mobfarmingsupplies:deepslate_dilithium_ore"
   ]
 }

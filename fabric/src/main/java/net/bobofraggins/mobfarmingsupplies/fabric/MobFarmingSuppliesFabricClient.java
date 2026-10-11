@@ -36,6 +36,7 @@ import net.minecraft.world.entity.EntityType;
 import dev.architectury.registry.client.level.entity.EntityRendererRegistry;
 import net.bobofraggins.mobfarmingsupplies.toilet.ToiletBlockEntityRenderer;
 import net.minecraft.client.renderer.entity.NoopRenderer;
+import net.bobofraggins.mobfarmingsupplies.stirlingengine.StirlingEngineRenderer;
 
 public class MobFarmingSuppliesFabricClient implements ClientModInitializer {
 
@@ -69,6 +70,9 @@ public class MobFarmingSuppliesFabricClient implements ClientModInitializer {
         BlockEntityRendererRegistry.register(
                 Registration.TOILET_BE_TYPE.get(),
                 ToiletBlockEntityRenderer::new);
+        BlockEntityRendererRegistry.register(
+                Registration.STIRLING_ENGINE_BE_TYPE.get(),
+                StirlingEngineRenderer::new);
         // The toilet seat is invisible: only its rider is drawn.
         EntityRendererRegistry.register(Registration.TOILET_SEAT, NoopRenderer::new);
         ExtraBlockModelsImpl.registerModelLoadingPlugin();

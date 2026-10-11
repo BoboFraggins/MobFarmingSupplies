@@ -76,6 +76,14 @@
     "mobfarmingsupplies:tritanium_alloy_leggings",
     "mobfarmingsupplies:tritanium_alloy_boots",
     "mobfarmingsupplies:biosludge",
-    "mobfarmingsupplies:bioplastic"
+    "mobfarmingsupplies:bioplastic",
+    "mobfarmingsupplies:stirling_engine",
+    "mobfarmingsupplies:iron_stirling_engine",
+    "mobfarmingsupplies:gold_stirling_engine",
+    "mobfarmingsupplies:diamond_stirling_engine",
+    "mobfarmingsupplies:emerald_stirling_engine",
+    "mobfarmingsupplies:dilithium_ore",
+    "mobfarmingsupplies:deepslate_dilithium_ore",
+    "mobfarmingsupplies:dilithium_crystal"
   ]
 }

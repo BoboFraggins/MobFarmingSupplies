@@ -4,7 +4,9 @@
 
 * Added some structures to appear randomly in the world
 * Added Tritanium ore/ingots/weapons/armor - will be used for advanced machines
+* Added Dilithium Crystals
 * Added Biosludge and Bioplastic
+* Added Sterling Engine
 
 * Fix z-fighting when heads are placed as trophies
 

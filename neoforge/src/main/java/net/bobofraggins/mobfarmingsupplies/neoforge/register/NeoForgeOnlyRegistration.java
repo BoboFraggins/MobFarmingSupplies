@@ -34,6 +34,7 @@ import net.bobofraggins.mobfarmingsupplies.neoforge.toilet.ToiletFluidHandler;
 import net.bobofraggins.mobfarmingsupplies.neoforge.toilet.ToiletItemHandler;
 import net.bobofraggins.mobfarmingsupplies.neoforge.tritanium.MoltenTritanium;
 import net.neoforged.fml.ModList;
+import net.bobofraggins.mobfarmingsupplies.neoforge.stirlingengine.StirlingEngineEnergyHandler;
 
 public final class NeoForgeOnlyRegistration {
 
@@ -143,6 +144,11 @@ public final class NeoForgeOnlyRegistration {
 
     // NeoForge capability registration — Fabric equivalents registered in MobFarmingSuppliesFabric.
     private static void registerCapabilities(RegisterCapabilitiesEvent event) {
+        event.registerBlockEntity(
+                Capabilities.Energy.BLOCK,
+                Registration.STIRLING_ENGINE_BE_TYPE.get(),
+                (be, side) -> StirlingEngineEnergyHandler.of(be));
+
         event.registerBlockEntity(
                 Capabilities.Fluid.BLOCK,
                 Registration.TANK_BE_TYPE.get(),

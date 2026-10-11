@@ -1,0 +1,81 @@
+{
+  "parent": "minecraft:block/block",
+  "texture_size": [
+    64,
+    64
+  ],
+  "textures": {
+    "texture": "mobfarmingsupplies:block/stirling_engine",
+    "particle": "mobfarmingsupplies:block/stirling_engine"
+  },
+  "elements": [
+    {
+      "from": [
+        4.001,
+        6.501,
+        0.499
+      ],
+      "to": [
+        4.999,
+        7.499,
+        11.497
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            12.0,
+            10.0,
+            12.25,
+            10.25
+          ],
+          "texture": "#texture"
+        },
+        "south": {
+          "uv": [
+            10.25,
+            12.0,
+            10.5,
+            12.25
+          ],
+          "texture": "#texture"
+        },
+        "east": {
+          "uv": [
+            11.0,
+            4.5,
+            13.75,
+            4.75
+          ],
+          "texture": "#texture"
+        },
+        "west": {
+          "uv": [
+            11.0,
+            4.75,
+            13.75,
+            5.0
+          ],
+          "texture": "#texture"
+        },
+        "up": {
+          "uv": [
+            5.25,
+            13.75,
+            5.0,
+            11.0
+          ],
+          "texture": "#texture"
+        },
+        "down": {
+          "uv": [
+            11.25,
+            5.0,
+            11.0,
+            7.75
+          ],
+          "texture": "#texture"
+        }
+      }
+    }
+  ]
+}

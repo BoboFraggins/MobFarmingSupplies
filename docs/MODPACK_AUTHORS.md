@@ -44,6 +44,10 @@ match Mekanism Tools' Osmium. One Tritanium and three Iron of the same size, as 
 blocks, craft into four of the alloy. Its tags follow the same pattern, such as
 `c:ingots/tritanium_alloy`.
 
+Dilithium Ore is mined like diamond and drops Dilithium Crystals, which carry `c:gems/dilithium`;
+the ore is in `c:ores/dilithium` and placed by the `mobfarmingsupplies:dilithium_ore` placed
+feature.
+
 On NeoForge, both metals join four other mods when they are installed. Productive Metalworks melts
 and casts them, and its foundry alloys one part Molten Tritanium with three of Molten Iron. Mystical
 Agriculture grows Tritanium as a tier three crop and Tritanium Alloy as a tier four crop. Productive
@@ -84,6 +88,11 @@ its advancement is earned. Copy the two files into your pack's quests folder as 
 describes, then edit the rewards and placement to suit your pack.
 
 ## Compatibility
+
+The Stirling Engine makes energy from lava, magma or a lit campfire below it and pushes it into
+every neighbour that takes energy. On NeoForge that is Forge Energy. On Fabric it is Team Reborn
+Energy, the API most Fabric tech mods use, which is bundled with the mod. Each upgrade tier doubles
+its output, from 50 a tick over lava for the basic engine to 800 for the Emerald one.
 
 JEI shows every mob head and guide pages for the processes that don't use a crafting table, such as
 making XP Juice, anvil crushing and beheading. Jade shows block details such as a bridge's channel

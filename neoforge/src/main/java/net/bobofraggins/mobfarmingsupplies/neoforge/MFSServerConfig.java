@@ -107,6 +107,7 @@ public final class MFSServerConfig {
     public static final ModConfigSpec.BooleanValue PRESENT_ENDERMEN_CARRY_PRESENTS;
     public static final ModConfigSpec.BooleanValue TRITANIUM_ORE_GENERATES;
     public static final ModConfigSpec.BooleanValue TRITANIUM_MOBS_CARRY_TOOLS;
+    public static final ModConfigSpec.BooleanValue DILITHIUM_ORE_GENERATES;
     public static final ModConfigSpec.DoubleValue SMORE_CHEST_CHANCE;
 
     public static final ModConfigSpec.IntValue OMNI_HOPPER_ITEMS_PER_TRANSFER;
@@ -403,6 +404,12 @@ public final class MFSServerConfig {
                 .comment("If true, mobs that spawn with a sword, axe or shovel sometimes carry",
                          "a Tritanium Alloy one or a Tritanium Alloy Paxel instead.")
                 .define("mobsCarryTools", true);
+        b.pop();
+
+        b.comment("Dilithium settings").push("dilithium");
+        DILITHIUM_ORE_GENERATES = b
+                .comment("If true, Dilithium Ore generates in new chunks of the overworld.")
+                .define("oreGenerates", true);
         b.pop();
 
         b.comment("S'mores settings").push("smores");

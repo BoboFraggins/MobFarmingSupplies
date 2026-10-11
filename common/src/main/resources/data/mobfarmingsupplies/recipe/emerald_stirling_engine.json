@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "MMM",
+    "MEM",
+    "MMM"
+  ],
+  "key": {
+    "M": "minecraft:emerald",
+    "E": "mobfarmingsupplies:diamond_stirling_engine"
+  },
+  "result": {
+    "id": "mobfarmingsupplies:emerald_stirling_engine"
+  }
+}

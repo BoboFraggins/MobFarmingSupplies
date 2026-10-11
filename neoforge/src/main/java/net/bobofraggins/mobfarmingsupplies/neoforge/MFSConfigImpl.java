@@ -92,6 +92,8 @@ public final class MFSConfigImpl {
 
     public static boolean getTritaniumMobsCarryTools() { return MFSServerConfig.TRITANIUM_MOBS_CARRY_TOOLS.get(); }
 
+    public static boolean getDilithiumOreGenerates() { return MFSServerConfig.DILITHIUM_ORE_GENERATES.get(); }
+
     public static double getSmoreChestChance() {
         return MFSServerConfig.SMORE_CHEST_CHANCE.get();
     }

@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "MMM",
+    "MEM",
+    "MMM"
+  ],
+  "key": {
+    "M": "minecraft:diamond",
+    "E": "mobfarmingsupplies:gold_stirling_engine"
+  },
+  "result": {
+    "id": "mobfarmingsupplies:diamond_stirling_engine"
+  }
+}

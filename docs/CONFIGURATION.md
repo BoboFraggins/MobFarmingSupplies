@@ -113,6 +113,16 @@ The ore generates in veins of up to six blocks, six times per chunk, between Y -
 often near Y 0. Mobs from commands, spawn eggs, buckets, dispensers and the Clone-O-Matic never
 carry Tritanium Alloy tools.
 
+## Dilithium
+
+| Key | Default | Description |
+|---|---|---|
+| `dilithium.oreGenerates` | `true` | When `true`, Dilithium Ore generates in the overworld. Only chunks generated after a change are affected. |
+
+The ore generates like diamond: in veins of up to four blocks, seven times per chunk, from the
+bottom of the world up to Y 16, most often near the bottom, and half as often where a vein touches
+air.
+
 ## Hoppers
 
 These settings are shared by all four hoppers: the Absorption Hopper, Logistic Sorter,

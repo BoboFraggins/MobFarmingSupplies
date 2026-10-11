@@ -33,6 +33,7 @@ public final class MFSConfigImpl {
     private static boolean presentEndermenCarryPresents = true;
     private static boolean tritaniumOreGenerates = true;
     private static boolean tritaniumMobsCarryTools = true;
+    private static boolean dilithiumOreGenerates = true;
     private static List<String> commonHostilePackMobs = MFSConfig.DEFAULT_COMMON_HOSTILE;
     private static List<String> commonPassivePackMobs = MFSConfig.DEFAULT_COMMON_PASSIVE;
     private static List<String> aquaticPackMobs = MFSConfig.DEFAULT_AQUATIC;
@@ -72,6 +73,7 @@ public final class MFSConfigImpl {
     public static boolean getPresentEndermenCarryPresents() { return presentEndermenCarryPresents; }
     public static boolean getTritaniumOreGenerates()       { return tritaniumOreGenerates; }
     public static boolean getTritaniumMobsCarryTools()     { return tritaniumMobsCarryTools; }
+    public static boolean getDilithiumOreGenerates()       { return dilithiumOreGenerates; }
     public static int getTankBaseCapacity()              { return tankBaseCapacity; }
     public static int getTankUpgradeMultiplier()         { return tankUpgradeMultiplier; }
     public static int getHopperItemsPerTransfer()    { return hopperItemsPerTransfer; }
@@ -150,6 +152,12 @@ public final class MFSConfigImpl {
                     tritaniumOreGenerates = tr.get("oreGenerates").getAsBoolean();
                 if (tr.has("mobsCarryTools"))
                     tritaniumMobsCarryTools = tr.get("mobsCarryTools").getAsBoolean();
+            }
+
+            if (root.has("dilithium")) {
+                JsonObject di = root.getAsJsonObject("dilithium");
+                if (di.has("oreGenerates"))
+                    dilithiumOreGenerates = di.get("oreGenerates").getAsBoolean();
             }
 
             if (root.has("smores")) {
@@ -258,6 +266,10 @@ public final class MFSConfigImpl {
         tr.addProperty("oreGenerates", true);
         tr.addProperty("mobsCarryTools", true);
         root.add("tritanium", tr);
+
+        JsonObject di = new JsonObject();
+        di.addProperty("oreGenerates", true);
+        root.add("dilithium", di);
 
         JsonObject sm = new JsonObject();
         sm.addProperty("chestDropChance", MFSConfig.DEFAULT_SMORE_CHEST_CHANCE);

@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "MMM",
+    "MEM",
+    "MMM"
+  ],
+  "key": {
+    "M": "minecraft:gold_ingot",
+    "E": "mobfarmingsupplies:iron_stirling_engine"
+  },
+  "result": {
+    "id": "mobfarmingsupplies:gold_stirling_engine"
+  }
+}

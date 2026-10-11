@@ -2,9 +2,13 @@ package net.bobofraggins.mobfarmingsupplies.register;
 
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
+import net.bobofraggins.mobfarmingsupplies.stirlingengine.StirlingEngineBlock;
+import net.bobofraggins.mobfarmingsupplies.stirlingengine.StirlingEngineBlockEntity;
+import net.bobofraggins.mobfarmingsupplies.stirlingengine.StirlingEngineBlockItem;
+import net.bobofraggins.mobfarmingsupplies.stirlingengine.StirlingEngineTier;
 import net.bobofraggins.mobfarmingsupplies.biosludge.BiosludgeItem;
 import net.bobofraggins.mobfarmingsupplies.tritanium.TritaniumMaterials;
-import net.bobofraggins.mobfarmingsupplies.tritanium.TritaniumOreEnabledFilter;
+import net.bobofraggins.mobfarmingsupplies.worldgen.OreEnabledFilter;
 import net.bobofraggins.mobfarmingsupplies.tritanium.TritaniumPaxelItem;
 import net.bobofraggins.mobfarmingsupplies.tritanium.TritaniumPlatform;
 import net.minecraft.util.valueproviders.UniformInt;
@@ -969,6 +973,53 @@ public final class Registration {
             BLOCK_ENTITIES.register("mob_head",
                     () -> BlockEntityTypePlatform.create(MobHeadBlockEntity::new, MOB_HEAD.get(), MOB_WALL_HEAD.get()));
 
+    // ── Stirling Engine ───────────────────────────────────────────────────────────
+
+    public static final RegistrySupplier<StirlingEngineBlock> STIRLING_ENGINE =
+            registerStirlingEngine("stirling_engine", StirlingEngineTier.BASIC);
+    public static final RegistrySupplier<StirlingEngineBlock> IRON_STIRLING_ENGINE =
+            registerStirlingEngine("iron_stirling_engine", StirlingEngineTier.IRON);
+    public static final RegistrySupplier<StirlingEngineBlock> GOLD_STIRLING_ENGINE =
+            registerStirlingEngine("gold_stirling_engine", StirlingEngineTier.GOLD);
+    public static final RegistrySupplier<StirlingEngineBlock> DIAMOND_STIRLING_ENGINE =
+            registerStirlingEngine("diamond_stirling_engine", StirlingEngineTier.DIAMOND);
+    public static final RegistrySupplier<StirlingEngineBlock> EMERALD_STIRLING_ENGINE =
+            registerStirlingEngine("emerald_stirling_engine", StirlingEngineTier.EMERALD);
+
+    public static final RegistrySupplier<StirlingEngineBlockItem> STIRLING_ENGINE_ITEM =
+            registerStirlingEngineItem("stirling_engine", STIRLING_ENGINE);
+    public static final RegistrySupplier<StirlingEngineBlockItem> IRON_STIRLING_ENGINE_ITEM =
+            registerStirlingEngineItem("iron_stirling_engine", IRON_STIRLING_ENGINE);
+    public static final RegistrySupplier<StirlingEngineBlockItem> GOLD_STIRLING_ENGINE_ITEM =
+            registerStirlingEngineItem("gold_stirling_engine", GOLD_STIRLING_ENGINE);
+    public static final RegistrySupplier<StirlingEngineBlockItem> DIAMOND_STIRLING_ENGINE_ITEM =
+            registerStirlingEngineItem("diamond_stirling_engine", DIAMOND_STIRLING_ENGINE);
+    public static final RegistrySupplier<StirlingEngineBlockItem> EMERALD_STIRLING_ENGINE_ITEM =
+            registerStirlingEngineItem("emerald_stirling_engine", EMERALD_STIRLING_ENGINE);
+
+    public static final RegistrySupplier<BlockEntityType<StirlingEngineBlockEntity>> STIRLING_ENGINE_BE_TYPE =
+            BLOCK_ENTITIES.register("stirling_engine",
+                    () -> BlockEntityTypePlatform.create(StirlingEngineBlockEntity::new, STIRLING_ENGINE.get(),
+                            IRON_STIRLING_ENGINE.get(), GOLD_STIRLING_ENGINE.get(), DIAMOND_STIRLING_ENGINE.get(),
+                            EMERALD_STIRLING_ENGINE.get()));
+
+    private static RegistrySupplier<StirlingEngineBlock> registerStirlingEngine(String name, StirlingEngineTier tier) {
+        return BLOCKS.register(name,
+                () -> new StirlingEngineBlock(tier, BlockBehaviour.Properties.of()
+                        .setId(blockKey(name))
+                        .mapColor(MapColor.METAL)
+                        .requiresCorrectToolForDrops()
+                        .strength(3.5f, 6.0f)
+                        .sound(SoundType.METAL)
+                        .noOcclusion()));
+    }
+
+    private static RegistrySupplier<StirlingEngineBlockItem> registerStirlingEngineItem(
+            String name, RegistrySupplier<StirlingEngineBlock> block) {
+        return ITEMS.register(name,
+                () -> new StirlingEngineBlockItem(block.get(), new Item.Properties().setId(itemKey(name))));
+    }
+
     // ── Toilet ────────────────────────────────────────────────────────────────────
 
     public static final RegistrySupplier<ToiletBlock> TOILET =
@@ -1086,6 +1137,33 @@ public final class Registration {
     public static final RegistrySupplier<Item> TRITANIUM_INGOT = item("tritanium_ingot", Item::new, props -> props);
     public static final RegistrySupplier<Item> TRITANIUM_NUGGET = item("tritanium_nugget", Item::new, props -> props);
 
+    // ── Dilithium ─────────────────────────────────────────────────────────────────
+    // Mined like diamond: the ore drops Dilithium Crystals, with no raw form or smelting.
+
+    public static final RegistrySupplier<DropExperienceBlock> DILITHIUM_ORE =
+            BLOCKS.register("dilithium_ore",
+                    () -> new DropExperienceBlock(UniformInt.of(3, 7), BlockBehaviour.Properties.of()
+                            .setId(blockKey("dilithium_ore"))
+                            .mapColor(MapColor.STONE)
+                            .instrument(NoteBlockInstrument.BASEDRUM)
+                            .requiresCorrectToolForDrops()
+                            .strength(3.0f, 3.0f)));
+
+    public static final RegistrySupplier<DropExperienceBlock> DEEPSLATE_DILITHIUM_ORE =
+            BLOCKS.register("deepslate_dilithium_ore",
+                    () -> new DropExperienceBlock(UniformInt.of(3, 7), BlockBehaviour.Properties.of()
+                            .setId(blockKey("deepslate_dilithium_ore"))
+                            .mapColor(MapColor.DEEPSLATE)
+                            .instrument(NoteBlockInstrument.BASEDRUM)
+                            .requiresCorrectToolForDrops()
+                            .strength(4.5f, 3.0f)
+                            .sound(SoundType.DEEPSLATE)));
+
+    public static final RegistrySupplier<BlockItem> DILITHIUM_ORE_ITEM = blockItem("dilithium_ore", DILITHIUM_ORE);
+    public static final RegistrySupplier<BlockItem> DEEPSLATE_DILITHIUM_ORE_ITEM =
+            blockItem("deepslate_dilithium_ore", DEEPSLATE_DILITHIUM_ORE);
+    public static final RegistrySupplier<Item> DILITHIUM_CRYSTAL = item("dilithium_crystal", Item::new, props -> props);
+
     // ── Tritanium Alloy ───────────────────────────────────────────────────────────
     // Tritanium itself is only an ingredient for the alloy. The tools' damage and speed are
     // Mekanism Tools' Osmium values; each adds the material's +4 damage.
@@ -1134,8 +1212,10 @@ public final class Registration {
     public static final DeferredRegister<PlacementModifierType<?>> PLACEMENT_MODIFIERS =
             DeferredRegister.create(MobFarmingSuppliesCommon.MODID, Registries.PLACEMENT_MODIFIER_TYPE);
 
-    public static final RegistrySupplier<PlacementModifierType<TritaniumOreEnabledFilter>> TRITANIUM_ORE_ENABLED =
-            PLACEMENT_MODIFIERS.register("tritanium_ore_enabled", () -> () -> TritaniumOreEnabledFilter.CODEC);
+    public static final RegistrySupplier<PlacementModifierType<OreEnabledFilter>> TRITANIUM_ORE_ENABLED =
+            PLACEMENT_MODIFIERS.register("tritanium_ore_enabled", () -> () -> OreEnabledFilter.TRITANIUM_CODEC);
+    public static final RegistrySupplier<PlacementModifierType<OreEnabledFilter>> DILITHIUM_ORE_ENABLED =
+            PLACEMENT_MODIFIERS.register("dilithium_ore_enabled", () -> () -> OreEnabledFilter.DILITHIUM_CODEC);
 
     private static RegistrySupplier<BlockItem> blockItem(String name, RegistrySupplier<? extends Block> block) {
         return ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties().setId(itemKey(name))));
@@ -1213,6 +1293,11 @@ public final class Registration {
                         output.accept(GOLD_TANK_ITEM.get());
                         output.accept(DIAMOND_TANK_ITEM.get());
                         output.accept(EMERALD_TANK_ITEM.get());
+                        output.accept(STIRLING_ENGINE_ITEM.get());
+                        output.accept(IRON_STIRLING_ENGINE_ITEM.get());
+                        output.accept(GOLD_STIRLING_ENGINE_ITEM.get());
+                        output.accept(DIAMOND_STIRLING_ENGINE_ITEM.get());
+                        output.accept(EMERALD_STIRLING_ENGINE_ITEM.get());
                         output.accept(EXPERIENCE_SYRINGE.get());
                         output.accept(XP_JUICE_BUCKET.get());
                         output.accept(ENDER_INHIBITOR_ITEM.get());
@@ -1230,6 +1315,9 @@ public final class Registration {
                         output.accept(TRITANIUM_INGOT.get());
                         output.accept(TRITANIUM_BLOCK_ITEM.get());
                         ModCompatRegistration.extraTritaniumItems().forEach(item -> output.accept(item.get()));
+                        output.accept(DILITHIUM_ORE_ITEM.get());
+                        output.accept(DEEPSLATE_DILITHIUM_ORE_ITEM.get());
+                        output.accept(DILITHIUM_CRYSTAL.get());
                         output.accept(TRITANIUM_ALLOY_NUGGET.get());
                         output.accept(TRITANIUM_ALLOY_INGOT.get());
                         output.accept(TRITANIUM_ALLOY_BLOCK_ITEM.get());

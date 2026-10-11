@@ -1,6 +1,8 @@
 {
   "values": [
     "mobfarmingsupplies:tritanium_ore",
-    "mobfarmingsupplies:deepslate_tritanium_ore"
+    "mobfarmingsupplies:deepslate_tritanium_ore",
+    "mobfarmingsupplies:dilithium_ore",
+    "mobfarmingsupplies:deepslate_dilithium_ore"
   ]
 }
