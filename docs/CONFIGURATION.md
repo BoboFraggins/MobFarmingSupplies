@@ -102,6 +102,17 @@ fortress and bastion chests are set by loot tables rather than this file. See
 
 Mobs created with commands, spawn eggs, buckets or dispensers never get either.
 
+## Tritanium
+
+| Key | Default | Description |
+|---|---|---|
+| `tritanium.oreGenerates` | `true` | When `true`, Tritanium Ore generates in the overworld. Only chunks generated after a change are affected. |
+| `tritanium.mobsCarryTools` | `true` | When `true`, a mob that spawns holding a sword, axe or shovel has a 10% chance to hold the Tritanium Alloy version instead and a 10% chance to hold a Tritanium Alloy Paxel. |
+
+The ore generates in veins of up to six blocks, six times per chunk, between Y -48 and 48 and most
+often near Y 0. Mobs from commands, spawn eggs, buckets, dispensers and the Clone-O-Matic never
+carry Tritanium Alloy tools.
+
 ## Hoppers
 
 These settings are shared by all four hoppers: the Absorption Hopper, Logistic Sorter,

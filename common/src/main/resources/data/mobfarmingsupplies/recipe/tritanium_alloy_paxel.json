@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "A": "mobfarmingsupplies:tritanium_alloy_axe",
+    "H": "mobfarmingsupplies:tritanium_alloy_shovel",
+    "P": "mobfarmingsupplies:tritanium_alloy_pickaxe",
+    "#": "minecraft:stick"
+  },
+  "pattern": [
+    "AHP",
+    " # ",
+    " # "
+  ],
+  "result": {
+    "id": "mobfarmingsupplies:tritanium_alloy_paxel"
+  }
+}

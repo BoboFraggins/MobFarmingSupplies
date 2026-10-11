@@ -1,12 +1,18 @@
 # Mob Farming Supplies
 
+## 26.3.0.6, 26.2.0.7, 26.1.2.9
+
+* Added some structures to appear randomly in the world
+* Added Tritanium ore/ingots/weapons/armor - will be used for advanced machines
+* Added Biosludge and Bioplastic
+
+* Fix z-fighting when heads are placed as trophies
+
 ## 26.3.0.5, 26.2.0.6, 26.1.2.8
 
 * Added achievements
 * Added Modonomicon documentation
 * Added some structures to appear randomly in the world
-
-* Fix z-fighting when heads are placed as trophies
 
 ## 26.3.0.4, 26.2.0.5, 26.1.2.7
 

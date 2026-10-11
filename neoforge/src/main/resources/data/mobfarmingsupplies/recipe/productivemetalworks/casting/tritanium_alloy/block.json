@@ -1,0 +1,17 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "productivemetalworks"
+    }
+  ],
+  "type": "productivemetalworks:block_casting",
+  "consume_cast": false,
+  "fluid": {
+    "amount": 810,
+    "ingredient": "#c:molten_tritanium_alloy"
+  },
+  "result": {
+    "id": "mobfarmingsupplies:tritanium_alloy_block"
+  }
+}

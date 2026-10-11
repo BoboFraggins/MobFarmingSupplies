@@ -1,0 +1,10 @@
+{
+  "attack": 1.0,
+  "flowerTag": "c:storage_blocks/tritanium",
+  "particleColor": "#39f014",
+  "primaryColor": "#39f014",
+  "renderer": "default_crystal",
+  "secondaryColor": "#804f40",
+  "size": 0.6,
+  "tertiaryColor": "#1f8c0c"
+}

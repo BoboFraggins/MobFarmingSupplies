@@ -32,6 +32,8 @@ import net.bobofraggins.mobfarmingsupplies.register.ModCompatRegistration;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.bobofraggins.mobfarmingsupplies.neoforge.toilet.ToiletFluidHandler;
 import net.bobofraggins.mobfarmingsupplies.neoforge.toilet.ToiletItemHandler;
+import net.bobofraggins.mobfarmingsupplies.neoforge.tritanium.MoltenTritanium;
+import net.neoforged.fml.ModList;
 
 public final class NeoForgeOnlyRegistration {
 
@@ -119,6 +121,9 @@ public final class NeoForgeOnlyRegistration {
      */
     public static void register(IEventBus modEventBus) {
         ModCompatRegistration.register();
+        if (ModList.get().isLoaded("productivemetalworks")) {
+            MoltenTritanium.register();
+        }
 
         FluidContainerIngredient.typeHolder = FLUID_INGREDIENT_TYPE;
 

@@ -7,6 +7,10 @@ Mob Farming Supplies began as an homage to
 [Mob Grinding Utils](https://github.com/vadis365/Mob-Grinding-Utils) by vadis365, and several of
 its farming blocks follow that mod's design.
 
+The Tritanium Alloy Paxel follows the Paxel from
+[Mekanism Tools](https://github.com/mekanism/Mekanism), and Tritanium Alloy's tools and armor use
+the values of its Osmium set. Tritanium's textures are recoloured from vanilla Minecraft's gold.
+
 ## Sounds
 
 The Dramatic Button plays the Dramatic Chipmunk, from

@@ -6,6 +6,7 @@ import net.bobofraggins.mobfarmingsupplies.dna.DnaSamplePackItem;
 import net.minecraft.world.item.Item;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,6 +29,31 @@ public final class ModCompatRegistration {
     @Nullable public static RegistrySupplier<DnaSamplePackItem> DNA_BOOSTER_AETHER_PASSIVE;
     @Nullable public static RegistrySupplier<DnaSamplePackItem> DNA_BOOSTER_AETHER_HOSTILE;
     @Nullable public static RegistrySupplier<DnaSamplePackItem> DNA_BOOSTER_EVILCRAFT;
+    /** Sieved from gravel with Ex Deorum. */
+    @Nullable public static RegistrySupplier<Item> TRITANIUM_ORE_CHUNK;
+
+    /** Other mods' Tritanium items, such as the Molten Tritanium bucket NeoForge adds. */
+    private static final List<RegistrySupplier<? extends Item>> EXTRA_TRITANIUM_ITEMS = new ArrayList<>();
+
+    /** Adds an item to the creative tab after the Block of Tritanium. */
+    public static void addTritaniumItem(RegistrySupplier<? extends Item> item) {
+        EXTRA_TRITANIUM_ITEMS.add(item);
+    }
+
+    public static List<RegistrySupplier<? extends Item>> extraTritaniumItems() {
+        return EXTRA_TRITANIUM_ITEMS;
+    }
+
+    private static final List<RegistrySupplier<? extends Item>> EXTRA_TRITANIUM_ALLOY_ITEMS = new ArrayList<>();
+
+    /** Adds an item to the creative tab after the Block of Tritanium Alloy. */
+    public static void addTritaniumAlloyItem(RegistrySupplier<? extends Item> item) {
+        EXTRA_TRITANIUM_ALLOY_ITEMS.add(item);
+    }
+
+    public static List<RegistrySupplier<? extends Item>> extraTritaniumAlloyItems() {
+        return EXTRA_TRITANIUM_ALLOY_ITEMS;
+    }
 
     // ── Mob pools ─────────────────────────────────────────────────────────────────
 
@@ -66,6 +92,11 @@ public final class ModCompatRegistration {
     // ── Registration ──────────────────────────────────────────────────────────────
 
     public static void register() {
+        if (Platform.isModLoaded("exdeorum")) {
+            TRITANIUM_ORE_CHUNK = Registration.ITEMS.register("tritanium_ore_chunk",
+                    () -> new Item(new Item.Properties().setId(Registration.itemKey("tritanium_ore_chunk"))));
+        }
+
         if (Platform.isModLoaded("aquaculture")) {
             DNA_BOOSTER_AQUACULTURE = Registration.ITEMS.register(
                     "dna_booster_pack_aquaculture",

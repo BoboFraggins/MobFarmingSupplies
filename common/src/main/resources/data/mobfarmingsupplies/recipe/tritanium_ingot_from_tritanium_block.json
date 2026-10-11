@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "mobfarmingsupplies:tritanium_block"
+  ],
+  "result": {
+    "id": "mobfarmingsupplies:tritanium_ingot",
+    "count": 9
+  },
+  "group": "tritanium_ingot"
+}

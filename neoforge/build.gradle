@@ -44,6 +44,14 @@ repositories {
             includeGroup 'top.theillusivec4.curios'
         }
     }
+    maven {
+        name = "Blake's Mods Maven"
+        url = 'https://maven.blakesmods.com'
+        content {
+            includeGroup 'com.blakebr0.cucumber'
+            includeGroup 'com.blakebr0.mysticalagriculture'
+        }
+    }
 }
 
 dependencies {
@@ -56,6 +64,10 @@ dependencies {
 
     // Curios soft dependency.
     compileOnly "top.theillusivec4.curios:curios-neoforge:15.0.0+26.1.2:api"
+
+    // Mystical Agriculture soft dependency (the Tritanium crop plugin).
+    compileOnly("com.blakebr0.cucumber:Cucumber:26.1.2-9.0.2") { transitive = false }
+    compileOnly("com.blakebr0.mysticalagriculture:MysticalAgriculture:26.1.2-9.0.3") { transitive = false }
 
     common(project(path: ':common')) { transitive false }
     shadowCommon(project(path: ':common', configuration: 'transformProductionNeoForge')) { transitive false }

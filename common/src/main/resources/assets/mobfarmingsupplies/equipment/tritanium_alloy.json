@@ -1,0 +1,19 @@
+{
+  "layers": {
+    "humanoid": [
+      {
+        "texture": "mobfarmingsupplies:tritanium_alloy"
+      }
+    ],
+    "humanoid_baby": [
+      {
+        "texture": "mobfarmingsupplies:tritanium_alloy"
+      }
+    ],
+    "humanoid_leggings": [
+      {
+        "texture": "mobfarmingsupplies:tritanium_alloy"
+      }
+    ]
+  }
+}

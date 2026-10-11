@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:smelting",
+  "category": "misc",
+  "cookingtime": 200,
+  "experience": 0.1,
+  "ingredient": [
+    "mobfarmingsupplies:tritanium_alloy_sword",
+    "mobfarmingsupplies:tritanium_alloy_pickaxe",
+    "mobfarmingsupplies:tritanium_alloy_axe",
+    "mobfarmingsupplies:tritanium_alloy_shovel",
+    "mobfarmingsupplies:tritanium_alloy_hoe",
+    "mobfarmingsupplies:tritanium_alloy_paxel",
+    "mobfarmingsupplies:tritanium_alloy_helmet",
+    "mobfarmingsupplies:tritanium_alloy_chestplate",
+    "mobfarmingsupplies:tritanium_alloy_leggings",
+    "mobfarmingsupplies:tritanium_alloy_boots"
+  ],
+  "result": {
+    "id": "mobfarmingsupplies:tritanium_alloy_nugget"
+  }
+}

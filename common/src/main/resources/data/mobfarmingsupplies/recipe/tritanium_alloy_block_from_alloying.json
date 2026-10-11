@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "#c:storage_blocks/tritanium",
+    "#c:storage_blocks/iron",
+    "#c:storage_blocks/iron",
+    "#c:storage_blocks/iron"
+  ],
+  "result": {
+    "id": "mobfarmingsupplies:tritanium_alloy_block",
+    "count": 4
+  }
+}

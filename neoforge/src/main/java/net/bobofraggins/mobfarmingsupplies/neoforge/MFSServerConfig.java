@@ -105,6 +105,8 @@ public final class MFSServerConfig {
     public static final ModConfigSpec.DoubleValue MAGIC_HAT_CHEST_CHANCE;
     public static final ModConfigSpec.BooleanValue MAGIC_HAT_ZOMBIES_WEAR_HATS;
     public static final ModConfigSpec.BooleanValue PRESENT_ENDERMEN_CARRY_PRESENTS;
+    public static final ModConfigSpec.BooleanValue TRITANIUM_ORE_GENERATES;
+    public static final ModConfigSpec.BooleanValue TRITANIUM_MOBS_CARRY_TOOLS;
     public static final ModConfigSpec.DoubleValue SMORE_CHEST_CHANCE;
 
     public static final ModConfigSpec.IntValue OMNI_HOPPER_ITEMS_PER_TRANSFER;
@@ -391,6 +393,16 @@ public final class MFSServerConfig {
                 .comment("If true, Endermen sometimes spawn carrying a surprise Present,",
                          "both naturally and from the Clone-O-Matic.")
                 .define("endermenCarryPresents", true);
+        b.pop();
+
+        b.comment("Tritanium settings").push("tritanium");
+        TRITANIUM_ORE_GENERATES = b
+                .comment("If true, Tritanium Ore generates in new chunks of the overworld.")
+                .define("oreGenerates", true);
+        TRITANIUM_MOBS_CARRY_TOOLS = b
+                .comment("If true, mobs that spawn with a sword, axe or shovel sometimes carry",
+                         "a Tritanium Alloy one or a Tritanium Alloy Paxel instead.")
+                .define("mobsCarryTools", true);
         b.pop();
 
         b.comment("S'mores settings").push("smores");

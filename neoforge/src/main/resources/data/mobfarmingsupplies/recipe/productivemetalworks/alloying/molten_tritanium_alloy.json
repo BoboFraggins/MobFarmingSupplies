@@ -1,0 +1,24 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "productivemetalworks"
+    }
+  ],
+  "type": "productivemetalworks:fluid_alloying",
+  "fluids": [
+    {
+      "amount": 10,
+      "ingredient": "#c:molten_tritanium"
+    },
+    {
+      "amount": 30,
+      "ingredient": "#c:molten_iron"
+    }
+  ],
+  "result": {
+    "amount": 40,
+    "id": "mobfarmingsupplies:molten_tritanium_alloy"
+  },
+  "speed": 4
+}

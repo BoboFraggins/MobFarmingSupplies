@@ -1,0 +1,30 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "productivebees"
+    }
+  ],
+  "type": "productivebees:advanced_beehive",
+  "ingredient": "mobfarmingsupplies:tritanium_alloy",
+  "results": [
+    {
+      "chance": 1.0,
+      "min": 1,
+      "max": 1,
+      "item": {
+        "neoforge:ingredient_type": "productivebees:component",
+        "components": {
+          "productivebees:bee_type": "mobfarmingsupplies:tritanium_alloy"
+        },
+        "items": "productivebees:configurable_honeycomb"
+      }
+    },
+    {
+      "chance": 0.05,
+      "min": 1,
+      "max": 1,
+      "item": "#c:pollens"
+    }
+  ]
+}

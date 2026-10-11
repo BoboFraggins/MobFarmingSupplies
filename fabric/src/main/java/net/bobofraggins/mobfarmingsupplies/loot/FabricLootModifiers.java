@@ -72,7 +72,8 @@ public final class FabricLootModifiers {
             }
 
             // Shared inject tables (also used by NeoForge's add_table modifiers): XP Syringes in
-            // dungeons, Omnidirectional Hoppers in fortresses, linked bridge pairs in bastions.
+            // dungeons, Omnidirectional Hoppers in fortresses, linked bridge pairs in bastions,
+            // enchanted Tritanium Paxels in End Cities.
             switch (tableId) {
                 case "minecraft:chests/simple_dungeon" -> addTable(tableBuilder, "dungeon");
                 // The outhouse's guide book only exists (and its table only loads) with Modonomicon.
@@ -82,6 +83,7 @@ public final class FabricLootModifiers {
                 case "minecraft:chests/nether_bridge" -> addTable(tableBuilder, "nether_fortress");
                 case "minecraft:chests/bastion_bridge", "minecraft:chests/bastion_hoglin_stable",
                      "minecraft:chests/bastion_other", "minecraft:chests/bastion_treasure" -> addTable(tableBuilder, "bastion");
+                case "minecraft:chests/end_city_treasure" -> addTable(tableBuilder, "end_city_treasure");
                 default -> { }
             }
 

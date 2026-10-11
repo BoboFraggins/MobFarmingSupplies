@@ -31,6 +31,8 @@ public final class MFSConfigImpl {
     private static int tankUpgradeMultiplier = MFSConfig.DEFAULT_TANK_UPGRADE_MULTIPLIER;
     private static boolean magicHatZombiesWearHats = true;
     private static boolean presentEndermenCarryPresents = true;
+    private static boolean tritaniumOreGenerates = true;
+    private static boolean tritaniumMobsCarryTools = true;
     private static List<String> commonHostilePackMobs = MFSConfig.DEFAULT_COMMON_HOSTILE;
     private static List<String> commonPassivePackMobs = MFSConfig.DEFAULT_COMMON_PASSIVE;
     private static List<String> aquaticPackMobs = MFSConfig.DEFAULT_AQUATIC;
@@ -68,6 +70,8 @@ public final class MFSConfigImpl {
     public static double getSmoreChestChance()           { return smoreChestChance; }
     public static boolean getMagicHatZombiesWearHats()     { return magicHatZombiesWearHats; }
     public static boolean getPresentEndermenCarryPresents() { return presentEndermenCarryPresents; }
+    public static boolean getTritaniumOreGenerates()       { return tritaniumOreGenerates; }
+    public static boolean getTritaniumMobsCarryTools()     { return tritaniumMobsCarryTools; }
     public static int getTankBaseCapacity()              { return tankBaseCapacity; }
     public static int getTankUpgradeMultiplier()         { return tankUpgradeMultiplier; }
     public static int getHopperItemsPerTransfer()    { return hopperItemsPerTransfer; }
@@ -138,6 +142,14 @@ public final class MFSConfigImpl {
                 JsonObject pr = root.getAsJsonObject("present");
                 if (pr.has("endermenCarryPresents"))
                     presentEndermenCarryPresents = pr.get("endermenCarryPresents").getAsBoolean();
+            }
+
+            if (root.has("tritanium")) {
+                JsonObject tr = root.getAsJsonObject("tritanium");
+                if (tr.has("oreGenerates"))
+                    tritaniumOreGenerates = tr.get("oreGenerates").getAsBoolean();
+                if (tr.has("mobsCarryTools"))
+                    tritaniumMobsCarryTools = tr.get("mobsCarryTools").getAsBoolean();
             }
 
             if (root.has("smores")) {
@@ -241,6 +253,11 @@ public final class MFSConfigImpl {
         JsonObject pr = new JsonObject();
         pr.addProperty("endermenCarryPresents", true);
         root.add("present", pr);
+
+        JsonObject tr = new JsonObject();
+        tr.addProperty("oreGenerates", true);
+        tr.addProperty("mobsCarryTools", true);
+        root.add("tritanium", tr);
 
         JsonObject sm = new JsonObject();
         sm.addProperty("chestDropChance", MFSConfig.DEFAULT_SMORE_CHEST_CHANCE);

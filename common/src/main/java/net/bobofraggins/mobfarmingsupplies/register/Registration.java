@@ -1,5 +1,18 @@
 package net.bobofraggins.mobfarmingsupplies.register;
 
+import java.util.function.Function;
+import java.util.function.UnaryOperator;
+import net.bobofraggins.mobfarmingsupplies.biosludge.BiosludgeItem;
+import net.bobofraggins.mobfarmingsupplies.tritanium.TritaniumMaterials;
+import net.bobofraggins.mobfarmingsupplies.tritanium.TritaniumOreEnabledFilter;
+import net.bobofraggins.mobfarmingsupplies.tritanium.TritaniumPaxelItem;
+import net.bobofraggins.mobfarmingsupplies.tritanium.TritaniumPlatform;
+import net.minecraft.util.valueproviders.UniformInt;
+import net.minecraft.world.item.AxeItem;
+import net.minecraft.world.item.HoeItem;
+import net.minecraft.world.item.ShovelItem;
+import net.minecraft.world.level.block.DropExperienceBlock;
+import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
 import net.minecraft.world.item.ItemStack;
 import net.bobofraggins.mobfarmingsupplies.guide.GuideBook;
 import com.mojang.serialization.Codec;
@@ -996,6 +1009,17 @@ public final class Registration {
                     () -> new Item(new Item.Properties()
                             .setId(itemKey("silicon_clump"))));
 
+    public static final RegistrySupplier<BiosludgeItem> BIOSLUDGE =
+            ITEMS.register("biosludge",
+                    () -> new BiosludgeItem(new Item.Properties()
+                            .setId(itemKey("biosludge"))));
+
+    /** Smelted from Biosludge. */
+    public static final RegistrySupplier<Item> BIOPLASTIC =
+            ITEMS.register("bioplastic",
+                    () -> new Item(new Item.Properties()
+                            .setId(itemKey("bioplastic"))));
+
     public static final RegistrySupplier<Item> SILICON_WAFER =
             ITEMS.register("silicon_wafer",
                     () -> new Item(new Item.Properties()
@@ -1010,6 +1034,118 @@ public final class Registration {
             ITEMS.register("item_filter",
                     () -> new ItemFilterItem(new Item.Properties()
                             .setId(itemKey("item_filter"))));
+
+    // ── Tritanium ─────────────────────────────────────────────────────────────────
+
+    public static final RegistrySupplier<DropExperienceBlock> TRITANIUM_ORE =
+            BLOCKS.register("tritanium_ore",
+                    () -> new DropExperienceBlock(UniformInt.of(2, 5), BlockBehaviour.Properties.of()
+                            .setId(blockKey("tritanium_ore"))
+                            .mapColor(MapColor.STONE)
+                            .instrument(NoteBlockInstrument.BASEDRUM)
+                            .requiresCorrectToolForDrops()
+                            .strength(3.0f, 3.0f)));
+
+    public static final RegistrySupplier<DropExperienceBlock> DEEPSLATE_TRITANIUM_ORE =
+            BLOCKS.register("deepslate_tritanium_ore",
+                    () -> new DropExperienceBlock(UniformInt.of(2, 5), BlockBehaviour.Properties.of()
+                            .setId(blockKey("deepslate_tritanium_ore"))
+                            .mapColor(MapColor.DEEPSLATE)
+                            .instrument(NoteBlockInstrument.BASEDRUM)
+                            .requiresCorrectToolForDrops()
+                            .strength(4.5f, 3.0f)
+                            .sound(SoundType.DEEPSLATE)));
+
+    public static final RegistrySupplier<Block> TRITANIUM_BLOCK =
+            BLOCKS.register("tritanium_block",
+                    () -> new Block(BlockBehaviour.Properties.of()
+                            .setId(blockKey("tritanium_block"))
+                            .mapColor(MapColor.COLOR_LIGHT_GREEN)
+                            .instrument(NoteBlockInstrument.IRON_XYLOPHONE)
+                            .requiresCorrectToolForDrops()
+                            .strength(5.0f, 6.0f)
+                            .sound(SoundType.METAL)));
+
+    public static final RegistrySupplier<Block> RAW_TRITANIUM_BLOCK =
+            BLOCKS.register("raw_tritanium_block",
+                    () -> new Block(BlockBehaviour.Properties.of()
+                            .setId(blockKey("raw_tritanium_block"))
+                            .mapColor(MapColor.COLOR_LIGHT_GREEN)
+                            .instrument(NoteBlockInstrument.BASEDRUM)
+                            .requiresCorrectToolForDrops()
+                            .strength(5.0f, 6.0f)));
+
+    public static final RegistrySupplier<BlockItem> TRITANIUM_ORE_ITEM = blockItem("tritanium_ore", TRITANIUM_ORE);
+    public static final RegistrySupplier<BlockItem> DEEPSLATE_TRITANIUM_ORE_ITEM =
+            blockItem("deepslate_tritanium_ore", DEEPSLATE_TRITANIUM_ORE);
+    public static final RegistrySupplier<BlockItem> TRITANIUM_BLOCK_ITEM = blockItem("tritanium_block", TRITANIUM_BLOCK);
+    public static final RegistrySupplier<BlockItem> RAW_TRITANIUM_BLOCK_ITEM =
+            blockItem("raw_tritanium_block", RAW_TRITANIUM_BLOCK);
+
+    public static final RegistrySupplier<Item> RAW_TRITANIUM = item("raw_tritanium", Item::new, props -> props);
+    public static final RegistrySupplier<Item> TRITANIUM_INGOT = item("tritanium_ingot", Item::new, props -> props);
+    public static final RegistrySupplier<Item> TRITANIUM_NUGGET = item("tritanium_nugget", Item::new, props -> props);
+
+    // ── Tritanium Alloy ───────────────────────────────────────────────────────────
+    // Tritanium itself is only an ingredient for the alloy. The tools' damage and speed are
+    // Mekanism Tools' Osmium values; each adds the material's +4 damage.
+
+    public static final RegistrySupplier<Block> TRITANIUM_ALLOY_BLOCK =
+            BLOCKS.register("tritanium_alloy_block",
+                    () -> new Block(BlockBehaviour.Properties.of()
+                            .setId(blockKey("tritanium_alloy_block"))
+                            .mapColor(MapColor.COLOR_LIGHT_GRAY)
+                            .instrument(NoteBlockInstrument.IRON_XYLOPHONE)
+                            .requiresCorrectToolForDrops()
+                            .strength(5.0f, 6.0f)
+                            .sound(SoundType.METAL)));
+
+    public static final RegistrySupplier<BlockItem> TRITANIUM_ALLOY_BLOCK_ITEM =
+            blockItem("tritanium_alloy_block", TRITANIUM_ALLOY_BLOCK);
+    public static final RegistrySupplier<Item> TRITANIUM_ALLOY_INGOT =
+            item("tritanium_alloy_ingot", Item::new, props -> props);
+    public static final RegistrySupplier<Item> TRITANIUM_ALLOY_NUGGET =
+            item("tritanium_alloy_nugget", Item::new, props -> props);
+
+    public static final RegistrySupplier<Item> TRITANIUM_ALLOY_SWORD = item("tritanium_alloy_sword", Item::new,
+            props -> props.sword(TritaniumMaterials.ALLOY_TOOLS, 3.0f, -2.4f));
+    public static final RegistrySupplier<Item> TRITANIUM_ALLOY_PICKAXE = item("tritanium_alloy_pickaxe", Item::new,
+            props -> props.pickaxe(TritaniumMaterials.ALLOY_TOOLS, 1.0f, -2.8f));
+    public static final RegistrySupplier<AxeItem> TRITANIUM_ALLOY_AXE = item("tritanium_alloy_axe",
+            props -> new AxeItem(TritaniumMaterials.ALLOY_TOOLS, 8.0f, -3.3f, props), props -> props);
+    public static final RegistrySupplier<ShovelItem> TRITANIUM_ALLOY_SHOVEL = item("tritanium_alloy_shovel",
+            props -> new ShovelItem(TritaniumMaterials.ALLOY_TOOLS, 1.5f, -3.0f, props), props -> props);
+    public static final RegistrySupplier<HoeItem> TRITANIUM_ALLOY_HOE = item("tritanium_alloy_hoe",
+            props -> new HoeItem(TritaniumMaterials.ALLOY_TOOLS, -4.0f, 1.0f, props), props -> props);
+    public static final RegistrySupplier<TritaniumPaxelItem> TRITANIUM_ALLOY_PAXEL = item("tritanium_alloy_paxel",
+            TritaniumPlatform::createPaxel, props -> props
+                    .tool(TritaniumMaterials.ALLOY_TOOLS, TritaniumMaterials.MINEABLE_WITH_PAXEL, 9.0f, -2.4f, 0.0f)
+                    .durability(TritaniumMaterials.PAXEL_DURABILITY));
+
+    public static final RegistrySupplier<Item> TRITANIUM_ALLOY_HELMET = item("tritanium_alloy_helmet", Item::new,
+            props -> props.humanoidArmor(TritaniumMaterials.ALLOY_ARMOR, ArmorType.HELMET));
+    public static final RegistrySupplier<Item> TRITANIUM_ALLOY_CHESTPLATE = item("tritanium_alloy_chestplate",
+            Item::new, props -> props.humanoidArmor(TritaniumMaterials.ALLOY_ARMOR, ArmorType.CHESTPLATE));
+    public static final RegistrySupplier<Item> TRITANIUM_ALLOY_LEGGINGS = item("tritanium_alloy_leggings",
+            Item::new, props -> props.humanoidArmor(TritaniumMaterials.ALLOY_ARMOR, ArmorType.LEGGINGS));
+    public static final RegistrySupplier<Item> TRITANIUM_ALLOY_BOOTS = item("tritanium_alloy_boots", Item::new,
+            props -> props.humanoidArmor(TritaniumMaterials.ALLOY_ARMOR, ArmorType.BOOTS));
+
+    public static final DeferredRegister<PlacementModifierType<?>> PLACEMENT_MODIFIERS =
+            DeferredRegister.create(MobFarmingSuppliesCommon.MODID, Registries.PLACEMENT_MODIFIER_TYPE);
+
+    public static final RegistrySupplier<PlacementModifierType<TritaniumOreEnabledFilter>> TRITANIUM_ORE_ENABLED =
+            PLACEMENT_MODIFIERS.register("tritanium_ore_enabled", () -> () -> TritaniumOreEnabledFilter.CODEC);
+
+    private static RegistrySupplier<BlockItem> blockItem(String name, RegistrySupplier<? extends Block> block) {
+        return ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties().setId(itemKey(name))));
+    }
+
+    /** Registers an item; {@code properties} runs at registration, as tool and armor setup needs. */
+    private static <T extends Item> RegistrySupplier<T> item(String name, Function<Item.Properties, T> factory,
+                                                            UnaryOperator<Item.Properties> properties) {
+        return ITEMS.register(name, () -> factory.apply(properties.apply(new Item.Properties().setId(itemKey(name)))));
+    }
 
     // ── Creative tab ──────────────────────────────────────────────────────────────
 
@@ -1028,6 +1164,8 @@ public final class Registration {
                         output.accept(SILICON_CLUMP.get());
                         output.accept(SILICON.get());
                         output.accept(SILICON_WAFER.get());
+                        output.accept(BIOSLUDGE.get());
+                        output.accept(BIOPLASTIC.get());
                         output.accept(FILTER_SCRIBING_TERMINAL_ITEM.get());
                         output.accept(BLANK_FILTER.get());
                         output.accept(ITEM_FILTER.get());
@@ -1082,6 +1220,30 @@ public final class Registration {
                         output.accept(DRAMATIC_BUTTON_ITEM.get());
                         output.accept(RIMSHOT_BUTTON_ITEM.get());
                         output.accept(WILHELM_BUTTON_ITEM.get());
+                        output.accept(TRITANIUM_ORE_ITEM.get());
+                        output.accept(DEEPSLATE_TRITANIUM_ORE_ITEM.get());
+                        output.accept(RAW_TRITANIUM.get());
+                        output.accept(RAW_TRITANIUM_BLOCK_ITEM.get());
+                        if (ModCompatRegistration.TRITANIUM_ORE_CHUNK != null)
+                            output.accept(ModCompatRegistration.TRITANIUM_ORE_CHUNK.get());
+                        output.accept(TRITANIUM_NUGGET.get());
+                        output.accept(TRITANIUM_INGOT.get());
+                        output.accept(TRITANIUM_BLOCK_ITEM.get());
+                        ModCompatRegistration.extraTritaniumItems().forEach(item -> output.accept(item.get()));
+                        output.accept(TRITANIUM_ALLOY_NUGGET.get());
+                        output.accept(TRITANIUM_ALLOY_INGOT.get());
+                        output.accept(TRITANIUM_ALLOY_BLOCK_ITEM.get());
+                        ModCompatRegistration.extraTritaniumAlloyItems().forEach(item -> output.accept(item.get()));
+                        output.accept(TRITANIUM_ALLOY_SWORD.get());
+                        output.accept(TRITANIUM_ALLOY_PICKAXE.get());
+                        output.accept(TRITANIUM_ALLOY_AXE.get());
+                        output.accept(TRITANIUM_ALLOY_SHOVEL.get());
+                        output.accept(TRITANIUM_ALLOY_HOE.get());
+                        output.accept(TRITANIUM_ALLOY_PAXEL.get());
+                        output.accept(TRITANIUM_ALLOY_HELMET.get());
+                        output.accept(TRITANIUM_ALLOY_CHESTPLATE.get());
+                        output.accept(TRITANIUM_ALLOY_LEGGINGS.get());
+                        output.accept(TRITANIUM_ALLOY_BOOTS.get());
                         // A Mob Head for every mob without a vanilla head (the ones Beheading drops).
                         for (EntityType<?> type : MobHeads.MOD_HEADS) output.accept(MobHeads.modHead(type));
                     })
@@ -1108,6 +1270,7 @@ public final class Registration {
         RECIPE_TYPES.register();
         RECIPE_SERIALIZERS.register();
         LOOT_FUNCTIONS.register();
+        PLACEMENT_MODIFIERS.register();
         net.bobofraggins.mobfarmingsupplies.advancement.MFSTriggers.TRIGGERS.register();
     }
 }

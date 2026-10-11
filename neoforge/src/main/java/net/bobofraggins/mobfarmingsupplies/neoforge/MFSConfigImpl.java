@@ -88,6 +88,10 @@ public final class MFSConfigImpl {
 
     public static boolean getPresentEndermenCarryPresents() { return MFSServerConfig.PRESENT_ENDERMEN_CARRY_PRESENTS.get(); }
 
+    public static boolean getTritaniumOreGenerates() { return MFSServerConfig.TRITANIUM_ORE_GENERATES.get(); }
+
+    public static boolean getTritaniumMobsCarryTools() { return MFSServerConfig.TRITANIUM_MOBS_CARRY_TOOLS.get(); }
+
     public static double getSmoreChestChance() {
         return MFSServerConfig.SMORE_CHEST_CHANCE.get();
     }

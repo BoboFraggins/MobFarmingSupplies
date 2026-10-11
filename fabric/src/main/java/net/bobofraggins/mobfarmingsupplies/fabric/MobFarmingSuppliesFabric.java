@@ -27,9 +27,15 @@ import net.fabricmc.api.ModInitializer;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredientSerializer;
+import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
+import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
 import net.fabricmc.fabric.api.recipe.v1.sync.RecipeSynchronization;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.levelgen.GenerationStep;
 
 @SuppressWarnings("UnstableApiUsage")
 public class MobFarmingSuppliesFabric implements ModInitializer {
@@ -48,6 +54,10 @@ public class MobFarmingSuppliesFabric implements ModInitializer {
         RecipeSynchronization.synchronizeRecipeSerializer(Registration.BRIDGE_LINK_SERIALIZER.get());
         RecipeSynchronization.synchronizeRecipeSerializer(Registration.ANVIL_CRUSHING_SERIALIZER.get());
         FabricLootModifiers.register();
+        // NeoForge adds the ore with a biome modifier (data/mobfarmingsupplies/neoforge/biome_modifier).
+        BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(), GenerationStep.Decoration.UNDERGROUND_ORES,
+                ResourceKey.create(Registries.PLACED_FEATURE,
+                        Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "tritanium_ore")));
         registerStorages();
         // Magic Hat Trinkets Updated integration — soft dependency, registered only if present.
         // MUST check isModLoaded() before ever calling into MagicHatTrinketSetup: that class

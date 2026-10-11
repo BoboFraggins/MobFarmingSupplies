@@ -16,6 +16,11 @@
     "mobfarmingsupplies:dramatic_button",
     "mobfarmingsupplies:rimshot_button",
     "mobfarmingsupplies:wilhelm_button",
-    "mobfarmingsupplies:toilet"
+    "mobfarmingsupplies:toilet",
+    "mobfarmingsupplies:tritanium_ore",
+    "mobfarmingsupplies:deepslate_tritanium_ore",
+    "mobfarmingsupplies:tritanium_block",
+    "mobfarmingsupplies:raw_tritanium_block",
+    "mobfarmingsupplies:tritanium_alloy_block"
   ]
 }

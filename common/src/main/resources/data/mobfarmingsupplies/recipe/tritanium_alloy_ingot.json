@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "#c:ingots/tritanium",
+    "#c:ingots/iron",
+    "#c:ingots/iron",
+    "#c:ingots/iron"
+  ],
+  "result": {
+    "id": "mobfarmingsupplies:tritanium_alloy_ingot",
+    "count": 4
+  },
+  "group": "tritanium_alloy_ingot"
+}

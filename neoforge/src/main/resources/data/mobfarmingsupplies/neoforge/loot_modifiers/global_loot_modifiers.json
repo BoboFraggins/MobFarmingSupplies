@@ -18,6 +18,7 @@
     "mobfarmingsupplies:loot_modifiers/inject_dungeon",
     "mobfarmingsupplies:loot_modifiers/inject_nether_fortress",
     "mobfarmingsupplies:loot_modifiers/inject_bastion",
-    "mobfarmingsupplies:loot_modifiers/inject_outhouse_guide"
+    "mobfarmingsupplies:loot_modifiers/inject_outhouse_guide",
+    "mobfarmingsupplies:loot_modifiers/inject_end_city_treasure"
   ]
 }

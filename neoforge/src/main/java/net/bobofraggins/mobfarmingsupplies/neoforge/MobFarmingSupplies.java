@@ -32,6 +32,7 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommon;
 import net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommonClient;
+import net.bobofraggins.mobfarmingsupplies.neoforge.tritanium.MoltenMetalClientEvents;
 
 @Mod(MobFarmingSuppliesCommon.MODID)
 public class MobFarmingSupplies {
@@ -67,6 +68,9 @@ public class MobFarmingSupplies {
             modEventBus.register(OmniHopperClientEvents.class);
             modEventBus.register(TankClientEvents.class);
             modEventBus.register(XpJuiceClientEvents.class);
+            if (ModList.get().isLoaded("productivemetalworks")) {
+                modEventBus.register(MoltenMetalClientEvents.class);
+            }
             modEventBus.register(AbsorptionHopperClientEvents.class);
             modEventBus.register(FanClientEvents.class);
             modEventBus.register(CloneOMaticClientEvents.class);

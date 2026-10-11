@@ -186,6 +186,14 @@ public final class MFSConfig {
     @ExpectPlatform
     public static boolean getPresentEndermenCarryPresents() { throw new AssertionError(); }
 
+    /** Whether Tritanium Ore generates in new chunks (default: true). */
+    @ExpectPlatform
+    public static boolean getTritaniumOreGenerates() { throw new AssertionError(); }
+
+    /** Whether mobs sometimes spawn holding Tritanium Alloy tools (default: true). */
+    @ExpectPlatform
+    public static boolean getTritaniumMobsCarryTools() { throw new AssertionError(); }
+
     /** Chance (0.0–1.0) for 1-3 S'mores to appear in village house chests (default: 0.25). */
     @ExpectPlatform
     public static double getSmoreChestChance() { throw new AssertionError(); }

@@ -1,0 +1,18 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "productivemetalworks"
+    }
+  ],
+  "type": "productivemetalworks:item_melting",
+  "ingredient": "#c:ingots/tritanium_alloy",
+  "maximum_temperature": 0,
+  "minimum_temperature": 1000,
+  "result": [
+    {
+      "amount": 90,
+      "id": "mobfarmingsupplies:molten_tritanium_alloy"
+    }
+  ]
+}

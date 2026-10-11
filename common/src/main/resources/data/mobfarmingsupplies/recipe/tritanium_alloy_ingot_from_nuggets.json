@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": "#c:nuggets/tritanium_alloy"
+  },
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "result": {
+    "id": "mobfarmingsupplies:tritanium_alloy_ingot"
+  },
+  "group": "tritanium_alloy_ingot"
+}

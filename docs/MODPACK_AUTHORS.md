@@ -8,9 +8,10 @@ mod fits alongside others.
 The server config holds the tunable numbers: Fan behaviour, the Mob Harvester's upgrade limit, the
 Clone-O-Matic's spawn rate, Tank sizes, the mob lists for each DNA Sample Pack, the chance of each
 item appearing in chest loot, and the transfer rates shared by the four hoppers. Zombies spawning
-with Magic Hats and Endermen spawning with Presents can each be switched off. The file is
-`config/mobfarmingsupplies-server.toml` on NeoForge and `config/mobfarmingsupplies-server.json` on
-Fabric. [Configuration](CONFIGURATION.md) documents the keys.
+with Magic Hats, Endermen spawning with Presents, Tritanium Ore and mobs carrying Tritanium Alloy
+tools can each be switched off. The file is `config/mobfarmingsupplies-server.toml` on NeoForge and
+`config/mobfarmingsupplies-server.json` on Fabric. [Configuration](CONFIGURATION.md) documents the
+keys.
 
 All four hoppers, the Absorption Hopper, Logistic Sorter, Omnidirectional Hopper and Einstein-Rosen
 Bridge, share one set of transfer rates, measured per side. By default each side moves 64 items
@@ -23,11 +24,31 @@ Several items are added to vanilla chest loot, each at a configurable chance. DN
 the four novelty buttons appear in dungeon, temple, stronghold and similar chests. Magic Hats
 appear in the same kinds of chests at 2% by default. S'mores appear in village house chests at 25%.
 
-Three items are added through loot tables you can override with a datapack:
+Four items are added through loot tables you can override with a datapack:
 `mobfarmingsupplies:chests/inject/dungeon` adds an Experience Syringe holding three to seven levels
 to dungeon chests, `chests/inject/nether_fortress` adds an Omnidirectional Hopper to fortress
 chests, and `chests/inject/bastion` adds a linked pair of Einstein-Rosen Bridges to bastion chests.
-Each rolls at 25%. Replacing a table with an empty one removes that item from loot.
+Each rolls at 25%. `chests/inject/end_city_treasure` adds an enchanted Tritanium Alloy Paxel to End
+City chests at 5%. Replacing a table with an empty one removes that item from loot.
+
+## Tritanium
+
+Tritanium is a metal for later machines and the base of Tritanium Alloy. Its ore needs an iron
+pickaxe. The ore is placed by the `mobfarmingsupplies:tritanium_ore` placed feature, which a
+datapack can override, and can be switched off in the config. Its items carry the usual common tags,
+such as `c:ores/tritanium`, `c:raw_materials/tritanium`, `c:ingots/tritanium`, `c:nuggets/tritanium`
+and `c:storage_blocks/tritanium`, so other mods' processing recipes can use them.
+
+Tritanium Alloy comes in ingots, nuggets, blocks, tools and armor, with no ore. Its tools and armor
+match Mekanism Tools' Osmium. One Tritanium and three Iron of the same size, as nuggets, ingots or
+blocks, craft into four of the alloy. Its tags follow the same pattern, such as
+`c:ingots/tritanium_alloy`.
+
+On NeoForge, both metals join four other mods when they are installed. Productive Metalworks melts
+and casts them, and its foundry alloys one part Molten Tritanium with three of Molten Iron. Mystical
+Agriculture grows Tritanium as a tier three crop and Tritanium Alloy as a tier four crop. Productive
+Bees adds a Tritanium Bee, bred from an Iron Bee and an Emerald Bee, and a Tritanium Alloy Bee, bred
+from a Tritanium Bee and an Iron Bee. Ex Deorum sieves Tritanium Ore Chunks from gravel.
 
 ## Recipes
 
@@ -46,6 +67,10 @@ moved.
 Entity types in `mobfarmingsupplies:no_dna_sampling` cannot be sampled with a DNA Collector, and
 those in `mobfarmingsupplies:cannot_use_toilet` won't sit on a Toilet. Both include the Wither and
 the Ender Dragon by default.
+
+Items in `mobfarmingsupplies:repairs_tritanium_alloy` repair Tritanium Alloy tools and armor; by
+default that is `c:ingots/tritanium_alloy`. Blocks in `mobfarmingsupplies:mineable/paxel` are mined
+quickly by the Paxel.
 
 Every mob head, including the mod's own, is in `minecraft:skulls`, and the head blocks are in
 `c:skulls`. XP Juice is in `c:experience`, the common tag mods use to recognise experience fluids.

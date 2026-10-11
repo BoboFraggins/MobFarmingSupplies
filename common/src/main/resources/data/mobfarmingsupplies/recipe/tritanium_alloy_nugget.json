@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "#c:ingots/tritanium_alloy"
+  ],
+  "result": {
+    "id": "mobfarmingsupplies:tritanium_alloy_nugget",
+    "count": 9
+  }
+}

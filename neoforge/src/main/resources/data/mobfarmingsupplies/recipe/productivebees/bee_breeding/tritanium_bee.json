@@ -1,0 +1,12 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "productivebees"
+    }
+  ],
+  "type": "productivebees:bee_breeding",
+  "offspring": "mobfarmingsupplies:tritanium",
+  "parent1": "productivebees:raw_materials/iron",
+  "parent2": "productivebees:gems/emerald"
+}
