@@ -6,6 +6,8 @@
 * Added Modonomicon documentation
 * Added some structures to appear randomly in the world
 
+* Fix z-fighting when heads are placed as trophies
+
 ## 26.3.0.4, 26.2.0.5, 26.1.2.7
 
 * Added Omnidirectional Hopper

@@ -107,6 +107,8 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.equipment.ArmorMaterials;
+import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.item.equipment.EquipmentAssets;
 import net.minecraft.world.item.equipment.Equippable;
 import net.minecraft.world.level.block.Block;
@@ -944,7 +946,11 @@ public final class Registration {
                     () -> new MobHeadItem(MOB_HEAD.get(), MOB_WALL_HEAD.get(), new Item.Properties()
                             .setId(itemKey("mob_head"))
                             .rarity(Rarity.UNCOMMON)
-                            .equippableUnswappable(EquipmentSlot.HEAD)));
+                            .equippableUnswappable(EquipmentSlot.HEAD)
+                            // Worn, a head protects like an Iron Helmet and takes helmet
+                            // enchantments, but has no durability so heads still stack.
+                            .attributes(ArmorMaterials.IRON.createAttributes(ArmorType.HELMET))
+                            .enchantable(ArmorMaterials.IRON.enchantmentValue())));
 
     public static final RegistrySupplier<BlockEntityType<MobHeadBlockEntity>> MOB_HEAD_BE_TYPE =
             BLOCK_ENTITIES.register("mob_head",
