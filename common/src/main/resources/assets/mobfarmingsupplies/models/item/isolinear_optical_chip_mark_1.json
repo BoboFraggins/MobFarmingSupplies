@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "mobfarmingsupplies:item/isolinear_optical_chip_mark_1"
+  }
+}

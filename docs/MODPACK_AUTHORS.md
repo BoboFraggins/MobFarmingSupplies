@@ -48,6 +48,10 @@ Dilithium Ore is mined like diamond and drops Dilithium Crystals, which carry `c
 the ore is in `c:ores/dilithium` and placed by the `mobfarmingsupplies:dilithium_ore` placed
 feature.
 
+With Allthemodium installed, both ores also generate in its mining dimension, between Y 65 and 247
+where its stone and deepslate are. The placed features are `mobfarmingsupplies:mining/tritanium_ore`
+and `mobfarmingsupplies:mining/dilithium_ore`, and the same config settings switch them off.
+
 On NeoForge, both metals join four other mods when they are installed. Productive Metalworks melts
 and casts them, and its foundry alloys one part Molten Tritanium with three of Molten Iron. Mystical
 Agriculture grows Tritanium as a tier three crop and Tritanium Alloy as a tier four crop. Productive
@@ -56,11 +60,13 @@ from a Tritanium Bee and an Iron Bee. Ex Deorum sieves Tritanium Ore Chunks from
 
 ## Recipes
 
-Every recipe is a datapack JSON and can be replaced. Four use the mod's own recipe types:
+Every recipe is a datapack JSON and can be replaced. Five use the mod's own recipe types:
 `tank_upgrade` (keeps a Tank's contents when upgrading its tier), `bridge_pair` and `bridge_link`
-(give the crafted bridges a fresh shared channel) and `anvil_crushing` (items crushed by a falling
-anvil). They follow the vanilla shaped and shapeless formats, and the crushing recipe takes an
-`ingredient` and a `result`.
+(give the crafted bridges a fresh shared channel), `anvil_crushing` (items crushed by a falling
+anvil) and `shearing` (an item cut with a tool in the crafting grid, such as Tritanium Alloy Plates
+and Wire, which hands the tool back one point more worn). They follow the vanilla shaped and
+shapeless formats. The crushing recipe takes an `ingredient` and a `result`, and the shearing recipe
+takes an `ingredient`, a `result` and an optional `tool`, which defaults to Shears.
 
 ## Tags
 

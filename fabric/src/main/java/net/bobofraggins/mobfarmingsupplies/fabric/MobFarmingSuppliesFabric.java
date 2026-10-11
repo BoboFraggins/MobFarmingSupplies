@@ -55,6 +55,7 @@ public class MobFarmingSuppliesFabric implements ModInitializer {
         RecipeSynchronization.synchronizeRecipeSerializer(Registration.BRIDGE_PAIR_SERIALIZER.get());
         RecipeSynchronization.synchronizeRecipeSerializer(Registration.BRIDGE_LINK_SERIALIZER.get());
         RecipeSynchronization.synchronizeRecipeSerializer(Registration.ANVIL_CRUSHING_SERIALIZER.get());
+        RecipeSynchronization.synchronizeRecipeSerializer(Registration.SHEARING_SERIALIZER.get());
         FabricLootModifiers.register();
         // NeoForge adds the ores with biome modifiers (data/mobfarmingsupplies/neoforge/biome_modifier).
         for (String ore : new String[] {"tritanium_ore", "dilithium_ore"}) {

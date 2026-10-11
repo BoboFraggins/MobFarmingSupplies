@@ -1,0 +1,10 @@
+{
+  "type": "mobfarmingsupplies:shearing",
+  "category": "misc",
+  "tool": "#c:tools/shear",
+  "ingredient": "#c:ingots/tritanium_alloy",
+  "result": {
+    "id": "mobfarmingsupplies:tritanium_alloy_plate",
+    "count": 5
+  }
+}

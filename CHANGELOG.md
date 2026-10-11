@@ -3,10 +3,11 @@
 ## 26.3.0.6, 26.2.0.7, 26.1.2.9
 
 * Added some structures to appear randomly in the world
-* Added Tritanium ore/ingots/weapons/armor - will be used for advanced machines
+* Added Tritanium ore/ingots/weapons/armor/wire/plates - will be used for advanced machines
 * Added Dilithium Crystals
 * Added Biosludge and Bioplastic
 * Added Sterling Engine
+* Added Isolinear Optical Chips
 
 * Fix z-fighting when heads are placed as trophies
 

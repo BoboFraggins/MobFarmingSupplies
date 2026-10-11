@@ -2,6 +2,7 @@ package net.bobofraggins.mobfarmingsupplies.register;
 
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
+import net.bobofraggins.mobfarmingsupplies.shearing.ShearingRecipe;
 import net.bobofraggins.mobfarmingsupplies.stirlingengine.StirlingEngineBlock;
 import net.bobofraggins.mobfarmingsupplies.stirlingengine.StirlingEngineBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.stirlingengine.StirlingEngineBlockItem;
@@ -214,6 +215,11 @@ public final class Registration {
                     () -> new RecipeSerializer<>(AnvilCrushingRecipe.MAP_CODEC, AnvilCrushingRecipe.STREAM_CODEC));
 
     /** Shaped recipe that upgrades a tank a tier and keeps its contents. */
+    /** Shears (or another tool) and an item in the grid; the tool comes back worn. */
+    public static final RegistrySupplier<RecipeSerializer<ShearingRecipe>> SHEARING_SERIALIZER =
+            RECIPE_SERIALIZERS.register("shearing",
+                    () -> new RecipeSerializer<>(ShearingRecipe.MAP_CODEC, ShearingRecipe.STREAM_CODEC));
+
     public static final RegistrySupplier<RecipeSerializer<TankUpgradeRecipe>> TANK_UPGRADE_SERIALIZER =
             RECIPE_SERIALIZERS.register("tank_upgrade",
                     () -> new RecipeSerializer<>(TankUpgradeRecipe.MAP_CODEC, TankUpgradeRecipe.STREAM_CODEC));
@@ -1178,12 +1184,41 @@ public final class Registration {
                             .strength(5.0f, 6.0f)
                             .sound(SoundType.METAL)));
 
+    /** The shell the advanced machines are built in. */
+    public static final RegistrySupplier<Block> TRITANIUM_ALLOY_CASING =
+            BLOCKS.register("tritanium_alloy_casing",
+                    () -> new Block(BlockBehaviour.Properties.of()
+                            .setId(blockKey("tritanium_alloy_casing"))
+                            .mapColor(MapColor.COLOR_LIGHT_GRAY)
+                            .instrument(NoteBlockInstrument.IRON_XYLOPHONE)
+                            .requiresCorrectToolForDrops()
+                            .strength(5.0f, 6.0f)
+                            .sound(SoundType.METAL)));
+
+    public static final RegistrySupplier<BlockItem> TRITANIUM_ALLOY_CASING_ITEM =
+            blockItem("tritanium_alloy_casing", TRITANIUM_ALLOY_CASING);
+
     public static final RegistrySupplier<BlockItem> TRITANIUM_ALLOY_BLOCK_ITEM =
             blockItem("tritanium_alloy_block", TRITANIUM_ALLOY_BLOCK);
     public static final RegistrySupplier<Item> TRITANIUM_ALLOY_INGOT =
             item("tritanium_alloy_ingot", Item::new, props -> props);
     public static final RegistrySupplier<Item> TRITANIUM_ALLOY_NUGGET =
             item("tritanium_alloy_nugget", Item::new, props -> props);
+    /** Five from an ingot, cut with Shears. */
+    public static final RegistrySupplier<Item> TRITANIUM_ALLOY_PLATE =
+            item("tritanium_alloy_plate", Item::new, props -> props);
+    /** Five from a plate, cut with Shears. */
+    public static final RegistrySupplier<Item> TRITANIUM_ALLOY_WIRE =
+            item("tritanium_alloy_wire", Item::new, props -> props);
+    /** The first mark of the chip ("Isolinear Optical Chip"); later marks get their own items. */
+    public static final RegistrySupplier<Item> ISOLINEAR_OPTICAL_CHIP_MARK_1 =
+            item("isolinear_optical_chip_mark_1", Item::new, props -> props);
+    public static final RegistrySupplier<Item> ISOLINEAR_OPTICAL_CHIP_MARK_2 =
+            item("isolinear_optical_chip_mark_2", Item::new, props -> props);
+    public static final RegistrySupplier<Item> ISOLINEAR_OPTICAL_CHIP_MARK_3 =
+            item("isolinear_optical_chip_mark_3", Item::new, props -> props);
+    public static final RegistrySupplier<Item> ISOLINEAR_OPTICAL_CHIP_MARK_4 =
+            item("isolinear_optical_chip_mark_4", Item::new, props -> props);
 
     public static final RegistrySupplier<Item> TRITANIUM_ALLOY_SWORD = item("tritanium_alloy_sword", Item::new,
             props -> props.sword(TritaniumMaterials.ALLOY_TOOLS, 3.0f, -2.4f));
@@ -1217,8 +1252,10 @@ public final class Registration {
     public static final RegistrySupplier<PlacementModifierType<OreEnabledFilter>> DILITHIUM_ORE_ENABLED =
             PLACEMENT_MODIFIERS.register("dilithium_ore_enabled", () -> () -> OreEnabledFilter.DILITHIUM_CODEC);
 
+    /** A plain block item, named like its block (as vanilla's are). */
     private static RegistrySupplier<BlockItem> blockItem(String name, RegistrySupplier<? extends Block> block) {
-        return ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties().setId(itemKey(name))));
+        return ITEMS.register(name, () -> new BlockItem(block.get(),
+                new Item.Properties().setId(itemKey(name)).useBlockDescriptionPrefix()));
     }
 
     /** Registers an item; {@code properties} runs at registration, as tool and armor setup needs. */
@@ -1321,6 +1358,13 @@ public final class Registration {
                         output.accept(TRITANIUM_ALLOY_NUGGET.get());
                         output.accept(TRITANIUM_ALLOY_INGOT.get());
                         output.accept(TRITANIUM_ALLOY_BLOCK_ITEM.get());
+                        output.accept(TRITANIUM_ALLOY_PLATE.get());
+                        output.accept(TRITANIUM_ALLOY_WIRE.get());
+                        output.accept(TRITANIUM_ALLOY_CASING_ITEM.get());
+                        output.accept(ISOLINEAR_OPTICAL_CHIP_MARK_1.get());
+                        output.accept(ISOLINEAR_OPTICAL_CHIP_MARK_2.get());
+                        output.accept(ISOLINEAR_OPTICAL_CHIP_MARK_3.get());
+                        output.accept(ISOLINEAR_OPTICAL_CHIP_MARK_4.get());
                         ModCompatRegistration.extraTritaniumAlloyItems().forEach(item -> output.accept(item.get()));
                         output.accept(TRITANIUM_ALLOY_SWORD.get());
                         output.accept(TRITANIUM_ALLOY_PICKAXE.get());

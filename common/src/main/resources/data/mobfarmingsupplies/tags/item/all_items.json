@@ -84,6 +84,13 @@
     "mobfarmingsupplies:emerald_stirling_engine",
     "mobfarmingsupplies:dilithium_ore",
     "mobfarmingsupplies:deepslate_dilithium_ore",
-    "mobfarmingsupplies:dilithium_crystal"
+    "mobfarmingsupplies:dilithium_crystal",
+    "mobfarmingsupplies:tritanium_alloy_casing",
+    "mobfarmingsupplies:tritanium_alloy_plate",
+    "mobfarmingsupplies:tritanium_alloy_wire",
+    "mobfarmingsupplies:isolinear_optical_chip_mark_1",
+    "mobfarmingsupplies:isolinear_optical_chip_mark_2",
+    "mobfarmingsupplies:isolinear_optical_chip_mark_3",
+    "mobfarmingsupplies:isolinear_optical_chip_mark_4"
   ]
 }

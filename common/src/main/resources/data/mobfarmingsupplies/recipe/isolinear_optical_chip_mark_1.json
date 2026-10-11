@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "W",
+    "S",
+    "G"
+  ],
+  "key": {
+    "W": "#c:wires/tritanium_alloy",
+    "S": "mobfarmingsupplies:silicon_wafer",
+    "G": "minecraft:glass_pane"
+  },
+  "result": {
+    "id": "mobfarmingsupplies:isolinear_optical_chip_mark_1"
+  }
+}

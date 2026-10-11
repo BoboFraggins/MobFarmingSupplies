@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "##",
+    "##"
+  ],
+  "key": {
+    "#": "#c:plates/tritanium_alloy"
+  },
+  "result": {
+    "id": "mobfarmingsupplies:tritanium_alloy_casing"
+  }
+}
