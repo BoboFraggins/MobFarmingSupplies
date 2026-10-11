@@ -37,12 +37,22 @@ import dev.architectury.registry.client.level.entity.EntityRendererRegistry;
 import net.bobofraggins.mobfarmingsupplies.toilet.ToiletBlockEntityRenderer;
 import net.minecraft.client.renderer.entity.NoopRenderer;
 import net.bobofraggins.mobfarmingsupplies.stirlingengine.StirlingEngineRenderer;
+import net.bobofraggins.mobfarmingsupplies.circuitinscriber.CircuitInscriberRenderer;
+import net.bobofraggins.mobfarmingsupplies.circuitinscriber.ClientInscribingRecipes;
+import net.fabricmc.fabric.api.client.recipe.v1.sync.ClientRecipeSynchronizedEvent;
+import net.fabricmc.fabric.api.event.Event;
+import net.bobofraggins.mobfarmingsupplies.circuitinscriber.CircuitInscriberItemRenderer;
 
 public class MobFarmingSuppliesFabricClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
         MobFarmingSuppliesCommonClient.init();
+        // Keep the synced Circuit Inscribing recipes for JEI, in a phase ahead of JEI's own listener.
+        Identifier beforeJei = Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "before_jei");
+        ClientRecipeSynchronizedEvent.EVENT.addPhaseOrdering(beforeJei, Event.DEFAULT_PHASE);
+        ClientRecipeSynchronizedEvent.EVENT.register(beforeJei, (minecraft, recipes) ->
+                ClientInscribingRecipes.set(recipes.getAllOfType(Registration.CIRCUIT_INSCRIBING_TYPE.get())));
         BlockEntityRendererRegistry.register(
                 Registration.ENDER_INHIBITOR_BE_TYPE.get(),
                 EnderInhibitorBlockEntityRenderer::new);
@@ -73,6 +83,9 @@ public class MobFarmingSuppliesFabricClient implements ClientModInitializer {
         BlockEntityRendererRegistry.register(
                 Registration.STIRLING_ENGINE_BE_TYPE.get(),
                 StirlingEngineRenderer::new);
+        BlockEntityRendererRegistry.register(
+                Registration.CIRCUIT_INSCRIBER_BE_TYPE.get(),
+                CircuitInscriberRenderer::new);
         // The toilet seat is invisible: only its rider is drawn.
         EntityRendererRegistry.register(Registration.TOILET_SEAT, NoopRenderer::new);
         ExtraBlockModelsImpl.registerModelLoadingPlugin();
@@ -142,6 +155,9 @@ public class MobFarmingSuppliesFabricClient implements ClientModInitializer {
             idMapper.put(
                     Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "mob_head_renderer"),
                     MobHeadItemRenderer.Unbaked.MAP_CODEC);
+            idMapper.put(
+                    Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "circuit_inscriber_renderer"),
+                    CircuitInscriberItemRenderer.Unbaked.MAP_CODEC);
         } catch (ReflectiveOperationException e) {
             throw new RuntimeException("Failed to register mobfarmingsupplies special model renderers", e);
         }

@@ -9,7 +9,8 @@
     "AnvilBlockMixin",
     "EnderManPresentMixin",
     "InventoryChangeTriggerMixin",
-    "MobFinalizeSpawnMixin"
+    "MobFinalizeSpawnMixin",
+    "ItemEntitySoakMixin"
   ],
   "injectors": {
     "defaultRequire": 1

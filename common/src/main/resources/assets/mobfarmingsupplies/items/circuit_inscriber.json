@@ -1,0 +1,9 @@
+{
+  "model": {
+    "type": "minecraft:special",
+    "base": "mobfarmingsupplies:item/circuit_inscriber",
+    "model": {
+      "type": "mobfarmingsupplies:circuit_inscriber_renderer"
+    }
+  }
+}

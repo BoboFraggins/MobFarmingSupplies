@@ -1,0 +1,90 @@
+{
+  "texture_size": [
+    64,
+    64
+  ],
+  "textures": {
+    "0": "mobfarmingsupplies:block/circuit_inscriber_texture",
+    "particle": "mobfarmingsupplies:block/circuit_inscriber_texture"
+  },
+  "elements": [
+    {
+      "name": "first",
+      "from": [
+        3,
+        9,
+        12
+      ],
+      "to": [
+        4,
+        14,
+        13
+      ],
+      "rotation": {
+        "angle": 0,
+        "axis": "y",
+        "origin": [
+          3.5,
+          9,
+          12.5
+        ]
+      },
+      "faces": {
+        "north": {
+          "uv": [
+            5,
+            9.25,
+            5.25,
+            10.5
+          ],
+          "texture": "#0"
+        },
+        "east": {
+          "uv": [
+            5.25,
+            9.25,
+            5.5,
+            10.5
+          ],
+          "texture": "#0"
+        },
+        "south": {
+          "uv": [
+            5.5,
+            9.25,
+            5.75,
+            10.5
+          ],
+          "texture": "#0"
+        },
+        "west": {
+          "uv": [
+            5.75,
+            9.25,
+            6,
+            10.5
+          ],
+          "texture": "#0"
+        },
+        "up": {
+          "uv": [
+            1,
+            10,
+            1.25,
+            10.25
+          ],
+          "texture": "#0"
+        },
+        "down": {
+          "uv": [
+            1.25,
+            10,
+            1.5,
+            10.25
+          ],
+          "texture": "#0"
+        }
+      }
+    }
+  ]
+}

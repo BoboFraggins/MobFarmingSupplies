@@ -34,7 +34,9 @@ import net.bobofraggins.mobfarmingsupplies.neoforge.toilet.ToiletFluidHandler;
 import net.bobofraggins.mobfarmingsupplies.neoforge.toilet.ToiletItemHandler;
 import net.bobofraggins.mobfarmingsupplies.neoforge.tritanium.MoltenTritanium;
 import net.neoforged.fml.ModList;
-import net.bobofraggins.mobfarmingsupplies.neoforge.stirlingengine.StirlingEngineEnergyHandler;
+import net.bobofraggins.mobfarmingsupplies.neoforge.energy.BufferEnergyHandler;
+import net.neoforged.neoforge.transfer.item.WorldlyContainerWrapper;
+import net.minecraft.core.Direction;
 
 public final class NeoForgeOnlyRegistration {
 
@@ -147,7 +149,16 @@ public final class NeoForgeOnlyRegistration {
         event.registerBlockEntity(
                 Capabilities.Energy.BLOCK,
                 Registration.STIRLING_ENGINE_BE_TYPE.get(),
-                (be, side) -> StirlingEngineEnergyHandler.of(be));
+                (be, side) -> BufferEnergyHandler.of(be));
+        event.registerBlockEntity(
+                Capabilities.Energy.BLOCK,
+                Registration.CIRCUIT_INSCRIBER_BE_TYPE.get(),
+                (be, side) -> BufferEnergyHandler.of(be));
+        // Hoppers and pipes: the first input from above, the second from the sides, the output below.
+        event.registerBlockEntity(
+                Capabilities.Item.BLOCK,
+                Registration.CIRCUIT_INSCRIBER_BE_TYPE.get(),
+                (be, side) -> new WorldlyContainerWrapper(be, side == null ? Direction.UP : side));
 
         event.registerBlockEntity(
                 Capabilities.Fluid.BLOCK,

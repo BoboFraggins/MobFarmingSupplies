@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "mobfarmingsupplies:block/circuit_inscriber_base"
+    },
+    "facing=east": {
+      "model": "mobfarmingsupplies:block/circuit_inscriber_base",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "mobfarmingsupplies:block/circuit_inscriber_base",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "mobfarmingsupplies:block/circuit_inscriber_base",
+      "y": 270
+    }
+  }
+}

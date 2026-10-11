@@ -20,6 +20,7 @@ import net.minecraft.client.resources.model.SimpleModelWrapper;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
 import net.bobofraggins.mobfarmingsupplies.stirlingengine.StirlingEngineRenderer;
+import net.bobofraggins.mobfarmingsupplies.circuitinscriber.CircuitInscriberRenderer;
 
 /**
  * Fabric implementation of {@code ExtraBlockModels}, backed by the
@@ -47,6 +48,7 @@ public final class ExtraBlockModelsImpl {
         register(StirlingEngineRenderer.FLYWHEEL_MODEL_ID);
         register(StirlingEngineRenderer.PISTON_MODEL_ID);
         register(StirlingEngineRenderer.ROD_MODEL_ID);
+        CircuitInscriberRenderer.MODEL_IDS.forEach(ExtraBlockModelsImpl::register);
     }
 
     private ExtraBlockModelsImpl() {}

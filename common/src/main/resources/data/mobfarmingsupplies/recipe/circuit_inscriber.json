@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "IDI",
+    "TPT",
+    "RMR"
+  ],
+  "key": {
+    "I": "#c:ingots/iron",
+    "D": "#c:gems/dilithium",
+    "T": "#c:plates/tritanium_alloy",
+    "P": "minecraft:piston",
+    "R": "#c:dusts/redstone",
+    "M": "mobfarmingsupplies:tritanium_alloy_casing"
+  },
+  "result": {
+    "id": "mobfarmingsupplies:circuit_inscriber"
+  }
+}

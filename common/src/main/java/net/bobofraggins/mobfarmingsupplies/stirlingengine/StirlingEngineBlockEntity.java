@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.stirlingengine;
 
+import net.bobofraggins.mobfarmingsupplies.energy.EnergyBuffer;
 import net.bobofraggins.mobfarmingsupplies.register.MFSRegistryHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
@@ -22,7 +23,7 @@ import org.jetbrains.annotations.Nullable;
  * Energy collects in a buffer and is pushed into every neighbour that accepts it; neighbours can
  * also pull it (see {@link StirlingEnginePlatform}).
  */
-public class StirlingEngineBlockEntity extends BlockEntity {
+public class StirlingEngineBlockEntity extends BlockEntity implements EnergyBuffer {
 
     public static final int LAVA = 50;
     public static final int MAGMA = 25;
@@ -39,8 +40,7 @@ public class StirlingEngineBlockEntity extends BlockEntity {
     /** Client-side: where the flywheel is in its turn. */
     public float animationTicks;
 
-    /** The platform's energy handler for this engine, made once so transactions see one buffer. */
-    @Nullable public Object energyHandler;
+    @Nullable private Object energyHandler;
 
     public StirlingEngineBlockEntity(BlockPos pos, BlockState state) {
         super(MFSRegistryHelper.getBEType("stirling_engine"), pos, state);
@@ -50,15 +50,39 @@ public class StirlingEngineBlockEntity extends BlockEntity {
         return getBlockState().getBlock() instanceof StirlingEngineBlock block ? block.tier() : StirlingEngineTier.BASIC;
     }
 
+    @Override
     public long capacity() {
         return BASE_CAPACITY * tier().multiplier();
     }
 
+    @Override
     public long energy() {
         return energy;
     }
 
-    /** Sets the buffer directly; for the platform energy handlers, which manage transactions. */
+    /** Neighbours can only take energy from an engine. */
+    @Override
+    public long maxInsert() {
+        return 0;
+    }
+
+    @Override
+    public long maxExtract() {
+        return Long.MAX_VALUE;
+    }
+
+    @Override
+    @Nullable
+    public Object energyHandler() {
+        return energyHandler;
+    }
+
+    @Override
+    public void setEnergyHandler(Object handler) {
+        energyHandler = handler;
+    }
+
+    @Override
     public void setEnergy(long energy) {
         if (energy != this.energy) {
             this.energy = energy;

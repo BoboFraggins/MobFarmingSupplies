@@ -1,0 +1,10 @@
+{
+  "type": "mobfarmingsupplies:circuit_inscribing",
+  "first": "mobfarmingsupplies:isolinear_optical_chip_mark_2",
+  "second": "#c:gems/emerald",
+  "result": {
+    "id": "mobfarmingsupplies:isolinear_optical_chip_mark_3"
+  },
+  "energy": 88000,
+  "time": 600
+}

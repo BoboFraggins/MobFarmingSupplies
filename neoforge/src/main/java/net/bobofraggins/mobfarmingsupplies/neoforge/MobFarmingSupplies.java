@@ -34,6 +34,8 @@ import net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommon;
 import net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommonClient;
 import net.bobofraggins.mobfarmingsupplies.neoforge.tritanium.MoltenMetalClientEvents;
 import net.bobofraggins.mobfarmingsupplies.neoforge.stirlingengine.StirlingEngineClientEvents;
+import net.bobofraggins.mobfarmingsupplies.neoforge.circuitinscriber.InscribingRecipeSync;
+import net.bobofraggins.mobfarmingsupplies.neoforge.circuitinscriber.CircuitInscriberClientEvents;
 
 @Mod(MobFarmingSuppliesCommon.MODID)
 public class MobFarmingSupplies {
@@ -48,6 +50,7 @@ public class MobFarmingSupplies {
         NeoForge.EVENT_BUS.register(new MagicHatSpawnEvents());
         // Present enderman easter egg — same split as the Magic Hat.
         NeoForge.EVENT_BUS.register(new PresentSpawnEvents());
+        InscribingRecipeSync.registerServer();
         // Magic Hat Curios integration — soft dependency, registered only if Curios is present.
         // MUST check isLoaded() before ever calling into MagicHatCurioSetup: that class
         // references Curios API types, and simply loading it (even just to have this class's
@@ -85,6 +88,8 @@ public class MobFarmingSupplies {
             }
             modEventBus.register(ToiletClientEvents.class);
             modEventBus.register(StirlingEngineClientEvents.class);
+            modEventBus.register(CircuitInscriberClientEvents.class);
+            InscribingRecipeSync.registerClient();
             modEventBus.register(MobHeadClientEvents.class);
         }
 

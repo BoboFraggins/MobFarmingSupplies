@@ -16,6 +16,8 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Items;
 import mezz.jei.api.registration.IExtraIngredientRegistration;
 import net.minecraft.world.item.ItemStack;
+import net.bobofraggins.mobfarmingsupplies.circuitinscriber.ClientInscribingRecipes;
+import net.minecraft.world.item.crafting.RecipeHolder;
 
 /**
  * JEI plugin for MobFarmingSupplies — vertical guides for things that aren't crafted directly:
@@ -45,7 +47,8 @@ public class MobFarmingSuppliesJeiPlugin implements IModPlugin {
     public void registerCategories(IRecipeCategoryRegistration reg) {
         IGuiHelper guiHelper = reg.getJeiHelpers().getGuiHelper();
         reg.addRecipeCategories(XpJuiceGuide.category(guiHelper), AnvilCrushingGuide.category(guiHelper),
-                new FilterScribingCategory(guiHelper), BeheadingGuide.category(guiHelper));
+                new FilterScribingCategory(guiHelper), BeheadingGuide.category(guiHelper),
+                new CircuitInscribingCategory(guiHelper));
     }
 
     @Override
@@ -54,6 +57,8 @@ public class MobFarmingSuppliesJeiPlugin implements IModPlugin {
         reg.addRecipes(AnvilCrushingGuide.RECIPE_TYPE, List.of(AnvilCrushingGuide.recipe()));
         reg.addRecipes(FilterScribingCategory.RECIPE_TYPE, List.of(FilterScribingExamples.create()));
         reg.addRecipes(BeheadingGuide.RECIPE_TYPE, List.of(BeheadingGuide.recipe()));
+        reg.addRecipes(CircuitInscribingCategory.RECIPE_TYPE,
+                ClientInscribingRecipes.get().stream().map(RecipeHolder::value).toList());
     }
 
     /** Each mob's Mob Head is its own JEI entry (one item, told apart by its mob type). */
@@ -92,5 +97,7 @@ public class MobFarmingSuppliesJeiPlugin implements IModPlugin {
                 FilterScribingCategory.RECIPE_TYPE);
         reg.addRecipeCatalyst(Registration.MOB_HARVESTER_ITEM.get().getDefaultInstance(), BeheadingGuide.RECIPE_TYPE);
         reg.addRecipeCatalyst(Registration.HARVESTER_UPGRADE_BEHEADING.get().getDefaultInstance(), BeheadingGuide.RECIPE_TYPE);
+        reg.addRecipeCatalyst(Registration.CIRCUIT_INSCRIBER_ITEM.get().getDefaultInstance(),
+                CircuitInscribingCategory.RECIPE_TYPE);
     }
 }

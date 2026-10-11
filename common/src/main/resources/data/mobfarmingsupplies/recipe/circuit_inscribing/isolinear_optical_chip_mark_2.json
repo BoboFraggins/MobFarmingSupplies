@@ -1,0 +1,10 @@
+{
+  "type": "mobfarmingsupplies:circuit_inscribing",
+  "first": "mobfarmingsupplies:isolinear_optical_chip_mark_1",
+  "second": "#c:ingots/gold",
+  "result": {
+    "id": "mobfarmingsupplies:isolinear_optical_chip_mark_2"
+  },
+  "energy": 64000,
+  "time": 300
+}

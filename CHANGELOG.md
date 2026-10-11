@@ -8,6 +8,8 @@
 * Added Biosludge and Bioplastic
 * Added Sterling Engine
 * Added Isolinear Optical Chips
+* Added Circuit Inscriber
+* Added Zombie Brain and cleansed Brain
 
 * Fix z-fighting when heads are placed as trophies
 

@@ -15,6 +15,7 @@ import net.bobofraggins.mobfarmingsupplies.picnicbasket.PicnicBasketKeybinds;
 import net.bobofraggins.mobfarmingsupplies.picnicbasket.PicnicBasketScreen;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.bobofraggins.mobfarmingsupplies.tank.TankScreen;
+import net.bobofraggins.mobfarmingsupplies.circuitinscriber.CircuitInscriberScreen;
 
 /**
  * Client-side initialisation shared by both loaders.
@@ -43,6 +44,9 @@ public final class MobFarmingSuppliesCommonClient {
         MenuScreenRegistry.registerScreenFactory(
                 Registration.CLONE_O_MATIC_MENU.get(),
                 CloneOMaticScreen::new);
+        MenuScreenRegistry.registerScreenFactory(
+                Registration.CIRCUIT_INSCRIBER_MENU.get(),
+                CircuitInscriberScreen::new);
         MenuScreenRegistry.registerScreenFactory(
                 Registration.FAN_MENU.get(),
                 FanScreen::new);

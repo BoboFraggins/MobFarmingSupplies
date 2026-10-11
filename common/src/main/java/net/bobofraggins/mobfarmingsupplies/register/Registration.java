@@ -2,6 +2,11 @@ package net.bobofraggins.mobfarmingsupplies.register;
 
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
+import net.bobofraggins.mobfarmingsupplies.brain.TooltipItem;
+import net.bobofraggins.mobfarmingsupplies.circuitinscriber.CircuitInscribingRecipe;
+import net.bobofraggins.mobfarmingsupplies.circuitinscriber.CircuitInscriberMenu;
+import net.bobofraggins.mobfarmingsupplies.circuitinscriber.CircuitInscriberBlockEntity;
+import net.bobofraggins.mobfarmingsupplies.circuitinscriber.CircuitInscriberBlock;
 import net.bobofraggins.mobfarmingsupplies.shearing.ShearingRecipe;
 import net.bobofraggins.mobfarmingsupplies.stirlingengine.StirlingEngineBlock;
 import net.bobofraggins.mobfarmingsupplies.stirlingengine.StirlingEngineBlockEntity;
@@ -215,6 +220,18 @@ public final class Registration {
                     () -> new RecipeSerializer<>(AnvilCrushingRecipe.MAP_CODEC, AnvilCrushingRecipe.STREAM_CODEC));
 
     /** Shaped recipe that upgrades a tank a tier and keeps its contents. */
+    public static final RegistrySupplier<RecipeType<CircuitInscribingRecipe>> CIRCUIT_INSCRIBING_TYPE =
+            RECIPE_TYPES.register("circuit_inscribing", () -> new RecipeType<CircuitInscribingRecipe>() {
+                @Override
+                public String toString() {
+                    return MobFarmingSuppliesCommon.MODID + ":circuit_inscribing";
+                }
+            });
+
+    public static final RegistrySupplier<RecipeSerializer<CircuitInscribingRecipe>> CIRCUIT_INSCRIBING_SERIALIZER =
+            RECIPE_SERIALIZERS.register("circuit_inscribing",
+                    () -> new RecipeSerializer<>(CircuitInscribingRecipe.MAP_CODEC, CircuitInscribingRecipe.STREAM_CODEC));
+
     /** Shears (or another tool) and an item in the grid; the tool comes back worn. */
     public static final RegistrySupplier<RecipeSerializer<ShearingRecipe>> SHEARING_SERIALIZER =
             RECIPE_SERIALIZERS.register("shearing",
@@ -1026,6 +1043,28 @@ public final class Registration {
                 () -> new StirlingEngineBlockItem(block.get(), new Item.Properties().setId(itemKey(name))));
     }
 
+    // ── Circuit Inscriber ─────────────────────────────────────────────────────────
+
+    public static final RegistrySupplier<CircuitInscriberBlock> CIRCUIT_INSCRIBER =
+            BLOCKS.register("circuit_inscriber",
+                    () -> new CircuitInscriberBlock(BlockBehaviour.Properties.of()
+                            .setId(blockKey("circuit_inscriber"))
+                            .mapColor(MapColor.COLOR_LIGHT_GRAY)
+                            .requiresCorrectToolForDrops()
+                            .strength(3.5f, 6.0f)
+                            .sound(SoundType.METAL)
+                            .noOcclusion()));
+
+    public static final RegistrySupplier<BlockItem> CIRCUIT_INSCRIBER_ITEM =
+            blockItem("circuit_inscriber", CIRCUIT_INSCRIBER);
+
+    public static final RegistrySupplier<BlockEntityType<CircuitInscriberBlockEntity>> CIRCUIT_INSCRIBER_BE_TYPE =
+            BLOCK_ENTITIES.register("circuit_inscriber",
+                    () -> BlockEntityTypePlatform.create(CircuitInscriberBlockEntity::new, CIRCUIT_INSCRIBER.get()));
+
+    public static final RegistrySupplier<MenuType<CircuitInscriberMenu>> CIRCUIT_INSCRIBER_MENU =
+            MENUS.register("circuit_inscriber", () -> MenuRegistry.ofExtended(CircuitInscriberMenu::new));
+
     // ── Toilet ────────────────────────────────────────────────────────────────────
 
     public static final RegistrySupplier<ToiletBlock> TOILET =
@@ -1070,6 +1109,13 @@ public final class Registration {
             ITEMS.register("biosludge",
                     () -> new BiosludgeItem(new Item.Properties()
                             .setId(itemKey("biosludge"))));
+
+    /** Dropped by zombies; soaking it in XP Juice cleans it into a {@link #BRAIN}. */
+    public static final RegistrySupplier<TooltipItem> ZOMBIE_BRAIN =
+            ITEMS.register("zombie_brain", () -> new TooltipItem(new Item.Properties().setId(itemKey("zombie_brain"))));
+
+    public static final RegistrySupplier<TooltipItem> BRAIN =
+            ITEMS.register("brain", () -> new TooltipItem(new Item.Properties().setId(itemKey("brain"))));
 
     /** Smelted from Biosludge. */
     public static final RegistrySupplier<Item> BIOPLASTIC =
@@ -1283,6 +1329,8 @@ public final class Registration {
                         output.accept(SILICON_WAFER.get());
                         output.accept(BIOSLUDGE.get());
                         output.accept(BIOPLASTIC.get());
+                        output.accept(ZOMBIE_BRAIN.get());
+                        output.accept(BRAIN.get());
                         output.accept(FILTER_SCRIBING_TERMINAL_ITEM.get());
                         output.accept(BLANK_FILTER.get());
                         output.accept(ITEM_FILTER.get());
@@ -1330,6 +1378,7 @@ public final class Registration {
                         output.accept(GOLD_TANK_ITEM.get());
                         output.accept(DIAMOND_TANK_ITEM.get());
                         output.accept(EMERALD_TANK_ITEM.get());
+                        output.accept(CIRCUIT_INSCRIBER_ITEM.get());
                         output.accept(STIRLING_ENGINE_ITEM.get());
                         output.accept(IRON_STIRLING_ENGINE_ITEM.get());
                         output.accept(GOLD_STIRLING_ENGINE_ITEM.get());

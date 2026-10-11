@@ -91,6 +91,9 @@
     "mobfarmingsupplies:isolinear_optical_chip_mark_1",
     "mobfarmingsupplies:isolinear_optical_chip_mark_2",
     "mobfarmingsupplies:isolinear_optical_chip_mark_3",
-    "mobfarmingsupplies:isolinear_optical_chip_mark_4"
+    "mobfarmingsupplies:isolinear_optical_chip_mark_4",
+    "mobfarmingsupplies:circuit_inscriber",
+    "mobfarmingsupplies:zombie_brain",
+    "mobfarmingsupplies:brain"
   ]
 }

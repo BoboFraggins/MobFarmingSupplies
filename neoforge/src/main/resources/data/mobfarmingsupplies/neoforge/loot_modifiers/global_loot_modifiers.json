@@ -19,6 +19,8 @@
     "mobfarmingsupplies:loot_modifiers/inject_nether_fortress",
     "mobfarmingsupplies:loot_modifiers/inject_bastion",
     "mobfarmingsupplies:loot_modifiers/inject_outhouse_guide",
-    "mobfarmingsupplies:loot_modifiers/inject_end_city_treasure"
+    "mobfarmingsupplies:loot_modifiers/inject_end_city_treasure",
+    "mobfarmingsupplies:loot_modifiers/inject_zombie_brain",
+    "mobfarmingsupplies:loot_modifiers/inject_brains"
   ]
 }

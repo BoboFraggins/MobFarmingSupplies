@@ -24,12 +24,15 @@ Several items are added to vanilla chest loot, each at a configurable chance. DN
 the four novelty buttons appear in dungeon, temple, stronghold and similar chests. Magic Hats
 appear in the same kinds of chests at 2% by default. S'mores appear in village house chests at 25%.
 
-Four items are added through loot tables you can override with a datapack:
+Several items are added through loot tables you can override with a datapack:
 `mobfarmingsupplies:chests/inject/dungeon` adds an Experience Syringe holding three to seven levels
 to dungeon chests, `chests/inject/nether_fortress` adds an Omnidirectional Hopper to fortress
 chests, and `chests/inject/bastion` adds a linked pair of Einstein-Rosen Bridges to bastion chests.
 Each rolls at 25%. `chests/inject/end_city_treasure` adds an enchanted Tritanium Alloy Paxel to End
-City chests at 5%. Replacing a table with an empty one removes that item from loot.
+City chests at 5%. `chests/inject/brains` adds a Brain or a Zombie Brain to the same structure
+chests as the Magic Hat at 1%, and `entities/inject/zombie_brain` gives zombies, husks, drowned,
+zombie villagers and zombified piglins a one in eight chance to drop a Zombie Brain. Replacing a
+table with an empty one removes that item from loot.
 
 ## Tritanium
 
@@ -60,13 +63,18 @@ from a Tritanium Bee and an Iron Bee. Ex Deorum sieves Tritanium Ore Chunks from
 
 ## Recipes
 
-Every recipe is a datapack JSON and can be replaced. Five use the mod's own recipe types:
+Every recipe is a datapack JSON and can be replaced. Six use the mod's own recipe types:
 `tank_upgrade` (keeps a Tank's contents when upgrading its tier), `bridge_pair` and `bridge_link`
 (give the crafted bridges a fresh shared channel), `anvil_crushing` (items crushed by a falling
-anvil) and `shearing` (an item cut with a tool in the crafting grid, such as Tritanium Alloy Plates
-and Wire, which hands the tool back one point more worn). They follow the vanilla shaped and
-shapeless formats. The crushing recipe takes an `ingredient` and a `result`, and the shearing recipe
-takes an `ingredient`, a `result` and an optional `tool`, which defaults to Shears.
+anvil), `shearing` (an item cut with a tool in the crafting grid, such as Tritanium Alloy Plates and
+Wire, which hands the tool back one point more worn) and `circuit_inscribing` (what the Circuit
+Inscriber makes). They follow the vanilla shaped and shapeless formats. The crushing recipe takes an
+`ingredient` and a `result`, and the shearing recipe takes an `ingredient`, a `result` and an
+optional `tool`, which defaults to Shears. The inscribing recipe takes a `first` ingredient, an
+optional `second`, a `result`, the total `energy` the craft uses and its `time` in ticks; the energy
+is spread evenly over that time. The Isolinear Optical Chip upgrades use 64,000 energy over 300
+ticks (Mark 2, with a gold ingot), 88,000 over 600 (Mark 3, with an emerald) and 114,000 over 1,200
+(Mark 4, with a netherite ingot).
 
 ## Tags
 

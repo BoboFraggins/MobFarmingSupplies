@@ -65,6 +65,15 @@ public final class FabricLootModifiers {
                 addItem(tableBuilder, "mobfarmingsupplies:wilhelm_button", toggleButtonChance);
 
                 addItem(tableBuilder, "mobfarmingsupplies:magic_hat", (float) MFSConfig.getMagicHatChestChance());
+                addInjectTable(tableBuilder, "chests/inject/brains");
+            }
+
+            // Zombies of every kind sometimes drop a Zombie Brain.
+            switch (tableId) {
+                case "minecraft:entities/zombie", "minecraft:entities/husk", "minecraft:entities/drowned",
+                     "minecraft:entities/zombie_villager", "minecraft:entities/zombified_piglin" ->
+                        addInjectTable(tableBuilder, "entities/inject/zombie_brain");
+                default -> { }
             }
 
             if (ChestLootTables.VILLAGE_HOUSE_CHESTS.contains(tableId)) {
@@ -108,8 +117,13 @@ public final class FabricLootModifiers {
 
     /** Adds a pool that rolls {@code mobfarmingsupplies:chests/inject/<name>} once. */
     private static void addTable(LootTable.Builder tableBuilder, String name) {
+        addInjectTable(tableBuilder, "chests/inject/" + name);
+    }
+
+    /** Rolls one of the mod's inject tables ({@code path} under mobfarmingsupplies:) as an extra pool. */
+    private static void addInjectTable(LootTable.Builder tableBuilder, String path) {
         ResourceKey<LootTable> inject = ResourceKey.create(Registries.LOOT_TABLE,
-                Identifier.fromNamespaceAndPath("mobfarmingsupplies", "chests/inject/" + name));
+                Identifier.fromNamespaceAndPath("mobfarmingsupplies", path));
         tableBuilder.withPool(LootPool.lootPool()
                 .setRolls(ConstantValue.exactly(1))
                 .add(NestedLootTable.lootTableReference(inject)));
