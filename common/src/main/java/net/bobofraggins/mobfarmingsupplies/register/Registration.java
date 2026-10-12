@@ -118,6 +118,8 @@ import net.bobofraggins.mobfarmingsupplies.xpjuice.XpJuicePlatformHelper;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.core.particles.ParticleType;
+import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
@@ -194,6 +196,9 @@ public final class Registration {
 
     public static final DeferredRegister<CreativeModeTab> CREATIVE_TABS =
             DeferredRegister.create(MobFarmingSuppliesCommon.MODID, Registries.CREATIVE_MODE_TAB);
+
+    public static final DeferredRegister<ParticleType<?>> PARTICLE_TYPES =
+            DeferredRegister.create(MobFarmingSuppliesCommon.MODID, Registries.PARTICLE_TYPE);
 
     public static final DeferredRegister<SoundEvent> SOUND_EVENTS =
             DeferredRegister.create(MobFarmingSuppliesCommon.MODID, Registries.SOUND_EVENT);
@@ -1069,6 +1074,12 @@ public final class Registration {
 
     // ── Gravitational Anomaly ─────────────────────────────────────────────────────
 
+    /** Hot gas drawn into the Gravitational Anomaly, and sparks shot out along its jets. */
+    public static final RegistrySupplier<SimpleParticleType> ACCRETION_PARTICLE =
+            PARTICLE_TYPES.register("accretion", () -> new SimpleParticleType(false) {});
+    public static final RegistrySupplier<SimpleParticleType> JET_PARTICLE =
+            PARTICLE_TYPES.register("jet", () -> new SimpleParticleType(false) {});
+
     public static final RegistrySupplier<GravitationalAnomalyBlock> GRAVITATIONAL_ANOMALY =
             BLOCKS.register("gravitational_anomaly",
                     () -> new GravitationalAnomalyBlock(BlockBehaviour.Properties.of()
@@ -1471,6 +1482,7 @@ public final class Registration {
         MENUS.register();
         DATA_COMPONENTS.register();
         CREATIVE_TABS.register();
+        PARTICLE_TYPES.register();
         SOUND_EVENTS.register();
         RECIPE_TYPES.register();
         RECIPE_SERIALIZERS.register();

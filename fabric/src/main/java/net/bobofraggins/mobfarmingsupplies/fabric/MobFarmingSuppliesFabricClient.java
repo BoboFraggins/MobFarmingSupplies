@@ -44,6 +44,8 @@ import net.fabricmc.fabric.api.event.Event;
 import net.bobofraggins.mobfarmingsupplies.circuitinscriber.CircuitInscriberItemRenderer;
 import net.bobofraggins.mobfarmingsupplies.gravitationalanomaly.GravitationalAnomalyItemRenderer;
 import net.bobofraggins.mobfarmingsupplies.gravitationalanomaly.GravitationalAnomalyRenderer;
+import net.bobofraggins.mobfarmingsupplies.gravitationalanomaly.AnomalyParticles;
+import dev.architectury.registry.client.particle.ParticleProviderRegistry;
 
 public class MobFarmingSuppliesFabricClient implements ClientModInitializer {
 
@@ -91,6 +93,8 @@ public class MobFarmingSuppliesFabricClient implements ClientModInitializer {
         BlockEntityRendererRegistry.register(
                 Registration.GRAVITATIONAL_ANOMALY_BE_TYPE.get(),
                 GravitationalAnomalyRenderer::new);
+        ParticleProviderRegistry.register(Registration.ACCRETION_PARTICLE, AnomalyParticles.AccretionProvider::new);
+        ParticleProviderRegistry.register(Registration.JET_PARTICLE, AnomalyParticles.JetProvider::new);
         // The toilet seat is invisible: only its rider is drawn.
         EntityRendererRegistry.register(Registration.TOILET_SEAT, NoopRenderer::new);
         ExtraBlockModelsImpl.registerModelLoadingPlugin();

@@ -40,7 +40,7 @@ public final class AccretionDisk {
      * The disk has some thickness: within this of edge-on (sine of the angle) both its top and
      * its underside show, so the lensed far side arcs over the shadow and under it at once.
      */
-    private static final float THICKNESS = (float) Math.sin(Math.toRadians(7));
+    private static final float THICKNESS = (float) Math.sin(Math.toRadians(1.5));
     /** How much closer together vertices are round the back of the disk, which lensing stretches. */
     private static final double BACK_CROWDING = 0.75;
 
