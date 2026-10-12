@@ -11,6 +11,7 @@
 * Added Circuit Inscriber
 * Added Zombie Brain and cleansed Brain
 * Added Superconducting Magnet
+* Added Positronic Circuit and Positronic Neural Interface
 
 * Fix z-fighting when heads are placed as trophies
 

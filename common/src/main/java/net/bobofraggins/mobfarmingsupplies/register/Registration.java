@@ -1312,6 +1312,12 @@ public final class Registration {
     public static final RegistrySupplier<Item> ISOLINEAR_OPTICAL_CHIP_MARK_4 =
             item("isolinear_optical_chip_mark_4", Item::new, props -> props);
 
+    public static final RegistrySupplier<Item> POSITRONIC_CIRCUIT =
+            item("positronic_circuit", Item::new, props -> props);
+
+    public static final RegistrySupplier<Item> POSITRONIC_NEURAL_INTERFACE =
+            item("positronic_neural_interface", Item::new, props -> props);
+
     public static final RegistrySupplier<Item> TRITANIUM_ALLOY_SWORD = item("tritanium_alloy_sword", Item::new,
             props -> props.sword(TritaniumMaterials.ALLOY_TOOLS, 3.0f, -2.4f));
     public static final RegistrySupplier<Item> TRITANIUM_ALLOY_PICKAXE = item("tritanium_alloy_pickaxe", Item::new,
@@ -1462,6 +1468,8 @@ public final class Registration {
                         output.accept(ISOLINEAR_OPTICAL_CHIP_MARK_2.get());
                         output.accept(ISOLINEAR_OPTICAL_CHIP_MARK_3.get());
                         output.accept(ISOLINEAR_OPTICAL_CHIP_MARK_4.get());
+                        output.accept(POSITRONIC_CIRCUIT.get());
+                        output.accept(POSITRONIC_NEURAL_INTERFACE.get());
                         ModCompatRegistration.extraTritaniumAlloyItems().forEach(item -> output.accept(item.get()));
                         output.accept(TRITANIUM_ALLOY_SWORD.get());
                         output.accept(TRITANIUM_ALLOY_PICKAXE.get());

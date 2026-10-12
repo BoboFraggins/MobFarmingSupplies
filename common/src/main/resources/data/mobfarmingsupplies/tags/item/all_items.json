@@ -96,6 +96,8 @@
     "mobfarmingsupplies:gravitational_anomaly",
     "mobfarmingsupplies:zombie_brain",
     "mobfarmingsupplies:brain",
-    "mobfarmingsupplies:superconducting_magnet"
+    "mobfarmingsupplies:superconducting_magnet",
+    "mobfarmingsupplies:positronic_circuit",
+    "mobfarmingsupplies:positronic_neural_interface"
   ]
 }

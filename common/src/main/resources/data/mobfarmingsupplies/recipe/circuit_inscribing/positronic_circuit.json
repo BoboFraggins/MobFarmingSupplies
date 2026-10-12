@@ -1,0 +1,10 @@
+{
+  "type": "mobfarmingsupplies:circuit_inscribing",
+  "first": "mobfarmingsupplies:isolinear_optical_chip_mark_2",
+  "second": "mobfarmingsupplies:brain",
+  "result": {
+    "id": "mobfarmingsupplies:positronic_circuit"
+  },
+  "energy": 88000,
+  "time": 600
+}

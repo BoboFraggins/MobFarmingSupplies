@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "TBT",
+    "GPG",
+    "L L"
+  ],
+  "key": {
+    "T": "mobfarmingsupplies:isolinear_optical_chip_mark_3",
+    "B": "#c:plastics",
+    "G": "minecraft:light_blue_stained_glass_pane",
+    "P": "mobfarmingsupplies:positronic_circuit",
+    "L": "#c:leathers"
+  },
+  "result": {
+    "id": "mobfarmingsupplies:positronic_neural_interface"
+  }
+}
