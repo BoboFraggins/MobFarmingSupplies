@@ -7,6 +7,8 @@ import net.bobofraggins.mobfarmingsupplies.circuitinscriber.CircuitInscribingRec
 import net.bobofraggins.mobfarmingsupplies.circuitinscriber.CircuitInscriberMenu;
 import net.bobofraggins.mobfarmingsupplies.circuitinscriber.CircuitInscriberBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.circuitinscriber.CircuitInscriberBlock;
+import net.bobofraggins.mobfarmingsupplies.gravitationalanomaly.GravitationalAnomalyBlock;
+import net.bobofraggins.mobfarmingsupplies.gravitationalanomaly.GravitationalAnomalyBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.shearing.ShearingRecipe;
 import net.bobofraggins.mobfarmingsupplies.stirlingengine.StirlingEngineBlock;
 import net.bobofraggins.mobfarmingsupplies.stirlingengine.StirlingEngineBlockEntity;
@@ -1065,6 +1067,27 @@ public final class Registration {
     public static final RegistrySupplier<MenuType<CircuitInscriberMenu>> CIRCUIT_INSCRIBER_MENU =
             MENUS.register("circuit_inscriber", () -> MenuRegistry.ofExtended(CircuitInscriberMenu::new));
 
+    // ── Gravitational Anomaly ─────────────────────────────────────────────────────
+
+    public static final RegistrySupplier<GravitationalAnomalyBlock> GRAVITATIONAL_ANOMALY =
+            BLOCKS.register("gravitational_anomaly",
+                    () -> new GravitationalAnomalyBlock(BlockBehaviour.Properties.of()
+                            .setId(blockKey("gravitational_anomaly"))
+                            .mapColor(MapColor.COLOR_BLACK)
+                            .lightLevel(state -> 15)
+                            .strength(50.0f, 3_600_000.0f)
+                            .pushReaction(PushReaction.BLOCK)
+                            .sound(SoundType.AMETHYST)
+                            .noOcclusion()));
+
+    public static final RegistrySupplier<BlockItem> GRAVITATIONAL_ANOMALY_ITEM =
+            blockItem("gravitational_anomaly", GRAVITATIONAL_ANOMALY);
+
+    public static final RegistrySupplier<BlockEntityType<GravitationalAnomalyBlockEntity>>
+            GRAVITATIONAL_ANOMALY_BE_TYPE = BLOCK_ENTITIES.register("gravitational_anomaly",
+                    () -> BlockEntityTypePlatform.create(GravitationalAnomalyBlockEntity::new,
+                            GRAVITATIONAL_ANOMALY.get()));
+
     // ── Toilet ────────────────────────────────────────────────────────────────────
 
     public static final RegistrySupplier<ToiletBlock> TOILET =
@@ -1379,6 +1402,7 @@ public final class Registration {
                         output.accept(DIAMOND_TANK_ITEM.get());
                         output.accept(EMERALD_TANK_ITEM.get());
                         output.accept(CIRCUIT_INSCRIBER_ITEM.get());
+                        output.accept(GRAVITATIONAL_ANOMALY_ITEM.get());
                         output.accept(STIRLING_ENGINE_ITEM.get());
                         output.accept(IRON_STIRLING_ENGINE_ITEM.get());
                         output.accept(GOLD_STIRLING_ENGINE_ITEM.get());

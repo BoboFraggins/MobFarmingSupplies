@@ -371,6 +371,7 @@
   "item.mobfarmingsupplies.tritanium_alloy_boots": "Tritanium Alloy Boots",
 
   "block.mobfarmingsupplies.circuit_inscriber": "Circuit Inscriber",
+  "block.mobfarmingsupplies.gravitational_anomaly": "Gravitational Anomaly",
   "jei.mobfarmingsupplies.circuit_inscribing": "Circuit Inscribing",
   "jei.mobfarmingsupplies.circuit_inscribing.cost": "%s energy over %s s",
   "container.mobfarmingsupplies.circuit_inscriber.energy": "%s / %s energy",

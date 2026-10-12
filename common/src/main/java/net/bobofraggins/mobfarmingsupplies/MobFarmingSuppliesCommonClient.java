@@ -32,6 +32,8 @@ public final class MobFarmingSuppliesCommonClient {
     public static void init() {
         // Development only: renders block icons for the docs when MFS_RENDER_ICONS is set.
         net.bobofraggins.mobfarmingsupplies.client.devtools.BlockIconRenderer.register();
+        // Development only: screenshots of the Gravitational Anomaly when MFS_CAPTURE_SCENE is set.
+        net.bobofraggins.mobfarmingsupplies.client.devtools.SceneCapture.register();
         // Menu → screen bindings (menu and screen both in common). On Fabric this is
         // the only registration path and works correctly. On NeoForge,
         // MenuScreenRegistry.registerScreenFactory adds a RegisterMenuScreensEvent

@@ -1,0 +1,27 @@
+{
+  "model": {
+    "type": "minecraft:select",
+    "property": "minecraft:display_context",
+    "cases": [
+      {
+        "when": "gui",
+        "model": {
+          "type": "minecraft:special",
+          "base": "mobfarmingsupplies:item/gravitational_anomaly",
+          "model": {
+            "type": "mobfarmingsupplies:gravitational_anomaly_renderer",
+            "view": "screen"
+          }
+        }
+      }
+    ],
+    "fallback": {
+      "type": "minecraft:special",
+      "base": "mobfarmingsupplies:item/gravitational_anomaly",
+      "model": {
+        "type": "mobfarmingsupplies:gravitational_anomaly_renderer",
+        "view": "camera"
+      }
+    }
+  }
+}

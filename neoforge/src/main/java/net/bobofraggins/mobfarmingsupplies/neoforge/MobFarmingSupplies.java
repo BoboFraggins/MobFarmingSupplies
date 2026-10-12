@@ -36,6 +36,7 @@ import net.bobofraggins.mobfarmingsupplies.neoforge.tritanium.MoltenMetalClientE
 import net.bobofraggins.mobfarmingsupplies.neoforge.stirlingengine.StirlingEngineClientEvents;
 import net.bobofraggins.mobfarmingsupplies.neoforge.circuitinscriber.InscribingRecipeSync;
 import net.bobofraggins.mobfarmingsupplies.neoforge.circuitinscriber.CircuitInscriberClientEvents;
+import net.bobofraggins.mobfarmingsupplies.neoforge.gravitationalanomaly.GravitationalAnomalyClientEvents;
 
 @Mod(MobFarmingSuppliesCommon.MODID)
 public class MobFarmingSupplies {
@@ -89,6 +90,7 @@ public class MobFarmingSupplies {
             modEventBus.register(ToiletClientEvents.class);
             modEventBus.register(StirlingEngineClientEvents.class);
             modEventBus.register(CircuitInscriberClientEvents.class);
+            modEventBus.register(GravitationalAnomalyClientEvents.class);
             InscribingRecipeSync.registerClient();
             modEventBus.register(MobHeadClientEvents.class);
         }

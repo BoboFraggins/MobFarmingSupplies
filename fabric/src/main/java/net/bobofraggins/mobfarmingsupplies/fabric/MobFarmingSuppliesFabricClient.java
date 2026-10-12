@@ -42,6 +42,8 @@ import net.bobofraggins.mobfarmingsupplies.circuitinscriber.ClientInscribingReci
 import net.fabricmc.fabric.api.client.recipe.v1.sync.ClientRecipeSynchronizedEvent;
 import net.fabricmc.fabric.api.event.Event;
 import net.bobofraggins.mobfarmingsupplies.circuitinscriber.CircuitInscriberItemRenderer;
+import net.bobofraggins.mobfarmingsupplies.gravitationalanomaly.GravitationalAnomalyItemRenderer;
+import net.bobofraggins.mobfarmingsupplies.gravitationalanomaly.GravitationalAnomalyRenderer;
 
 public class MobFarmingSuppliesFabricClient implements ClientModInitializer {
 
@@ -86,6 +88,9 @@ public class MobFarmingSuppliesFabricClient implements ClientModInitializer {
         BlockEntityRendererRegistry.register(
                 Registration.CIRCUIT_INSCRIBER_BE_TYPE.get(),
                 CircuitInscriberRenderer::new);
+        BlockEntityRendererRegistry.register(
+                Registration.GRAVITATIONAL_ANOMALY_BE_TYPE.get(),
+                GravitationalAnomalyRenderer::new);
         // The toilet seat is invisible: only its rider is drawn.
         EntityRendererRegistry.register(Registration.TOILET_SEAT, NoopRenderer::new);
         ExtraBlockModelsImpl.registerModelLoadingPlugin();
@@ -158,6 +163,9 @@ public class MobFarmingSuppliesFabricClient implements ClientModInitializer {
             idMapper.put(
                     Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "circuit_inscriber_renderer"),
                     CircuitInscriberItemRenderer.Unbaked.MAP_CODEC);
+            idMapper.put(
+                    Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "gravitational_anomaly_renderer"),
+                    GravitationalAnomalyItemRenderer.Unbaked.MAP_CODEC);
         } catch (ReflectiveOperationException e) {
             throw new RuntimeException("Failed to register mobfarmingsupplies special model renderers", e);
         }

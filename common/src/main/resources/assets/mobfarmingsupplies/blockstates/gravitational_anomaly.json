@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "active=false": {
+      "model": "mobfarmingsupplies:block/gravitational_anomaly"
+    },
+    "active=true": {
+      "model": "mobfarmingsupplies:block/gravitational_anomaly"
+    }
+  }
+}
