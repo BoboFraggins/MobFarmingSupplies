@@ -6,7 +6,7 @@
     },
     {
       "type": "minecraft:count",
-      "count": 7
+      "count": 33
     },
     {
       "type": "minecraft:in_square"
@@ -19,7 +19,7 @@
           "above_bottom": -80
         },
         "max_inclusive": {
-          "above_bottom": 80
+          "absolute": 64
         }
       }
     },

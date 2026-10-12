@@ -109,9 +109,9 @@ Mobs created with commands, spawn eggs, buckets or dispensers never get either.
 | `tritanium.oreGenerates` | `true` | When `true`, Tritanium Ore generates in the overworld. Only chunks generated after a change are affected. |
 | `tritanium.mobsCarryTools` | `true` | When `true`, a mob that spawns holding a sword, axe or shovel has a 10% chance to hold the Tritanium Alloy version instead and a 10% chance to hold a Tritanium Alloy Paxel. |
 
-The ore generates in veins of up to six blocks, six times per chunk, between Y -48 and 48 and most
-often near Y 0. Mobs from commands, spawn eggs, buckets, dispensers and the Clone-O-Matic never
-carry Tritanium Alloy tools.
+The ore generates in veins of up to six blocks, 65 times per chunk, between Y -48 and 120 and most
+often near Y 36, for about 130 ore blocks a chunk. Mobs from commands, spawn eggs, buckets,
+dispensers and the Clone-O-Matic never carry Tritanium Alloy tools.
 
 ## Dilithium
 
@@ -119,9 +119,9 @@ carry Tritanium Alloy tools.
 |---|---|---|
 | `dilithium.oreGenerates` | `true` | When `true`, Dilithium Ore generates in the overworld. Only chunks generated after a change are affected. |
 
-The ore generates like diamond: in veins of up to four blocks, seven times per chunk, from the
-bottom of the world up to Y 16, most often near the bottom, and half as often where a vein touches
-air.
+The ore generates in veins of up to four blocks, 33 times per chunk, from the bottom of the world up
+to Y 64, most often near Y -40, for about 30 ore blocks a chunk. Half the veins that would touch air
+are skipped, as with diamond.
 
 ## Hoppers
 

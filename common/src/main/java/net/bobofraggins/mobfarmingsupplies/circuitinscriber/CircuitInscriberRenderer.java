@@ -68,6 +68,11 @@ public class CircuitInscriberRenderer
 
     private static final float SURFACE_Y = 8.02f;
     private static final float LASER_WIDTH = 0.3f;
+    /** How far forward of its tip (toward the front) a beam lands, in pixels. */
+    private static final float LASER_LEAD = 1f;
+    /** How far a beam's spot sweeps either way, across and along the machine, in pixels. */
+    private static final float SWEEP_X = 1.08f;
+    private static final float SWEEP_Z = 0.96f;
     private static final int LASER_CORE = 0xFFFF5050;
     private static final int LASER_GLOW = 0x80FF1010;
 
@@ -86,19 +91,32 @@ public class CircuitInscriberRenderer
         Identifier tip() {
             return id("block/circuit_inscriber_" + side + "_tip");
         }
+
+        /** The tip with its red light lit, while the machine works. */
+        Identifier activeTip() {
+            return id("block/circuit_inscriber_" + side + "_tip_active");
+        }
     }
 
     /** The base, which the item renderer draws (placed, it's the block model). */
     public static final Identifier BASE_MODEL_ID = id("block/circuit_inscriber_base");
+    /** A 1.2-pixel cube centred on each joint, hiding the gap between segments when they bend. */
+    public static final Identifier JOINT_MODEL_ID = id("block/circuit_inscriber_joint");
 
-    public static final List<Identifier> MODEL_IDS = List.of(BASE_MODEL_ID,
-            RIGHT.first(), RIGHT.middle(), RIGHT.tip(), LEFT.first(), LEFT.middle(), LEFT.tip());
+    public static final List<Identifier> MODEL_IDS = List.of(BASE_MODEL_ID, JOINT_MODEL_ID,
+            RIGHT.first(), RIGHT.middle(), RIGHT.tip(), RIGHT.activeTip(),
+            LEFT.first(), LEFT.middle(), LEFT.tip(), LEFT.activeTip());
+
+    /** Full brightness, for the lit tips. */
+    private static final int FULL_BRIGHT = 0xF000F0;
 
     public static class State extends BlockEntityRenderState {
         Direction facing = Direction.NORTH;
         /** How far the arms have curled, eased: {@link #REST_CURL} at rest, 1 working over the surface. */
         float curl;
         boolean lasers;
+        /** Working: the tips' lights are lit. */
+        boolean active;
         float time;
         final ItemStackRenderState item = new ItemStackRenderState();
     }
@@ -124,7 +142,8 @@ public class CircuitInscriberRenderer
         float progress = Mth.lerp(partialTick, be.prevArmProgress, be.armProgress);
         float eased = progress * progress * (3 - 2 * progress); // ease in and out
         state.curl = REST_CURL + (1 - REST_CURL) * eased;
-        state.lasers = be.isCrafting() && progress >= 0.98f;
+        state.active = be.isCrafting();
+        state.lasers = state.active && progress >= 0.98f;
         state.time = be.clientTicks + partialTick;
         state.item.clear();
         if (!be.displayItem.isEmpty()) {
@@ -142,10 +161,10 @@ public class CircuitInscriberRenderer
         poseStack.scale(1 / 16f, 1 / 16f, 1 / 16f);
 
         RenderType parts = Sheets.cutoutBlockSheet();
-        Vector3f rightTip = submitArm(RIGHT, state.curl, parts, state.lightCoords, OverlayTexture.NO_OVERLAY,
-                poseStack, collector);
-        Vector3f leftTip = submitArm(LEFT, state.curl, parts, state.lightCoords, OverlayTexture.NO_OVERLAY,
-                poseStack, collector);
+        Vector3f rightTip = submitArm(RIGHT, state.curl, state.active, parts, state.lightCoords,
+                OverlayTexture.NO_OVERLAY, poseStack, collector);
+        Vector3f leftTip = submitArm(LEFT, state.curl, state.active, parts, state.lightCoords,
+                OverlayTexture.NO_OVERLAY, poseStack, collector);
 
         if (!state.item.isEmpty()) {
             poseStack.pushPose();
@@ -158,11 +177,12 @@ public class CircuitInscriberRenderer
         }
 
         if (state.lasers) {
-            // Each beam sweeps a little across the item, out of step with the other.
-            Vector3f rightSpot = new Vector3f(rightTip.x + 0.9f * Mth.sin(state.time * 0.31f), SURFACE_Y,
-                    rightTip.z + 0.8f * Mth.cos(state.time * 0.23f));
-            Vector3f leftSpot = new Vector3f(leftTip.x + 0.9f * Mth.sin(state.time * 0.27f + 2f), SURFACE_Y,
-                    leftTip.z + 0.8f * Mth.cos(state.time * 0.35f + 1f));
+            // Each beam slants a little forward of its tip and sweeps across the item, out of step
+            // with the other.
+            Vector3f rightSpot = new Vector3f(rightTip.x + SWEEP_X * Mth.sin(state.time * 0.31f), SURFACE_Y,
+                    rightTip.z - LASER_LEAD + SWEEP_Z * Mth.cos(state.time * 0.23f));
+            Vector3f leftSpot = new Vector3f(leftTip.x + SWEEP_X * Mth.sin(state.time * 0.27f + 2f), SURFACE_Y,
+                    leftTip.z - LASER_LEAD + SWEEP_Z * Mth.cos(state.time * 0.35f + 1f));
             collector.submitCustomGeometry(poseStack, RenderTypes.lightning(), (pose, consumer) -> {
                 beam(consumer, pose, rightTip, rightSpot);
                 beam(consumer, pose, leftTip, leftSpot);
@@ -173,25 +193,32 @@ public class CircuitInscriberRenderer
 
     /**
      * Draws both arms curled by {@code curl} (0 up, 1 working), in a pose that's in pixels: the item
-     * renderer draws the inventory icon's arms with this, at {@link #REST_CURL}.
+     * renderer draws the inventory icon's arms with this, at {@link #REST_CURL}. The tips are unlit.
      */
     public static void submitArms(float curl, RenderType renderType, int light, int overlay, PoseStack poseStack,
                                   SubmitNodeCollector collector) {
-        submitArm(RIGHT, curl, renderType, light, overlay, poseStack, collector);
-        submitArm(LEFT, curl, renderType, light, overlay, poseStack, collector);
+        submitArm(RIGHT, curl, false, renderType, light, overlay, poseStack, collector);
+        submitArm(LEFT, curl, false, renderType, light, overlay, poseStack, collector);
     }
 
-    /** Draws an arm curled by {@code c}; returns where its tip's end is, in model space. */
-    private static Vector3f submitArm(Arm arm, float c, RenderType renderType, int light, int overlay,
-                                      PoseStack poseStack, SubmitNodeCollector collector) {
+    /**
+     * Draws an arm curled by {@code c}, its tip lit bright red and glowing if {@code active}; returns
+     * where its tip's end is, in model space.
+     */
+    private static Vector3f submitArm(Arm arm, float c, boolean active, RenderType renderType, int light,
+                                      int overlay, PoseStack poseStack, SubmitNodeCollector collector) {
         poseStack.pushPose();
         pivot(poseStack, arm.x(), SHOULDER_Y, Axis.YP.rotationDegrees(arm.inward() * YAW * c));
         pivot(poseStack, arm.x(), SHOULDER_Y, Axis.XP.rotationDegrees(-SHOULDER_BEND * c));
         submitPart(arm.first(), renderType, light, overlay, poseStack, collector);
+        submitJoint(arm.x(), SHOULDER_Y, renderType, light, overlay, poseStack, collector);
         pivot(poseStack, arm.x(), ELBOW_Y, Axis.XP.rotationDegrees(-ELBOW_BEND * c));
         submitPart(arm.middle(), renderType, light, overlay, poseStack, collector);
+        submitJoint(arm.x(), ELBOW_Y, renderType, light, overlay, poseStack, collector);
         pivot(poseStack, arm.x(), WRIST_Y, Axis.XP.rotationDegrees(-WRIST_BEND * c));
-        submitPart(arm.tip(), renderType, light, overlay, poseStack, collector);
+        if (active) submitPart(arm.activeTip(), renderType, FULL_BRIGHT, overlay, poseStack, collector);
+        else submitPart(arm.tip(), renderType, light, overlay, poseStack, collector);
+        submitJoint(arm.x(), WRIST_Y, renderType, light, overlay, poseStack, collector);
 
         // The tip's end in model space: through this arm's turns, but not the block's.
         Vector3f end = new Vector3f(arm.x(), TIP_END_Y, ARM_Z);
@@ -210,6 +237,15 @@ public class CircuitInscriberRenderer
         poseStack.translate(x, y, ARM_Z);
         poseStack.mulPose(rotation);
         poseStack.translate(-x, -y, -ARM_Z);
+    }
+
+    /** Draws a joint cube centred on (x, y, ARM_Z), turned with the segment that starts there. */
+    private static void submitJoint(float x, float y, RenderType renderType, int light, int overlay,
+                                    PoseStack poseStack, SubmitNodeCollector collector) {
+        poseStack.pushPose();
+        poseStack.translate(x, y, ARM_Z);
+        submitPart(JOINT_MODEL_ID, renderType, light, overlay, poseStack, collector);
+        poseStack.popPose();
     }
 
     /** Draws a segment model; the pose is in pixels and the models in block units. */

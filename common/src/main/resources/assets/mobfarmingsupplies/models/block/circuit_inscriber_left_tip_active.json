@@ -1,0 +1,90 @@
+{
+  "texture_size": [
+    64,
+    64
+  ],
+  "textures": {
+    "0": "mobfarmingsupplies:block/circuit_inscriber_texture_active",
+    "particle": "mobfarmingsupplies:block/circuit_inscriber_texture_active"
+  },
+  "elements": [
+    {
+      "name": "tip",
+      "from": [
+        3,
+        18,
+        12
+      ],
+      "to": [
+        4,
+        23,
+        13
+      ],
+      "rotation": {
+        "angle": 0,
+        "axis": "y",
+        "origin": [
+          3,
+          18.25,
+          13
+        ]
+      },
+      "faces": {
+        "north": {
+          "uv": [
+            9.25,
+            8.5,
+            9.5,
+            9.75
+          ],
+          "texture": "#0"
+        },
+        "east": {
+          "uv": [
+            8.75,
+            9.25,
+            9,
+            10.5
+          ],
+          "texture": "#0"
+        },
+        "south": {
+          "uv": [
+            9,
+            9.25,
+            9.25,
+            10.5
+          ],
+          "texture": "#0"
+        },
+        "west": {
+          "uv": [
+            9.5,
+            6,
+            9.75,
+            7.25
+          ],
+          "texture": "#0"
+        },
+        "up": {
+          "uv": [
+            2,
+            10,
+            2.25,
+            10.25
+          ],
+          "texture": "#0"
+        },
+        "down": {
+          "uv": [
+            2.25,
+            10,
+            2.5,
+            10.25
+          ],
+          "texture": "#0"
+        }
+      }
+    }
+  ]
+}

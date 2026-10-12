@@ -1,0 +1,76 @@
+{
+  "textures": {
+    "joint": "mobfarmingsupplies:block/circuit_inscriber_joint",
+    "particle": "mobfarmingsupplies:block/circuit_inscriber_joint"
+  },
+  "elements": [
+    {
+      "from": [
+        -0.6,
+        -0.6,
+        -0.6
+      ],
+      "to": [
+        0.6,
+        0.6,
+        0.6
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#joint"
+        },
+        "south": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#joint"
+        },
+        "east": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#joint"
+        },
+        "west": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#joint"
+        },
+        "up": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#joint"
+        },
+        "down": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#joint"
+        }
+      }
+    }
+  ]
+}
