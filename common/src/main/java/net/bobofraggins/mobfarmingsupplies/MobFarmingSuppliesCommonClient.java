@@ -34,6 +34,8 @@ public final class MobFarmingSuppliesCommonClient {
         net.bobofraggins.mobfarmingsupplies.client.devtools.BlockIconRenderer.register();
         // Development only: screenshots of the Gravitational Anomaly when MFS_CAPTURE_SCENE is set.
         net.bobofraggins.mobfarmingsupplies.client.devtools.SceneCapture.register();
+        // Development only: runs a command script as the player when MFS_DEV_COMMANDS is set.
+        net.bobofraggins.mobfarmingsupplies.client.devtools.DevCommands.register();
         // Menu → screen bindings (menu and screen both in common). On Fabric this is
         // the only registration path and works correctly. On NeoForge,
         // MenuScreenRegistry.registerScreenFactory adds a RegisterMenuScreensEvent
@@ -68,6 +70,7 @@ public final class MobFarmingSuppliesCommonClient {
                 Registration.PICNIC_BASKET_MENU.get(),
                 PicnicBasketScreen::new);
         PicnicBasketKeybinds.init();
+        net.bobofraggins.mobfarmingsupplies.magnet.MagnetKeybinds.init();
         MenuScreenRegistry.registerScreenFactory(
                 Registration.FILTER_SCRIBING_TERMINAL_MENU.get(),
                 FilterScribingTerminalScreen::new);

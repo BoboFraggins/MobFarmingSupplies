@@ -95,6 +95,7 @@
     "mobfarmingsupplies:circuit_inscriber",
     "mobfarmingsupplies:gravitational_anomaly",
     "mobfarmingsupplies:zombie_brain",
-    "mobfarmingsupplies:brain"
+    "mobfarmingsupplies:brain",
+    "mobfarmingsupplies:superconducting_magnet"
   ]
 }

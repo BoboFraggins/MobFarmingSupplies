@@ -10,6 +10,7 @@
 * Added Isolinear Optical Chips
 * Added Circuit Inscriber
 * Added Zombie Brain and cleansed Brain
+* Added Superconducting Magnet
 
 * Fix z-fighting when heads are placed as trophies
 

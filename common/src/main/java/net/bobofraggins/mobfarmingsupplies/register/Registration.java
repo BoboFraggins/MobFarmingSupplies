@@ -312,6 +312,14 @@ public final class Registration {
                             .networkSynchronized(ByteBufCodecs.INT)
                             .build());
 
+    /** Present on a Superconducting Magnet while it's switched on. */
+    public static final RegistrySupplier<DataComponentType<net.minecraft.util.Unit>> MAGNET_ON =
+            DATA_COMPONENTS.register("magnet_on",
+                    () -> DataComponentType.<net.minecraft.util.Unit>builder()
+                            .persistent(net.minecraft.util.Unit.CODEC)
+                            .networkSynchronized(net.minecraft.network.codec.StreamCodec.unit(net.minecraft.util.Unit.INSTANCE))
+                            .build());
+
     public static final RegistrySupplier<DataComponentType<Integer>> EXPERIENCE_SYRINGE_STORED_XP =
             DATA_COMPONENTS.register("experience_syringe_stored_xp",
                     () -> DataComponentType.<Integer>builder()
@@ -749,6 +757,10 @@ public final class Registration {
             MENUS.register("tank", () -> MenuRegistry.ofExtended(TankMenu::new));
 
     // ── Experience Syringe ────────────────────────────────────────────────────────
+
+    public static final RegistrySupplier<net.bobofraggins.mobfarmingsupplies.magnet.SuperconductingMagnetItem>
+            SUPERCONDUCTING_MAGNET = item("superconducting_magnet",
+                    net.bobofraggins.mobfarmingsupplies.magnet.SuperconductingMagnetItem::new, p -> p.stacksTo(1));
 
     public static final RegistrySupplier<ExperienceSyringeItem> EXPERIENCE_SYRINGE =
             ITEMS.register("experience_syringe",
@@ -1393,6 +1405,7 @@ public final class Registration {
                         output.accept(MAGIC_HAT_ITEM.get());
                         output.accept(PRESENT_ITEM.get());
                         output.accept(PICNIC_BASKET_ITEM.get());
+                        output.accept(SUPERCONDUCTING_MAGNET.get());
                         output.accept(GRAHAM_CRACKER.get());
                         output.accept(CHOCOLATE_BAR.get());
                         output.accept(MARSHMALLOW.get());
