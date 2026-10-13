@@ -11,6 +11,9 @@ The Tritanium Alloy Paxel follows the Paxel from
 [Mekanism Tools](https://github.com/mekanism/Mekanism), and Tritanium Alloy's tools and armor use
 the values of its Osmium set. Tritanium's textures are recoloured from vanilla Minecraft's gold.
 
+Matter values are worked out from recipes and tags with an approach adapted from
+[ProjectE](https://github.com/sinkillerj/ProjectE) by the ProjectE team, under the MIT License.
+
 On Fabric, the mod bundles [Team Reborn Energy](https://github.com/TechReborn/Energy) by the
 TechReborn team, under the MIT License, for the Stirling Engine's energy.
 

@@ -46,6 +46,10 @@ public class MobFarmingSuppliesFabric implements ModInitializer {
     public void onInitialize() {
         // TODO Phase 4: server-side events will be registered here (EnderInhibitor ender teleport mixin)
         ServerLifecycleEvents.SERVER_STARTING.register(server -> MFSConfigImpl.load());
+        // Matter values follow recipes and tags, so work them out again after a datapack reload.
+        ServerLifecycleEvents.END_DATA_PACK_RELOAD.register((server, resources, success) -> {
+            if (success) net.bobofraggins.mobfarmingsupplies.matter.MatterValues.rebuild(server.overworld());
+        });
         ModCompatRegistration.register();
         Registration.register();
         CustomIngredientSerializer.register(FabricFluidContainerIngredient.SERIALIZER);

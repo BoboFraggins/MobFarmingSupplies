@@ -123,6 +123,30 @@ The ore generates in veins of up to four blocks, 33 times per chunk, from the bo
 to Y 64, most often near Y -40, for about 30 ore blocks a chunk. Half the veins that would touch air
 are skipped, as with diamond.
 
+## Matter
+
+Every item has a matter value: what it is worth by its substance. A few basic materials have values
+built in, such as iron ingots at 16 and diamonds at 64. Every other item's value is worked out from
+the recipes that make it, including other mods' crafting, smelting, stonecutting and smithing
+recipes, from common material tags such as `c:ingots/iron`, and from the mobs that drop it. An item
+with no route back to a known value is worth nothing.
+
+A mob drop is priced by how hard the mob is to come by, divided by how many of the item one kill
+gives on average, without Looting. Bosses (the `c:bosses` tag) are worth the most. Otherwise the
+DNA Sample Pack lists above decide: common passive mobs, common hostile and aquatic mobs, then rare
+passive, then rare hostile and Nether mobs. A mob on no list is placed by where it spawns
+naturally: in the Overworld it counts as common (aquatic for water mobs), only in another dimension
+(the Nether, the End or another mod's) it counts as a Nether mob, and never it counts as rare. Drops
+that need special circumstances, such as a creeper killed by a skeleton, are not priced. An item
+takes the cheapest of all its sources. Values are worked out again whenever datapacks reload. The command
+`/mobfarmingsupplies matter <item>` reports an item's value.
+
+| Key | Default | Description |
+|---|---|---|
+| `matter.values` | empty | Values to set, each written `item_id=value`, for example `minecraft:diamond=100`. These replace the built-in values and are not worked out from recipes. |
+| `matter.ignoredItems` | empty | Item IDs whose recipes and tags are left out when working out values. |
+| `matter.ignoredMods` | empty | Mod IDs whose items' recipes and tags are left out when working out values. |
+
 ## Hoppers
 
 These settings are shared by all four hoppers: the Absorption Hopper, Logistic Sorter,

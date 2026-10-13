@@ -47,6 +47,14 @@ public class MobFarmingSupplies {
 
         // EnderTeleport suppression — NeoForge-specific (no Architectury equivalent)
         NeoForge.EVENT_BUS.register(NeoForgeEnderInhibitorEvents.class);
+        // Matter values follow recipes and tags, so work them out again after a datapack reload.
+        NeoForge.EVENT_BUS.addListener((net.neoforged.neoforge.event.TagsUpdatedEvent event) -> {
+            var server = net.neoforged.neoforge.server.ServerLifecycleHooks.getCurrentServer();
+            if (event.getUpdateCause() == net.neoforged.neoforge.event.TagsUpdatedEvent.UpdateCause.SERVER_DATA_LOAD
+                    && server != null) {
+                net.bobofraggins.mobfarmingsupplies.matter.MatterValues.rebuild(server.overworld());
+            }
+        });
         // Magic Hat zombie easter egg — NeoForge has FinalizeSpawnEvent; Fabric uses a mixin.
         NeoForge.EVENT_BUS.register(new MagicHatSpawnEvents());
         // Present enderman easter egg — same split as the Magic Hat.

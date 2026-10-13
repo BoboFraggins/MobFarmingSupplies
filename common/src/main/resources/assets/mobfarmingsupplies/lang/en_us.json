@@ -284,6 +284,8 @@
   "key.category.mobfarmingsupplies.category": "Mob Farming Supplies",
   "key.mobfarmingsupplies.open_picnic_basket": "Open Worn Picnic Basket",
   "key.mobfarmingsupplies.toggle_magnet": "Toggle Superconducting Magnet",
+  "commands.mobfarmingsupplies.matter.value": "%s is worth %s matter",
+  "commands.mobfarmingsupplies.matter.none": "%s has no matter value",
   "item.mobfarmingsupplies.superconducting_magnet": "Superconducting Magnet",
   "item.mobfarmingsupplies.superconducting_magnet.tooltip": "Collects items and experience within %s blocks. Use it, or press its key, to switch it on or off. Works anywhere in your inventory or worn as a charm.",
   "item.mobfarmingsupplies.superconducting_magnet.on": "On",

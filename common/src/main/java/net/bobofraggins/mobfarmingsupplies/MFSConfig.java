@@ -84,6 +84,10 @@ public final class MFSConfig {
      */
     public static final List<String> DEFAULT_BIOME_SPAWN_DENY_LIST = List.of();
 
+    public static final List<String> DEFAULT_MATTER_VALUES = List.of();
+    public static final List<String> DEFAULT_MATTER_IGNORED_ITEMS = List.of();
+    public static final List<String> DEFAULT_MATTER_IGNORED_MODS = List.of();
+
     public static final double DEFAULT_TOGGLE_BUTTON_CHEST_CHANCE = 0.05;
 
     /** Default chance for DNA sample/booster packs to appear in "common" tier chests (overworld dungeons/structures). */
@@ -153,6 +157,18 @@ public final class MFSConfig {
 
     @ExpectPlatform
     public static List<String> getBiomeSpawnDenyList() { throw new AssertionError(); }
+
+    /** Matter values to set, as {@code item_id=value}; they win over the built-in ones. */
+    @ExpectPlatform
+    public static List<String> getMatterValues() { throw new AssertionError(); }
+
+    /** Item IDs whose recipes and tags are left out when working out matter values. */
+    @ExpectPlatform
+    public static List<String> getMatterIgnoredItems() { throw new AssertionError(); }
+
+    /** Mod IDs whose items' recipes and tags are left out when working out matter values. */
+    @ExpectPlatform
+    public static List<String> getMatterIgnoredMods() { throw new AssertionError(); }
 
     /** Chance (0.0–1.0) for each toggle button to appear in chest loot tables (default: 0.05). */
     @ExpectPlatform

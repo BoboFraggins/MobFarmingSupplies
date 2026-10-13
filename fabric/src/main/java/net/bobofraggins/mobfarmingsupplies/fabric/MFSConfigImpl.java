@@ -43,6 +43,9 @@ public final class MFSConfigImpl {
     private static List<String> babyPackMobs = MFSConfig.DEFAULT_BABY;
     private static List<String> wrongMobsPackMobs = MFSConfig.DEFAULT_WRONG_MOBS;
     private static List<String> biomeSpawnDenyList = MFSConfig.DEFAULT_BIOME_SPAWN_DENY_LIST;
+    private static List<String> matterValues = MFSConfig.DEFAULT_MATTER_VALUES;
+    private static List<String> matterIgnoredItems = MFSConfig.DEFAULT_MATTER_IGNORED_ITEMS;
+    private static List<String> matterIgnoredMods = MFSConfig.DEFAULT_MATTER_IGNORED_MODS;
     private static double toggleButtonChestChance = MFSConfig.DEFAULT_TOGGLE_BUTTON_CHEST_CHANCE;
     private static double magicHatChestChance = MFSConfig.DEFAULT_MAGIC_HAT_CHEST_CHANCE;
     private static double smoreChestChance = MFSConfig.DEFAULT_SMORE_CHEST_CHANCE;
@@ -66,6 +69,9 @@ public final class MFSConfigImpl {
     public static List<String> getBabyPackMobs()         { return babyPackMobs; }
     public static List<String> getWrongMobsPackMobs()    { return wrongMobsPackMobs; }
     public static List<String> getBiomeSpawnDenyList()   { return biomeSpawnDenyList; }
+    public static List<String> getMatterValues()         { return matterValues; }
+    public static List<String> getMatterIgnoredItems()   { return matterIgnoredItems; }
+    public static List<String> getMatterIgnoredMods()    { return matterIgnoredMods; }
     public static double getToggleButtonChestChance()    { return toggleButtonChestChance; }
     public static double getMagicHatChestChance()        { return magicHatChestChance; }
     public static double getSmoreChestChance()           { return smoreChestChance; }
@@ -158,6 +164,13 @@ public final class MFSConfigImpl {
                 JsonObject di = root.getAsJsonObject("dilithium");
                 if (di.has("oreGenerates"))
                     dilithiumOreGenerates = di.get("oreGenerates").getAsBoolean();
+            }
+
+            if (root.has("matter")) {
+                JsonObject matter = root.getAsJsonObject("matter");
+                matterValues       = readList(matter, "values",       MFSConfig.DEFAULT_MATTER_VALUES);
+                matterIgnoredItems = readList(matter, "ignoredItems", MFSConfig.DEFAULT_MATTER_IGNORED_ITEMS);
+                matterIgnoredMods  = readList(matter, "ignoredMods",  MFSConfig.DEFAULT_MATTER_IGNORED_MODS);
             }
 
             if (root.has("smores")) {
@@ -274,6 +287,12 @@ public final class MFSConfigImpl {
         JsonObject sm = new JsonObject();
         sm.addProperty("chestDropChance", MFSConfig.DEFAULT_SMORE_CHEST_CHANCE);
         root.add("smores", sm);
+
+        JsonObject matter = new JsonObject();
+        matter.add("values",       toArray(MFSConfig.DEFAULT_MATTER_VALUES));
+        matter.add("ignoredItems", toArray(MFSConfig.DEFAULT_MATTER_IGNORED_ITEMS));
+        matter.add("ignoredMods",  toArray(MFSConfig.DEFAULT_MATTER_IGNORED_MODS));
+        root.add("matter", matter);
 
         JsonObject oh = new JsonObject();
         oh.addProperty("itemsPerTransfer", MFSConfig.DEFAULT_HOPPER_ITEMS_PER_TRANSFER);

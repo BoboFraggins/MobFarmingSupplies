@@ -91,6 +91,9 @@ public final class MFSServerConfig {
      * Entity type IDs, or {@code "modid:*"} for a whole mod.
      */
     public static final ModConfigSpec.ConfigValue<List<? extends String>> BIOME_SPAWN_DENY_LIST;
+    public static final ModConfigSpec.ConfigValue<List<? extends String>> MATTER_VALUES;
+    public static final ModConfigSpec.ConfigValue<List<? extends String>> MATTER_IGNORED_ITEMS;
+    public static final ModConfigSpec.ConfigValue<List<? extends String>> MATTER_IGNORED_MODS;
 
     /** Chance (0.0–1.0) for DNA sample/booster packs to appear in "common" tier chests (overworld dungeons/structures). */
     public static final ModConfigSpec.DoubleValue DNA_SAMPLE_PACK_COMMON_CHEST_CHANCE;
@@ -436,6 +439,23 @@ public final class MFSServerConfig {
         OMNI_HOPPER_CHEMICAL_PER_TICK = b
                 .comment("Mekanism chemicals (mB) moved per input side each tick (Omnidirectional Hopper and Bridge).")
                 .defineInRange("chemicalPerTick", MFSConfig.DEFAULT_HOPPER_CHEMICAL_PER_TICK, 1, Integer.MAX_VALUE);
+        b.pop();
+
+        b.comment("Matter values: what items are worth by their substance. A few basic materials have",
+                  "values built in; every other item's value is worked out from the recipes that make it",
+                  "and the tags it shares.").push("matter");
+        MATTER_VALUES = b
+                .comment("Values to set, each \"item_id=value\", e.g. \"minecraft:diamond=100\". These win over",
+                         "the built-in values and are not worked out from recipes.")
+                .defineListAllowEmpty("values", MFSConfig.DEFAULT_MATTER_VALUES, () -> "", e -> e instanceof String);
+        MATTER_IGNORED_ITEMS = b
+                .comment("Item IDs whose recipes and tags are left out when working out values.")
+                .defineListAllowEmpty("ignoredItems", MFSConfig.DEFAULT_MATTER_IGNORED_ITEMS, () -> "",
+                        e -> e instanceof String);
+        MATTER_IGNORED_MODS = b
+                .comment("Mod IDs whose items' recipes and tags are left out when working out values.")
+                .defineListAllowEmpty("ignoredMods", MFSConfig.DEFAULT_MATTER_IGNORED_MODS, () -> "",
+                        e -> e instanceof String);
         b.pop();
 
         SPEC = b.build();

@@ -37,6 +37,8 @@ public final class MobFarmingSuppliesCommon {
         TankCapacities.register();
         PicnicBasketFeedHandler.register();
         net.bobofraggins.mobfarmingsupplies.magnet.MagnetPull.register();
+        net.bobofraggins.mobfarmingsupplies.matter.MatterValues.register();
+        net.bobofraggins.mobfarmingsupplies.matter.MatterCommand.register();
         LOGGER.info("MobFarmingSupplies initialized");
     }
 }

@@ -62,6 +62,15 @@ public class ShearingRecipe extends NormalCraftingRecipe {
         this.result = result;
     }
 
+    /** What's sheared. The tool isn't used up. */
+    public Ingredient ingredient() {
+        return ingredient;
+    }
+
+    public ItemStackTemplate result() {
+        return result;
+    }
+
     @Override
     public boolean matches(CraftingInput input, Level level) {
         if (input.ingredientCount() != 2) return false;

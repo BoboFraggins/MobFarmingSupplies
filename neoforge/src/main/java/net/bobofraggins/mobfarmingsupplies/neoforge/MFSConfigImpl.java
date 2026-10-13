@@ -54,6 +54,18 @@ public final class MFSConfigImpl {
         return List.copyOf(MFSServerConfig.BIOME_SPAWN_DENY_LIST.get());
     }
 
+    public static List<String> getMatterValues() {
+        return List.copyOf(MFSServerConfig.MATTER_VALUES.get());
+    }
+
+    public static List<String> getMatterIgnoredItems() {
+        return List.copyOf(MFSServerConfig.MATTER_IGNORED_ITEMS.get());
+    }
+
+    public static List<String> getMatterIgnoredMods() {
+        return List.copyOf(MFSServerConfig.MATTER_IGNORED_MODS.get());
+    }
+
     public static double getToggleButtonChestChance() {
         return MFSServerConfig.TOGGLE_BUTTON_CHEST_CHANCE.get();
     }
