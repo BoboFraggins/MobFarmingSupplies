@@ -19,7 +19,8 @@ public final class PicnicBasketKeybinds {
 
     private PicnicBasketKeybinds() {}
 
-    private static final KeyMapping.Category CATEGORY = KeyMapping.Category.register(
+    /** The mod's key category, shared by all its keys. */
+    public static final KeyMapping.Category CATEGORY = KeyMapping.Category.register(
             Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "category"));
 
     public static final KeyMapping OPEN_BASKET = new KeyMapping(

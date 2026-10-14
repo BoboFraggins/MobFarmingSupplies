@@ -5,6 +5,11 @@
 * Added achievements
 * Added Modonomicon documentation
 * Added some structures to appear randomly in the world
+* Added Biosludge and Bioplastic
+* Added Superconducting Magnet
+* Added Blank Upgrades
+* Added Fire Aspect upgrade for Mob Harvester (auto smelt/cook)
+* Added Wither Inhibitor
 
 * Fix z-fighting when heads are placed as trophies
 

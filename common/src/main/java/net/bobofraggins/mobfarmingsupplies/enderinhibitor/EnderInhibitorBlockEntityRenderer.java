@@ -15,6 +15,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
@@ -36,11 +37,14 @@ import org.jetbrains.annotations.Nullable;
  * teleport-suppression area — a {@code (2*RANGE+1)}-block cube centred on the
  * offset suppression point — when {@link EnderInhibitorBlockEntity#showArea} is set.
  */
-public class EnderInhibitorBlockEntityRenderer
-        implements BlockEntityRenderer<EnderInhibitorBlockEntity, EnderInhibitorBlockEntityRenderer.PearlState> {
+public class EnderInhibitorBlockEntityRenderer<T extends EnderInhibitorBlockEntity>
+        implements BlockEntityRenderer<T, EnderInhibitorBlockEntityRenderer.PearlState> {
 
-    /** Wireframe color: violet, 80% opaque — matches the inhibitor's portal-particle theme. */
-    private static final int WF_R = 165, WF_G = 60, WF_B = 230, WF_A = 200;
+    private static final int WF_A = 200;
+    /** The area wireframe's colour, red, green and blue. */
+    private final int wfR, wfG, wfB;
+    /** What floats above the prongs. */
+    private final Item floating;
     private static final float WF_LINE_WIDTH = 2.0f;
 
     /** Seconds for one complete rotation. */
@@ -57,15 +61,30 @@ public class EnderInhibitorBlockEntityRenderer
 
     // Lazily initialized — ItemStack cannot be created in a static initializer because
     // item data components may not be bound yet when the renderer class is first loaded.
-    private ItemStack enderPearlStack;
+    private ItemStack floatingStack;
 
     // Scratch quaternion reused every frame (submit runs on a single thread).
     private static final Quaternionf SCRATCH_QUAT = new Quaternionf();
 
     private final ItemModelResolver itemModelResolver;
 
+    /** The Ender Inhibitor's: an Ender Pearl, and a violet area matching its portal particles. */
     public EnderInhibitorBlockEntityRenderer(BlockEntityRendererProvider.Context ctx) {
+        this(ctx, Items.ENDER_PEARL, 165, 60, 230);
+    }
+
+    public EnderInhibitorBlockEntityRenderer(BlockEntityRendererProvider.Context ctx, Item floating, int r, int g, int b) {
         this.itemModelResolver = ctx.itemModelResolver();
+        this.floating = floating;
+        this.wfR = r;
+        this.wfG = g;
+        this.wfB = b;
+    }
+
+    /** The Wither Inhibitor's: a Wither Skeleton Skull, and a grey area. */
+    public static <T extends EnderInhibitorBlockEntity> EnderInhibitorBlockEntityRenderer<T> wither(
+            BlockEntityRendererProvider.Context ctx) {
+        return new EnderInhibitorBlockEntityRenderer<>(ctx, Items.WITHER_SKELETON_SKULL, 120, 120, 120);
     }
 
     // ── Render state ──────────────────────────────────────────────────────────────
@@ -97,7 +116,7 @@ public class EnderInhibitorBlockEntityRenderer
 
     @Override
     public void extractRenderState(
-            EnderInhibitorBlockEntity be,
+            T be,
             PearlState state,
             float partialTick,
             Vec3 camera,
@@ -114,7 +133,7 @@ public class EnderInhibitorBlockEntityRenderer
             double cx = be.getOffsetX();
             double cy = be.getOffsetY();
             double cz = be.getOffsetZ();
-            int range = EnderInhibitorEvents.RANGE;
+            int range = InhibitorRegistry.RANGE;
             state.localAreaAABB = new AABB(
                     cx - range, cy - range, cz - range,
                     cx + range + 1, cy + range + 1, cz + range + 1);
@@ -123,11 +142,11 @@ public class EnderInhibitorBlockEntityRenderer
         }
 
         // Populate item render state (runs on the main thread, safe to call MC APIs).
-        if (enderPearlStack == null) enderPearlStack = new ItemStack(Items.ENDER_PEARL);
+        if (floatingStack == null) floatingStack = new ItemStack(floating);
         state.itemState.clear();
         itemModelResolver.updateForTopItem(
                 state.itemState,
-                enderPearlStack,
+                floatingStack,
                 ItemDisplayContext.FIXED,
                 level,
                 null, // entity / ItemOwner — not needed for a simple item
@@ -150,7 +169,7 @@ public class EnderInhibitorBlockEntityRenderer
                     (pose, vc) -> drawLineBox(vc, pose.pose(),
                             box.minX, box.minY, box.minZ,
                             box.maxX, box.maxY, box.maxZ,
-                            WF_R, WF_G, WF_B, WF_A, WF_LINE_WIDTH));
+                            wfR, wfG, wfB, WF_A, WF_LINE_WIDTH));
         }
 
         if (state.itemState.isEmpty()) return;

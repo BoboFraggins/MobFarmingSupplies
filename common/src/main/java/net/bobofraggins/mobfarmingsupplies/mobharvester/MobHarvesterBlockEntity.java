@@ -33,7 +33,7 @@ import java.util.List;
 /**
  * Block entity for the Mob Harvester.
  *
- * <p>Holds three typed upgrade slots (Sharpness, Looting, Beheading).
+ * <p>Holds four typed upgrade slots (Sharpness, Looting, Beheading, Fire Aspect).
  * When powered, attacks all non-player {@link LivingEntity}s in its kill zone
  * every {@link #ATTACK_INTERVAL_TICKS} ticks using a platform-specific fake player
  * (NeoForge) or direct hurt (Fabric).
@@ -47,7 +47,7 @@ public class MobHarvesterBlockEntity extends BlockEntity implements MenuProvider
     // ── Constants ─────────────────────────────────────────────────────────────────
 
     /** Number of upgrade slots (one per {@link HarvesterUpgradeItem.UpgradeType}). */
-    public static final int UPGRADE_SLOTS = HarvesterUpgradeItem.UpgradeType.values().length; // 3
+    public static final int UPGRADE_SLOTS = HarvesterUpgradeItem.UpgradeType.values().length; // 4
 
     /** Ticks between attack attempts when continuously powered. */
     public static final int ATTACK_INTERVAL_TICKS = 10;
@@ -134,7 +134,12 @@ public class MobHarvesterBlockEntity extends BlockEntity implements MenuProvider
             swordDirty = false;
         }
 
-        fakePlayer = MobHarvesterAttackPlatform.attackTargets(serverLevel, pos, cachedSword, targets, fakePlayer);
+        if (getUpgradeCount(HarvesterUpgradeItem.UpgradeType.FIRE_ASPECT) > 0) {
+            FireAspectCooking.during(() -> fakePlayer =
+                    MobHarvesterAttackPlatform.attackTargets(serverLevel, pos, cachedSword, targets, fakePlayer));
+        } else {
+            fakePlayer = MobHarvesterAttackPlatform.attackTargets(serverLevel, pos, cachedSword, targets, fakePlayer);
+        }
     }
 
     private int getUpgradeCount(HarvesterUpgradeItem.UpgradeType type) {

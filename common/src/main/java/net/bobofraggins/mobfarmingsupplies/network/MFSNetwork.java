@@ -47,6 +47,11 @@ public final class MFSNetwork {
                 OpenPicnicBasketPacket::handle);
         NetworkManager.registerReceiver(
                 NetworkManager.c2s(),
+                ToggleMagnetPacket.TYPE,
+                ToggleMagnetPacket.STREAM_CODEC,
+                ToggleMagnetPacket::handle);
+        NetworkManager.registerReceiver(
+                NetworkManager.c2s(),
                 SetScribingStatePacket.TYPE,
                 SetScribingStatePacket.STREAM_CODEC,
                 SetScribingStatePacket::handle);

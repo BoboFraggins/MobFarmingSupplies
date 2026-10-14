@@ -71,7 +71,7 @@ public class EnderInhibitorBlock extends Block implements EntityBlock {
     }
 
     @Override
-    public MapCodec<EnderInhibitorBlock> codec() {
+    public MapCodec<? extends EnderInhibitorBlock> codec() {
         return CODEC;
     }
 

@@ -8,7 +8,9 @@
     "MobFarmAccessor",
     "AnvilBlockMixin",
     "EnderManPresentMixin",
-    "InventoryChangeTriggerMixin"
+    "InventoryChangeTriggerMixin",
+    "LivingEntityLootMixin",
+    "WitherBossMixin"
   ],
   "injectors": {
     "defaultRequire": 1
