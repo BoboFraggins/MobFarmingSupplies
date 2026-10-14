@@ -1,19 +1,12 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "CRC",
-    "WRW",
-    "CPC"
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "minecraft:comparator",
+    "mobfarmingsupplies:blank_upgrade"
   ],
-  "key": {
-    "C": "#c:nuggets/copper",
-    "R": "#c:dusts/redstone",
-    "W": "#c:plates/silicon",
-    "P": "#c:dyes/purple"
-  },
   "result": {
-    "id": "mobfarmingsupplies:blank_filter",
-    "count": 1
-  },
-  "category": "misc"
+    "count": 1,
+    "id": "mobfarmingsupplies:blank_filter"
+  }
 }

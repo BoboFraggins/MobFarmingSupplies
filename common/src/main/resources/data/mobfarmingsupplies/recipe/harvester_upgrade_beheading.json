@@ -1,16 +1,9 @@
 {
-  "type": "minecraft:crafting_shaped",
+  "type": "minecraft:crafting_shapeless",
   "category": "misc",
-  "key": {
-    "G": "#c:nuggets/gold",
-    "H": "minecraft:golden_helmet",
-    "I": "minecraft:iron_helmet",
-    "R": "#c:dusts/redstone"
-  },
-  "pattern": [
-    "GHG",
-    "IRI",
-    "GHG"
+  "ingredients": [
+    "minecraft:iron_helmet",
+    "mobfarmingsupplies:blank_upgrade"
   ],
   "result": {
     "count": 1,

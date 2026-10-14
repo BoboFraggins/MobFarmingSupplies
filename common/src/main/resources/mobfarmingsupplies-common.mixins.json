@@ -12,6 +12,11 @@
     "LivingEntityLootMixin",
     "WitherBossMixin"
   ],
+  "client": [
+    "HumanoidModelMixin",
+    "LivingEntityRendererMixin",
+    "LivingEntityRenderStateMixin"
+  ],
   "injectors": {
     "defaultRequire": 1
   }

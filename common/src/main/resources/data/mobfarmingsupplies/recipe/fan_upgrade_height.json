@@ -1,17 +1,12 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "IFI",
-    " F ",
-    "IFI"
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "minecraft:ladder",
+    "mobfarmingsupplies:blank_upgrade"
   ],
-  "key": {
-    "I": "#c:ingots/iron",
-    "F": "#c:feathers"
-  },
   "result": {
-    "id": "mobfarmingsupplies:fan_upgrade_height",
-    "count": 1
-  },
-  "category": "misc"
+    "count": 1,
+    "id": "mobfarmingsupplies:fan_upgrade_height"
+  }
 }

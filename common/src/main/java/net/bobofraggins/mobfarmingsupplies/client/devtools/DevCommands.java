@@ -6,7 +6,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayDeque;
 import java.util.Deque;
+import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.Screenshot;
 import net.minecraft.server.MinecraftServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +16,9 @@ import org.slf4j.LoggerFactory;
 /**
  * Development tool: once a singleplayer world has loaded, runs the commands in the file named by
  * the {@code MFS_DEV_COMMANDS} environment variable as the player, one per tick ("WAIT n" waits n
- * ticks), then closes the game. For testing things that need a real player.
+ * ticks), then closes the game. For testing things that need a real player. Two lines act on the
+ * client instead: "CAMERA first|back|front" sets the camera, and "SCREENSHOT name" saves
+ * {@code screenshots/name.png}.
  */
 public final class DevCommands {
 
@@ -56,6 +60,19 @@ public final class DevCommands {
         if (line.isEmpty()) return;
         if (line.startsWith("WAIT ")) {
             waiting = Integer.parseInt(line.substring(5).strip());
+            return;
+        }
+        if (line.startsWith("CAMERA ")) {
+            mc.options.setCameraType(switch (line.substring(7).strip()) {
+                case "back" -> CameraType.THIRD_PERSON_BACK;
+                case "front" -> CameraType.THIRD_PERSON_FRONT;
+                default -> CameraType.FIRST_PERSON;
+            });
+            return;
+        }
+        if (line.startsWith("SCREENSHOT ")) {
+            Screenshot.grab(mc.gameDirectory, line.substring(11).strip() + ".png", mc.getMainRenderTarget(), 1,
+                    message -> LOGGER.info("{}", message.getString()));
             return;
         }
         String command = line;

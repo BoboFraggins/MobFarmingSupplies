@@ -1,7 +1,7 @@
 {
   "model": {
     "type": "minecraft:special",
-    "base": "minecraft:item/template_skull",
+    "base": "mobfarmingsupplies:item/mob_head",
     "model": {
       "type": "mobfarmingsupplies:mob_head_renderer"
     }

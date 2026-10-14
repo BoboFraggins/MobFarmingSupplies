@@ -3,8 +3,8 @@
   "category": "equipment",
   "pattern": [
     "ILI",
-    "IRI",
-    "III"
+    "III",
+    "IRI"
   ],
   "key": {
     "I": "#c:ingots/iron",

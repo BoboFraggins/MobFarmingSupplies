@@ -1,0 +1,10 @@
+{
+  "parent": "minecraft:item/template_skull",
+  "display": {
+    "head": {
+      "rotation": [0, 180, 0],
+      "translation": [0, 8.8, 0],
+      "scale": [1.9, 1.9, 1.9]
+    }
+  }
+}
