@@ -1,6 +1,23 @@
 {
   "model": {
-    "type": "minecraft:model",
-    "model": "mobfarmingsupplies:item/wither_inhibitor"
+    "type": "mobfarmingsupplies:animated",
+    "model": {
+      "type": "minecraft:composite",
+      "models": [
+        {
+          "type": "minecraft:model",
+          "model": "mobfarmingsupplies:item/wither_inhibitor"
+        },
+        {
+          "type": "minecraft:special",
+          "base": "mobfarmingsupplies:item/wither_inhibitor",
+          "model": {
+            "type": "mobfarmingsupplies:inhibitor_item",
+            "item": "minecraft:wither_skeleton_skull",
+            "particles": "smoke"
+          }
+        }
+      ]
+    }
   }
 }

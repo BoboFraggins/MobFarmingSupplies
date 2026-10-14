@@ -14,6 +14,7 @@ import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
+import net.minecraft.util.Util;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -47,10 +48,12 @@ public class EnderInhibitorBlockEntityRenderer<T extends EnderInhibitorBlockEnti
     private final Item floating;
     private static final float WF_LINE_WIDTH = 2.0f;
 
+    /** The floating item's size; {@link InhibitorItemRenderer} matches it. */
+    static final float ITEM_SCALE = 0.6f;
+
     /** Seconds for one complete rotation. */
-    private static final float SECS_PER_REV = 10f;
-    /** Degrees advanced per game tick (20 ticks / second). */
-    private static final float DEG_PER_TICK = 360f / (SECS_PER_REV * 20f);
+    private static final int SECS_PER_REV = 10;
+    private static final long MILLIS_PER_REV = SECS_PER_REV * 1000L;
 
     /**
      * Distance from the block centre to the pearl centre, in blocks.
@@ -112,6 +115,15 @@ public class EnderInhibitorBlockEntityRenderer<T extends EnderInhibitorBlockEnti
         return new PearlState();
     }
 
+    /**
+     * How far round the floating item has turned, by the computer's clock. Not game time: the
+     * client's game clock runs ahead between server time updates and is pulled back by each one,
+     * which turned the item backwards in jerks.
+     */
+    static float spinDegrees() {
+        return (Util.getMillis() % MILLIS_PER_REV) * 360f / MILLIS_PER_REV;
+    }
+
     // ── Two-phase rendering ───────────────────────────────────────────────────────
 
     @Override
@@ -125,8 +137,7 @@ public class EnderInhibitorBlockEntityRenderer<T extends EnderInhibitorBlockEnti
         BlockEntityRenderState.extractBase(be, state, crumbling);
 
         Level level = be.getLevel();
-        long gameTime = (level != null) ? level.getGameTime() : 0L;
-        state.angleDeg = (gameTime + partialTick) * DEG_PER_TICK;
+        state.angleDeg = spinDegrees();
         state.facing   = be.getBlockState().getValue(EnderInhibitorBlock.FACING);
 
         if (be.showArea) {
@@ -195,7 +206,7 @@ public class EnderInhibitorBlockEntityRenderer<T extends EnderInhibitorBlockEnti
         // ── Submit ───────────────────────────────────────────────────────────────
         // Scale down to roughly gem-sized; ItemDisplayContext.FIXED renders at
         // full item-frame scale so we need to bring it in ourselves.
-        poseStack.scale(0.4f, 0.4f, 0.4f);
+        poseStack.scale(ITEM_SCALE, ITEM_SCALE, ITEM_SCALE);
         state.itemState.submit(poseStack, collector, state.lightCoords, OverlayTexture.NO_OVERLAY, 0);
 
         poseStack.popPose();
