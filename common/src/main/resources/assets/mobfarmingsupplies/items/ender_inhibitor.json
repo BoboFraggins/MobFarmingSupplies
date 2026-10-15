@@ -1,6 +1,23 @@
 {
   "model": {
-    "type": "minecraft:model",
-    "model": "mobfarmingsupplies:item/ender_inhibitor"
+    "type": "mobfarmingsupplies:animated",
+    "model": {
+      "type": "minecraft:composite",
+      "models": [
+        {
+          "type": "minecraft:model",
+          "model": "mobfarmingsupplies:item/ender_inhibitor"
+        },
+        {
+          "type": "minecraft:special",
+          "base": "mobfarmingsupplies:item/ender_inhibitor",
+          "model": {
+            "type": "mobfarmingsupplies:inhibitor_item",
+            "item": "minecraft:ender_pearl",
+            "particles": "portal"
+          }
+        }
+      ]
+    }
   }
 }

@@ -37,7 +37,7 @@ public class MobHarvesterMenu extends AbstractContainerMenu {
      * X position of the first upgrade slot (centered in the 176 px-wide dialog).
      * (176 − 3 × 18) / 2 = 61
      */
-    public static final int UPGRADE_X_START = (176 - 3 * 18) / 2; // 61
+    public static final int UPGRADE_X_START = (176 - MobHarvesterBlockEntity.UPGRADE_SLOTS * 18) / 2; // 52
 
     /** Y position of the upgrade slots within the dialog (title + gap + header + pane-pad). */
     public static final int UPGRADE_TOP = 41; // 17 title + 8 gap + 10 header + 6 pane-pad

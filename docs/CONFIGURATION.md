@@ -113,10 +113,17 @@ Logistic Sorter moves only items, and the Absorption Hopper pushes items and XP 
 | Key | Default | Range | Description |
 |---|---|---|---|
 | `hoppers.itemsPerTransfer` | `64` | 1 to 4096 | Items moved per side in each item transfer. |
-| `hoppers.itemTransferIntervalTicks` | `8` | 1 to 200 | Ticks between item transfers. |
+| `hoppers.itemTransferIntervalTicks` | `8` | 1 to 200 | Ticks between transfers. Items, fluids, energy and chemicals all move on this interval, and the per-tick rates are scaled by it, so changing it doesn't change how much moves overall. |
 | `hoppers.fluidPerTick` | `1000` | 1 or more | Fluid in mB moved per side each tick. |
 | `hoppers.energyPerTick` | `10000` | 1 or more | Energy in FE moved per input side each tick by the Omnidirectional Hopper and Bridge. NeoForge only. |
 | `hoppers.chemicalPerTick` | `1000` | 1 or more | Mekanism chemicals in mB moved per input side each tick by the Omnidirectional Hopper and Bridge. NeoForge only, and only with Mekanism installed. |
+
+A hopper that tries to move something and moves nothing, because the destination is full or the
+source is empty, waits a little longer before trying that material again: one transfer, then two,
+then up to four. Each transfer that moves something halves the wait again, and a neighbouring block
+changing or its own settings changing puts it straight back to every transfer. This keeps blocked
+hoppers cheap, especially next to large modded storage. Hoppers also move on different ticks within
+the interval, by position, so a farm full of them doesn't do all its moving on the same tick.
 
 Earlier versions called this section `omnidirectionalHopper`. Fabric still reads a section by that
 name if there is no `hoppers` section. NeoForge replaces it with `hoppers` at default values and

@@ -100,7 +100,7 @@ public final class MFSConfig {
 
     /**
      * Defaults shared by all four hoppers (Absorption Hopper, Logistic Sorter, Omnidirectional Hopper,
-     * Einstein-Rosen Bridge): items per side per transfer, and ticks between item transfers.
+     * Einstein-Rosen Bridge): items per side per transfer, and ticks between transfers.
      */
     public static final int DEFAULT_HOPPER_ITEMS_PER_TRANSFER = 64;
     public static final int DEFAULT_HOPPER_TRANSFER_INTERVAL = 8;
@@ -194,7 +194,7 @@ public final class MFSConfig {
     @ExpectPlatform
     public static int getHopperItemsPerTransfer() { throw new AssertionError(); }
 
-    /** Ticks between every hopper's item transfers (default: 8). */
+    /** Ticks between every hopper's transfers, of every material (default: 8). */
     @ExpectPlatform
     public static int getHopperTransferInterval() { throw new AssertionError(); }
 

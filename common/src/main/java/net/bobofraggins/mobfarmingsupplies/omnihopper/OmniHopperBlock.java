@@ -1,5 +1,7 @@
 package net.bobofraggins.mobfarmingsupplies.omnihopper;
 
+import net.minecraft.world.level.redstone.Orientation;
+import net.bobofraggins.mobfarmingsupplies.shared.TransferSchedule;
 import com.mojang.serialization.MapCodec;
 import dev.architectury.registry.menu.MenuRegistry;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
@@ -91,6 +93,14 @@ public class OmniHopperBlock extends BaseEntityBlock {
     }
 
     @Nullable
+    /** A neighbour changed: try moving things again straight away (see {@link TransferSchedule}). */
+    @Override
+    protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block block,
+                                   @Nullable Orientation orientation, boolean movedByPiston) {
+        super.neighborChanged(state, level, pos, block, orientation, movedByPiston);
+        TransferSchedule.resetAt(level, pos);
+    }
+
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(
             Level level, BlockState state, BlockEntityType<T> beType) {

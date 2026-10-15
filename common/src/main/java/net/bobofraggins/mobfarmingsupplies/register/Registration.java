@@ -1,6 +1,7 @@
 package net.bobofraggins.mobfarmingsupplies.register;
 
 import net.minecraft.world.item.ItemStack;
+import net.bobofraggins.mobfarmingsupplies.biosludge.BiosludgeItem;
 import net.bobofraggins.mobfarmingsupplies.guide.GuideBook;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
@@ -107,6 +108,8 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.equipment.ArmorMaterials;
+import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.item.equipment.EquipmentAssets;
 import net.minecraft.world.item.equipment.Equippable;
 import net.minecraft.world.level.block.Block;
@@ -263,6 +266,14 @@ public final class Registration {
                             .networkSynchronized(ByteBufCodecs.INT)
                             .build());
 
+    /** Present on a Superconducting Magnet while it's switched on. */
+    public static final RegistrySupplier<DataComponentType<net.minecraft.util.Unit>> MAGNET_ON =
+            DATA_COMPONENTS.register("magnet_on",
+                    () -> DataComponentType.<net.minecraft.util.Unit>builder()
+                            .persistent(net.minecraft.util.Unit.CODEC)
+                            .networkSynchronized(net.minecraft.network.codec.StreamCodec.unit(net.minecraft.util.Unit.INSTANCE))
+                            .build());
+
     public static final RegistrySupplier<DataComponentType<Integer>> EXPERIENCE_SYRINGE_STORED_XP =
             DATA_COMPONENTS.register("experience_syringe_stored_xp",
                     () -> DataComponentType.<Integer>builder()
@@ -391,6 +402,12 @@ public final class Registration {
                             .setId(itemKey("harvester_upgrade_beheading")),
                             HarvesterUpgradeItem.UpgradeType.BEHEADING));
 
+    public static final RegistrySupplier<HarvesterUpgradeItem> HARVESTER_UPGRADE_FIRE_ASPECT =
+            ITEMS.register("harvester_upgrade_fire_aspect",
+                    () -> new HarvesterUpgradeItem(new Item.Properties()
+                            .setId(itemKey("harvester_upgrade_fire_aspect")),
+                            HarvesterUpgradeItem.UpgradeType.FIRE_ASPECT));
+
     public static final RegistrySupplier<Item> HARVESTER_SWORD =
             ITEMS.register("harvester_sword",
                     () -> new HarvesterSword(new Item.Properties()
@@ -464,6 +481,27 @@ public final class Registration {
     public static final RegistrySupplier<BlockEntityType<EnderInhibitorBlockEntity>> ENDER_INHIBITOR_BE_TYPE =
             BLOCK_ENTITIES.register("ender_inhibitor",
                     () -> BlockEntityTypePlatform.create(EnderInhibitorBlockEntity::new, ENDER_INHIBITOR.get()));
+
+    // ── Wither Inhibitor ──────────────────────────────────────────────────────────
+
+    public static final RegistrySupplier<net.bobofraggins.mobfarmingsupplies.witherinhibitor.WitherInhibitorBlock> WITHER_INHIBITOR =
+            BLOCKS.register("wither_inhibitor",
+                    () -> new net.bobofraggins.mobfarmingsupplies.witherinhibitor.WitherInhibitorBlock(BlockBehaviour.Properties.of()
+                            .setId(blockKey("wither_inhibitor"))
+                            .strength(3.0f)
+                            .explosionResistance(Float.MAX_VALUE)
+                            .sound(SoundType.METAL)
+                            .noOcclusion()));
+
+    public static final RegistrySupplier<BlockItem> WITHER_INHIBITOR_ITEM =
+            ITEMS.register("wither_inhibitor",
+                    () -> new BlockItem(WITHER_INHIBITOR.get(), new Item.Properties()
+                            .setId(itemKey("wither_inhibitor"))));
+
+    public static final RegistrySupplier<BlockEntityType<net.bobofraggins.mobfarmingsupplies.witherinhibitor.WitherInhibitorBlockEntity>> WITHER_INHIBITOR_BE_TYPE =
+            BLOCK_ENTITIES.register("wither_inhibitor",
+                    () -> BlockEntityTypePlatform.create(net.bobofraggins.mobfarmingsupplies.witherinhibitor.WitherInhibitorBlockEntity::new,
+                            WITHER_INHIBITOR.get()));
 
     // ── Fan ───────────────────────────────────────────────────────────────────────
 
@@ -700,6 +738,12 @@ public final class Registration {
             MENUS.register("tank", () -> MenuRegistry.ofExtended(TankMenu::new));
 
     // ── Experience Syringe ────────────────────────────────────────────────────────
+
+    public static final RegistrySupplier<net.bobofraggins.mobfarmingsupplies.magnet.SuperconductingMagnetItem>
+            SUPERCONDUCTING_MAGNET = ITEMS.register("superconducting_magnet",
+                    () -> new net.bobofraggins.mobfarmingsupplies.magnet.SuperconductingMagnetItem(new Item.Properties()
+                            .setId(itemKey("superconducting_magnet"))
+                            .stacksTo(1)));
 
     public static final RegistrySupplier<ExperienceSyringeItem> EXPERIENCE_SYRINGE =
             ITEMS.register("experience_syringe",
@@ -944,7 +988,11 @@ public final class Registration {
                     () -> new MobHeadItem(MOB_HEAD.get(), MOB_WALL_HEAD.get(), new Item.Properties()
                             .setId(itemKey("mob_head"))
                             .rarity(Rarity.UNCOMMON)
-                            .equippableUnswappable(EquipmentSlot.HEAD)));
+                            .equippableUnswappable(EquipmentSlot.HEAD)
+                            // Worn, a head protects like an Iron Helmet and takes helmet
+                            // enchantments, but has no durability so heads still stack.
+                            .attributes(ArmorMaterials.IRON.createAttributes(ArmorType.HELMET))
+                            .enchantable(ArmorMaterials.IRON.enchantmentValue())));
 
     public static final RegistrySupplier<BlockEntityType<MobHeadBlockEntity>> MOB_HEAD_BE_TYPE =
             BLOCK_ENTITIES.register("mob_head",
@@ -990,6 +1038,17 @@ public final class Registration {
                     () -> new Item(new Item.Properties()
                             .setId(itemKey("silicon_clump"))));
 
+    public static final RegistrySupplier<BiosludgeItem> BIOSLUDGE =
+            ITEMS.register("biosludge",
+                    () -> new BiosludgeItem(new Item.Properties()
+                            .setId(itemKey("biosludge"))));
+
+    /** Smelted from Biosludge. */
+    public static final RegistrySupplier<Item> BIOPLASTIC =
+            ITEMS.register("bioplastic",
+                    () -> new Item(new Item.Properties()
+                            .setId(itemKey("bioplastic"))));
+
     public static final RegistrySupplier<Item> SILICON_WAFER =
             ITEMS.register("silicon_wafer",
                     () -> new Item(new Item.Properties()
@@ -999,6 +1058,11 @@ public final class Registration {
             ITEMS.register("blank_filter",
                     () -> new Item(new Item.Properties()
                             .setId(itemKey("blank_filter"))));
+
+    public static final RegistrySupplier<Item> BLANK_UPGRADE =
+            ITEMS.register("blank_upgrade",
+                    () -> new Item(new Item.Properties()
+                            .setId(itemKey("blank_upgrade"))));
 
     public static final RegistrySupplier<ItemFilterItem> ITEM_FILTER =
             ITEMS.register("item_filter",
@@ -1019,24 +1083,29 @@ public final class Registration {
                         output.accept(OMNI_HOPPER_ITEM.get());
                         output.accept(EINSTEIN_ROSEN_BRIDGE_ITEM.get());
                         output.accept(LOGISTIC_SORTER_ITEM.get());
+                        output.accept(SUPERCONDUCTING_MAGNET.get());
                         output.accept(SILICON_CLUMP.get());
                         output.accept(SILICON.get());
                         output.accept(SILICON_WAFER.get());
+                        output.accept(BIOSLUDGE.get());
+                        output.accept(BIOPLASTIC.get());
+                        output.accept(BLANK_UPGRADE.get());
                         output.accept(FILTER_SCRIBING_TERMINAL_ITEM.get());
                         output.accept(BLANK_FILTER.get());
                         output.accept(ITEM_FILTER.get());
+                        output.accept(VECTOR_PLATE_ITEM.get());
+                        output.accept(HALTING_PLATE_ITEM.get());
                         output.accept(TOILET_ITEM.get());
                         output.accept(FAN_ITEM.get());
                         output.accept(FAN_UPGRADE_WIDTH.get());
                         output.accept(FAN_UPGRADE_HEIGHT.get());
                         output.accept(FAN_UPGRADE_DISTANCE.get());
-                        output.accept(VECTOR_PLATE_ITEM.get());
-                        output.accept(HALTING_PLATE_ITEM.get());
-                        output.accept(CLONE_O_MATIC_ITEM.get());
                         output.accept(MOB_HARVESTER_ITEM.get());
                         output.accept(HARVESTER_UPGRADE_SHARPNESS.get());
                         output.accept(HARVESTER_UPGRADE_LOOTING.get());
                         output.accept(HARVESTER_UPGRADE_BEHEADING.get());
+                        output.accept(HARVESTER_UPGRADE_FIRE_ASPECT.get());
+                        output.accept(CLONE_O_MATIC_ITEM.get());
                         output.accept(DNA_COLLECTOR.get());
                         output.accept(DNA_SAMPLE.get());
                         output.accept(DNA_SAMPLE_COMMON_PASSIVE.get());
@@ -1047,6 +1116,16 @@ public final class Registration {
                         output.accept(DNA_SAMPLE_NETHER.get());
                         output.accept(DNA_SAMPLE_BABY.get());
                         output.accept(DNA_SAMPLE_WRONG.get());
+                        output.accept(WITHER_PROOF_GLASS_ITEM.get());
+                        output.accept(MOB_EXCLUSION_GLASS_ITEM.get());
+                        output.accept(TANK_ITEM.get());
+                        output.accept(GOLD_TANK_ITEM.get());
+                        output.accept(DIAMOND_TANK_ITEM.get());
+                        output.accept(EMERALD_TANK_ITEM.get());
+                        output.accept(EXPERIENCE_SYRINGE.get());
+                        output.accept(XP_JUICE_BUCKET.get());
+                        output.accept(ENDER_INHIBITOR_ITEM.get());
+                        output.accept(WITHER_INHIBITOR_ITEM.get());
                         output.accept(MAGIC_HAT_ITEM.get());
                         output.accept(PRESENT_ITEM.get());
                         output.accept(PICNIC_BASKET_ITEM.get());
@@ -1063,15 +1142,6 @@ public final class Registration {
                             output.accept(ModCompatRegistration.DNA_BOOSTER_AETHER_HOSTILE.get());
                         if (ModCompatRegistration.DNA_BOOSTER_EVILCRAFT != null)
                             output.accept(ModCompatRegistration.DNA_BOOSTER_EVILCRAFT.get());
-                        output.accept(WITHER_PROOF_GLASS_ITEM.get());
-                        output.accept(MOB_EXCLUSION_GLASS_ITEM.get());
-                        output.accept(TANK_ITEM.get());
-                        output.accept(GOLD_TANK_ITEM.get());
-                        output.accept(DIAMOND_TANK_ITEM.get());
-                        output.accept(EMERALD_TANK_ITEM.get());
-                        output.accept(EXPERIENCE_SYRINGE.get());
-                        output.accept(XP_JUICE_BUCKET.get());
-                        output.accept(ENDER_INHIBITOR_ITEM.get());
                         output.accept(RED_ALERT_BUTTON_ITEM.get());
                         output.accept(DRAMATIC_BUTTON_ITEM.get());
                         output.accept(RIMSHOT_BUTTON_ITEM.get());

@@ -3,12 +3,13 @@
   "pattern": [
     "IHI",
     "HCH",
-    "IHI"
+    "IMI"
   ],
   "key": {
     "I": "#c:ingots/iron",
     "H": "minecraft:hopper",
-    "C": "minecraft:chest"
+    "C": "minecraft:chest",
+    "M": "mobfarmingsupplies:superconducting_magnet"
   },
   "result": {
     "id": "mobfarmingsupplies:absorption_hopper",

@@ -9,7 +9,11 @@ import net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommonClient;
 import net.bobofraggins.mobfarmingsupplies.absorptionhopper.AbsorptionHopperBlockEntityRenderer;
 import net.bobofraggins.mobfarmingsupplies.client.model.fabric.ExtraBlockModelsImpl;
 import net.bobofraggins.mobfarmingsupplies.cloneomatic.CloneOMaticBlockEntityRenderer;
+import net.bobofraggins.mobfarmingsupplies.client.model.AnimatedItemModel;
 import net.bobofraggins.mobfarmingsupplies.enderinhibitor.EnderInhibitorBlockEntityRenderer;
+import net.bobofraggins.mobfarmingsupplies.enderinhibitor.InhibitorItemRenderer;
+import net.minecraft.client.renderer.item.ItemModel;
+import net.minecraft.client.renderer.item.ItemModels;
 import net.bobofraggins.mobfarmingsupplies.fan.FanBlockEntityRenderer;
 import net.bobofraggins.mobfarmingsupplies.glamping.magichat.MagicHatHelmetLayer;
 import net.bobofraggins.mobfarmingsupplies.glamping.magichat.fabric.MagicHatTrinketClientSetup;
@@ -46,6 +50,9 @@ public class MobFarmingSuppliesFabricClient implements ClientModInitializer {
         BlockEntityRendererRegistry.register(
                 Registration.ENDER_INHIBITOR_BE_TYPE.get(),
                 EnderInhibitorBlockEntityRenderer::new);
+        BlockEntityRendererRegistry.register(
+                Registration.WITHER_INHIBITOR_BE_TYPE.get(),
+                EnderInhibitorBlockEntityRenderer::wither);
         BlockEntityRendererRegistry.register(
                 Registration.FAN_BE_TYPE.get(),
                 FanBlockEntityRenderer::new);
@@ -142,8 +149,24 @@ public class MobFarmingSuppliesFabricClient implements ClientModInitializer {
             idMapper.put(
                     Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "mob_head_renderer"),
                     MobHeadItemRenderer.Unbaked.MAP_CODEC);
+            idMapper.put(
+                    Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "inhibitor_item"),
+                    InhibitorItemRenderer.Unbaked.MAP_CODEC);
         } catch (ReflectiveOperationException e) {
             throw new RuntimeException("Failed to register mobfarmingsupplies special model renderers", e);
+        }
+        try {
+            // Item model types, likewise registered in vanilla's private ItemModels.ID_MAPPER.
+            Field idMapperField = ItemModels.class.getDeclaredField("ID_MAPPER");
+            idMapperField.setAccessible(true);
+            ExtraCodecs.LateBoundIdMapper<Identifier, MapCodec<? extends ItemModel.Unbaked>> idMapper =
+                    (ExtraCodecs.LateBoundIdMapper<Identifier, MapCodec<? extends ItemModel.Unbaked>>)
+                            idMapperField.get(null);
+            idMapper.put(
+                    Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "animated"),
+                    AnimatedItemModel.Unbaked.MAP_CODEC);
+        } catch (ReflectiveOperationException e) {
+            throw new RuntimeException("Failed to register mobfarmingsupplies item model types", e);
         }
     }
 }

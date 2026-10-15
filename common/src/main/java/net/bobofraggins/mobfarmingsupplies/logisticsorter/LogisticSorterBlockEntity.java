@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.logisticsorter;
 
+import net.bobofraggins.mobfarmingsupplies.shared.TransferSchedule;
 import net.bobofraggins.mobfarmingsupplies.MFSConfig;
 import net.bobofraggins.mobfarmingsupplies.shared.sides.SideLayout;
 import net.bobofraggins.mobfarmingsupplies.shared.sides.SideOriented;
@@ -37,7 +38,7 @@ import java.util.List;
  * <p>Side modes, the AND/OR setting, and the nine filters are saved with the block and carried
  * on the item when broken (see {@link LogisticSorterBlock#getDrops}).
  */
-public class LogisticSorterBlockEntity extends BlockEntity implements SideOriented, MenuProvider {
+public class LogisticSorterBlockEntity extends BlockEntity implements SideOriented, MenuProvider, TransferSchedule.Holder {
 
     /** How it was placed, for its side grid (null = placed before orientations existed; see {@link SideLayout}). */
     @Nullable private FrontAndTop sideOrientation;
@@ -68,7 +69,7 @@ public class LogisticSorterBlockEntity extends BlockEntity implements SideOrient
         }
     };
 
-    private int tickCounter = 0;
+    private final TransferSchedule transferSchedule = new TransferSchedule();
     private boolean stateDirty = true;
     private final int[] rotation = new int[2]; // round-robin offsets for MATCH / NO_MATCH outputs
     private boolean routing = false;           // re-entrancy guard for pushed-in items
@@ -82,10 +83,14 @@ public class LogisticSorterBlockEntity extends BlockEntity implements SideOrient
 
     public static void serverTick(Level level, BlockPos pos, BlockState state, LogisticSorterBlockEntity be) {
         if (be.stateDirty) be.syncBlockState();
-        if (++be.tickCounter % Math.max(1, MFSConfig.getHopperTransferInterval()) == 0 && be.isActive()) {
-            LogisticSorterPlatform.pullPhase(be, level, pos);
+        if (be.isActive() && be.transferSchedule.due(pos)) {
+            be.transferSchedule.attempt(TransferSchedule.Kind.ITEMS,
+                    () -> LogisticSorterPlatform.pullPhase(be, level, pos) > 0);
         }
     }
+
+    @Override
+    public TransferSchedule transferSchedule() { return transferSchedule; }
 
     // ── Configuration ─────────────────────────────────────────────────────────────
 
@@ -133,6 +138,7 @@ public class LogisticSorterBlockEntity extends BlockEntity implements SideOrient
 
     /** Mirrors side modes and activity into the block state (server only). */
     private void syncBlockState() {
+        transferSchedule.reset(); // settings changed: try everything again
         if (level == null || level.isClientSide()) return;
         stateDirty = false;
         BlockState current = getBlockState();

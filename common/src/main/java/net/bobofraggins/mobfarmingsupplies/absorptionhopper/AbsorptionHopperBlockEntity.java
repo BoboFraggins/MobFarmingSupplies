@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.absorptionhopper;
 
+import net.bobofraggins.mobfarmingsupplies.shared.TransferSchedule;
 import net.bobofraggins.mobfarmingsupplies.MFSConfig;
 import net.bobofraggins.mobfarmingsupplies.shared.sides.SideLayout;
 import net.bobofraggins.mobfarmingsupplies.shared.sides.SideOriented;
@@ -38,14 +39,14 @@ import java.util.List;
  *
  * <p>Every 3 server ticks it vacuums {@link ItemEntity}s and {@link ExperienceOrb}s from a 7×7×7
  * pickup area (offset by {@code offsetX/Y/Z}). It pushes to every enabled adjacent side at the
- * rates shared by all hoppers ({@link MFSConfig}): items every item-transfer interval, XP Juice
- * every tick (see {@link AbsorptionHopperBlockEntityPlatform#outputPhase}).
+ * rates shared by all hoppers ({@link MFSConfig}), items and XP Juice alike once per transfer
+ * interval, backing off while nothing moves (see {@link TransferSchedule}).
  *
  * <p>With {@link #voidExcess} on, items and XP orbs in the pickup area that don't fit are
  * destroyed instead of being left to pile up — a safety valve for when the collection system
  * downstream backs up. Items a player dropped are never voided.
  */
-public class AbsorptionHopperBlockEntity extends BlockEntity implements SideOriented, MenuProvider, IAbsorptionHopperBlockEntity {
+public class AbsorptionHopperBlockEntity extends BlockEntity implements SideOriented, MenuProvider, IAbsorptionHopperBlockEntity, TransferSchedule.Holder {
 
     /** How it was placed, for its side grid (null = placed before orientations existed; see {@link SideLayout}). */
     @Nullable private FrontAndTop sideOrientation;
@@ -53,6 +54,9 @@ public class AbsorptionHopperBlockEntity extends BlockEntity implements SideOrie
     @Override
     @Nullable
     public FrontAndTop getSideOrientation() { return sideOrientation; }
+
+    @Override
+    public TransferSchedule transferSchedule() { return transferSchedule; }
 
     @Override
     public void setSideOrientation(FrontAndTop orientation) {
@@ -101,6 +105,7 @@ public class AbsorptionHopperBlockEntity extends BlockEntity implements SideOrie
     private boolean voidExcess = false;
 
     private int tickCounter = 0;
+    private final TransferSchedule transferSchedule = new TransferSchedule();
     private AABB cachedPickupBox = null;
     private boolean clientSyncPending = false;
 
@@ -122,8 +127,12 @@ public class AbsorptionHopperBlockEntity extends BlockEntity implements SideOrie
     private void tick(Level level, BlockPos pos) {
         if (stateDirty) syncBlockState();
         tickCounter++;
-        boolean itemTick = tickCounter % Math.max(1, MFSConfig.getHopperTransferInterval()) == 0;
-        AbsorptionHopperBlockEntityPlatform.outputPhase(this, level, pos, itemTick);
+        if (transferSchedule.due(pos)) {
+            transferSchedule.attempt(TransferSchedule.Kind.ITEMS,
+                    () -> AbsorptionHopperBlockEntityPlatform.pushItems(this, level, pos));
+            transferSchedule.attempt(TransferSchedule.Kind.FLUIDS,
+                    () -> AbsorptionHopperBlockEntityPlatform.pushFluid(this, level, pos));
+        }
         if (tickCounter % 3 != 0) return;
 
         pickupPhase(level, pos);
@@ -145,6 +154,7 @@ public class AbsorptionHopperBlockEntity extends BlockEntity implements SideOrie
                     cx + PICKUP_RADIUS, cy + PICKUP_RADIUS, cz + PICKUP_RADIUS);
         }
         AABB box = cachedPickupBox;
+        boolean picked = false;
 
         List<ItemEntity> items = level.getEntitiesOfClass(ItemEntity.class, box,
                 ie -> !ie.hasPickUpDelay() && !ie.getItem().isEmpty());
@@ -153,6 +163,7 @@ public class AbsorptionHopperBlockEntity extends BlockEntity implements SideOrie
             if (canInsertItem(stack)) {
                 insertItem(stack);
                 setChanged();
+                picked = true;
             }
             if (stack.isEmpty()) {
                 ie.discard();
@@ -175,11 +186,13 @@ public class AbsorptionHopperBlockEntity extends BlockEntity implements SideOrie
                     }
                     orb.discard();
                     setChanged();
+                    picked = true;
                 } else if (voidExcess) {
                     orb.discard();
                 }
             }
         }
+        if (picked) transferSchedule.reset(); // something new to pass on
     }
 
     private boolean canInsertItem(ItemStack incoming) {
@@ -262,6 +275,7 @@ public class AbsorptionHopperBlockEntity extends BlockEntity implements SideOrie
      * waits on the chunk forever (the server hangs on "Preparing spawn area").
      */
     private void syncBlockState() {
+        transferSchedule.reset(); // settings changed: try everything again
         if (level == null || level.isClientSide()) return;
         stateDirty = false;
         BlockState current = getBlockState();

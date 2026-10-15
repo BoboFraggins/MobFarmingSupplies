@@ -29,7 +29,8 @@
       "id": "p2",
       "sort_number": 2,
       "type": "modonomicon:crafting_recipe",
-      "recipe_id_1": "mobfarmingsupplies:harvester_upgrade_beheading"
+      "recipe_id_1": "mobfarmingsupplies:harvester_upgrade_beheading",
+      "recipe_id_2": "mobfarmingsupplies:harvester_upgrade_fire_aspect"
     }
   ]
 }

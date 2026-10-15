@@ -1,15 +1,9 @@
 {
-  "type": "minecraft:crafting_shaped",
+  "type": "minecraft:crafting_shapeless",
   "category": "misc",
-  "key": {
-    "G": "#c:nuggets/gold",
-    "L": "#c:dyes/blue",
-    "R": "#c:dusts/redstone"
-  },
-  "pattern": [
-    "GLG",
-    "LRL",
-    "GLG"
+  "ingredients": [
+    "#c:gems/emerald",
+    "mobfarmingsupplies:blank_upgrade"
   ],
   "result": {
     "count": 1,

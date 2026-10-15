@@ -26,8 +26,10 @@ public final class MobHarvesterAttackPlatformImpl {
             return null;
         }
         fp.setPos(pos.getX() + 0.5, pos.getY() - 100.0, pos.getZ() + 0.5);
-        fp.setItemInHand(InteractionHand.MAIN_HAND, sword.copy());
-        MobHarvesterAttackPlatform.applySwordAttributes(fp, sword);
+        if (fp.getMainHandItem() != sword) {
+            fp.setItemInHand(InteractionHand.MAIN_HAND, sword);
+            MobHarvesterAttackPlatform.applySwordAttributes(fp, sword);
+        }
         for (LivingEntity target : targets) {
             fp.resetAttackStrength();
             fp.attack(target);

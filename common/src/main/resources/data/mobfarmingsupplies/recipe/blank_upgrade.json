@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "CCC",
+    "PSP",
+    "PWP"
+  ],
+  "key": {
+    "C": "#c:nuggets/copper",
+    "P": "#c:plastics",
+    "S": "#c:plates/silicon",
+    "W": "#c:dyes/white"
+  },
+  "result": {
+    "id": "mobfarmingsupplies:blank_upgrade",
+    "count": 6
+  },
+  "category": "misc"
+}

@@ -1,6 +1,12 @@
 package net.bobofraggins.mobfarmingsupplies.neoforge.enderinhibitor;
 
+import net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommon;
+import net.bobofraggins.mobfarmingsupplies.client.model.AnimatedItemModel;
+import net.bobofraggins.mobfarmingsupplies.enderinhibitor.InhibitorItemRenderer;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
+import net.minecraft.resources.Identifier;
+import net.neoforged.neoforge.client.event.RegisterItemModelsEvent;
+import net.neoforged.neoforge.client.event.RegisterSpecialModelRendererEvent;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
@@ -16,6 +22,21 @@ public final class EnderInhibitorClientEvents {
         event.registerBlockEntityRenderer(
                 Registration.ENDER_INHIBITOR_BE_TYPE.get(),
                 EnderInhibitorBlockEntityRenderer::new);
+        event.registerBlockEntityRenderer(
+                Registration.WITHER_INHIBITOR_BE_TYPE.get(),
+                EnderInhibitorBlockEntityRenderer::wither);
+    }
+
+    @SubscribeEvent
+    public static void onRegisterSpecialModelRenderers(RegisterSpecialModelRendererEvent event) {
+        event.register(Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "inhibitor_item"),
+                InhibitorItemRenderer.Unbaked.MAP_CODEC);
+    }
+
+    @SubscribeEvent
+    public static void onRegisterItemModels(RegisterItemModelsEvent event) {
+        event.register(Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "animated"),
+                AnimatedItemModel.Unbaked.MAP_CODEC);
     }
 
     // NeoForge's RegisterMenuScreensEvent has already fired by the time the common

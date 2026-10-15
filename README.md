@@ -29,9 +29,10 @@ Hopper and Bridge each combine their filters with AND or OR.
 
 The Mob Harvester is the center of most farms. Powered by redstone, it attacks every mob in a
 3x3x3 area, and the mobs drop their loot and experience as if a player had killed
-them. Its three upgrade slots take Sharpness, Looting and Beheading Upgrades. Beheading gives a
-chance for the mob's head to drop, and almost every mob in the game has one, not just the handful
-vanilla provides. Players are not exempt.
+them. Its four upgrade slots take Sharpness, Looting, Beheading and Fire Aspect Upgrades. Beheading
+gives a chance for the mob's head to drop, and almost every mob in the game has one, not just the
+handful vanilla provides. Players are not exempt. Fire Aspect smelts or cooks whatever the mobs
+drop, anything with a furnace, smoker or campfire recipe.
 
 Getting mobs to the harvester is the job of the movement blocks. A Fan pushes entities away from
 its face when powered, with upgrades that extend its reach in width, height and distance. A Vector
@@ -42,7 +43,9 @@ can reach it.
 
 The farm itself can be built to stay intact. Wither-Proof Glass survives explosions and the
 Wither. Mob Exclusion Glass is just as tough but lets players walk through while staying solid to
-everything else. The Ender Inhibitor stops Endermen teleporting anywhere near it.
+everything else. The Ender Inhibitor stops Endermen teleporting anywhere near it. The Wither
+Inhibitor keeps Withers near it from showing a boss bar, exploding when summoned or firing their
+skulls.
 
 ## Cloning
 

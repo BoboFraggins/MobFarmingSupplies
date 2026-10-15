@@ -1,5 +1,7 @@
 package net.bobofraggins.mobfarmingsupplies.omnihopper;
 
+import net.bobofraggins.mobfarmingsupplies.shared.TransferSchedule;
+
 import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -12,7 +14,7 @@ import org.jetbrains.annotations.Nullable;
  * Omnidirectional Hopper (its own OUTPUT sides) and the Einstein-Rosen Bridge (the OUTPUT sides of
  * every loaded bridge on its channel). The platform transfer code works against this.
  */
-public interface HopperNode {
+public interface HopperNode extends TransferSchedule.Holder {
 
     @Nullable Level getLevel();
 

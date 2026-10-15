@@ -13,9 +13,10 @@ with Magic Hats and Endermen spawning with Presents can each be switched off. Th
 Fabric. [Configuration](CONFIGURATION.md) documents the keys.
 
 All four hoppers, the Absorption Hopper, Logistic Sorter, Omnidirectional Hopper and Einstein-Rosen
-Bridge, share one set of transfer rates, measured per side. By default each side moves 64 items
-every 8 ticks and 1,000 mB of fluid per tick, and on NeoForge the Omnidirectional Hopper and Bridge
-also move 10,000 energy and 1,000 mB of Mekanism chemicals per tick.
+Bridge, share one set of transfer rates, measured per side. Everything moves once every 8 ticks:
+by default each side moves 64 items and 8,000 mB of fluid (1,000 mB a tick), and on NeoForge the
+Omnidirectional Hopper and Bridge also move 80,000 energy and 8,000 mB of Mekanism chemicals. A
+hopper that keeps moving nothing tries less often until something moves again.
 
 ## Chest loot
 
