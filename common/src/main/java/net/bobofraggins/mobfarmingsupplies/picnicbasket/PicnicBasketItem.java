@@ -1,16 +1,17 @@
 package net.bobofraggins.mobfarmingsupplies.picnicbasket;
 
+import java.util.List;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -52,15 +53,15 @@ public class PicnicBasketItem extends BlockItem {
     }
 
     @Override
-    public InteractionResult use(Level level, Player player, InteractionHand hand) {
-        if (level.isClientSide()) return InteractionResult.SUCCESS;
-        if (!(player instanceof ServerPlayer sp)) return InteractionResult.SUCCESS;
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+        if (level.isClientSide()) return new InteractionResultHolder<>(InteractionResult.SUCCESS, player.getItemInHand(hand));
+        if (!(player instanceof ServerPlayer sp)) return new InteractionResultHolder<>(InteractionResult.SUCCESS, player.getItemInHand(hand));
         if (player.isShiftKeyDown()) {
             toggleAutoFeed(sp, hand);
         } else {
             openItemMenu(sp, hand);
         }
-        return InteractionResult.SUCCESS;
+        return new InteractionResultHolder<>(InteractionResult.SUCCESS, player.getItemInHand(hand));
     }
 
     // ── Helpers ─────────────────────────────────────────────────────────────────
@@ -81,9 +82,9 @@ public class PicnicBasketItem extends BlockItem {
         boolean newValue = !temp.isAutoFeed();
         temp.setAutoFeed(newValue);
         PicnicBasketItemUtils.writeBasketData(sp, stack, temp);
-        sp.sendOverlayMessage(Component.translatable(newValue
+        sp.displayClientMessage(Component.translatable(newValue
                 ? "message.mobfarmingsupplies.picnic_basket.autofeed_on"
-                : "message.mobfarmingsupplies.picnic_basket.autofeed_off"));
+                : "message.mobfarmingsupplies.picnic_basket.autofeed_off"), true);
     }
 
     // ── Tooltip ─────────────────────────────────────────────────────────────────
@@ -93,9 +94,8 @@ public class PicnicBasketItem extends BlockItem {
     public void appendHoverText(
             ItemStack stack,
             TooltipContext context,
-            TooltipDisplay tooltipDisplay,
-            Consumer<Component> tooltipAdder,
-            TooltipFlag flag) {
+            List<Component> tooltipAdderLines, TooltipFlag flag) {
+        Consumer<Component> tooltipAdder = tooltipAdderLines::add;
         tooltipAdder.accept(Component.translatable("item.mobfarmingsupplies.picnic_basket.tooltip"));
     }
 }

@@ -1,9 +1,9 @@
 package net.bobofraggins.mobfarmingsupplies.neoforge.toilet;
 
 import net.minecraft.world.level.material.Fluids;
-import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.fluid.FluidResource;
-import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+import net.bobofraggins.mobfarmingsupplies.neoforge.transfer.api.ResourceHandler;
+import net.bobofraggins.mobfarmingsupplies.neoforge.transfer.api.fluid.FluidResource;
+import net.bobofraggins.mobfarmingsupplies.neoforge.transfer.api.transaction.TransactionContext;
 
 /**
  * Fluid handler on every side of a Toilet: an unlimited supply of water, like Cooking for

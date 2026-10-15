@@ -6,8 +6,12 @@
     "GGG"
   ],
   "key": {
-    "G": "minecraft:glass",
-    "O": "#c:obsidians"
+    "G": {
+      "item": "minecraft:glass"
+    },
+    "O": {
+      "tag": "c:obsidians"
+    }
   },
   "result": {
     "id": "mobfarmingsupplies:wither_proof_glass",

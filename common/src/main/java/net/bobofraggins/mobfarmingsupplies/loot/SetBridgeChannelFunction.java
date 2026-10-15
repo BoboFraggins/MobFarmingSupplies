@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.loot;
 
+import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.List;
@@ -30,7 +31,7 @@ public class SetBridgeChannelFunction extends LootItemConditionalFunction {
     }
 
     @Override
-    public MapCodec<SetBridgeChannelFunction> codec() {
-        return CODEC;
+    public LootItemFunctionType<SetBridgeChannelFunction> getType() {
+        return Registration.SET_BRIDGE_CHANNEL.get();
     }
 }

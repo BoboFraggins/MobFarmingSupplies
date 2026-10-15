@@ -1,26 +1,22 @@
 package net.bobofraggins.mobfarmingsupplies.bridge;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import java.util.List;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ItemStackTemplate;
-import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
-import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.NormalCraftingRecipe;
-import net.minecraft.world.item.crafting.PlacementInfo;
-import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.display.RecipeDisplay;
-import net.minecraft.world.item.crafting.display.ShapelessCraftingRecipeDisplay;
-import net.minecraft.world.item.crafting.display.SlotDisplay;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.item.crafting.ShapelessRecipe;
 
 /**
  * The shapeless recipe that adds a bridge to an existing channel: a bridge plus the ingredients of a
@@ -28,69 +24,51 @@ import net.minecraft.world.level.Level;
  *
  * <p>Written like a shapeless recipe in JSON, with type {@code mobfarmingsupplies:bridge_link}.
  */
-public class BridgeLinkRecipe extends NormalCraftingRecipe {
+public class BridgeLinkRecipe extends ShapelessRecipe {
 
     public static final MapCodec<BridgeLinkRecipe> MAP_CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            Recipe.CommonInfo.MAP_CODEC.forGetter(r -> r.commonInfo),
-            CraftingRecipe.CraftingBookInfo.MAP_CODEC.forGetter(r -> r.bookInfo),
-            ItemStackTemplate.CODEC.fieldOf("result").forGetter(r -> r.result),
-            Ingredient.CODEC.listOf(1, 9).fieldOf("ingredients").forGetter(r -> r.ingredients)
+            Codec.STRING.optionalFieldOf("group", "").forGetter(ShapelessRecipe::getGroup),
+            CraftingBookCategory.CODEC.fieldOf("category").orElse(CraftingBookCategory.MISC)
+                    .forGetter(ShapelessRecipe::category),
+            ItemStack.STRICT_CODEC.fieldOf("result").forGetter(r -> r.result),
+            Ingredient.CODEC_NONEMPTY.listOf().fieldOf("ingredients").flatXmap(
+                    list -> list.isEmpty() || list.size() > 9
+                            ? DataResult.<NonNullList<Ingredient>>error(() -> "A bridge link needs 1 to 9 ingredients")
+                            : DataResult.success(NonNullList.of(Ingredient.EMPTY, list.toArray(Ingredient[]::new))),
+                    DataResult::success).forGetter(ShapelessRecipe::getIngredients)
     ).apply(i, BridgeLinkRecipe::new));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, BridgeLinkRecipe> STREAM_CODEC = StreamCodec.composite(
-            Recipe.CommonInfo.STREAM_CODEC, r -> r.commonInfo,
-            CraftingRecipe.CraftingBookInfo.STREAM_CODEC, r -> r.bookInfo,
-            ItemStackTemplate.STREAM_CODEC, r -> r.result,
-            Ingredient.CONTENTS_STREAM_CODEC.apply(net.minecraft.network.codec.ByteBufCodecs.list()), r -> r.ingredients,
+            ByteBufCodecs.STRING_UTF8, ShapelessRecipe::getGroup,
+            CraftingBookCategory.STREAM_CODEC, ShapelessRecipe::category,
+            ItemStack.STREAM_CODEC, r -> r.result,
+            Ingredient.CONTENTS_STREAM_CODEC.apply(ByteBufCodecs.collection(NonNullList::createWithCapacity)),
+            ShapelessRecipe::getIngredients,
             BridgeLinkRecipe::new);
 
-    private final ItemStackTemplate result;
-    private final List<Ingredient> ingredients;
+    private final ItemStack result;
 
-    public BridgeLinkRecipe(Recipe.CommonInfo commonInfo, CraftingRecipe.CraftingBookInfo bookInfo,
-                            ItemStackTemplate result, List<Ingredient> ingredients) {
-        super(commonInfo, bookInfo);
+    public BridgeLinkRecipe(String group, CraftingBookCategory category, ItemStack result,
+                            NonNullList<Ingredient> ingredients) {
+        super(group, category, result, ingredients);
         this.result = result;
-        this.ingredients = ingredients;
-    }
-
-    /** Same matching as a vanilla shapeless recipe. */
-    @Override
-    public boolean matches(CraftingInput input, Level level) {
-        if (input.ingredientCount() != ingredients.size()) return false;
-        if (input.size() == 1 && ingredients.size() == 1) return ingredients.getFirst().test(input.getItem(0));
-        return input.stackedContents().canCraft(this, null);
     }
 
     @Override
-    public ItemStack assemble(CraftingInput input) {
+    public ItemStack assemble(CraftingInput input, HolderLookup.Provider registries) {
         int channel = 0;
         for (ItemStack ingredient : input.items()) {
             channel = ingredient.getOrDefault(Registration.BRIDGE_CHANNEL.get(), 0);
             if (channel != 0) break;
         }
         if (channel == 0) channel = EinsteinRosenBridgeBlockEntity.randomChannel(RandomSource.create());
-        ItemStack bridges = result.create();
+        ItemStack bridges = result.copy();
         bridges.set(Registration.BRIDGE_CHANNEL.get(), channel);
         return bridges;
     }
 
     @Override
-    public RecipeSerializer<BridgeLinkRecipe> getSerializer() {
+    public RecipeSerializer<?> getSerializer() {
         return Registration.BRIDGE_LINK_SERIALIZER.get();
-    }
-
-    @Override
-    protected PlacementInfo createPlacementInfo() {
-        return PlacementInfo.create(ingredients);
-    }
-
-    /** Shown in the recipe book exactly like an ordinary shapeless recipe. */
-    @Override
-    public List<RecipeDisplay> display() {
-        return List.of(new ShapelessCraftingRecipeDisplay(
-                ingredients.stream().map(Ingredient::display).toList(),
-                new SlotDisplay.ItemStackSlotDisplay(result),
-                new SlotDisplay.ItemSlotDisplay(Items.CRAFTING_TABLE)));
     }
 }

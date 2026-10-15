@@ -5,11 +5,13 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.architectury.registry.menu.MenuRegistry;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUtils;
@@ -66,7 +68,7 @@ public class TankBlock extends BaseEntityBlock {
     }
 
     @Override
-    public VoxelShape getOcclusionShape(BlockState state) {
+    protected VoxelShape getOcclusionShape(BlockState state, BlockGetter level, BlockPos pos) {
         return Shapes.empty();
     }
 
@@ -81,7 +83,7 @@ public class TankBlock extends BaseEntityBlock {
     }
 
     @Override
-    protected InteractionResult useItemOn(
+    protected ItemInteractionResult useItemOn(
             ItemStack stack,
             BlockState state,
             Level level,
@@ -89,20 +91,20 @@ public class TankBlock extends BaseEntityBlock {
             Player player,
             InteractionHand hand,
             BlockHitResult hit) {
-        if (level.isClientSide()) return InteractionResult.SUCCESS;
+        if (level.isClientSide()) return ItemInteractionResult.SUCCESS;
 
         // Bottles (empty, water, or XP) — shared with the Tank UI's transfer slot
         if (stack.is(Items.GLASS_BOTTLE) || stack.is(Items.POTION) || stack.is(Items.EXPERIENCE_BOTTLE)) {
             if (!(level.getBlockEntity(pos) instanceof TankBlockEntity be))
-                return InteractionResult.TRY_WITH_EMPTY_HAND;
+                return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
             ItemStack result = TankBottleTransfer.tryTransfer(be, stack);
-            if (result == null) return InteractionResult.TRY_WITH_EMPTY_HAND;
+            if (result == null) return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
             player.setItemInHand(hand, ItemUtils.createFilledResult(stack, player, result));
             level.playSound(
                     null, pos,
                     stack.is(Items.GLASS_BOTTLE) ? SoundEvents.BOTTLE_FILL : SoundEvents.BOTTLE_EMPTY,
                     SoundSource.BLOCKS, 1.0f, 1.0f);
-            return InteractionResult.SUCCESS;
+            return ItemInteractionResult.SUCCESS;
         }
 
         // Bucket / modded fluid container — delegate to platform
@@ -117,6 +119,6 @@ public class TankBlock extends BaseEntityBlock {
         }
 
         boolean success = TankBlockPlatform.handleFluidItemInteraction(player, hand, level, pos, filling);
-        return success ? InteractionResult.SUCCESS : InteractionResult.TRY_WITH_EMPTY_HAND;
+        return success ? ItemInteractionResult.SUCCESS : ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
 }

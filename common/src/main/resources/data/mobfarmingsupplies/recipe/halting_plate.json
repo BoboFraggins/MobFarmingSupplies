@@ -6,9 +6,15 @@
     "FIF"
   ],
   "key": {
-    "F": "minecraft:rotten_flesh",
-    "I": "#c:ingots/iron",
-    "R": "minecraft:redstone"
+    "F": {
+      "item": "minecraft:rotten_flesh"
+    },
+    "I": {
+      "tag": "c:ingots/iron"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    }
   },
   "result": {
     "id": "mobfarmingsupplies:halting_plate",

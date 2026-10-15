@@ -2,37 +2,37 @@ package net.bobofraggins.mobfarmingsupplies.neoforge.xpjuice;
 
 import net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommon;
 import net.bobofraggins.mobfarmingsupplies.neoforge.register.NeoForgeOnlyRegistration;
-import net.bobofraggins.mobfarmingsupplies.register.Registration;
-import net.minecraft.client.renderer.block.FluidModel;
-import net.minecraft.client.resources.model.sprite.Material;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.neoforge.client.event.RegisterFluidModelsEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
-import net.neoforged.neoforge.client.fluid.FluidTintSources;
 
 public final class XpJuiceClientEvents {
 
-    private static final Identifier STILL =
-            Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "block/xp_juice_still");
-    private static final Identifier FLOW =
-            Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "block/xp_juice_flow");
+    private static final ResourceLocation STILL =
+            ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "block/xp_juice_still");
+    private static final ResourceLocation FLOW =
+            ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "block/xp_juice_flow");
 
     private XpJuiceClientEvents() {}
 
     @SubscribeEvent
     public static void onRegisterClientExtensions(RegisterClientExtensionsEvent event) {
-        event.registerFluidType(new IClientFluidTypeExtensions() {}, NeoForgeOnlyRegistration.XP_JUICE_TYPE.get());
-    }
+        event.registerFluidType(new IClientFluidTypeExtensions() {
+            @Override
+            public ResourceLocation getStillTexture() {
+                return STILL;
+            }
 
-    @SubscribeEvent
-    public static void onRegisterFluidModels(RegisterFluidModelsEvent event) {
-        var unbaked = new FluidModel.Unbaked(
-                new Material(STILL),
-                new Material(FLOW),
-                null,
-                FluidTintSources.constant(0xFF39FF14));
-        event.register(unbaked, Registration.XP_JUICE_SOURCE.get(), Registration.XP_JUICE_FLOWING.get());
+            @Override
+            public ResourceLocation getFlowingTexture() {
+                return FLOW;
+            }
+
+            @Override
+            public int getTintColor() {
+                return 0xFF39FF14;
+            }
+        }, NeoForgeOnlyRegistration.XP_JUICE_TYPE.get());
     }
 }

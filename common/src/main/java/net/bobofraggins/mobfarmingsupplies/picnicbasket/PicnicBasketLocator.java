@@ -40,7 +40,7 @@ public sealed interface PicnicBasketLocator {
         }
     }
 
-    /** A basket worn in a Curios (NeoForge) or Trinkets Updated (Fabric) accessory slot. */
+    /** A basket worn in a Curios (NeoForge) or Trinkets (Fabric) accessory slot. */
     record Accessory() implements PicnicBasketLocator {
         @Override
         public ItemStack get(Player player) {

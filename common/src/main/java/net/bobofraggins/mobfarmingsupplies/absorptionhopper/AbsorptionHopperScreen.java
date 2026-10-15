@@ -6,7 +6,7 @@ import net.bobofraggins.mobfarmingsupplies.shared.ui.IDialogPane;
 import net.bobofraggins.mobfarmingsupplies.shared.ui.PlayerInventoryPane;
 import net.bobofraggins.mobfarmingsupplies.shared.ui.SideGridPane;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
@@ -65,6 +65,7 @@ public class AbsorptionHopperScreen extends AbstractContainerScreen<AbsorptionHo
     private int gaugeRefreshCounter = 0;
 
     public AbsorptionHopperScreen(AbsorptionHopperMenu menu, Inventory inv, Component title) {
+        super(menu, inv, title);
         IDialogPane slotsPane   = new HopperSlotsPane();
         IDialogPane offsetsPane = new OffsetControlsPane();
         SideGridPane pushPane   = new SideGridPane(menu.getPos(),
@@ -82,9 +83,10 @@ public class AbsorptionHopperScreen extends AbstractContainerScreen<AbsorptionHo
                 pushPane,                                               // PANE_PUSH
                 Dialog.blankPane(HopperSlotsPane.WIDTH, 6),           // PANE_GAP4
                 new PlayerInventoryPane(AbsorptionHopperMenu.PLAYER_SLOT_LEFT)); // PANE_PLAYER
-        super(menu, inv, title, dialog_.totalWidth(), dialog_.totalHeight());
         dialog = dialog_;
         this.pushPane = pushPane;
+        imageWidth = dialog_.totalWidth();
+        imageHeight = dialog_.totalHeight();
     }
 
     // ── Init ────────────────────────────────────────────────────────────────────
@@ -148,19 +150,16 @@ public class AbsorptionHopperScreen extends AbstractContainerScreen<AbsorptionHo
     // ── Rendering ────────────────────────────────────────────────────────────────
 
     @Override
-    public void extractContents(GuiGraphicsExtractor g, int mouseX, int mouseY, float partialTick) {
+    protected void renderBg(GuiGraphics g, float partialTick, int mouseX, int mouseY) {
         dialog.render(g, font, title, mouseX, mouseY, partialTick);
         renderFluidGauge(g);
-        super.extractContents(g, mouseX, mouseY, partialTick);
-        Component tooltip = pushPane.hoverTooltip();
-        if (tooltip != null && menu.getCarried().isEmpty()) g.setTooltipForNextFrame(font, tooltip, mouseX, mouseY);
     }
 
     private static final int GAUGE_TICK_COLOR  = 0xFFDDDDDD;
     private static final int GAUGE_TICK_SHORT  = 3; // quarter marks
     private static final int GAUGE_TICK_LONG   = 5; // half mark
 
-    private void renderFluidGauge(GuiGraphicsExtractor g) {
+    private void renderFluidGauge(GuiGraphics g) {
         if (gaugeRefreshCounter++ % 6 == 0) {
             AbsorptionHopperBlockEntity be = getClientBE();
             if (be != null) {
@@ -188,20 +187,22 @@ public class AbsorptionHopperScreen extends AbstractContainerScreen<AbsorptionHo
         gaugeTick(g, gaugeX, gaugeY + gaugeH * 3 / 4, gaugeW, GAUGE_TICK_SHORT); // 1/4 full
     }
 
-    private void gaugeTick(GuiGraphicsExtractor g, int gaugeX, int y, int gaugeW, int len) {
+    private void gaugeTick(GuiGraphics g, int gaugeX, int y, int gaugeW, int len) {
         g.fill(gaugeX,              y, gaugeX + len,         y + 1, GAUGE_TICK_COLOR);
         g.fill(gaugeX + gaugeW - len, y, gaugeX + gaugeW, y + 1, GAUGE_TICK_COLOR);
     }
 
     @Override
-    public void extractRenderState(GuiGraphicsExtractor g, int mouseX, int mouseY, float partialTick) {
-        extractBackground(g, mouseX, mouseY, partialTick);
-        super.extractRenderState(g, mouseX, mouseY, partialTick);
+    public void render(GuiGraphics g, int mouseX, int mouseY, float partialTick) {
+        super.render(g, mouseX, mouseY, partialTick);
+        Component tooltip = pushPane.hoverTooltip();
+        if (tooltip != null && menu.getCarried().isEmpty()) g.renderTooltip(font, tooltip, mouseX, mouseY);
+        renderTooltip(g, mouseX, mouseY);
     }
 
     @Override
-    protected void extractLabels(GuiGraphicsExtractor g, int mouseX, int mouseY) {
-        g.text(font,
+    protected void renderLabels(GuiGraphics g, int mouseX, int mouseY) {
+        g.drawString(font,
                 Component.translatable("container.inventory"),
                 AbsorptionHopperMenu.PLAYER_SLOT_LEFT,
                 AbsorptionHopperMenu.INV_TOP - 10,
@@ -212,9 +213,9 @@ public class AbsorptionHopperScreen extends AbstractContainerScreen<AbsorptionHo
     // ── Input ───────────────────────────────────────────────────────────────────
 
     @Override
-    public boolean mouseClicked(net.minecraft.client.input.MouseButtonEvent event, boolean consumed) {
-        if (dialog.mouseClicked(event.x(), event.y(), event.button())) return true;
-        return super.mouseClicked(event, consumed);
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (dialog.mouseClicked(mouseX, mouseY, button)) return true;
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 
     @Override
@@ -224,14 +225,14 @@ public class AbsorptionHopperScreen extends AbstractContainerScreen<AbsorptionHo
     }
 
     @Override
-    public boolean mouseDragged(net.minecraft.client.input.MouseButtonEvent event, double dragX, double dragY) {
-        if (dialog.mouseDragged(event.x(), event.y(), event.button(), dragX, dragY)) return true;
-        return super.mouseDragged(event, dragX, dragY);
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
+        if (dialog.mouseDragged(mouseX, mouseY, button, dragX, dragY)) return true;
+        return super.mouseDragged(mouseX, mouseY, button, dragX, dragY);
     }
 
     @Override
-    public boolean mouseReleased(net.minecraft.client.input.MouseButtonEvent event) {
-        if (dialog.mouseReleased(event.x(), event.y(), event.button())) return true;
-        return super.mouseReleased(event);
+    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+        if (dialog.mouseReleased(mouseX, mouseY, button)) return true;
+        return super.mouseReleased(mouseX, mouseY, button);
     }
 }

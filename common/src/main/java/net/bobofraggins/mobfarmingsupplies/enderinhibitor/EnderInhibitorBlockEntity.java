@@ -16,8 +16,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import net.bobofraggins.mobfarmingsupplies.shared.nbt.ValueInput;
+import net.bobofraggins.mobfarmingsupplies.shared.nbt.ValueOutput;
 
 /**
  * Block entity for the Ender Inhibitor.
@@ -68,12 +68,11 @@ public class EnderInhibitorBlockEntity extends BlockEntity implements MenuProvid
         }
     }
 
-    @Override
+    /** Called by the block when it is removed (see its {@code onRemove}). */
     public void preRemoveSideEffects(BlockPos pos, BlockState state) {
         if (level != null && !level.isClientSide()) {
             registry().remove(level, worldPosition);
         }
-        super.preRemoveSideEffects(pos, state);
     }
 
     // ── Offset ───────────────────────────────────────────────────────────────────
@@ -117,16 +116,18 @@ public class EnderInhibitorBlockEntity extends BlockEntity implements MenuProvid
     // ── NBT ──────────────────────────────────────────────────────────────────────
 
     @Override
-    protected void saveAdditional(ValueOutput output) {
-        super.saveAdditional(output);
+    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.saveAdditional(tag, registries);
+        ValueOutput output = new ValueOutput(tag, registries);
         output.putInt("OffsetX", offsetX);
         output.putInt("OffsetY", offsetY);
         output.putInt("OffsetZ", offsetZ);
     }
 
     @Override
-    protected void loadAdditional(ValueInput input) {
-        super.loadAdditional(input);
+    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.loadAdditional(tag, registries);
+        ValueInput input = new ValueInput(tag, registries);
         offsetX = input.getIntOr("OffsetX", 0);
         offsetY = input.getIntOr("OffsetY", 0);
         offsetZ = input.getIntOr("OffsetZ", 0);

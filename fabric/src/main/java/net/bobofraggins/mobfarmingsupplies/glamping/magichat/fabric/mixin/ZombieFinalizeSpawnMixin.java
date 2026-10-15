@@ -2,9 +2,9 @@ package net.bobofraggins.mobfarmingsupplies.glamping.magichat.fabric.mixin;
 
 import net.bobofraggins.mobfarmingsupplies.glamping.magichat.MagicHatZombieHandler;
 import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.SpawnGroupData;
-import net.minecraft.world.entity.monster.zombie.Zombie;
+import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.level.ServerLevelAccessor;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -22,19 +22,19 @@ public abstract class ZombieFinalizeSpawnMixin {
 
     @Inject(
             method = "finalizeSpawn(Lnet/minecraft/world/level/ServerLevelAccessor;Lnet/minecraft/world/DifficultyInstance;"
-                    + "Lnet/minecraft/world/entity/EntitySpawnReason;Lnet/minecraft/world/entity/SpawnGroupData;)"
+                    + "Lnet/minecraft/world/entity/MobSpawnType;Lnet/minecraft/world/entity/SpawnGroupData;)"
                     + "Lnet/minecraft/world/entity/SpawnGroupData;",
             at = @At("TAIL"))
     private void mobfarmingsupplies$maybeEquipMagicHat(
             ServerLevelAccessor level,
             DifficultyInstance difficulty,
-            EntitySpawnReason spawnReason,
+            MobSpawnType spawnReason,
             SpawnGroupData spawnGroupData,
             CallbackInfoReturnable<SpawnGroupData> cir) {
-        if (spawnReason == EntitySpawnReason.COMMAND
-                || spawnReason == EntitySpawnReason.SPAWN_ITEM_USE
-                || spawnReason == EntitySpawnReason.BUCKET
-                || spawnReason == EntitySpawnReason.DISPENSER) return;
+        if (spawnReason == MobSpawnType.COMMAND
+                || spawnReason == MobSpawnType.SPAWN_EGG
+                || spawnReason == MobSpawnType.BUCKET
+                || spawnReason == MobSpawnType.DISPENSER) return;
 
         Zombie self = (Zombie) (Object) this;
         MagicHatZombieHandler.tryEquipMagicHat(self, self.level().getRandom());

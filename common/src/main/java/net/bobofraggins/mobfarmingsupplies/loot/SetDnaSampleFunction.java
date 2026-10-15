@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.loot;
 
+import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.List;
@@ -8,7 +9,7 @@ import net.bobofraggins.mobfarmingsupplies.dna.DnaSamplePackItem;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
@@ -27,21 +28,21 @@ import net.minecraft.world.phys.Vec3;
 public class SetDnaSampleFunction extends LootItemConditionalFunction {
 
     public static final MapCodec<SetDnaSampleFunction> CODEC = RecordCodecBuilder.mapCodec(i ->
-            commonFields(i).and(Identifier.CODEC.fieldOf("pack").forGetter(f -> f.pack))
+            commonFields(i).and(ResourceLocation.CODEC.fieldOf("pack").forGetter(f -> f.pack))
                     .apply(i, SetDnaSampleFunction::new));
 
-    private final Identifier pack;
+    private final ResourceLocation pack;
 
-    private SetDnaSampleFunction(List<LootItemCondition> predicates, Identifier pack) {
+    private SetDnaSampleFunction(List<LootItemCondition> predicates, ResourceLocation pack) {
         super(predicates);
         this.pack = pack;
     }
 
     @Override
     protected ItemStack run(ItemStack stack, LootContext context) {
-        if (!(BuiltInRegistries.ITEM.getValue(pack) instanceof DnaSamplePackItem packItem)) return stack;
+        if (!(BuiltInRegistries.ITEM.get(pack) instanceof DnaSamplePackItem packItem)) return stack;
         ServerLevel level = context.getLevel();
-        Vec3 origin = context.getOptionalParameter(LootContextParams.ORIGIN);
+        Vec3 origin = context.getParamOrNull(LootContextParams.ORIGIN);
         BlockPos pos = origin != null ? BlockPos.containing(origin) : BlockPos.ZERO;
         ItemStack packStack = new ItemStack(packItem);
         Entity mob = packItem.createSpawnEntity(packStack, level, pos, context.getRandom());
@@ -54,7 +55,7 @@ public class SetDnaSampleFunction extends LootItemConditionalFunction {
     }
 
     @Override
-    public MapCodec<SetDnaSampleFunction> codec() {
-        return CODEC;
+    public LootItemFunctionType<SetDnaSampleFunction> getType() {
+        return Registration.SET_DNA_SAMPLE.get();
     }
 }

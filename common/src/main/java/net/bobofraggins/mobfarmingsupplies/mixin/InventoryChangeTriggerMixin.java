@@ -1,7 +1,7 @@
 package net.bobofraggins.mobfarmingsupplies.mixin;
 
 import net.bobofraggins.mobfarmingsupplies.advancement.MFSTriggers;
-import net.minecraft.advancements.criterion.InventoryChangeTrigger;
+import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.entity.player.Inventory;

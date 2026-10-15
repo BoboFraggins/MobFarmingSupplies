@@ -5,13 +5,12 @@ import net.bobofraggins.mobfarmingsupplies.shared.sides.SideLayout;
 import net.bobofraggins.mobfarmingsupplies.shared.sides.SideOriented;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -28,7 +27,7 @@ import org.jetbrains.annotations.Nullable;
 public class SideGridPane implements IDialogPane {
 
     /** How a mode looks: a sprite if given, otherwise a fill colour (0 = plain, like the dialog body). */
-    public record SideStyle(int fillColor, @Nullable Identifier sprite, Component name) {}
+    public record SideStyle(int fillColor, @Nullable ResourceLocation sprite, Component name) {}
 
     /** A block's side modes, as the client sees them. Modes are numbered from 0. */
     public interface Model {
@@ -89,9 +88,9 @@ public class SideGridPane implements IDialogPane {
     }
 
     @Override
-    public void render(GuiGraphicsExtractor g, Font font, int width, int mouseX, int mouseY, float pt) {
+    public void render(GuiGraphics g, Font font, int width, int mouseX, int mouseY, float pt) {
         if (refreshCounter++ % 4 == 0) refresh();
-        g.text(font, header, 8, HEADER_Y, 0xFF404040, false);
+        g.drawString(font, header, 8, HEADER_Y, 0xFF404040, false);
 
         hoverTooltip = null;
         for (int cell = 0; cell < SideLayout.CELLS; cell++) {
@@ -111,13 +110,13 @@ public class SideGridPane implements IDialogPane {
             g.fill(bx, by + BUTTON_SIZE, bx + BUTTON_SIZE + 1, by + BUTTON_SIZE + 1, COLOR_DARK);
             g.fill(bx + BUTTON_SIZE, by, bx + BUTTON_SIZE + 1, by + BUTTON_SIZE, COLOR_DARK);
             if (style.sprite() != null) {
-                g.blitSprite(RenderPipelines.GUI_TEXTURED, style.sprite(), bx + 1, by + 1, BUTTON_SIZE - 2, BUTTON_SIZE - 2);
+                g.blitSprite(style.sprite(), bx + 1, by + 1, BUTTON_SIZE - 2, BUTTON_SIZE - 2);
             } else {
                 g.fill(bx + 1, by + 1, bx + BUTTON_SIZE - 1, by + BUTTON_SIZE - 1,
                         style.fillColor() == 0 ? COLOR_BODY : style.fillColor());
             }
 
-            if (!adjacent[cell].isEmpty()) g.item(adjacent[cell], bx + 3, by + 3);
+            if (!adjacent[cell].isEmpty()) g.renderItem(adjacent[cell], bx + 3, by + 3);
         }
     }
 

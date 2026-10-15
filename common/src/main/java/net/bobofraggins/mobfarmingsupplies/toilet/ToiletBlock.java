@@ -12,6 +12,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -23,6 +24,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.Mirror;
+import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -130,14 +132,14 @@ public class ToiletBlock extends Block implements EntityBlock {
     // ── Interaction ──────────────────────────────────────────────────────────────
 
     @Override
-    protected InteractionResult useItemOn(
+    protected ItemInteractionResult useItemOn(
             ItemStack stack, BlockState state, Level level, BlockPos pos,
             Player player, InteractionHand hand, BlockHitResult hit) {
-        if (level.isClientSide()) return InteractionResult.SUCCESS;
+        if (level.isClientSide()) return ItemInteractionResult.SUCCESS;
         // Empty bucket / fluid container: fill it with water, like a kitchen sink. Anything else
         // (or a container that can't take water) falls through to sitting down.
         boolean filled = TankBlockPlatform.handleFluidItemInteraction(player, hand, level, pos, true);
-        return filled ? InteractionResult.SUCCESS : InteractionResult.TRY_WITH_EMPTY_HAND;
+        return filled ? ItemInteractionResult.SUCCESS : ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
 
     @Override
@@ -168,8 +170,8 @@ public class ToiletBlock extends Block implements EntityBlock {
      * the seat is free.
      */
     @Override
-    public void updateEntityMovementAfterFallOn(BlockGetter getter, Entity entity) {
-        super.updateEntityMovementAfterFallOn(getter, entity);
+    public void updateEntityAfterFallOn(BlockGetter getter, Entity entity) {
+        super.updateEntityAfterFallOn(getter, entity);
         Level level = entity.level();
         if (level.isClientSide() || !mayMobSit(entity)) return;
         BlockPos pos = entity.blockPosition();
@@ -201,7 +203,7 @@ public class ToiletBlock extends Block implements EntityBlock {
     private static boolean sitDown(Level level, BlockPos pos, BlockState state, Entity rider) {
         ToiletSeatEntity seat = ToiletSeatEntity.create(level, pos, state.getValue(FACING));
         level.addFreshEntity(seat);
-        if (!rider.startRiding(seat, true, true)) {
+        if (!rider.startRiding(seat, true)) {
             seat.discard();
             return false;
         }
@@ -252,5 +254,11 @@ public class ToiletBlock extends Block implements EntityBlock {
             Level level, BlockState state, BlockEntityType<T> type) {
         if (!level.isClientSide() || type != Registration.TOILET_BE_TYPE.get()) return null;
         return (BlockEntityTicker<T>) (BlockEntityTicker<ToiletBlockEntity>) ToiletBlockEntity::clientTick;
+    }
+
+    /** Drawn from its block model (1.21.1's {@code BaseEntityBlock} defaults to invisible). */
+    @Override
+    protected RenderShape getRenderShape(BlockState state) {
+        return RenderShape.MODEL;
     }
 }

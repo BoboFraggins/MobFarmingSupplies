@@ -6,9 +6,8 @@ import net.bobofraggins.mobfarmingsupplies.itemfilter.ItemMatchers;
 import net.bobofraggins.mobfarmingsupplies.network.SetScribingStatePacket;
 import net.bobofraggins.mobfarmingsupplies.shared.ui.Dialog;
 import net.bobofraggins.mobfarmingsupplies.shared.ui.PlayerInventoryPane;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -38,15 +37,17 @@ public class FilterScribingTerminalScreen extends AbstractContainerScreen<Filter
     private final ScribingControlsPane controls;
 
     public FilterScribingTerminalScreen(FilterScribingTerminalMenu menu, Inventory inv, Component title) {
+        super(menu, inv, title);
         ScribingControlsPane c = new ScribingControlsPane(
                 menu::getCarried,
                 item -> ItemMatchers.forItem(item, Minecraft.getInstance().level.registryAccess()).stream().map(ItemMatcher::listLabel).toList(),
                 pane -> NetworkManager.sendToServer(new SetScribingStatePacket(
                         menu.containerId, pane.getGhostItem(), pane.isNot(), pane.getSelectedRow())));
         Dialog d = new Dialog(c, new PlayerInventoryPane(FilterScribingTerminalMenu.INV_START_X));
-        super(menu, inv, title, d.totalWidth(), d.totalHeight());
         dialog = d;
         controls = c;
+        imageWidth = d.totalWidth();
+        imageHeight = d.totalHeight();
     }
 
     @Override
@@ -72,35 +73,34 @@ public class FilterScribingTerminalScreen extends AbstractContainerScreen<Filter
     // ── Rendering ────────────────────────────────────────────────────────────────
 
     @Override
-    public void extractRenderState(GuiGraphicsExtractor g, int mouseX, int mouseY, float partialTick) {
-        extractBackground(g, mouseX, mouseY, partialTick);
-        super.extractRenderState(g, mouseX, mouseY, partialTick);
-    }
-
-    @Override
-    public void extractContents(GuiGraphicsExtractor g, int mouseX, int mouseY, float partialTick) {
-        dialog.render(g, font, title, mouseX, mouseY, partialTick);
-        drawSlot(g, leftPos + FilterScribingTerminalMenu.INPUT_X,  topPos + FilterScribingTerminalMenu.SLOT_Y);
-        drawSlot(g, leftPos + FilterScribingTerminalMenu.OUTPUT_X, topPos + FilterScribingTerminalMenu.SLOT_Y);
-        super.extractContents(g, mouseX, mouseY, partialTick);
+    public void render(GuiGraphics g, int mouseX, int mouseY, float partialTick) {
+        super.render(g, mouseX, mouseY, partialTick);
 
         ItemStack ghost = controls.getGhostItem();
         if (!ghost.isEmpty() && menu.getCarried().isEmpty() && getGhostSlotArea().contains(mouseX, mouseY)) {
-            g.setTooltipForNextFrame(font, ghost, mouseX, mouseY);
+            g.renderTooltip(font, ghost, mouseX, mouseY);
         }
+        renderTooltip(g, mouseX, mouseY);
     }
 
     @Override
-    protected void extractLabels(GuiGraphicsExtractor g, int mouseX, int mouseY) {
+    protected void renderBg(GuiGraphics g, float partialTick, int mouseX, int mouseY) {
+        dialog.render(g, font, title, mouseX, mouseY, partialTick);
+        drawSlot(g, leftPos + FilterScribingTerminalMenu.INPUT_X,  topPos + FilterScribingTerminalMenu.SLOT_Y);
+        drawSlot(g, leftPos + FilterScribingTerminalMenu.OUTPUT_X, topPos + FilterScribingTerminalMenu.SLOT_Y);
+    }
+
+    @Override
+    protected void renderLabels(GuiGraphics g, int mouseX, int mouseY) {
         // Title is drawn by Dialog; suppress the default title/inventory labels.
     }
 
     // ── Input ───────────────────────────────────────────────────────────────────
 
     @Override
-    public boolean mouseClicked(MouseButtonEvent event, boolean consumed) {
-        if (dialog.mouseClicked(event.x(), event.y(), event.button())) return true;
-        return super.mouseClicked(event, consumed);
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (dialog.mouseClicked(mouseX, mouseY, button)) return true;
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 
     @Override
@@ -110,21 +110,21 @@ public class FilterScribingTerminalScreen extends AbstractContainerScreen<Filter
     }
 
     @Override
-    public boolean mouseDragged(MouseButtonEvent event, double dragX, double dragY) {
-        if (dialog.mouseDragged(event.x(), event.y(), event.button(), dragX, dragY)) return true;
-        return super.mouseDragged(event, dragX, dragY);
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
+        if (dialog.mouseDragged(mouseX, mouseY, button, dragX, dragY)) return true;
+        return super.mouseDragged(mouseX, mouseY, button, dragX, dragY);
     }
 
     @Override
-    public boolean mouseReleased(MouseButtonEvent event) {
-        if (dialog.mouseReleased(event.x(), event.y(), event.button())) return true;
-        return super.mouseReleased(event);
+    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+        if (dialog.mouseReleased(mouseX, mouseY, button)) return true;
+        return super.mouseReleased(mouseX, mouseY, button);
     }
 
     // ── Drawing helpers ───────────────────────────────────────────────────────────
 
     /** Draws a terminal slot frame; also used by the JEI Filter Scribing recipe view. */
-    public static void drawSlot(GuiGraphicsExtractor g, int sx, int sy) {
+    public static void drawSlot(GuiGraphics g, int sx, int sy) {
         g.fill(sx,      sy,      sx + 16, sy + 1,  0xFF373737); // top
         g.fill(sx,      sy + 1,  sx + 1,  sy + 16, 0xFF373737); // left
         g.fill(sx,      sy + 16, sx + 17, sy + 17, 0xFFFFFFFF); // bottom

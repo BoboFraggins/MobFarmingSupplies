@@ -8,7 +8,7 @@ public final class ExtraBlockModelsClientEvents {
     private ExtraBlockModelsClientEvents() {}
 
     @SubscribeEvent
-    public static void onRegisterStandaloneModels(ModelEvent.RegisterStandalone event) {
-        ExtraBlockModelsImpl.onRegisterStandalone(event);
+    public static void onRegisterAdditionalModels(ModelEvent.RegisterAdditional event) {
+        ExtraBlockModelsImpl.onRegisterAdditional(event);
     }
 }

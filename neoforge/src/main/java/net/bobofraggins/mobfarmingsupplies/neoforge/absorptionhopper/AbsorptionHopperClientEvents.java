@@ -18,7 +18,7 @@ public final class AbsorptionHopperClientEvents {
     }
 
     // NeoForge's RegisterMenuScreensEvent has already fired by the time the common
-    // MenuScreenRegistry.registerScreenFactory call runs, so register here directly.
+    // MenuRegistry.registerScreenFactory call runs, so register here directly.
     @SubscribeEvent
     public static void onRegisterMenuScreens(RegisterMenuScreensEvent event) {
         event.register(Registration.ABSORPTION_HOPPER_MENU.get(), AbsorptionHopperScreen::new);

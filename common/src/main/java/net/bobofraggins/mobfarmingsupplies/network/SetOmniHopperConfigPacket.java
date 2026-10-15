@@ -8,7 +8,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
 /**
@@ -21,7 +21,7 @@ import net.minecraft.server.level.ServerPlayer;
 public record SetOmniHopperConfigPacket(BlockPos pos, int sides, boolean andMode) implements CustomPacketPayload {
 
     public static final Type<SetOmniHopperConfigPacket> TYPE =
-            new Type<>(Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "set_omnidirectional_hopper_config"));
+            new Type<>(ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "set_omnidirectional_hopper_config"));
 
     public static final StreamCodec<FriendlyByteBuf, SetOmniHopperConfigPacket> STREAM_CODEC =
             StreamCodec.composite(

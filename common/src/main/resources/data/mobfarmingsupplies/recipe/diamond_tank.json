@@ -6,8 +6,12 @@
     "MMM"
   ],
   "key": {
-    "M": "minecraft:diamond",
-    "T": "mobfarmingsupplies:gold_tank"
+    "M": {
+      "item": "minecraft:diamond"
+    },
+    "T": {
+      "item": "mobfarmingsupplies:gold_tank"
+    }
   },
   "result": {
     "id": "mobfarmingsupplies:diamond_tank",

@@ -7,13 +7,13 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.neoforged.neoforge.capabilities.BlockCapability;
-import net.neoforged.neoforge.capabilities.Capabilities;
+import net.bobofraggins.mobfarmingsupplies.neoforge.transfer.api.BlockCapability;
+import net.bobofraggins.mobfarmingsupplies.neoforge.transfer.api.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
-import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.fluid.FluidResource;
-import net.neoforged.neoforge.transfer.item.ItemResource;
-import net.neoforged.neoforge.transfer.resource.Resource;
+import net.bobofraggins.mobfarmingsupplies.neoforge.transfer.api.ResourceHandler;
+import net.bobofraggins.mobfarmingsupplies.neoforge.transfer.api.fluid.FluidResource;
+import net.bobofraggins.mobfarmingsupplies.neoforge.transfer.api.item.ItemResource;
+import net.bobofraggins.mobfarmingsupplies.neoforge.transfer.api.resource.Resource;
 
 /** Registers the Omnidirectional Hopper's and Einstein-Rosen Bridge's insert-only handlers, on INPUT sides only. */
 public final class OmniHopperCapabilities {
@@ -27,22 +27,22 @@ public final class OmniHopperCapabilities {
 
     private static <B extends BlockEntity & HopperNode> void registerFor(RegisterCapabilitiesEvent event,
                                                                         BlockEntityType<B> type) {
-        event.registerBlockEntity(Capabilities.Item.BLOCK, type, (be, side) -> isInput(be, side)
+        Capabilities.Item.BLOCK.registerBlockEntity(event, type, (be, side) -> isInput(be, side)
                 ? new OmniHopperInsertHandler<>(be, Capabilities.Item.BLOCK, ItemResource.EMPTY,
                         r -> be.allowsItem(r.toStack(1)),
                         r -> r.isEmpty() ? Item.ABSOLUTE_MAX_STACK_SIZE : r.toStack(1).getMaxStackSize())
                 : null);
-        event.registerBlockEntity(Capabilities.Fluid.BLOCK, type, (be, side) -> isInput(be, side)
+        Capabilities.Fluid.BLOCK.registerBlockEntity(event, type, (be, side) -> isInput(be, side)
                 ? new OmniHopperInsertHandler<>(be, Capabilities.Fluid.BLOCK, FluidResource.EMPTY,
                         r -> true, r -> Integer.MAX_VALUE)
                 : null);
-        event.registerBlockEntity(Capabilities.Energy.BLOCK, type, (be, side) -> isInput(be, side)
+        Capabilities.Energy.BLOCK.registerBlockEntity(event, type, (be, side) -> isInput(be, side)
                 ? new OmniHopperEnergyHandler(be) : null);
 
         BlockCapability<ResourceHandler<Resource>, Direction> chemical = OmniHopperChemicals.capability();
         Resource emptyChemical = OmniHopperChemicals.empty();
         if (chemical != null && emptyChemical != null) {
-            event.registerBlockEntity(chemical, type, (be, side) -> isInput(be, side)
+            chemical.registerBlockEntity(event, type, (be, side) -> isInput(be, side)
                     ? new OmniHopperInsertHandler<>(be, chemical, emptyChemical, r -> true, r -> Integer.MAX_VALUE)
                     : null);
         }

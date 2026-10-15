@@ -22,30 +22,17 @@ loom {
     }
 }
 
-repositories {
-    maven {
-        name = 'Nucleoid (Trinkets Updated)'
-        url = 'https://maven.nucleoid.xyz'
-        content {
-            includeGroup 'eu.pb4'
-        }
-    }
-}
-
 dependencies {
-    implementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
-    api "net.fabricmc.fabric-api:fabric-api:${fabric_api_version}"
-    api "dev.architectury:architectury-fabric:${architectury_version}"
+    modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
+    modApi "net.fabricmc.fabric-api:fabric-api:${fabric_api_version}"
+    modApi "dev.architectury:architectury-fabric:${architectury_version}"
 
-    compileOnly "maven.modrinth:jade:26.1.0+fabric"
-    compileOnly "maven.modrinth:jei:jZ7OgHsw"
-    compileOnly "eu.pb4:trinkets:4.0.1+26.1"
-    // Trinkets declares Loom injected interfaces, so the dev Minecraft jar's LivingEntity
-    // implements a Trinkets type — runClient needs Trinkets on the classpath or it dies with
-    // NoClassDefFoundError. Dev runtime only; not a dependency of the released jar.
-    localRuntime "eu.pb4:trinkets:4.0.1+26.1"
+    modCompileOnly "maven.modrinth:jade:15.10.6+fabric"
+    modCompileOnly "maven.modrinth:trinkets:3.10.0"
+    // Trinkets' API types extend Cardinal Components ones.
+    modCompileOnly "org.ladysnake.cardinal-components-api:cardinal-components-base:6.1.2"
 
-    common(project(path: ':common')) { transitive false }
+    common(project(path: ':common', configuration: 'namedElements')) { transitive false }
     shadowCommon(project(path: ':common', configuration: 'transformProductionFabric')) { transitive false }
 }
 
@@ -65,10 +52,19 @@ tasks.withType(ProcessResources).configureEach {
     }
 }
 
+// 1.21.1 is obfuscated: the shadow jar holds development (Mojang) names, and remapJar turns it into
+// the release jar, mobfarmingsupplies-<version>-fabric.jar.
 shadowJar {
     exclude 'META-INF/neoforge.mods.toml'
     exclude 'architectury.common.json'
     configurations = [project.configurations.shadowCommon]
+    archiveBaseName = mod_id
+    archiveClassifier = 'dev-shadow'
+}
+
+remapJar {
+    inputFile.set shadowJar.archiveFile
+    dependsOn shadowJar
     archiveBaseName = mod_id
     archiveClassifier = 'fabric'
 }
@@ -87,7 +83,7 @@ publishing {
     publications {
         register('mavenFabric', MavenPublication) {
             artifactId = "${mod_id}-fabric"
-            artifact(shadowJar) { classifier null }
+            artifact(remapJar) { classifier null }
             artifact(sourcesJar) { classifier 'sources' }
         }
     }

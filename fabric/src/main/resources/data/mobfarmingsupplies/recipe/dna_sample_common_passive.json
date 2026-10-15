@@ -7,11 +7,21 @@
       "fluid_tag": "c:experience",
       "amount": 1000
     },
-    "C": "minecraft:carrot",
-    "P": "minecraft:potato",
-    "D": "mobfarmingsupplies:dna_collector",
-    "X": "minecraft:beetroot",
-    "W": "minecraft:wheat"
+    "C": {
+      "item": "minecraft:carrot"
+    },
+    "P": {
+      "item": "minecraft:potato"
+    },
+    "D": {
+      "item": "mobfarmingsupplies:dna_collector"
+    },
+    "X": {
+      "item": "minecraft:beetroot"
+    },
+    "W": {
+      "item": "minecraft:wheat"
+    }
   },
   "pattern": [
     "BCB",

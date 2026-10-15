@@ -1,7 +1,7 @@
 package net.bobofraggins.mobfarmingsupplies.neoforge.glamping.magichat;
 
-import net.minecraft.world.entity.EntitySpawnReason;
-import net.minecraft.world.entity.monster.zombie.Zombie;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.monster.Zombie;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.entity.living.FinalizeSpawnEvent;
 import net.bobofraggins.mobfarmingsupplies.glamping.magichat.MagicHatZombieHandler;
@@ -17,11 +17,11 @@ public class MagicHatSpawnEvents {
     public void onFinalizeSpawn(FinalizeSpawnEvent event) {
         if (!(event.getEntity() instanceof Zombie zombie)) return;
 
-        EntitySpawnReason spawnType = event.getSpawnType();
-        if (spawnType == EntitySpawnReason.COMMAND
-                || spawnType == EntitySpawnReason.SPAWN_ITEM_USE
-                || spawnType == EntitySpawnReason.BUCKET
-                || spawnType == EntitySpawnReason.DISPENSER) return;
+        MobSpawnType spawnType = event.getSpawnType();
+        if (spawnType == MobSpawnType.COMMAND
+                || spawnType == MobSpawnType.SPAWN_EGG
+                || spawnType == MobSpawnType.BUCKET
+                || spawnType == MobSpawnType.DISPENSER) return;
 
         MagicHatZombieHandler.tryEquipMagicHat(zombie, event.getLevel().getRandom());
     }

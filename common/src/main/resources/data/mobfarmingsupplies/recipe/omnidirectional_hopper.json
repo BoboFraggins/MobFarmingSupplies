@@ -6,8 +6,12 @@
     " H "
   ],
   "key": {
-    "H": "minecraft:hopper",
-    "R": "minecraft:redstone_block"
+    "H": {
+      "item": "minecraft:hopper"
+    },
+    "R": {
+      "item": "minecraft:redstone_block"
+    }
   },
   "result": {
     "id": "mobfarmingsupplies:omnidirectional_hopper",

@@ -7,7 +7,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * The Absorption Hopper's side grid: whether it pushes collected items and XP out of each side.
@@ -15,8 +15,8 @@ import net.minecraft.resources.Identifier;
  */
 final class PushSidesModel implements SideGridPane.Model {
 
-    private static final Identifier TEX_ON =
-            Identifier.fromNamespaceAndPath("mobfarmingsupplies", "widget/push_button_on");
+    private static final ResourceLocation TEX_ON =
+            ResourceLocation.fromNamespaceAndPath("mobfarmingsupplies", "widget/push_button_on");
 
     private final BlockPos pos;
     private int mask;

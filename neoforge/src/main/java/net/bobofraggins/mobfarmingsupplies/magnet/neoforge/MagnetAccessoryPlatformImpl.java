@@ -13,7 +13,7 @@ public final class MagnetAccessoryPlatformImpl {
     private MagnetAccessoryPlatformImpl() {}
 
     public static ItemStack findWornMagnet(Player player) {
-        ICuriosItemHandler inv = CuriosApi.getCuriosInventoryOrNull(player);
+        ICuriosItemHandler inv = CuriosApi.getCuriosInventory(player).orElse(null);
         if (inv == null) return ItemStack.EMPTY;
         return inv.findFirstCurio(worn -> worn.is(Registration.SUPERCONDUCTING_MAGNET.get()))
                 .map(SlotResult::stack)
@@ -21,7 +21,7 @@ public final class MagnetAccessoryPlatformImpl {
     }
 
     public static void replaceWornMagnet(Player player, ItemStack stack) {
-        ICuriosItemHandler inv = CuriosApi.getCuriosInventoryOrNull(player);
+        ICuriosItemHandler inv = CuriosApi.getCuriosInventory(player).orElse(null);
         if (inv == null) return;
         inv.findFirstCurio(worn -> worn.is(Registration.SUPERCONDUCTING_MAGNET.get())).ifPresent(result ->
                 inv.setEquippedCurio(result.slotContext().identifier(), result.slotContext().index(), stack));

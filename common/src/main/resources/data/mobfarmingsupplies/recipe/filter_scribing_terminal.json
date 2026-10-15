@@ -6,10 +6,18 @@
     "PRP"
   ],
   "key": {
-    "P": "#c:plastics",
-    "G": "#c:glass_blocks/colorless",
-    "S": "#c:plates/silicon",
-    "R": "#c:dusts/redstone"
+    "P": {
+      "tag": "c:plastics"
+    },
+    "G": {
+      "tag": "c:glass_blocks/colorless"
+    },
+    "S": {
+      "tag": "c:plates/silicon"
+    },
+    "R": {
+      "tag": "c:dusts/redstone"
+    }
   },
   "result": {
     "id": "mobfarmingsupplies:filter_scribing_terminal",

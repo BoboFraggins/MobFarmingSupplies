@@ -47,17 +47,20 @@ repositories {
 }
 
 dependencies {
-    add('neoForge', "net.neoforged:neoforge:${neo_version}")
+    neoForge "net.neoforged:neoforge:${neo_version}"
 
-    api "dev.architectury:architectury-neoforge:${architectury_version}"
+    modApi "dev.architectury:architectury-neoforge:${architectury_version}"
 
-    compileOnly "maven.modrinth:jade:26.1.1+neoforge"
-    compileOnly "maven.modrinth:jei:AisPQmQz"
+    modCompileOnly "maven.modrinth:jade:15.10.6+neoforge"
+    modCompileOnly "maven.modrinth:jei:viLBV5kx"
 
     // Curios soft dependency.
-    compileOnly "top.theillusivec4.curios:curios-neoforge:15.0.0+26.1.2:api"
+    modCompileOnly "top.theillusivec4.curios:curios-neoforge:9.5.1+1.21.1:api"
 
-    common(project(path: ':common')) { transitive false }
+    // Mekanism soft dependency (chemicals through the Omnidirectional Hopper).
+    modCompileOnly "mekanism:Mekanism:1.21.1-10.7.19.85:api"
+
+    common(project(path: ':common', configuration: 'namedElements')) { transitive false }
     shadowCommon(project(path: ':common', configuration: 'transformProductionNeoForge')) { transitive false }
 }
 
@@ -79,10 +82,19 @@ tasks.withType(ProcessResources).configureEach {
     }
 }
 
+// 1.21.1 is obfuscated: the shadow jar holds development (Mojang) names, and remapJar turns it into
+// the release jar, mobfarmingsupplies-<version>-neoforge.jar.
 shadowJar {
     exclude 'fabric.mod.json'
     exclude 'architectury.common.json'
     configurations = [project.configurations.shadowCommon]
+    archiveBaseName = mod_id
+    archiveClassifier = 'dev-shadow'
+}
+
+remapJar {
+    inputFile.set shadowJar.archiveFile
+    dependsOn shadowJar
     archiveBaseName = mod_id
     archiveClassifier = 'neoforge'
 }
@@ -101,7 +113,7 @@ publishing {
     publications {
         register('mavenNeoForge', MavenPublication) {
             artifactId = "${mod_id}-neoforge"
-            artifact(shadowJar) { classifier null }
+            artifact(remapJar) { classifier null }
             artifact(sourcesJar) { classifier 'sources' }
         }
     }

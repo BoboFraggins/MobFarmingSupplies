@@ -5,7 +5,7 @@ import net.bobofraggins.mobfarmingsupplies.shared.ui.IDialogPane;
 import net.bobofraggins.mobfarmingsupplies.shared.ui.PlayerInventoryPane;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.network.chat.Component;
@@ -39,10 +39,10 @@ class HopperModePane implements IDialogPane {
     @Override public int preferredHeight() { return HEIGHT; }
 
     @Override
-    public void render(GuiGraphicsExtractor g, Font font, int width, int mouseX, int mouseY, float pt) {
+    public void render(GuiGraphics g, Font font, int width, int mouseX, int mouseY, float pt) {
         if (!SorterFilters.hasAnyFilter(filters)) {
             Component everything = Component.translatable("gui.mobfarmingsupplies.omnidirectional_hopper.everything");
-            g.text(font, everything, (PlayerInventoryPane.WIDTH - font.width(everything)) / 2,
+            g.drawString(font, everything, (PlayerInventoryPane.WIDTH - font.width(everything)) / 2,
                     (HEIGHT - font.lineHeight) / 2 + 1, 0xFF404040, false);
             return;
         }

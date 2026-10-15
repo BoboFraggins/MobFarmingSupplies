@@ -5,9 +5,9 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.BlockPos;
 import net.bobofraggins.mobfarmingsupplies.neoforge.transfer.CommitCallbacks;
 import net.bobofraggins.mobfarmingsupplies.advancement.MFSTriggers;
-import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.item.ItemResource;
-import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+import net.bobofraggins.mobfarmingsupplies.neoforge.transfer.api.ResourceHandler;
+import net.bobofraggins.mobfarmingsupplies.neoforge.transfer.api.item.ItemResource;
+import net.bobofraggins.mobfarmingsupplies.neoforge.transfer.api.transaction.TransactionContext;
 
 /**
  * Item handler on every side of a Toilet: accepts any item and voids it. Holds nothing, so

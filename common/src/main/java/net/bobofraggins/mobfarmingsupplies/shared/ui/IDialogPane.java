@@ -1,13 +1,13 @@
 package net.bobofraggins.mobfarmingsupplies.shared.ui;
 
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 
 /**
  * A self-contained rendered panel within a {@link Dialog}.
  *
  * <p>All rendering and mouse coordinates are <em>pane-local</em>: (0, 0) is the top-left corner
- * of the pane. The {@link Dialog} translates the {@link GuiGraphicsExtractor} pose stack to the
+ * of the pane. The {@link Dialog} translates the {@link GuiGraphics} pose stack to the
  * pane's screen-space origin before calling {@link #render}.
  */
 public interface IDialogPane {
@@ -29,7 +29,7 @@ public interface IDialogPane {
      * @param partialTick partial tick for animations
      */
     void render(
-            GuiGraphicsExtractor graphics, Font font, int width, int localMouseX, int localMouseY, float partialTick);
+            GuiGraphics graphics, Font font, int width, int localMouseX, int localMouseY, float partialTick);
 
     /** Handle a mouse click in pane-local coordinates. Returns true if consumed. */
     default boolean mouseClicked(double localX, double localY, int button) {

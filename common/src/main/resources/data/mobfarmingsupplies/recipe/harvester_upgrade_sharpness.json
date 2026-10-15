@@ -2,8 +2,12 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    "minecraft:iron_sword",
-    "mobfarmingsupplies:blank_upgrade"
+    {
+      "item": "minecraft:iron_sword"
+    },
+    {
+      "item": "mobfarmingsupplies:blank_upgrade"
+    }
   ],
   "result": {
     "count": 1,

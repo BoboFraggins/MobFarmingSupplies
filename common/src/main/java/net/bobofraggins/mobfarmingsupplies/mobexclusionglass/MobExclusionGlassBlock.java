@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.mobexclusionglass;
 
+import net.minecraft.world.level.LevelAccessor;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -7,12 +8,11 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.boss.wither.WitherBoss;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.hurtingprojectile.WitherSkull;
+import net.minecraft.world.entity.projectile.WitherSkull;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HalfTransparentBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -92,13 +92,11 @@ public class MobExclusionGlassBlock extends HalfTransparentBlock {
     @Override
     protected BlockState updateShape(
             BlockState state,
-            LevelReader level,
-            ScheduledTickAccess ticks,
-            BlockPos pos,
             Direction dir,
-            BlockPos neighbourPos,
             BlockState neighbourState,
-            RandomSource random) {
+            LevelAccessor level,
+            BlockPos pos,
+            BlockPos neighbourPos) {
         return state.setValue(propFor(dir), connects(neighbourState));
     }
 
@@ -122,12 +120,12 @@ public class MobExclusionGlassBlock extends HalfTransparentBlock {
     // ── Light blocking ─────────────────────────────────────────────────────────
 
     @Override
-    protected int getLightDampening(BlockState state) {
+    protected int getLightBlock(BlockState state, BlockGetter level, BlockPos pos) {
         return 15;
     }
 
     @Override
-    protected boolean propagatesSkylightDown(BlockState state) {
+    protected boolean propagatesSkylightDown(BlockState state, BlockGetter level, BlockPos pos) {
         return false;
     }
 

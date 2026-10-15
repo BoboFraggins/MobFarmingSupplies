@@ -6,14 +6,12 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
-import net.minecraft.world.level.storage.TagValueOutput;
 
 /**
  * Wires the Magic Hat's mob-capture logic into {@link InteractionEvent#INTERACT_ENTITY}, which
@@ -51,12 +49,11 @@ public final class MagicHatCaptureEvents {
             return EventResult.interruptTrue();
         }
 
-        TagValueOutput tagOut = TagValueOutput.createWithContext(
-                ProblemReporter.DISCARDING, player.level().registryAccess());
+        CompoundTag tagOut = new CompoundTag();
         if (!target.save(tagOut)) {
             return EventResult.pass();
         }
-        CompoundTag mobTag = tagOut.buildResult();
+        CompoundTag mobTag = tagOut;
         CompoundTag wrapper = new CompoundTag();
         wrapper.put(MagicHatItem.MOB_KEY, mobTag);
         stack.set(DataComponents.CUSTOM_DATA, CustomData.of(wrapper));

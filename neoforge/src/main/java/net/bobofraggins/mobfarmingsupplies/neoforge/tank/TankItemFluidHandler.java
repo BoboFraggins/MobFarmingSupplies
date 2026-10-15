@@ -3,24 +3,21 @@ package net.bobofraggins.mobfarmingsupplies.neoforge.tank;
 import dev.architectury.fluid.FluidStack;
 import dev.architectury.hooks.fluid.forge.FluidStackHooksForge;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
-import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.fluid.FluidResource;
-import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import net.bobofraggins.mobfarmingsupplies.tank.TankBlockEntity;
-import net.bobofraggins.mobfarmingsupplies.tank.TankContents;
 import net.bobofraggins.mobfarmingsupplies.tank.TankBlockItem;
+import net.bobofraggins.mobfarmingsupplies.tank.TankContents;
+import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 
 /**
- * {@link ResourceHandler}{@code <FluidResource>} for the Tank block item.
+ * Fluid handler for the Tank block item.
  *
  * <p>Reads and writes fluid state via the {@link TankContents} data component.
  * Converts between Architectury's {@link FluidStack} (stored in the component)
- * and NeoForge's {@link FluidResource} using {@link FluidStackHooksForge}.
+ * and NeoForge's fluid stacks using {@link FluidStackHooksForge}.
  * Works on a copy of the stack; call {@link #getContainer()} after mutations to
  * retrieve the updated item.
  */
-public class TankItemFluidHandler implements ResourceHandler<FluidResource> {
+public class TankItemFluidHandler implements IFluidHandlerItem {
 
     private final ItemStack container;
 
@@ -28,6 +25,7 @@ public class TankItemFluidHandler implements ResourceHandler<FluidResource> {
         this.container = stack.copy();
     }
 
+    @Override
     public ItemStack getContainer() {
         return container;
     }
@@ -37,63 +35,73 @@ public class TankItemFluidHandler implements ResourceHandler<FluidResource> {
         return c != null ? c : TankContents.EMPTY;
     }
 
+    private static boolean sameFluid(FluidStack stored, net.neoforged.neoforge.fluids.FluidStack incoming) {
+        FluidStack arch = FluidStackHooksForge.fromForge(incoming.copyWithAmount(1));
+        return stored.isFluidEqual(arch) && stored.isComponentEqual(arch);
+    }
+
     @Override
-    public int size() {
+    public int getTanks() {
         return 1;
     }
 
     @Override
-    public FluidResource getResource(int index) {
+    public net.neoforged.neoforge.fluids.FluidStack getFluidInTank(int tank) {
         TankContents c = contents();
-        if (c.storedFluid().isEmpty() || c.amount() == 0) return FluidResource.EMPTY;
-        return FluidResource.of(FluidStackHooksForge.toForge(c.storedFluid().copyWithAmount(1)));
+        if (c.storedFluid().isEmpty() || c.amount() == 0) return net.neoforged.neoforge.fluids.FluidStack.EMPTY;
+        return FluidStackHooksForge.toForge(c.storedFluid().copyWithAmount((int) Math.min(c.amount(), Integer.MAX_VALUE)));
     }
 
     @Override
-    public long getAmountAsLong(int index) {
-        return contents().amount();
+    public int getTankCapacity(int tank) {
+        return (int) Math.min(TankBlockItem.capacityOf(container), Integer.MAX_VALUE);
     }
 
     @Override
-    public long getCapacityAsLong(int index, FluidResource resource) {
-        return TankBlockItem.capacityOf(container);
-    }
-
-    @Override
-    public boolean isValid(int index, FluidResource resource) {
-        if (resource.isEmpty()) return false;
+    public boolean isFluidValid(int tank, net.neoforged.neoforge.fluids.FluidStack stack) {
+        if (stack.isEmpty()) return false;
         TankContents c = contents();
-        if (c.storedFluid().isEmpty()) return true;
-        FluidStack incoming = FluidStackHooksForge.fromForge(resource.toStack(1));
-        return c.storedFluid().isFluidEqual(incoming) && c.storedFluid().isComponentEqual(incoming);
+        return c.storedFluid().isEmpty() || sameFluid(c.storedFluid(), stack);
     }
 
     @Override
-    public int insert(int index, FluidResource resource, int amount, TransactionContext tx) {
-        if (!isValid(index, resource) || amount <= 0) return 0;
+    public int fill(net.neoforged.neoforge.fluids.FluidStack resource, FluidAction action) {
+        if (!isFluidValid(0, resource)) return 0;
         TankContents c = contents();
         long space = Math.max(0, TankBlockItem.capacityOf(container) - c.amount());
-        int toFill = (int) Math.min(amount, Math.min(space, Integer.MAX_VALUE));
+        int toFill = (int) Math.min(resource.getAmount(), Math.min(space, Integer.MAX_VALUE));
         if (toFill <= 0) return 0;
-        FluidStack newType = c.storedFluid().isEmpty()
-                ? FluidStackHooksForge.fromForge(resource.toStack(1)).copyWithAmount(1)
-                : c.storedFluid();
-        container.set(Registration.TANK_CONTENTS.get(),
-                new TankContents(newType, c.amount() + toFill, c.bucketMode()));
+        if (action.execute()) {
+            FluidStack newType = c.storedFluid().isEmpty()
+                    ? FluidStackHooksForge.fromForge(resource.copyWithAmount(1))
+                    : c.storedFluid();
+            container.set(Registration.TANK_CONTENTS.get(),
+                    new TankContents(newType, c.amount() + toFill, c.bucketMode()));
+        }
         return toFill;
     }
 
     @Override
-    public int extract(int index, FluidResource resource, int amount, TransactionContext tx) {
-        if (resource.isEmpty() || amount <= 0) return 0;
+    public net.neoforged.neoforge.fluids.FluidStack drain(net.neoforged.neoforge.fluids.FluidStack resource, FluidAction action) {
+        if (resource.isEmpty()) return net.neoforged.neoforge.fluids.FluidStack.EMPTY;
         TankContents c = contents();
-        if (c.storedFluid().isEmpty()) return 0;
-        FluidStack incoming = FluidStackHooksForge.fromForge(resource.toStack(1));
-        if (!c.storedFluid().isFluidEqual(incoming) || !c.storedFluid().isComponentEqual(incoming)) return 0;
-        int toDrain = (int) Math.min(amount, Math.min(c.amount(), Integer.MAX_VALUE));
-        if (toDrain <= 0) return 0;
-        container.set(Registration.TANK_CONTENTS.get(),
-                new TankContents(c.storedFluid(), c.amount() - toDrain, c.bucketMode()));
-        return toDrain;
+        if (c.storedFluid().isEmpty() || !sameFluid(c.storedFluid(), resource)) {
+            return net.neoforged.neoforge.fluids.FluidStack.EMPTY;
+        }
+        return drain(resource.getAmount(), action);
+    }
+
+    @Override
+    public net.neoforged.neoforge.fluids.FluidStack drain(int maxDrain, FluidAction action) {
+        TankContents c = contents();
+        if (c.storedFluid().isEmpty() || maxDrain <= 0) return net.neoforged.neoforge.fluids.FluidStack.EMPTY;
+        int toDrain = (int) Math.min(maxDrain, Math.min(c.amount(), Integer.MAX_VALUE));
+        if (toDrain <= 0) return net.neoforged.neoforge.fluids.FluidStack.EMPTY;
+        net.neoforged.neoforge.fluids.FluidStack drained = FluidStackHooksForge.toForge(c.storedFluid().copyWithAmount(toDrain));
+        if (action.execute()) {
+            container.set(Registration.TANK_CONTENTS.get(),
+                    new TankContents(c.storedFluid(), c.amount() - toDrain, c.bucketMode()));
+        }
+        return drained;
     }
 }

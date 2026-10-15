@@ -27,7 +27,6 @@ import net.fabricmc.api.ModInitializer;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredientSerializer;
-import net.fabricmc.fabric.api.recipe.v1.sync.RecipeSynchronization;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 
@@ -41,20 +40,14 @@ public class MobFarmingSuppliesFabric implements ModInitializer {
         ModCompatRegistration.register();
         Registration.register();
         CustomIngredientSerializer.register(FabricFluidContainerIngredient.SERIALIZER);
-        // Fabric only sends vanilla recipe types to clients; without this, JEI (which reads the
-        // client's copy) never sees the Tank Upgrade or Einstein-Rosen Bridge recipes.
-        RecipeSynchronization.synchronizeRecipeSerializer(Registration.TANK_UPGRADE_SERIALIZER.get());
-        RecipeSynchronization.synchronizeRecipeSerializer(Registration.BRIDGE_PAIR_SERIALIZER.get());
-        RecipeSynchronization.synchronizeRecipeSerializer(Registration.BRIDGE_LINK_SERIALIZER.get());
-        RecipeSynchronization.synchronizeRecipeSerializer(Registration.ANVIL_CRUSHING_SERIALIZER.get());
         FabricLootModifiers.register();
         registerStorages();
-        // Magic Hat Trinkets Updated integration — soft dependency, registered only if present.
+        // Magic Hat Trinkets integration — soft dependency, registered only if present.
         // MUST check isModLoaded() before ever calling into MagicHatTrinketSetup: that class
         // references Trinkets API types, and simply loading it (even just to have this class's
-        // own bytecode verified) would throw NoClassDefFoundError without Trinkets Updated
+        // own bytecode verified) would throw NoClassDefFoundError without Trinkets
         // installed — see MagicHatTrinketSetup's javadoc.
-        if (Platform.isModLoaded("trinkets_updated")) {
+        if (Platform.isModLoaded("trinkets")) {
             MagicHatTrinketSetup.registerCommon();
         }
         MobFarmingSuppliesCommon.init();

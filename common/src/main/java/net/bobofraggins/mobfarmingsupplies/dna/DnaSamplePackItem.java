@@ -3,19 +3,18 @@ package net.bobofraggins.mobfarmingsupplies.dna;
 import net.bobofraggins.mobfarmingsupplies.MFSConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
-import net.minecraft.util.random.Weighted;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.monster.piglin.Piglin;
-import net.minecraft.world.entity.monster.zombie.Zombie;
+import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.biome.MobSpawnSettings;
@@ -83,7 +82,7 @@ public class DnaSamplePackItem extends Item implements IDnaSampleItem {
         if (mobs.isEmpty()) return null;
 
         EntityType<?> type = mobs.get(random.nextInt(mobs.size()));
-        return type.create(level, EntitySpawnReason.SPAWNER);
+        return type.create(level);
     }
 
     /**
@@ -97,7 +96,7 @@ public class DnaSamplePackItem extends Item implements IDnaSampleItem {
             // world; the pack decides baby/adult, and a jockey would be an extra, uncounted mob.
             SpawnGroupData groupData = mob instanceof Zombie ? new Zombie.ZombieGroupData(forceBaby, false) : null;
             mob.finalizeSpawn(level, level.getCurrentDifficultyAt(mob.blockPosition()),
-                    EntitySpawnReason.SPAWNER, groupData);
+                    MobSpawnType.SPAWNER, groupData);
         }
         applyBabyState(entity, forceBaby);
     }
@@ -106,7 +105,7 @@ public class DnaSamplePackItem extends Item implements IDnaSampleItem {
     @Nullable
     public EntityType<?> exampleMob() {
         for (String id : mobsConfig.get()) {
-            Identifier loc = Identifier.tryParse(id);
+            ResourceLocation loc = ResourceLocation.tryParse(id);
             if (loc == null) continue;
             var type = BuiltInRegistries.ENTITY_TYPE.getOptional(loc);
             if (type.isPresent()) return type.get();
@@ -123,14 +122,14 @@ public class DnaSamplePackItem extends Item implements IDnaSampleItem {
     private List<EntityType<?>> mobPool(ServerLevel level, BlockPos pos) {
         Set<EntityType<?>> pool = new LinkedHashSet<>();
         for (String id : mobsConfig.get()) {
-            Identifier loc = Identifier.tryParse(id);
+            ResourceLocation loc = ResourceLocation.tryParse(id);
             if (loc != null) BuiltInRegistries.ENTITY_TYPE.getOptional(loc).ifPresent(pool::add);
         }
         if (biomeCategory != null) {
             List<String> deny = MFSConfig.getBiomeSpawnDenyList();
-            for (Weighted<MobSpawnSettings.SpawnerData> spawn
+            for (MobSpawnSettings.SpawnerData spawn
                     : level.getBiome(pos).value().getMobSettings().getMobs(biomeCategory).unwrap()) {
-                EntityType<?> type = spawn.value().type();
+                EntityType<?> type = spawn.type;
                 if (!isDenied(type, deny)) pool.add(type);
             }
         }
@@ -140,7 +139,7 @@ public class DnaSamplePackItem extends Item implements IDnaSampleItem {
     /** Whether {@code type} matches a deny-list entry: its exact ID, or {@code "modid:*"}. */
     private static boolean isDenied(EntityType<?> type, List<String> deny) {
         if (deny.isEmpty()) return false;
-        Identifier key = BuiltInRegistries.ENTITY_TYPE.getKey(type);
+        ResourceLocation key = BuiltInRegistries.ENTITY_TYPE.getKey(type);
         String id = key.toString();
         String wholeMod = key.getNamespace() + ":*";
         for (String entry : deny) {

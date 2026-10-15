@@ -6,7 +6,7 @@ import net.minecraft.world.item.ItemStack;
 
 /**
  * A Superconducting Magnet worn as a charm: in Curios' charm slot on NeoForge, or this mod's own
- * charm slot in Trinkets Updated on Fabric. Only call these once
+ * charm slot in Trinkets on Fabric. Only call these once
  * {@link net.bobofraggins.mobfarmingsupplies.picnicbasket.PicnicBasketAccessoryAvailability#isLoaded()}
  * says that mod is there; see that class for why the check can't live here.
  */

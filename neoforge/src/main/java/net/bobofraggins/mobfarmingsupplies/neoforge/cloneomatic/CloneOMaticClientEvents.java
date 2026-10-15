@@ -18,7 +18,7 @@ public final class CloneOMaticClientEvents {
                 CloneOMaticBlockEntityRenderer::new);
     }
 
-    // CloneOMaticScreen registration via Architectury's MenuScreenRegistry (deferred to
+    // CloneOMaticScreen registration via Architectury's MenuRegistry (deferred to
     // FMLClientSetupEvent in MobFarmingSuppliesCommonClient) never fires on NeoForge —
     // architectury's own RegisterMenuScreensEvent has already run by then. Register
     // directly here, same as AbsorptionHopper/Tank.

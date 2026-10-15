@@ -3,7 +3,7 @@ package net.bobofraggins.mobfarmingsupplies.absorptionhopper;
 import net.bobofraggins.mobfarmingsupplies.shared.ui.IDialogPane;
 import net.bobofraggins.mobfarmingsupplies.shared.ui.PlayerInventoryPane;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 
 /**
  * Dialog pane that renders the background of the Absorption Hopper's 27 item slots
@@ -52,7 +52,7 @@ public class HopperSlotsPane implements IDialogPane {
 
     @Override
     public void render(
-            GuiGraphicsExtractor g, Font font, int width, int localMouseX, int localMouseY, float partialTick) {
+            GuiGraphics g, Font font, int width, int localMouseX, int localMouseY, float partialTick) {
         // Slot backgrounds
         for (int row = 0; row < ROWS; row++) {
             for (int col = 0; col < COLS; col++) {

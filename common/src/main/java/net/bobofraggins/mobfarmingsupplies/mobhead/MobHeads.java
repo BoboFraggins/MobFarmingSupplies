@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Optional;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -39,10 +39,10 @@ public final class MobHeads {
      */
     private static final List<String> MOD_HEAD_IDS = List.of(
             "allay", "armadillo", "axolotl", "bat", "blaze", "bogged", "breeze", "camel",
-            "camel_husk", "cat", "cave_spider", "chicken", "copper_golem", "cow", "creaking",
+            "cat", "cave_spider", "chicken", "cow",
             "dolphin", "donkey", "drowned", "elder_guardian", "enderman", "evoker", "fox", "frog",
-            "ghast", "goat", "guardian", "happy_ghast", "hoglin", "horse", "husk", "illusioner",
-            "iron_golem", "llama", "magma_cube", "mooshroom", "mule", "ocelot", "panda", "parched",
+            "ghast", "goat", "guardian", "hoglin", "horse", "husk", "illusioner",
+            "iron_golem", "llama", "magma_cube", "mooshroom", "mule", "ocelot", "panda",
             "parrot", "phantom", "pig", "piglin_brute", "pillager", "polar_bear", "rabbit",
             "ravager", "sheep", "shulker", "skeleton_horse", "slime", "sniffer", "spider", "stray",
             "trader_llama", "turtle", "vex", "villager", "vindicator", "wandering_trader", "warden",
@@ -50,7 +50,7 @@ public final class MobHeads {
 
     /** The entity types in {@link #MOD_HEAD_IDS} that exist in this version, in that order. */
     public static final List<EntityType<?>> MOD_HEADS = MOD_HEAD_IDS.stream()
-            .map(id -> BuiltInRegistries.ENTITY_TYPE.getOptional(Identifier.withDefaultNamespace(id)))
+            .map(id -> BuiltInRegistries.ENTITY_TYPE.getOptional(ResourceLocation.withDefaultNamespace(id)))
             .flatMap(Optional::stream)
             .<EntityType<?>>map(t -> t)
             .toList();
@@ -68,7 +68,7 @@ public final class MobHeads {
     public static ItemStack headFor(LivingEntity entity) {
         if (entity instanceof Player player) {
             ItemStack head = new ItemStack(Items.PLAYER_HEAD);
-            head.set(net.minecraft.core.component.DataComponents.PROFILE, ResolvableProfile.createResolved(player.getGameProfile()));
+            head.set(net.minecraft.core.component.DataComponents.PROFILE, new ResolvableProfile(player.getGameProfile()));
             return head;
         }
         if (entity.isBaby()) return ItemStack.EMPTY;

@@ -2,9 +2,8 @@ package net.bobofraggins.mobfarmingsupplies.shared.ui;
 
 import java.util.List;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.resources.Identifier;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * Animated slide-out config panel that appears to the left of the main dialog.
@@ -33,21 +32,21 @@ public class ConfigDrawer {
     private static final int SIDE_PAD = 12;
     private static final int COLOR_BODY = 0xFFC6C6C6;
 
-    private static final Identifier BUTTON_NORMAL =
-            Identifier.fromNamespaceAndPath("mobfarmingsupplies", "widget/button_config");
-    private static final Identifier BUTTON_HOVER =
-            Identifier.fromNamespaceAndPath("mobfarmingsupplies", "widget/button_config_focused");
+    private static final ResourceLocation BUTTON_NORMAL =
+            ResourceLocation.fromNamespaceAndPath("mobfarmingsupplies", "widget/button_config");
+    private static final ResourceLocation BUTTON_HOVER =
+            ResourceLocation.fromNamespaceAndPath("mobfarmingsupplies", "widget/button_config_focused");
 
-    private static final Identifier TEX_TL =
-            Identifier.fromNamespaceAndPath("mobfarmingsupplies", "textures/gui/dialog_corner_tl.png");
-    private static final Identifier TEX_BL =
-            Identifier.fromNamespaceAndPath("mobfarmingsupplies", "textures/gui/dialog_corner_bl.png");
-    private static final Identifier TEX_TOP =
-            Identifier.fromNamespaceAndPath("mobfarmingsupplies", "textures/gui/dialog_edge_top.png");
-    private static final Identifier TEX_BOT =
-            Identifier.fromNamespaceAndPath("mobfarmingsupplies", "textures/gui/dialog_edge_bottom.png");
-    private static final Identifier TEX_LEFT =
-            Identifier.fromNamespaceAndPath("mobfarmingsupplies", "textures/gui/dialog_edge_left.png");
+    private static final ResourceLocation TEX_TL =
+            ResourceLocation.fromNamespaceAndPath("mobfarmingsupplies", "textures/gui/dialog_corner_tl.png");
+    private static final ResourceLocation TEX_BL =
+            ResourceLocation.fromNamespaceAndPath("mobfarmingsupplies", "textures/gui/dialog_corner_bl.png");
+    private static final ResourceLocation TEX_TOP =
+            ResourceLocation.fromNamespaceAndPath("mobfarmingsupplies", "textures/gui/dialog_edge_top.png");
+    private static final ResourceLocation TEX_BOT =
+            ResourceLocation.fromNamespaceAndPath("mobfarmingsupplies", "textures/gui/dialog_edge_bottom.png");
+    private static final ResourceLocation TEX_LEFT =
+            ResourceLocation.fromNamespaceAndPath("mobfarmingsupplies", "textures/gui/dialog_edge_left.png");
 
     private final List<IDialogPane> panes;
     private final int[] paneYOffsets;
@@ -97,7 +96,7 @@ public class ConfigDrawer {
     }
 
     /** Renders the drawer body. Call before the main dialog. */
-    public void render(GuiGraphicsExtractor g, Font font, int mouseX, int mouseY, float partialTick) {
+    public void render(GuiGraphics g, Font font, int mouseX, int mouseY, float partialTick) {
         float p = getProgress(System.currentTimeMillis());
         if (p <= 0.001f) return;
 
@@ -109,37 +108,37 @@ public class ConfigDrawer {
         g.enableScissor(visibleLeft, drawerTop, dialogX + 1, drawerTop + drawerH);
         g.fill(drawerX + CORNER, drawerTop + CORNER, dialogX + 1, drawerTop + drawerH - CORNER, COLOR_BODY);
 
-        g.blit(RenderPipelines.GUI_TEXTURED, TEX_TL, drawerX, drawerTop, 0, 0, CORNER, CORNER, CORNER, CORNER);
+        g.blit(TEX_TL, drawerX, drawerTop, 0, 0, CORNER, CORNER, CORNER, CORNER);
         int edgeW = WIDTH + TAB_W - CORNER;
         for (int px = 0; px < edgeW; px++) {
-            g.blit(RenderPipelines.GUI_TEXTURED, TEX_TOP, drawerX + CORNER + px, drawerTop, 0, 0, 1, CORNER, 1, CORNER);
+            g.blit(TEX_TOP, drawerX + CORNER + px, drawerTop, 0, 0, 1, CORNER, 1, CORNER);
         }
 
         int midH = drawerH - 2 * CORNER;
         for (int py = 0; py < midH; py++) {
-            g.blit(RenderPipelines.GUI_TEXTURED, TEX_LEFT, drawerX, drawerTop + CORNER + py, 0, 0, CORNER, 1, CORNER, 1);
+            g.blit(TEX_LEFT, drawerX, drawerTop + CORNER + py, 0, 0, CORNER, 1, CORNER, 1);
         }
 
-        g.blit(RenderPipelines.GUI_TEXTURED, TEX_BL, drawerX, drawerTop + drawerH - CORNER, 0, 0, CORNER, CORNER, CORNER, CORNER);
+        g.blit(TEX_BL, drawerX, drawerTop + drawerH - CORNER, 0, 0, CORNER, CORNER, CORNER, CORNER);
         for (int px = 0; px < edgeW; px++) {
-            g.blit(RenderPipelines.GUI_TEXTURED, TEX_BOT, drawerX + CORNER + px, drawerTop + drawerH - CORNER, 0, 0, 1, CORNER, 1, CORNER);
+            g.blit(TEX_BOT, drawerX + CORNER + px, drawerTop + drawerH - CORNER, 0, 0, 1, CORNER, 1, CORNER);
         }
 
         for (int i = 0; i < panes.size(); i++) {
             int paneAbsY = dialogY + 15 + paneYOffsets[i];
             int lmx = mouseX - drawerX - SIDE_PAD;
             int lmy = mouseY - paneAbsY;
-            g.pose().pushMatrix();
-            g.pose().translate(drawerX + SIDE_PAD, paneAbsY);
+            g.pose().pushPose();
+            g.pose().translate(drawerX + SIDE_PAD, paneAbsY, 0);
             panes.get(i).render(g, font, WIDTH, lmx, lmy, partialTick);
-            g.pose().popMatrix();
+            g.pose().popPose();
         }
 
         g.disableScissor();
     }
 
     /** Renders the tab button. Call after the main dialog. */
-    public void renderTab(GuiGraphicsExtractor g, int mouseX, int mouseY) {
+    public void renderTab(GuiGraphics g, int mouseX, int mouseY) {
         if (panes.isEmpty()) return;
         float p = getProgress(System.currentTimeMillis());
         int tabX = dialogX - TAB_W + 5 - Math.round((WIDTH + TAB_W + 2) * p);
@@ -147,21 +146,21 @@ public class ConfigDrawer {
         int midH = TAB_H - 2 * CORNER;
 
         g.fill(tabX + CORNER, tabY + CORNER, tabX + TAB_W + 1, tabY + TAB_H - CORNER, COLOR_BODY);
-        g.blit(RenderPipelines.GUI_TEXTURED, TEX_TL, tabX, tabY, 0, 0, CORNER, CORNER, CORNER, CORNER);
+        g.blit(TEX_TL, tabX, tabY, 0, 0, CORNER, CORNER, CORNER, CORNER);
         for (int px = 0; px < TAB_W - CORNER + 1; px++) {
-            g.blit(RenderPipelines.GUI_TEXTURED, TEX_TOP, tabX + CORNER + px, tabY, 0, 0, 1, CORNER, 1, CORNER);
+            g.blit(TEX_TOP, tabX + CORNER + px, tabY, 0, 0, 1, CORNER, 1, CORNER);
         }
         for (int py = 0; py < midH; py++) {
-            g.blit(RenderPipelines.GUI_TEXTURED, TEX_LEFT, tabX, tabY + CORNER + py, 0, 0, CORNER, 1, CORNER, 1);
+            g.blit(TEX_LEFT, tabX, tabY + CORNER + py, 0, 0, CORNER, 1, CORNER, 1);
         }
-        g.blit(RenderPipelines.GUI_TEXTURED, TEX_BL, tabX, tabY + TAB_H - CORNER, 0, 0, CORNER, CORNER, CORNER, CORNER);
+        g.blit(TEX_BL, tabX, tabY + TAB_H - CORNER, 0, 0, CORNER, CORNER, CORNER, CORNER);
         for (int px = 0; px < TAB_W - CORNER + 1; px++) {
-            g.blit(RenderPipelines.GUI_TEXTURED, TEX_BOT, tabX + CORNER + px, tabY + TAB_H - CORNER, 0, 0, 1, CORNER, 1, CORNER);
+            g.blit(TEX_BOT, tabX + CORNER + px, tabY + TAB_H - CORNER, 0, 0, 1, CORNER, 1, CORNER);
         }
 
         if (showTabButton) {
             boolean hovered = mouseX >= tabX && mouseX < tabX + TAB_W + 1 && mouseY >= tabY && mouseY < tabY + TAB_H;
-            g.blitSprite(RenderPipelines.GUI_TEXTURED, hovered ? BUTTON_HOVER : BUTTON_NORMAL, tabX + 4, tabY + 3, 16, 16);
+            g.blitSprite(hovered ? BUTTON_HOVER : BUTTON_NORMAL, tabX + 4, tabY + 3, 16, 16);
         }
     }
 

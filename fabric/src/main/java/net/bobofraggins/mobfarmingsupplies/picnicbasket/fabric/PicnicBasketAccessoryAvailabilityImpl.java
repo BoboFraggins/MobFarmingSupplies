@@ -11,6 +11,6 @@ public final class PicnicBasketAccessoryAvailabilityImpl {
     private PicnicBasketAccessoryAvailabilityImpl() {}
 
     public static boolean isLoaded() {
-        return Platform.isModLoaded("trinkets_updated");
+        return Platform.isModLoaded("trinkets");
     }
 }

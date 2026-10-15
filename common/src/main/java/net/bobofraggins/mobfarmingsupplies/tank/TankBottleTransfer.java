@@ -4,7 +4,7 @@ import dev.architectury.fluid.FluidStack;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -29,7 +29,7 @@ public final class TankBottleTransfer {
 
     private static final long BOTTLE_MB = 250;
     private static final TagKey<Fluid> EXPERIENCE_TAG =
-            TagKey.create(Registries.FLUID, Identifier.fromNamespaceAndPath("c", "experience"));
+            TagKey.create(Registries.FLUID, ResourceLocation.fromNamespaceAndPath("c", "experience"));
 
     private TankBottleTransfer() {}
 

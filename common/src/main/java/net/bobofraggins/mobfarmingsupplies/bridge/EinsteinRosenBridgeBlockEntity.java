@@ -20,7 +20,6 @@ import net.bobofraggins.mobfarmingsupplies.register.MFSRegistryHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -38,8 +37,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import net.bobofraggins.mobfarmingsupplies.shared.nbt.ValueInput;
+import net.bobofraggins.mobfarmingsupplies.shared.nbt.ValueOutput;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -245,7 +244,7 @@ public class EinsteinRosenBridgeBlockEntity extends BlockEntity implements SideO
     // ── Item components (the channel travels on the item) ──────────────────────────
 
     @Override
-    protected void applyImplicitComponents(DataComponentGetter components) {
+    protected void applyImplicitComponents(BlockEntity.DataComponentInput components) {
         super.applyImplicitComponents(components);
         Integer fromItem = components.get(net.bobofraggins.mobfarmingsupplies.register.Registration.BRIDGE_CHANNEL.get());
         if (fromItem != null && fromItem != 0) setChannel(fromItem);
@@ -260,16 +259,18 @@ public class EinsteinRosenBridgeBlockEntity extends BlockEntity implements SideO
     // ── NBT ──────────────────────────────────────────────────────────────────────
 
     @Override
-    protected void saveAdditional(ValueOutput output) {
-        super.saveAdditional(output);
+    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.saveAdditional(tag, registries);
+        ValueOutput output = new ValueOutput(tag, registries);
         SideLayout.save(output, sideOrientation);
         output.putInt("Channel", channel);
         output.putInt("Sides", packedSides());
     }
 
     @Override
-    protected void loadAdditional(ValueInput input) {
-        super.loadAdditional(input);
+    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.loadAdditional(tag, registries);
+        ValueInput input = new ValueInput(tag, registries);
         sideOrientation = SideLayout.load(input);
         int loaded = input.getIntOr("Channel", 0);
         if (loaded != 0) channel = loaded; // joins its network on the next tick

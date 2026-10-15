@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.tank;
 
+import java.util.List;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -8,12 +9,12 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -48,10 +49,9 @@ public class TankBlockItem extends BlockItem {
     public void appendHoverText(
             ItemStack stack,
             Item.TooltipContext context,
-            TooltipDisplay lines,
-            Consumer<Component> tooltipAdder,
-            TooltipFlag flag) {
-        super.appendHoverText(stack, context, lines, tooltipAdder, flag);
+            List<Component> tooltipAdderLines, TooltipFlag flag) {
+        Consumer<Component> tooltipAdder = tooltipAdderLines::add;
+        super.appendHoverText(stack, context, tooltipAdderLines, flag);
         TankContents contents = stack.getOrDefault(Registration.TANK_CONTENTS.get(), TankContents.EMPTY);
         if (contents.isLocked()) {
             tooltipAdder.accept(Component.translatable(
@@ -68,7 +68,7 @@ public class TankBlockItem extends BlockItem {
     }
 
     @Override
-    public InteractionResult use(Level level, Player player, InteractionHand hand) {
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         TankContents c = stack.getOrDefault(Registration.TANK_CONTENTS.get(), TankContents.EMPTY);
 
@@ -80,15 +80,15 @@ public class TankBlockItem extends BlockItem {
                 boolean newBucketMode = !c.bucketMode();
                 stack.set(Registration.TANK_CONTENTS.get(),
                         new TankContents(c.storedFluid(), c.amount(), newBucketMode));
-                player.sendOverlayMessage(Component.translatable(newBucketMode
+                player.displayClientMessage(Component.translatable(newBucketMode
                         ? "item.mobfarmingsupplies.tank.mode_bucket"
-                        : "item.mobfarmingsupplies.tank.mode_block"));
+                        : "item.mobfarmingsupplies.tank.mode_block"), true);
             }
-            return InteractionResult.SUCCESS;
+            return new InteractionResultHolder<>(InteractionResult.SUCCESS, player.getItemInHand(hand));
         }
 
         if (!c.bucketMode()) {
-            return InteractionResult.PASS;
+            return new InteractionResultHolder<>(InteractionResult.PASS, player.getItemInHand(hand));
         }
 
         BlockPos pos = hit.getBlockPos();
@@ -118,7 +118,7 @@ public class TankBlockItem extends BlockItem {
                         level.gameEvent(player, GameEvent.FLUID_PICKUP, pos);
                     }
                 }
-                return InteractionResult.SUCCESS;
+                return new InteractionResultHolder<>(InteractionResult.SUCCESS, player.getItemInHand(hand));
             }
         }
 
@@ -134,14 +134,14 @@ public class TankBlockItem extends BlockItem {
                         TankBlockItemPlatform.tryPlaceFluidInWorld(stack, player, level, hand, targetPos);
                 if (newStack != null) {
                     player.setItemInHand(hand, newStack);
-                    return InteractionResult.SUCCESS;
+                    return new InteractionResultHolder<>(InteractionResult.SUCCESS, player.getItemInHand(hand));
                 }
-                return InteractionResult.FAIL;
+                return new InteractionResultHolder<>(InteractionResult.FAIL, player.getItemInHand(hand));
             }
-            return InteractionResult.SUCCESS;
+            return new InteractionResultHolder<>(InteractionResult.SUCCESS, player.getItemInHand(hand));
         }
 
-        return InteractionResult.FAIL;
+        return new InteractionResultHolder<>(InteractionResult.FAIL, player.getItemInHand(hand));
     }
 
     @Override

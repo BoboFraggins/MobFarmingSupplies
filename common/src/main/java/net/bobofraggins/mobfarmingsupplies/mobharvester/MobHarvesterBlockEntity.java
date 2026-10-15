@@ -20,8 +20,8 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import net.bobofraggins.mobfarmingsupplies.shared.nbt.ValueInput;
+import net.bobofraggins.mobfarmingsupplies.shared.nbt.ValueOutput;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.AABB;
@@ -181,8 +181,9 @@ public class MobHarvesterBlockEntity extends BlockEntity implements MenuProvider
     // ── NBT ───────────────────────────────────────────────────────────────────────
 
     @Override
-    protected void saveAdditional(ValueOutput output) {
-        super.saveAdditional(output);
+    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.saveAdditional(tag, registries);
+        ValueOutput output = new ValueOutput(tag, registries);
         java.util.List<ItemStack> stacks = new java.util.ArrayList<>(UPGRADE_SLOTS);
         for (int i = 0; i < UPGRADE_SLOTS; i++) stacks.add(upgrades.getItem(i));
         output.store("Upgrades", ItemStack.OPTIONAL_CODEC.listOf(), stacks);
@@ -190,8 +191,9 @@ public class MobHarvesterBlockEntity extends BlockEntity implements MenuProvider
     }
 
     @Override
-    protected void loadAdditional(ValueInput input) {
-        super.loadAdditional(input);
+    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.loadAdditional(tag, registries);
+        ValueInput input = new ValueInput(tag, registries);
         input.read("Upgrades", ItemStack.OPTIONAL_CODEC.listOf()).ifPresent(loaded -> {
             for (int i = 0; i < Math.min(loaded.size(), UPGRADE_SLOTS); i++) {
                 upgrades.setItem(i, loaded.get(i));

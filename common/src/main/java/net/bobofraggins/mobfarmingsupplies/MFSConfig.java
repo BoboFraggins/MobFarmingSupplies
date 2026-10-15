@@ -33,7 +33,7 @@ public final class MFSConfig {
 
     public static final List<String> DEFAULT_AQUATIC = List.of(
             "minecraft:drowned", "minecraft:guardian", "minecraft:squid",
-            "minecraft:glow_squid", "minecraft:nautilus", "minecraft:dolphin",
+            "minecraft:glow_squid", "minecraft:dolphin",
             "minecraft:cod", "minecraft:salmon", "minecraft:tropical_fish",
             "minecraft:pufferfish");
 
@@ -54,11 +54,11 @@ public final class MFSConfig {
     public static final List<String> DEFAULT_BABY = List.of(
             // Animals
             "minecraft:armadillo", "minecraft:axolotl", "minecraft:bee",
-            "minecraft:camel", "minecraft:camel_husk", "minecraft:cat",
+            "minecraft:camel", "minecraft:cat",
             "minecraft:chicken", "minecraft:cow", "minecraft:dolphin",
             "minecraft:donkey", "minecraft:fox", "minecraft:goat",
-            "minecraft:happy_ghast", "minecraft:horse", "minecraft:llama",
-            "minecraft:mooshroom", "minecraft:mule", "minecraft:nautilus",
+            "minecraft:horse", "minecraft:llama",
+            "minecraft:mooshroom", "minecraft:mule",
             "minecraft:ocelot", "minecraft:panda", "minecraft:pig",
             "minecraft:polar_bear", "minecraft:rabbit", "minecraft:sheep",
             "minecraft:sniffer", "minecraft:squid", "minecraft:glow_squid",
@@ -67,12 +67,12 @@ public final class MFSConfig {
             // Undead / monster variants
             "minecraft:hoglin", "minecraft:husk", "minecraft:piglin",
             "minecraft:skeleton_horse", "minecraft:zombie", "minecraft:zombie_horse",
-            "minecraft:zombie_nautilus", "minecraft:zombie_villager",
+            "minecraft:zombie_villager",
             "minecraft:zombified_piglin", "minecraft:zoglin");
 
     public static final List<String> DEFAULT_WRONG_MOBS = List.of(
             "minecraft:allay", "minecraft:axolotl", "minecraft:bat",
-            "minecraft:bee", "minecraft:cat", "minecraft:copper_golem",
+            "minecraft:bee", "minecraft:cat",
             "minecraft:dolphin", "minecraft:fox", "minecraft:frog",
             "minecraft:ocelot", "minecraft:panda", "minecraft:parrot",
             "minecraft:polar_bear", "minecraft:sniffer", "minecraft:snow_golem",

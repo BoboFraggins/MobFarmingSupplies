@@ -6,15 +6,33 @@
     "XRP"
   ],
   "key": {
-    "S": "minecraft:iron_sword",
-    "J": "minecraft:jack_o_lantern",
-    "V": "minecraft:iron_shovel",
-    "L": "minecraft:lightning_rod",
-    "A": "minecraft:armor_stand",
-    "H": "minecraft:iron_hoe",
-    "X": "minecraft:iron_axe",
-    "R": "minecraft:redstone",
-    "P": "minecraft:iron_pickaxe"
+    "S": {
+      "item": "minecraft:iron_sword"
+    },
+    "J": {
+      "item": "minecraft:jack_o_lantern"
+    },
+    "V": {
+      "item": "minecraft:iron_shovel"
+    },
+    "L": {
+      "item": "minecraft:lightning_rod"
+    },
+    "A": {
+      "item": "minecraft:armor_stand"
+    },
+    "H": {
+      "item": "minecraft:iron_hoe"
+    },
+    "X": {
+      "item": "minecraft:iron_axe"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    },
+    "P": {
+      "item": "minecraft:iron_pickaxe"
+    }
   },
   "result": {
     "id": "mobfarmingsupplies:mob_harvester",

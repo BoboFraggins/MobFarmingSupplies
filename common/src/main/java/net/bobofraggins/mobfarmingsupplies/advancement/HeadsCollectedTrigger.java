@@ -4,10 +4,10 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Optional;
 import net.minecraft.advancements.AdvancementHolder;
-import net.minecraft.advancements.criterion.ContextAwarePredicate;
-import net.minecraft.advancements.criterion.EntityPredicate;
-import net.minecraft.advancements.criterion.SimpleCriterionTrigger;
-import net.minecraft.resources.Identifier;
+import net.minecraft.advancements.critereon.ContextAwarePredicate;
+import net.minecraft.advancements.critereon.EntityPredicate;
+import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
 /**
@@ -21,7 +21,7 @@ import net.minecraft.server.level.ServerPlayer;
  */
 public class HeadsCollectedTrigger extends SimpleCriterionTrigger<HeadsCollectedTrigger.Instance> {
 
-    public static final Identifier TRACKER = Identifier.fromNamespaceAndPath("mobfarmingsupplies", "mob_farming/head_tracker");
+    public static final ResourceLocation TRACKER = ResourceLocation.fromNamespaceAndPath("mobfarmingsupplies", "mob_farming/head_tracker");
 
     public record Instance(Optional<ContextAwarePredicate> player, int min)
             implements SimpleCriterionTrigger.SimpleInstance {

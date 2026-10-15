@@ -1,17 +1,15 @@
 package net.bobofraggins.mobfarmingsupplies.picnicbasket;
 
+import net.minecraft.nbt.CompoundTag;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.storage.TagValueInput;
-import net.minecraft.world.level.storage.TagValueOutput;
-import net.minecraft.world.level.storage.ValueInput;
+import net.bobofraggins.mobfarmingsupplies.shared.nbt.ValueInput;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -34,16 +32,14 @@ public final class PicnicBasketItemUtils {
         var data = stack.get(DataComponents.BLOCK_ENTITY_DATA);
         if (data == null) return temp;
         HolderLookup.Provider registries = player.level().registryAccess();
-        ValueInput input = TagValueInput.create(ProblemReporter.DISCARDING, registries, data.copyTagWithoutId());
-        temp.loadCustomOnly(input);
+        temp.loadCustomOnly(data.copyTag(), registries);
         return temp;
     }
 
     /** Encodes {@code temp}'s current state back into {@code stack}'s block-entity data. */
     public static void writeBasketData(Player player, ItemStack stack, PicnicBasketBlockEntity temp) {
         HolderLookup.Provider registries = player.level().registryAccess();
-        TagValueOutput output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, registries);
-        temp.saveCustomOnly(output);
+        CompoundTag output = temp.saveCustomOnly(registries);
         BlockItem.setBlockEntityData(stack, temp.getType(), output);
     }
 

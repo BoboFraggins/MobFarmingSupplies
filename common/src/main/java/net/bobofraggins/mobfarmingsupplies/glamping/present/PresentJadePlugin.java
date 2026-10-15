@@ -3,7 +3,7 @@ package net.bobofraggins.mobfarmingsupplies.glamping.present;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -27,7 +27,7 @@ import snownee.jade.api.config.IPluginConfig;
 @WailaPlugin
 public class PresentJadePlugin implements IWailaPlugin {
 
-    static final Identifier PROVIDER = Identifier.fromNamespaceAndPath("mobfarmingsupplies", "present");
+    static final ResourceLocation PROVIDER = ResourceLocation.fromNamespaceAndPath("mobfarmingsupplies", "present");
 
     private static final String KEY_WRAPPED_BLOCK = "WrappedBlock";
 
@@ -49,12 +49,12 @@ public class PresentJadePlugin implements IWailaPlugin {
             if (!(accessor.getBlockEntity() instanceof PresentBlockEntity present)) return;
             var wrapped = present.getWrappedState();
             if (wrapped == null) return;
-            Identifier id = BuiltInRegistries.BLOCK.getKey(wrapped.getBlock());
+            ResourceLocation id = BuiltInRegistries.BLOCK.getKey(wrapped.getBlock());
             if (id != null) data.putString(KEY_WRAPPED_BLOCK, id.toString());
         }
 
         @Override
-        public Identifier getUid() {
+        public ResourceLocation getUid() {
             return PROVIDER;
         }
     }
@@ -68,10 +68,10 @@ public class PresentJadePlugin implements IWailaPlugin {
             var blockId = data.getString(KEY_WRAPPED_BLOCK);
             if (blockId.isEmpty()) return;
 
-            Identifier rl = Identifier.tryParse(blockId.get());
+            ResourceLocation rl = ResourceLocation.tryParse(blockId);
             if (rl == null) return;
 
-            Block block = BuiltInRegistries.BLOCK.getValue(rl);
+            Block block = BuiltInRegistries.BLOCK.get(rl);
             Item item = block.asItem();
             Component wrappedName = item == Items.AIR ? block.getName() : item.getName(new ItemStack(item));
 
@@ -81,7 +81,7 @@ public class PresentJadePlugin implements IWailaPlugin {
         }
 
         @Override
-        public Identifier getUid() {
+        public ResourceLocation getUid() {
             return PROVIDER;
         }
     }

@@ -2,22 +2,19 @@ package net.bobofraggins.mobfarmingsupplies.neoforge.tank;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.Sheets;
-import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
-import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.state.level.CameraRenderState;
-import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.util.Mth;
-import net.minecraft.world.phys.Vec3;
 import dev.architectury.fluid.FluidStack;
 import dev.architectury.hooks.fluid.forge.FluidStackHooksForge;
-import net.neoforged.neoforge.client.extensions.IBlockEntityRendererExtension;
+import net.bobofraggins.mobfarmingsupplies.neoforge.client.FluidSprites;
+import net.bobofraggins.mobfarmingsupplies.shared.render.BlockEntityRenderState;
+import net.bobofraggins.mobfarmingsupplies.shared.render.Geometry;
+import net.bobofraggins.mobfarmingsupplies.shared.render.StateBlockEntityRenderer;
 import net.bobofraggins.mobfarmingsupplies.tank.TankBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.tank.TankFluidGeometry;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.util.Mth;
 
 /**
  * Block-entity special renderer for the Tank.
@@ -26,8 +23,7 @@ import net.bobofraggins.mobfarmingsupplies.tank.TankFluidGeometry;
  * The block model provides the glass frame; this renderer draws only the fluid fill.
  */
 public class TankRenderer
-        implements BlockEntityRenderer<TankBlockEntity, TankRenderer.TankState>,
-                   IBlockEntityRendererExtension<TankBlockEntity> {
+        extends StateBlockEntityRenderer<TankBlockEntity, TankRenderer.TankState> {
 
     /** Floor and ceiling of the renderable interior, in block units. */
     static final float FLOOR = TankFluidGeometry.FLOOR;
@@ -51,13 +47,7 @@ public class TankRenderer
     }
 
     @Override
-    public void extractRenderState(
-            TankBlockEntity be,
-            TankState state,
-            float partialTick,
-            Vec3 camera,
-            ModelFeatureRenderer.CrumblingOverlay breakProgress) {
-        BlockEntityRenderState.extractBase(be, state, breakProgress);
+    public void extractRenderState(TankBlockEntity be, TankState state, float partialTick) {
         state.hasFill = false;
         if (!be.isLocked()) return;
 
@@ -67,15 +57,9 @@ public class TankRenderer
         float fillFrac = Math.min(1f, Math.max(0.01f, (float) be.getAmount() / (float) be.getCapacity()));
         state.fillTop = FLOOR + fillFrac * H;
 
-        var fluidModel = Minecraft.getInstance()
-                .getModelManager()
-                .getFluidStateModelSet()
-                .get(fluid.getFluid().defaultFluidState());
-        var sprite = fluidModel.stillMaterial().sprite();
-
-        int tint = fluidModel.fluidTintSource() != null
-                ? fluidModel.fluidTintSource().colorAsStack(FluidStackHooksForge.toForge(fluid.copyWithAmount(1)))
-                : 0xFFFFFFFF;
+        net.neoforged.neoforge.fluids.FluidStack neoFluid = FluidStackHooksForge.toForge(fluid.copyWithAmount(1));
+        var sprite = FluidSprites.still(neoFluid);
+        int tint = FluidSprites.tint(neoFluid);
         state.fr = (tint >> 16) & 0xFF;
         state.fg = (tint >>  8) & 0xFF;
         state.fb = tint & 0xFF;
@@ -94,11 +78,7 @@ public class TankRenderer
     }
 
     @Override
-    public void submit(
-            TankState state,
-            PoseStack poseStack,
-            SubmitNodeCollector collector,
-            CameraRenderState cameraState) {
+    public void submit(TankState state, PoseStack poseStack, MultiBufferSource buffers) {
         if (!state.hasFill) return;
 
         int overlay = OverlayTexture.NO_OVERLAY;
@@ -108,9 +88,8 @@ public class TankRenderer
         float uL = state.uL, uR = state.uR, vT = state.vT, vB = state.vB, vMax = state.vMax;
 
         poseStack.pushPose();
-        collector.submitCustomGeometry(
-                poseStack,
-                Sheets.translucentBlockSheet(),
+        Geometry.custom(poseStack, buffers,
+                Sheets.translucentCullBlockSheet(),
                 (pose, vc) -> renderCubeFill(
                         vc, pose, r, g, b, a, light, overlay, uL, vT, uR, vB, vMax, fillTop));
         poseStack.popPose();

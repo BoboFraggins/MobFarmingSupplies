@@ -37,7 +37,7 @@ public final class XpJuiceGuide {
                         Component.translatable("jei.mobfarmingsupplies.xp_juice_guide.step.syringe")),
                 new GuideRecipe.Step(
                         tankOfXpJuice(),
-                        RecipeIngredientRole.CRAFTING_STATION,
+                        RecipeIngredientRole.CATALYST,
                         Component.translatable("jei.mobfarmingsupplies.xp_juice_guide.step.tank")),
                 new GuideRecipe.Step(
                         new ItemStack(Registration.XP_JUICE_BUCKET.get()),

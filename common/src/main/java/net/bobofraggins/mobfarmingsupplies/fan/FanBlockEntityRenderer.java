@@ -4,28 +4,24 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommon;
 import net.bobofraggins.mobfarmingsupplies.client.model.ExtraBlockModels;
+import net.bobofraggins.mobfarmingsupplies.shared.render.BlockEntityRenderState;
+import net.bobofraggins.mobfarmingsupplies.shared.render.Geometry;
+import net.bobofraggins.mobfarmingsupplies.shared.render.StateBlockEntityRenderer;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Sheets;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
-import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
-import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
-
-import org.jetbrains.annotations.Nullable;
-import java.util.List;
 
 /**
  * Block-entity renderer for the Fan.
@@ -46,11 +42,11 @@ import java.util.List;
  * so the wireframe shows the <em>configured</em> reach rather than the live effective depth.
  */
 public class FanBlockEntityRenderer
-        implements BlockEntityRenderer<FanBlockEntity, FanBlockEntityRenderer.FanState> {
+        extends StateBlockEntityRenderer<FanBlockEntity, FanBlockEntityRenderer.FanState> {
 
     /** Id of the spinning turbine (shaft + blades) overlay model. */
-    public static final Identifier TURBINE_MODEL_ID =
-            Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "block/fan_turbine");
+    public static final ResourceLocation TURBINE_MODEL_ID =
+            ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "block/fan_turbine");
 
     /** Seconds per full revolution when the fan is powered. */
     private static final float SECS_PER_REV = 2f;
@@ -93,15 +89,7 @@ public class FanBlockEntityRenderer
     // ── Two-phase rendering ───────────────────────────────────────────────────
 
     @Override
-    public void extractRenderState(
-            FanBlockEntity be,
-            FanState state,
-            float partialTick,
-            Vec3 camera,
-            ModelFeatureRenderer.CrumblingOverlay crumbling) {
-
-        BlockEntityRenderState.extractBase(be, state, crumbling);
-
+    public void extractRenderState(FanBlockEntity be, FanState state, float partialTick) {
         Level level = be.getLevel();
         long gameTime = (level != null) ? level.getGameTime() : 0L;
 
@@ -126,14 +114,9 @@ public class FanBlockEntityRenderer
     }
 
     @Override
-    public void submit(
-            FanState state,
-            PoseStack poseStack,
-            SubmitNodeCollector collector,
-            CameraRenderState cameraState) {
-
+    public void submit(FanState state, PoseStack poseStack, MultiBufferSource buffers) {
         // ── Turbine ───────────────────────────────────────────────────────────
-        BlockStateModelPart turbine = ExtraBlockModels.get(TURBINE_MODEL_ID);
+        BakedModel turbine = ExtraBlockModels.get(TURBINE_MODEL_ID);
         if (turbine != null) {
             poseStack.pushPose();
             poseStack.translate(0.5, 0.5, 0.5);
@@ -149,23 +132,15 @@ public class FanBlockEntityRenderer
             poseStack.mulPose(SPIN_QUAT.rotationZ(state.spinAngleDeg * Mth.DEG_TO_RAD));
             poseStack.translate(-0.5, -0.5, -0.5);
 
-            collector.submitBlockModel(
-                    poseStack,
-                    Sheets.cutoutBlockSheet(),
-                    List.of(turbine),
-                    new int[0],
-                    state.lightCoords,
-                    OverlayTexture.NO_OVERLAY,
-                    0);
+            ExtraBlockModels.render(poseStack, buffers, turbine, Sheets.cutoutBlockSheet(), state.lightCoords, OverlayTexture.NO_OVERLAY);
             poseStack.popPose();
         }
 
         // ── Push-AABB wireframe ───────────────────────────────────────────────
         if (state.localPushAABB != null) {
             AABB box = state.localPushAABB;
-            collector.submitCustomGeometry(
-                    poseStack,
-                    RenderTypes.LINES,
+            Geometry.custom(poseStack, buffers,
+                    RenderType.lines(),
                     (pose, vc) -> drawLineBox(vc, pose.pose(),
                             box.minX, box.minY, box.minZ,
                             box.maxX, box.maxY, box.maxZ,
@@ -255,7 +230,7 @@ public class FanBlockEntityRenderer
         float len = Mth.sqrt(dx * dx + dy * dy + dz * dz);
         if (len < 1e-5f) return;
         dx /= len; dy /= len; dz /= len;
-        vc.addVertex(mat, x0, y0, z0).setColor(r, g, b, a).setNormal(dx, dy, dz).setLineWidth(lineWidth);
-        vc.addVertex(mat, x1, y1, z1).setColor(r, g, b, a).setNormal(dx, dy, dz).setLineWidth(lineWidth);
+        vc.addVertex(mat, x0, y0, z0).setColor(r, g, b, a).setNormal(dx, dy, dz);
+        vc.addVertex(mat, x1, y1, z1).setColor(r, g, b, a).setNormal(dx, dy, dz);
     }
 }

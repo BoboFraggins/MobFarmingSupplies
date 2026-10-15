@@ -3,7 +3,7 @@ package net.bobofraggins.mobfarmingsupplies.cloneomatic;
 import net.bobofraggins.mobfarmingsupplies.shared.ui.IDialogPane;
 import net.bobofraggins.mobfarmingsupplies.shared.ui.PlayerInventoryPane;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 
 /**
@@ -41,10 +41,10 @@ public class DnaSlotsPane implements IDialogPane {
 
     @Override
     public void render(
-            GuiGraphicsExtractor g, Font font, int width,
+            GuiGraphics g, Font font, int width,
             int localMouseX, int localMouseY, float partialTick) {
 
-        g.text(font, LABEL, CloneOMaticMenu.SLOT_LEFT, LABEL_Y, 0xFF404040, false);
+        g.drawString(font, LABEL, CloneOMaticMenu.SLOT_LEFT, LABEL_Y, 0xFF404040, false);
 
         for (int i = 0; i < CloneOMaticBlockEntity.DNA_SLOTS; i++) {
             PlayerInventoryPane.drawSlotBg(g, CloneOMaticMenu.SLOT_LEFT + i * 18, SLOT_Y);

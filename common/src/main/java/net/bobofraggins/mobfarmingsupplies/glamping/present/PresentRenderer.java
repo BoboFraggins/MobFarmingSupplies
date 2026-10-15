@@ -1,23 +1,19 @@
 package net.bobofraggins.mobfarmingsupplies.glamping.present;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import java.util.List;
 import net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommon;
 import net.bobofraggins.mobfarmingsupplies.client.model.ExtraBlockModels;
+import net.bobofraggins.mobfarmingsupplies.shared.render.BlockEntityRenderState;
+import net.bobofraggins.mobfarmingsupplies.shared.render.StateBlockEntityRenderer;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
-import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
-import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
 
 /**
@@ -28,10 +24,10 @@ import org.joml.Quaternionf;
  * here so the same one authored model can be reused for all four facings without four baked
  * blockstate variants.
  */
-public class PresentRenderer implements BlockEntityRenderer<PresentBlockEntity, PresentRenderer.State> {
+public class PresentRenderer extends StateBlockEntityRenderer<PresentBlockEntity, PresentRenderer.State> {
 
-    public static final Identifier MODEL_ID =
-            Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "block/present");
+    public static final ResourceLocation MODEL_ID =
+            ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "block/present");
 
     private static final Quaternionf YAW_QUAT = new Quaternionf();
 
@@ -57,13 +53,7 @@ public class PresentRenderer implements BlockEntityRenderer<PresentBlockEntity, 
     }
 
     @Override
-    public void extractRenderState(
-            PresentBlockEntity be,
-            State state,
-            float partialTick,
-            Vec3 camera,
-            ModelFeatureRenderer.CrumblingOverlay crumbling) {
-        BlockEntityRenderState.extractBase(be, state, crumbling);
+    public void extractRenderState(PresentBlockEntity be, State state, float partialTick) {
         BlockState blockState = be.getBlockState();
         Direction facing = blockState.hasProperty(PresentBlock.FACING)
                 ? blockState.getValue(PresentBlock.FACING)
@@ -72,8 +62,8 @@ public class PresentRenderer implements BlockEntityRenderer<PresentBlockEntity, 
     }
 
     @Override
-    public void submit(State state, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState cameraState) {
-        BlockStateModelPart model = ExtraBlockModels.get(MODEL_ID);
+    public void submit(State state, PoseStack poseStack, MultiBufferSource buffers) {
+        BakedModel model = ExtraBlockModels.get(MODEL_ID);
         if (model == null) return;
 
         float yawRad = state.facingYRotDeg * Mth.DEG_TO_RAD;
@@ -82,14 +72,7 @@ public class PresentRenderer implements BlockEntityRenderer<PresentBlockEntity, 
         poseStack.translate(0.5, 0.5, 0.5);
         poseStack.mulPose(YAW_QUAT.rotationY(yawRad));
         poseStack.translate(-0.5, -0.5, -0.5);
-        collector.submitBlockModel(
-                poseStack,
-                Sheets.cutoutBlockItemSheet(),
-                List.of(model),
-                new int[0],
-                state.lightCoords,
-                OverlayTexture.NO_OVERLAY,
-                0);
+        ExtraBlockModels.render(poseStack, buffers, model, Sheets.cutoutBlockSheet(), state.lightCoords, OverlayTexture.NO_OVERLAY);
         poseStack.popPose();
     }
 }

@@ -1,6 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.absorptionhopper;
 
-import net.fabricmc.fabric.api.transfer.v1.item.ContainerStorage;
+import net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 
@@ -15,6 +15,6 @@ public final class FabricAbsorptionHopperItemStorage {
     private FabricAbsorptionHopperItemStorage() {}
 
     public static Storage<ItemVariant> of(AbsorptionHopperBlockEntity be) {
-        return ContainerStorage.of(be.inventory, null);
+        return InventoryStorage.of(be.inventory, null);
     }
 }

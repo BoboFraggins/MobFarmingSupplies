@@ -2,10 +2,9 @@ package net.bobofraggins.mobfarmingsupplies.shared.ui;
 
 import java.util.List;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * A dialog window that stacks {@link IDialogPane} instances vertically below a title bar.
@@ -29,22 +28,22 @@ import net.minecraft.resources.Identifier;
  */
 public class Dialog {
 
-    private static final Identifier TEX_TL =
-            Identifier.fromNamespaceAndPath("mobfarmingsupplies", "textures/gui/dialog_corner_tl.png");
-    private static final Identifier TEX_TR =
-            Identifier.fromNamespaceAndPath("mobfarmingsupplies", "textures/gui/dialog_corner_tr.png");
-    private static final Identifier TEX_BL =
-            Identifier.fromNamespaceAndPath("mobfarmingsupplies", "textures/gui/dialog_corner_bl.png");
-    private static final Identifier TEX_BR =
-            Identifier.fromNamespaceAndPath("mobfarmingsupplies", "textures/gui/dialog_corner_br.png");
-    private static final Identifier TEX_TOP =
-            Identifier.fromNamespaceAndPath("mobfarmingsupplies", "textures/gui/dialog_edge_top.png");
-    private static final Identifier TEX_BOT =
-            Identifier.fromNamespaceAndPath("mobfarmingsupplies", "textures/gui/dialog_edge_bottom.png");
-    private static final Identifier TEX_LEFT =
-            Identifier.fromNamespaceAndPath("mobfarmingsupplies", "textures/gui/dialog_edge_left.png");
-    private static final Identifier TEX_RIGHT =
-            Identifier.fromNamespaceAndPath("mobfarmingsupplies", "textures/gui/dialog_edge_right.png");
+    private static final ResourceLocation TEX_TL =
+            ResourceLocation.fromNamespaceAndPath("mobfarmingsupplies", "textures/gui/dialog_corner_tl.png");
+    private static final ResourceLocation TEX_TR =
+            ResourceLocation.fromNamespaceAndPath("mobfarmingsupplies", "textures/gui/dialog_corner_tr.png");
+    private static final ResourceLocation TEX_BL =
+            ResourceLocation.fromNamespaceAndPath("mobfarmingsupplies", "textures/gui/dialog_corner_bl.png");
+    private static final ResourceLocation TEX_BR =
+            ResourceLocation.fromNamespaceAndPath("mobfarmingsupplies", "textures/gui/dialog_corner_br.png");
+    private static final ResourceLocation TEX_TOP =
+            ResourceLocation.fromNamespaceAndPath("mobfarmingsupplies", "textures/gui/dialog_edge_top.png");
+    private static final ResourceLocation TEX_BOT =
+            ResourceLocation.fromNamespaceAndPath("mobfarmingsupplies", "textures/gui/dialog_edge_bottom.png");
+    private static final ResourceLocation TEX_LEFT =
+            ResourceLocation.fromNamespaceAndPath("mobfarmingsupplies", "textures/gui/dialog_edge_left.png");
+    private static final ResourceLocation TEX_RIGHT =
+            ResourceLocation.fromNamespaceAndPath("mobfarmingsupplies", "textures/gui/dialog_edge_right.png");
 
     /** Height of the title bar area; panes are positioned below this. */
     public static final int TITLE_H = 17;
@@ -78,7 +77,7 @@ public class Dialog {
         return new IDialogPane() {
             @Override public int preferredWidth()  { return width; }
             @Override public int preferredHeight() { return height; }
-            @Override public void render(GuiGraphicsExtractor g, Font f, int w, int lmx, int lmy, float pt) {}
+            @Override public void render(GuiGraphics g, Font f, int w, int lmx, int lmy, float pt) {}
         };
     }
 
@@ -121,7 +120,7 @@ public class Dialog {
 
     // ── Rendering ───────────────────────────────────────────────────────────────
 
-    public void render(GuiGraphicsExtractor g, Font font, Component title, int mouseX, int mouseY, float pt) {
+    public void render(GuiGraphics g, Font font, Component title, int mouseX, int mouseY, float pt) {
         int totalH = totalHeight();
         int bodyTop = y + CORNER;
         int bodyBot = y + totalH;
@@ -129,38 +128,38 @@ public class Dialog {
         int midH = totalH - 2 * CORNER;
 
         // Top corners + top edge
-        g.blit(RenderPipelines.GUI_TEXTURED, TEX_TL, x, y, 0, 0, CORNER, CORNER, CORNER, CORNER);
+        g.blit(TEX_TL, x, y, 0, 0, CORNER, CORNER, CORNER, CORNER);
         for (int px = 0; px < midW; px++) {
-            g.blit(RenderPipelines.GUI_TEXTURED, TEX_TOP, x + CORNER + px, y, 0, 0, 1, CORNER, 1, CORNER);
+            g.blit(TEX_TOP, x + CORNER + px, y, 0, 0, 1, CORNER, 1, CORNER);
         }
-        g.blit(RenderPipelines.GUI_TEXTURED, TEX_TR, x + width - CORNER, y, 0, 0, CORNER, CORNER, CORNER, CORNER);
+        g.blit(TEX_TR, x + width - CORNER, y, 0, 0, CORNER, CORNER, CORNER, CORNER);
 
         // Side edges + body fill
         for (int py = 0; py < midH; py++) {
-            g.blit(RenderPipelines.GUI_TEXTURED, TEX_LEFT,  x,                 bodyTop + py, 0, 0, CORNER, 1, CORNER, 1);
-            g.blit(RenderPipelines.GUI_TEXTURED, TEX_RIGHT, x + width - CORNER, bodyTop + py, 0, 0, CORNER, 1, CORNER, 1);
+            g.blit(TEX_LEFT,  x,                 bodyTop + py, 0, 0, CORNER, 1, CORNER, 1);
+            g.blit(TEX_RIGHT, x + width - CORNER, bodyTop + py, 0, 0, CORNER, 1, CORNER, 1);
         }
         g.fill(x + CORNER, bodyTop, x + width - CORNER, bodyBot - CORNER, COLOR_BODY);
 
         // Bottom edge + bottom corners
-        g.blit(RenderPipelines.GUI_TEXTURED, TEX_BL, x, bodyBot - CORNER, 0, 0, CORNER, CORNER, CORNER, CORNER);
+        g.blit(TEX_BL, x, bodyBot - CORNER, 0, 0, CORNER, CORNER, CORNER, CORNER);
         for (int px = 0; px < midW; px++) {
-            g.blit(RenderPipelines.GUI_TEXTURED, TEX_BOT, x + CORNER + px, bodyBot - CORNER, 0, 0, 1, CORNER, 1, CORNER);
+            g.blit(TEX_BOT, x + CORNER + px, bodyBot - CORNER, 0, 0, 1, CORNER, 1, CORNER);
         }
-        g.blit(RenderPipelines.GUI_TEXTURED, TEX_BR, x + width - CORNER, bodyBot - CORNER, 0, 0, CORNER, CORNER, CORNER, CORNER);
+        g.blit(TEX_BR, x + width - CORNER, bodyBot - CORNER, 0, 0, CORNER, CORNER, CORNER, CORNER);
 
         // Title left-aligned in title bar
-        g.text(font, title, x + 8, y + 6, 0xFF404040, false);
+        g.drawString(font, title, x + 8, y + 6, 0xFF404040, false);
 
         // Render panes
         for (int i = 0; i < panes.size(); i++) {
             int paneAbsY = getPaneAbsY(i);
             int lmx = mouseX - x;
             int lmy = mouseY - paneAbsY;
-            g.pose().pushMatrix();
-            g.pose().translate(x, paneAbsY);
+            g.pose().pushPose();
+            g.pose().translate(x, paneAbsY, 0);
             panes.get(i).render(g, font, width, lmx, lmy, pt);
-            g.pose().popMatrix();
+            g.pose().popPose();
         }
     }
 

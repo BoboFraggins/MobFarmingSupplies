@@ -1,10 +1,9 @@
 package net.bobofraggins.mobfarmingsupplies.shared.ui;
 
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * A two-state slider switch (64 × 16): a blank switch image with the knob on the left or right,
@@ -19,10 +18,10 @@ public final class ToggleSwitch {
     public static final int WIDTH = 64;
     public static final int HEIGHT = 16;
 
-    private static final Identifier KNOB_LEFT =
-            Identifier.fromNamespaceAndPath("mobfarmingsupplies", "widget/toggle_left");
-    private static final Identifier KNOB_RIGHT =
-            Identifier.fromNamespaceAndPath("mobfarmingsupplies", "widget/toggle_right");
+    private static final ResourceLocation KNOB_LEFT =
+            ResourceLocation.fromNamespaceAndPath("mobfarmingsupplies", "widget/toggle_left");
+    private static final ResourceLocation KNOB_RIGHT =
+            ResourceLocation.fromNamespaceAndPath("mobfarmingsupplies", "widget/toggle_right");
 
     // Label area (x range, inclusive) inside each image, measured from the art.
     private static final int KNOB_RIGHT_LABEL_MIN = 1;
@@ -34,12 +33,12 @@ public final class ToggleSwitch {
 
     private ToggleSwitch() {}
 
-    public static void draw(GuiGraphicsExtractor g, Font font, int x, int y, boolean knobRight, Component label) {
-        g.blitSprite(RenderPipelines.GUI_TEXTURED, knobRight ? KNOB_RIGHT : KNOB_LEFT, x, y, WIDTH, HEIGHT);
+    public static void draw(GuiGraphics g, Font font, int x, int y, boolean knobRight, Component label) {
+        g.blitSprite(knobRight ? KNOB_RIGHT : KNOB_LEFT, x, y, WIDTH, HEIGHT);
         int min = knobRight ? KNOB_RIGHT_LABEL_MIN : KNOB_LEFT_LABEL_MIN;
         int max = knobRight ? KNOB_RIGHT_LABEL_MAX : KNOB_LEFT_LABEL_MAX;
         int centreX = x + (min + max + 1) / 2;
-        g.text(font, label, centreX - font.width(label) / 2, y + (HEIGHT - font.lineHeight) / 2 + 1, TEXT_COLOR, false);
+        g.drawString(font, label, centreX - font.width(label) / 2, y + (HEIGHT - font.lineHeight) / 2 + 1, TEXT_COLOR, false);
     }
 
     public static boolean contains(double px, double py, int x, int y) {

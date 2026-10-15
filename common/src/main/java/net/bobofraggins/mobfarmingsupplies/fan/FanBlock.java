@@ -1,13 +1,14 @@
 package net.bobofraggins.mobfarmingsupplies.fan;
 
 import com.mojang.serialization.MapCodec;
+import dev.architectury.registry.menu.MenuRegistry;
+import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import dev.architectury.registry.menu.MenuRegistry;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -15,6 +16,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.DirectionalBlock;
 import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -22,14 +24,11 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.redstone.Orientation;
-import net.minecraft.world.level.storage.TagValueOutput;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
 
 import java.util.List;
-import net.bobofraggins.mobfarmingsupplies.register.Registration;
 
 /**
  * The Fan block.
@@ -83,7 +82,7 @@ public class FanBlock extends DirectionalBlock implements EntityBlock {
 
     @Override
     protected void neighborChanged(BlockState state, Level level, BlockPos pos,
-                                   Block sourceBlock, Orientation orientation, boolean isMoving) {
+                                   Block sourceBlock, BlockPos neighborPos, boolean isMoving) {
         if (level.isClientSide()) return;
         boolean powered = level.hasNeighborSignal(pos);
         if (powered != state.getValue(POWERED)) {
@@ -104,10 +103,7 @@ public class FanBlock extends DirectionalBlock implements EntityBlock {
         if (be instanceof FanBlockEntity fan) {
             for (ItemStack drop : drops) {
                 if (drop.getItem() instanceof BlockItem) {
-                    TagValueOutput beOut = TagValueOutput.createWithContext(
-                            ProblemReporter.DISCARDING,
-                            params.getLevel().registryAccess());
-                    fan.saveCustomOnly(beOut);
+                    CompoundTag beOut = fan.saveCustomOnly(params.getLevel().registryAccess());
                     BlockItem.setBlockEntityData(drop, fan.getType(), beOut);
                 }
             }
@@ -142,5 +138,11 @@ public class FanBlock extends DirectionalBlock implements EntityBlock {
             }
         }
         return InteractionResult.SUCCESS;
+    }
+
+    /** Drawn from its block model (1.21.1's {@code BaseEntityBlock} defaults to invisible). */
+    @Override
+    protected RenderShape getRenderShape(BlockState state) {
+        return RenderShape.MODEL;
     }
 }

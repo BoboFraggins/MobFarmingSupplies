@@ -1,7 +1,7 @@
 package net.bobofraggins.mobfarmingsupplies.neoforge.glamping.present;
 
 import net.bobofraggins.mobfarmingsupplies.glamping.present.PresentEndermanHandler;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.monster.EnderMan;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.entity.living.FinalizeSpawnEvent;
@@ -16,11 +16,11 @@ public class PresentSpawnEvents {
     public void onFinalizeSpawn(FinalizeSpawnEvent event) {
         if (!(event.getEntity() instanceof EnderMan enderman)) return;
 
-        EntitySpawnReason spawnType = event.getSpawnType();
-        if (spawnType == EntitySpawnReason.COMMAND
-                || spawnType == EntitySpawnReason.SPAWN_ITEM_USE
-                || spawnType == EntitySpawnReason.BUCKET
-                || spawnType == EntitySpawnReason.DISPENSER) return;
+        MobSpawnType spawnType = event.getSpawnType();
+        if (spawnType == MobSpawnType.COMMAND
+                || spawnType == MobSpawnType.SPAWN_EGG
+                || spawnType == MobSpawnType.BUCKET
+                || spawnType == MobSpawnType.DISPENSER) return;
 
         PresentEndermanHandler.tryGivePresent(enderman, event.getLevel().getRandom());
     }

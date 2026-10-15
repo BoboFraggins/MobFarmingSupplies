@@ -1,0 +1,6 @@
+{
+  "parent": "mobfarmingsupplies:item/magnet_off",
+  "overrides": [
+    { "predicate": { "mobfarmingsupplies:magnet_on": 1 }, "model": "mobfarmingsupplies:item/magnet_on" }
+  ]
+}

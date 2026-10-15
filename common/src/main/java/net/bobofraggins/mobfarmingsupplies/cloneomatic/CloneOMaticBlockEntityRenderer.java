@@ -1,27 +1,23 @@
 package net.bobofraggins.mobfarmingsupplies.cloneomatic;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import com.mojang.math.Axis;
+import net.bobofraggins.mobfarmingsupplies.shared.render.BlockEntityRenderState;
+import net.bobofraggins.mobfarmingsupplies.shared.render.StateBlockEntityRenderer;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.SpawnerRenderer;
-import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
-import net.minecraft.client.renderer.entity.state.EntityRenderState;
-import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.Vec3;
-
 import org.jetbrains.annotations.Nullable;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,22 +27,21 @@ import java.util.Map;
  * Block-entity renderer for the Clone-O-Matic.
  *
  * <p>Renders a cycling mob display using the same cage-and-orbit presentation as
- * vanilla spawners ({@link SpawnerRenderer#submitEntityInSpawner}).  The displayed mob
+ * vanilla spawners ({@link SpawnerRenderer#renderEntityInSpawner}).  The displayed mob
  * cycles through all non-misc entity types every {@value #SWITCH_TICKS} game ticks.
  *
  * <p>When DNA sample items are implemented, the entity list will be sourced from the
  * DNA slots instead of the full registry.
  *
- * <p>Implements the two-phase {@link BlockEntityRenderer} API:
+ * <p>Rendered in two phases ({@link StateBlockEntityRenderer}):
  * <ul>
- *   <li>{@link #extractRenderState} — main thread; picks the next entity type,
- *       creates (or reuses) a dummy entity, and extracts its {@link EntityRenderState}.</li>
- *   <li>{@link #submit} — render thread; delegates to
- *       {@link SpawnerRenderer#submitEntityInSpawner}.</li>
+ *   <li>{@link #extractRenderState} picks the next entity type and creates (or reuses) a
+ *       dummy entity.</li>
+ *   <li>{@link #submit} draws it the way a spawner draws its mob.</li>
  * </ul>
  */
 public class CloneOMaticBlockEntityRenderer
-        implements BlockEntityRenderer<CloneOMaticBlockEntity, CloneOMaticBlockEntityRenderer.CloneState> {
+        extends StateBlockEntityRenderer<CloneOMaticBlockEntity, CloneOMaticBlockEntityRenderer.CloneState> {
 
     /** Ticks between entity-type switches in the BER display. */
     private static final int SWITCH_TICKS = 5;
@@ -54,7 +49,7 @@ public class CloneOMaticBlockEntityRenderer
     /** Degrees of Y-rotation accumulated per game tick. */
     private static final float DEG_PER_TICK = 360f / (10f * 20f); // one rev per 10 s
 
-    /** Entity display scale passed to {@link SpawnerRenderer#submitEntityInSpawner}. */
+    /** Largest scale the displayed mob is drawn at. */
     private static final float DISPLAY_SCALE = 0.15f;
 
     /** Particles emitted per game tick when powered. */
@@ -83,7 +78,7 @@ public class CloneOMaticBlockEntityRenderer
     // ── Constructor ──────────────────────────────────────────────────────────────
 
     public CloneOMaticBlockEntityRenderer(BlockEntityRendererProvider.Context ctx) {
-        this.entityRenderDispatcher = ctx.entityRenderer();
+        this.entityRenderDispatcher = ctx.getEntityRenderer();
     }
 
     // ── Render state ─────────────────────────────────────────────────────────────
@@ -96,7 +91,8 @@ public class CloneOMaticBlockEntityRenderer
      * type is available.
      */
     public static class CloneState extends BlockEntityRenderState {
-        @Nullable EntityRenderState displayEntity;
+        @Nullable Entity displayEntity;
+        float partialTick;
         float spin;
         float scale = DISPLAY_SCALE;
     }
@@ -109,15 +105,7 @@ public class CloneOMaticBlockEntityRenderer
     // ── Two-phase rendering ───────────────────────────────────────────────────────
 
     @Override
-    public void extractRenderState(
-            CloneOMaticBlockEntity be,
-            CloneState state,
-            float partialTick,
-            Vec3 camera,
-            ModelFeatureRenderer.CrumblingOverlay crumbling) {
-
-        BlockEntityRenderState.extractBase(be, state, crumbling);
-
+    public void extractRenderState(CloneOMaticBlockEntity be, CloneState state, float partialTick) {
         Level level = be.getLevel();
         if (level == null) {
             state.displayEntity = null;
@@ -163,7 +151,7 @@ public class CloneOMaticBlockEntityRenderer
         // Retrieve or create a dummy entity (never added to the world).
         Entity dummy = dummyEntityCache.computeIfAbsent(type, t -> {
             try {
-                return t.create(level, EntitySpawnReason.SPAWNER);
+                return t.create(level);
             } catch (Exception ignored) {
                 return null;
             }
@@ -179,31 +167,28 @@ public class CloneOMaticBlockEntityRenderer
         float maxDim = Math.max(dummy.getBbWidth(), dummy.getBbHeight());
         state.scale = Math.min(DISPLAY_SCALE, 0.45f / maxDim);
 
-        // Extract the entity's render state (creates a new EntityRenderState).
-        try {
-            state.displayEntity = entityRenderDispatcher.extractEntity(dummy, partialTick);
-        } catch (Exception ignored) {
-            state.displayEntity = null;
-        }
+        state.displayEntity = dummy;
+        state.partialTick = partialTick;
     }
 
     @Override
-    public void submit(
-            CloneState state,
-            PoseStack poseStack,
-            SubmitNodeCollector collector,
-            CameraRenderState cameraState) {
-
+    public void submit(CloneState state, PoseStack poseStack, MultiBufferSource buffers) {
         if (state.displayEntity == null) return;
 
-        SpawnerRenderer.submitEntityInSpawner(
-                poseStack,
-                collector,
-                state.displayEntity,
-                entityRenderDispatcher,
-                state.spin,
-                state.scale,
-                cameraState);
+        // As a monster spawner draws its mob, but at this renderer's own spin and scale.
+        poseStack.pushPose();
+        poseStack.translate(0.5f, 0.4f, 0.5f);
+        poseStack.mulPose(Axis.YP.rotationDegrees(state.spin));
+        poseStack.translate(0.0f, -0.2f, 0.0f);
+        poseStack.mulPose(Axis.XP.rotationDegrees(-30.0f));
+        poseStack.scale(state.scale, state.scale, state.scale);
+        try {
+            entityRenderDispatcher.render(state.displayEntity, 0.0, 0.0, 0.0, 0.0f, state.partialTick,
+                    poseStack, buffers, state.lightCoords);
+        } catch (Exception ignored) {
+            // some modded mobs can't be drawn outside the world
+        }
+        poseStack.popPose();
     }
 
     // ── Helpers ───────────────────────────────────────────────────────────────────

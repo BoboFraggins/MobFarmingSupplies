@@ -5,8 +5,9 @@ import dev.architectury.core.fluid.ArchitecturyFluidAttributes;
 import dev.architectury.core.fluid.SimpleArchitecturyFluidAttributes;
 import net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommon;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.item.Item;
 
 /**
  * Fabric XP Juice fluid — Source and Flowing variants extending architectury's
@@ -23,11 +24,11 @@ public final class FabricXpJuiceFluid {
 
     private static final ArchitecturyFluidAttributes ATTRIBUTES = SimpleArchitecturyFluidAttributes
             .of(() -> Registration.XP_JUICE_FLOWING.get(), () -> Registration.XP_JUICE_SOURCE.get())
-            .sourceTexture(Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "block/xp_juice_still"))
-            .flowingTexture(Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "block/xp_juice_flow"))
+            .sourceTexture(ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "block/xp_juice_still"))
+            .flowingTexture(ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "block/xp_juice_flow"))
             .color(0xFF39FF14) // neon green, matches NeoForge XpJuiceClientEvents
             .block(Registration.XP_JUICE_BLOCK)
-            .bucketItem(Registration.XP_JUICE_BUCKET::toOptional)
+            .bucketItem(() -> Registration.XP_JUICE_BUCKET.toOptional().map(item -> (Item) item))
             .slopeFindDistance(2)
             .dropOff(1)
             .tickDelay(20)

@@ -2,20 +2,17 @@ package net.bobofraggins.mobfarmingsupplies.neoforge.absorptionhopper;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.bobofraggins.mobfarmingsupplies.absorptionhopper.AbsorptionHopperBlockEntity;
+import net.bobofraggins.mobfarmingsupplies.shared.render.BlockEntityRenderState;
+import net.bobofraggins.mobfarmingsupplies.shared.render.Geometry;
+import net.bobofraggins.mobfarmingsupplies.shared.render.StateBlockEntityRenderer;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
-import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
-import org.joml.Matrix4f;
-
 import org.jetbrains.annotations.Nullable;
-import net.bobofraggins.mobfarmingsupplies.absorptionhopper.AbsorptionHopperBlockEntity;
+import org.joml.Matrix4f;
 
 /**
  * Block-entity renderer for the Absorption Hopper.
@@ -29,7 +26,7 @@ import net.bobofraggins.mobfarmingsupplies.absorptionhopper.AbsorptionHopperBloc
  * the block is outside the camera frustum.
  */
 public class AbsorptionHopperBlockEntityRenderer
-        implements BlockEntityRenderer<AbsorptionHopperBlockEntity, AbsorptionHopperBlockEntityRenderer.HopperState> {
+        extends StateBlockEntityRenderer<AbsorptionHopperBlockEntity, AbsorptionHopperBlockEntityRenderer.HopperState> {
 
     /** Half-side of the pickup cube — mirrors {@code AbsorptionHopperBlockEntity.PICKUP_RADIUS}. */
     private static final double PICKUP_RADIUS = 3.5;
@@ -59,15 +56,7 @@ public class AbsorptionHopperBlockEntityRenderer
     // ── Two-phase rendering ───────────────────────────────────────────────────
 
     @Override
-    public void extractRenderState(
-            AbsorptionHopperBlockEntity be,
-            HopperState state,
-            float partialTick,
-            Vec3 camera,
-            ModelFeatureRenderer.CrumblingOverlay crumbling) {
-
-        BlockEntityRenderState.extractBase(be, state, crumbling);
-
+    public void extractRenderState(AbsorptionHopperBlockEntity be, HopperState state, float partialTick) {
         if (!be.showArea) {
             state.localPickupAABB = null;
             return;
@@ -84,18 +73,12 @@ public class AbsorptionHopperBlockEntityRenderer
     }
 
     @Override
-    public void submit(
-            HopperState state,
-            PoseStack poseStack,
-            SubmitNodeCollector collector,
-            CameraRenderState cameraState) {
-
+    public void submit(HopperState state, PoseStack poseStack, MultiBufferSource buffers) {
         if (state.localPickupAABB == null) return;
 
         AABB box = state.localPickupAABB;
-        collector.submitCustomGeometry(
-                poseStack,
-                RenderTypes.LINES,
+        Geometry.custom(poseStack, buffers,
+                RenderType.lines(),
                 (pose, vc) -> drawLineBox(vc, pose.pose(),
                         box.minX, box.minY, box.minZ,
                         box.maxX, box.maxY, box.maxZ,
@@ -150,7 +133,7 @@ public class AbsorptionHopperBlockEntityRenderer
         float len = Mth.sqrt(dx * dx + dy * dy + dz * dz);
         if (len < 1e-5f) return;
         dx /= len; dy /= len; dz /= len;
-        vc.addVertex(mat, x0, y0, z0).setColor(r, g, b, a).setNormal(dx, dy, dz).setLineWidth(lineWidth);
-        vc.addVertex(mat, x1, y1, z1).setColor(r, g, b, a).setNormal(dx, dy, dz).setLineWidth(lineWidth);
+        vc.addVertex(mat, x0, y0, z0).setColor(r, g, b, a).setNormal(dx, dy, dz);
+        vc.addVertex(mat, x1, y1, z1).setColor(r, g, b, a).setNormal(dx, dy, dz);
     }
 }

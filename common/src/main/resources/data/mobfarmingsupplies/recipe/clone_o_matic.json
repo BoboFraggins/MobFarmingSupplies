@@ -6,9 +6,15 @@
     "IGI"
   ],
   "key": {
-    "I": "#c:ingots/iron",
-    "G": "minecraft:glass",
-    "E": "minecraft:ender_pearl"
+    "I": {
+      "tag": "c:ingots/iron"
+    },
+    "G": {
+      "item": "minecraft:glass"
+    },
+    "E": {
+      "item": "minecraft:ender_pearl"
+    }
   },
   "result": {
     "id": "mobfarmingsupplies:clone_o_matic",

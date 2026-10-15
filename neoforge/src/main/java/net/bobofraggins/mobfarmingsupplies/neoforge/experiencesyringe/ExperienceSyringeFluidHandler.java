@@ -1,71 +1,101 @@
 package net.bobofraggins.mobfarmingsupplies.neoforge.experiencesyringe;
 
+import net.bobofraggins.mobfarmingsupplies.experiencesyringe.ExperienceSyringeItem;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
-import net.neoforged.neoforge.transfer.ItemAccessResourceHandler;
-import net.neoforged.neoforge.transfer.access.ItemAccess;
-import net.neoforged.neoforge.transfer.fluid.FluidResource;
-import net.neoforged.neoforge.transfer.item.ItemResource;
-import net.bobofraggins.mobfarmingsupplies.experiencesyringe.ExperienceSyringeItem;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 
 /**
- * Exposes the Experience Syringe as a fluid {@link net.neoforged.neoforge.transfer.ResourceHandler}{@code <FluidResource>}.
- *
- * <p>Extends {@link ItemAccessResourceHandler} so that insert/extract changes are propagated
- * back to the player's inventory through the transaction system via {@link ItemAccess#exchange}.
- * XP storage is presented as the {@code c:experience} fluid at the ratio defined in
- * {@link ExperienceSyringeItem} (1 XP = 20 mB).
+ * Exposes the Experience Syringe as a fluid handler: its stored XP is the {@code c:experience}
+ * fluid at the ratio defined in {@link ExperienceSyringeItem} (1 XP = 20 mB). Changes the stack it
+ * was made for, which {@link #getContainer} returns.
  */
-public class ExperienceSyringeFluidHandler extends ItemAccessResourceHandler<FluidResource> {
+public class ExperienceSyringeFluidHandler implements IFluidHandlerItem {
 
     private static final TagKey<Fluid> EXPERIENCE_FLUID_TAG =
-            TagKey.create(Registries.FLUID, Identifier.fromNamespaceAndPath("c", "experience"));
+            TagKey.create(Registries.FLUID, ResourceLocation.fromNamespaceAndPath("c", "experience"));
 
-    public ExperienceSyringeFluidHandler(ItemAccess itemAccess) {
-        super(itemAccess, 1);
-    }
+    private final ItemStack container;
 
-    private int storedXpFrom(ItemResource resource) {
-        return resource.toStack(1).getOrDefault(Registration.EXPERIENCE_SYRINGE_STORED_XP.get(), 0);
-    }
-
-    @Override
-    protected FluidResource getResourceFrom(ItemResource accessResource, int index) {
-        int stored = storedXpFrom(accessResource);
-        if (stored == 0) return FluidResource.EMPTY;
-        Fluid xpFluid = Registration.XP_JUICE_SOURCE.get();
-        return xpFluid == Fluids.EMPTY ? FluidResource.EMPTY : FluidResource.of(xpFluid);
+    public ExperienceSyringeFluidHandler(ItemStack container) {
+        this.container = container;
     }
 
     @Override
-    protected int getAmountFrom(ItemResource accessResource, int index) {
-        return ExperienceSyringeItem.xpToMb(storedXpFrom(accessResource));
+    public ItemStack getContainer() {
+        return container;
     }
 
-    @Override
-    protected ItemResource update(ItemResource accessResource, int index, FluidResource newResource, int newAmount) {
-        int newXp = ExperienceSyringeItem.mbToXp(newAmount);
-        ItemStack updated = accessResource.toStack(1);
-        if (newXp <= 0) {
-            updated.remove(Registration.EXPERIENCE_SYRINGE_STORED_XP.get());
-        } else {
-            updated.set(Registration.EXPERIENCE_SYRINGE_STORED_XP.get(), newXp);
-        }
-        return ItemResource.of(updated);
+    private int storedXp() {
+        return container.getOrDefault(Registration.EXPERIENCE_SYRINGE_STORED_XP.get(), 0);
     }
 
-    @Override
-    protected int getCapacity(int index, FluidResource resource) {
+    private int capacityMb() {
         return ExperienceSyringeItem.xpToMb(ExperienceSyringeItem.CAPACITY);
     }
 
+    private void setStoredMb(int mb) {
+        int newXp = ExperienceSyringeItem.mbToXp(mb);
+        if (newXp <= 0) {
+            container.remove(Registration.EXPERIENCE_SYRINGE_STORED_XP.get());
+        } else {
+            container.set(Registration.EXPERIENCE_SYRINGE_STORED_XP.get(), newXp);
+        }
+    }
+
     @Override
-    public boolean isValid(int index, FluidResource resource) {
-        return !resource.isEmpty() && resource.toStack(1).is(EXPERIENCE_FLUID_TAG);
+    public int getTanks() {
+        return 1;
+    }
+
+    @Override
+    public FluidStack getFluidInTank(int tank) {
+        int stored = storedXp();
+        Fluid xpFluid = Registration.XP_JUICE_SOURCE.get();
+        if (stored == 0 || xpFluid == Fluids.EMPTY) return FluidStack.EMPTY;
+        return new FluidStack(xpFluid, ExperienceSyringeItem.xpToMb(stored));
+    }
+
+    @Override
+    public int getTankCapacity(int tank) {
+        return capacityMb();
+    }
+
+    @Override
+    public boolean isFluidValid(int tank, FluidStack stack) {
+        return !stack.isEmpty() && stack.is(EXPERIENCE_FLUID_TAG);
+    }
+
+    @Override
+    public int fill(FluidStack resource, FluidAction action) {
+        if (container.getCount() != 1 || !isFluidValid(0, resource)) return 0;
+        int stored = ExperienceSyringeItem.xpToMb(storedXp());
+        int filled = Math.min(resource.getAmount(), capacityMb() - stored);
+        if (filled <= 0) return 0;
+        if (action.execute()) setStoredMb(stored + filled);
+        return filled;
+    }
+
+    @Override
+    public FluidStack drain(FluidStack resource, FluidAction action) {
+        if (resource.isEmpty() || !FluidStack.isSameFluidSameComponents(resource, getFluidInTank(0))) {
+            return FluidStack.EMPTY;
+        }
+        return drain(resource.getAmount(), action);
+    }
+
+    @Override
+    public FluidStack drain(int maxDrain, FluidAction action) {
+        FluidStack stored = getFluidInTank(0);
+        if (container.getCount() != 1 || stored.isEmpty() || maxDrain <= 0) return FluidStack.EMPTY;
+        int drained = Math.min(maxDrain, stored.getAmount());
+        if (action.execute()) setStoredMb(stored.getAmount() - drained);
+        return stored.copyWithAmount(drained);
     }
 }

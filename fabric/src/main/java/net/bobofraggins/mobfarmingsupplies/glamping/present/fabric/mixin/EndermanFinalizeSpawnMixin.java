@@ -2,7 +2,7 @@ package net.bobofraggins.mobfarmingsupplies.glamping.present.fabric.mixin;
 
 import net.bobofraggins.mobfarmingsupplies.glamping.present.PresentEndermanHandler;
 import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.monster.EnderMan;
@@ -21,20 +21,20 @@ public abstract class EndermanFinalizeSpawnMixin {
 
     @Inject(
             method = "finalizeSpawn(Lnet/minecraft/world/level/ServerLevelAccessor;Lnet/minecraft/world/DifficultyInstance;"
-                    + "Lnet/minecraft/world/entity/EntitySpawnReason;Lnet/minecraft/world/entity/SpawnGroupData;)"
+                    + "Lnet/minecraft/world/entity/MobSpawnType;Lnet/minecraft/world/entity/SpawnGroupData;)"
                     + "Lnet/minecraft/world/entity/SpawnGroupData;",
             at = @At("TAIL"))
     private void mobfarmingsupplies$maybeGivePresent(
             ServerLevelAccessor level,
             DifficultyInstance difficulty,
-            EntitySpawnReason spawnReason,
+            MobSpawnType spawnReason,
             SpawnGroupData spawnGroupData,
             CallbackInfoReturnable<SpawnGroupData> cir) {
         if (!((Object) this instanceof EnderMan enderman)) return;
-        if (spawnReason == EntitySpawnReason.COMMAND
-                || spawnReason == EntitySpawnReason.SPAWN_ITEM_USE
-                || spawnReason == EntitySpawnReason.BUCKET
-                || spawnReason == EntitySpawnReason.DISPENSER) return;
+        if (spawnReason == MobSpawnType.COMMAND
+                || spawnReason == MobSpawnType.SPAWN_EGG
+                || spawnReason == MobSpawnType.BUCKET
+                || spawnReason == MobSpawnType.DISPENSER) return;
 
         PresentEndermanHandler.tryGivePresent(enderman, enderman.level().getRandom());
     }

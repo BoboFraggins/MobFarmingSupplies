@@ -46,9 +46,9 @@ public final class FireAspectCooking {
         SingleRecipeInput input = new SingleRecipeInput(stack.copyWithCount(1));
         for (RecipeType<? extends AbstractCookingRecipe> type : RECIPES) {
             Optional<? extends RecipeHolder<? extends AbstractCookingRecipe>> recipe =
-                    level.recipeAccess().getRecipeFor(type, input, level);
+                    level.getRecipeManager().getRecipeFor(type, input, level);
             if (recipe.isPresent()) {
-                ItemStack result = recipe.get().value().assemble(input);
+                ItemStack result = recipe.get().value().assemble(input, level.registryAccess());
                 if (!result.isEmpty()) return result.copyWithCount(result.getCount() * stack.getCount());
             }
         }

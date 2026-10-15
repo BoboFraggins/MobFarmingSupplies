@@ -3,7 +3,6 @@ package net.bobofraggins.mobfarmingsupplies.mobhead;
 import com.mojang.serialization.MapCodec;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.block.state.properties.RotationSegment;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
@@ -11,12 +10,14 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Mirror;
+import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.level.block.state.properties.RotationSegment;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
@@ -72,7 +73,7 @@ public class MobHeadBlock extends BaseEntityBlock {
 
     /** Pick block keeps the mob type. */
     @Override
-    protected ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state, boolean includeData) {
+    public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state) {
         return cloneOf(level, pos);
     }
 
@@ -82,5 +83,11 @@ public class MobHeadBlock extends BaseEntityBlock {
             stack.set(Registration.MOB_HEAD_TYPE.get(), head.getMobType());
         }
         return stack;
+    }
+
+    /** Drawn from its block model (1.21.1's {@code BaseEntityBlock} defaults to invisible). */
+    @Override
+    protected RenderShape getRenderShape(BlockState state) {
+        return RenderShape.MODEL;
     }
 }

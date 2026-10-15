@@ -1,27 +1,17 @@
 package net.bobofraggins.mobfarmingsupplies.tank;
 
 import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
+import net.bobofraggins.mobfarmingsupplies.shared.recipe.ShapedRecipeCodecs;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ItemStackTemplate;
-import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
-import net.minecraft.world.item.crafting.CraftingRecipe;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.NormalCraftingRecipe;
-import net.minecraft.world.item.crafting.PlacementInfo;
-import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.item.crafting.ShapedRecipePattern;
-import net.minecraft.world.item.crafting.display.RecipeDisplay;
-import net.minecraft.world.item.crafting.display.ShapedCraftingRecipeDisplay;
-import net.minecraft.world.item.crafting.display.SlotDisplay;
-import net.minecraft.world.level.Level;
-
-import java.util.List;
 
 /**
  * A shaped crafting recipe that upgrades a tank to the next tier and keeps what's in it: the
@@ -30,43 +20,36 @@ import java.util.List;
  * 1/16-full gold tank).
  *
  * <p>Written like a shaped recipe in JSON, with type {@code mobfarmingsupplies:tank_upgrade}.
- * It can't simply extend {@link net.minecraft.world.item.crafting.ShapedRecipe}: that class pins
- * its serializer's type, so a subclass couldn't name its own.
  */
-public class TankUpgradeRecipe extends NormalCraftingRecipe {
+public class TankUpgradeRecipe extends ShapedRecipe implements ShapedRecipeCodecs.Shaped {
 
-    public static final MapCodec<TankUpgradeRecipe> MAP_CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            Recipe.CommonInfo.MAP_CODEC.forGetter(r -> r.commonInfo),
-            CraftingRecipe.CraftingBookInfo.MAP_CODEC.forGetter(r -> r.bookInfo),
-            ShapedRecipePattern.MAP_CODEC.forGetter(r -> r.pattern),
-            ItemStackTemplate.CODEC.fieldOf("result").forGetter(r -> r.result)
-    ).apply(i, TankUpgradeRecipe::new));
-
-    public static final StreamCodec<RegistryFriendlyByteBuf, TankUpgradeRecipe> STREAM_CODEC = StreamCodec.composite(
-            Recipe.CommonInfo.STREAM_CODEC, r -> r.commonInfo,
-            CraftingRecipe.CraftingBookInfo.STREAM_CODEC, r -> r.bookInfo,
-            ShapedRecipePattern.STREAM_CODEC, r -> r.pattern,
-            ItemStackTemplate.STREAM_CODEC, r -> r.result,
-            TankUpgradeRecipe::new);
+    public static final MapCodec<TankUpgradeRecipe> MAP_CODEC = ShapedRecipeCodecs.mapCodec(TankUpgradeRecipe::new);
+    public static final StreamCodec<RegistryFriendlyByteBuf, TankUpgradeRecipe> STREAM_CODEC =
+            ShapedRecipeCodecs.streamCodec(TankUpgradeRecipe::new);
 
     private final ShapedRecipePattern pattern;
-    private final ItemStackTemplate result;
+    private final ItemStack result;
 
-    public TankUpgradeRecipe(Recipe.CommonInfo commonInfo, CraftingRecipe.CraftingBookInfo bookInfo,
-                             ShapedRecipePattern pattern, ItemStackTemplate result) {
-        super(commonInfo, bookInfo);
+    public TankUpgradeRecipe(String group, CraftingBookCategory category, ShapedRecipePattern pattern,
+                             ItemStack result, boolean showNotification) {
+        super(group, category, pattern, result, showNotification);
         this.pattern = pattern;
         this.result = result;
     }
 
     @Override
-    public boolean matches(CraftingInput input, Level level) {
-        return pattern.matches(input);
+    public ShapedRecipePattern pattern() {
+        return pattern;
     }
 
     @Override
-    public ItemStack assemble(CraftingInput input) {
-        ItemStack upgraded = result.create();
+    public ItemStack result() {
+        return result;
+    }
+
+    @Override
+    public ItemStack assemble(CraftingInput input, HolderLookup.Provider registries) {
+        ItemStack upgraded = result.copy();
         for (ItemStack ingredient : input.items()) {
             TankContents contents = ingredient.get(Registration.TANK_CONTENTS.get());
             if (contents != null) {
@@ -78,25 +61,7 @@ public class TankUpgradeRecipe extends NormalCraftingRecipe {
     }
 
     @Override
-    public RecipeSerializer<TankUpgradeRecipe> getSerializer() {
+    public RecipeSerializer<?> getSerializer() {
         return Registration.TANK_UPGRADE_SERIALIZER.get();
-    }
-
-    @Override
-    protected PlacementInfo createPlacementInfo() {
-        return PlacementInfo.createFromOptionals(pattern.ingredients());
-    }
-
-    /** Shown in the recipe book exactly like an ordinary shaped recipe. */
-    @Override
-    public List<RecipeDisplay> display() {
-        return List.of(new ShapedCraftingRecipeDisplay(
-                pattern.width(),
-                pattern.height(),
-                pattern.ingredients().stream()
-                        .map(slot -> slot.map(Ingredient::display).orElse(SlotDisplay.Empty.INSTANCE))
-                        .toList(),
-                new SlotDisplay.ItemStackSlotDisplay(result),
-                new SlotDisplay.ItemSlotDisplay(Items.CRAFTING_TABLE)));
     }
 }

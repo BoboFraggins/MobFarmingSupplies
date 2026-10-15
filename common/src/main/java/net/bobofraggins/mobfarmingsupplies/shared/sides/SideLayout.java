@@ -5,8 +5,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.FrontAndTop;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import net.bobofraggins.mobfarmingsupplies.shared.nbt.ValueInput;
+import net.bobofraggins.mobfarmingsupplies.shared.nbt.ValueOutput;
 import org.jetbrains.annotations.Nullable;
 
 /**

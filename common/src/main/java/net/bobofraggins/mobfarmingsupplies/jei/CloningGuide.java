@@ -19,7 +19,7 @@ import net.bobofraggins.mobfarmingsupplies.dna.DnaSampleItem;
 import net.bobofraggins.mobfarmingsupplies.dna.DnaSamplePackItem;
 import net.bobofraggins.mobfarmingsupplies.register.ModCompatRegistration;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -115,7 +115,7 @@ public final class CloningGuide implements IRecipeCategory<CloningGuide.Recipe> 
     }
 
     @Override
-    public void draw(Recipe recipe, IRecipeSlotsView slots, GuiGraphicsExtractor graphics, double mouseX, double mouseY) {
+    public void draw(Recipe recipe, IRecipeSlotsView slots, GuiGraphics graphics, double mouseX, double mouseY) {
         drawDownArrow(graphics, SLOT_SIZE + 1);
         drawDownArrow(graphics, MACHINE_TOP + SLOT_SIZE + 1);
         LivingEntity mob = shownMob(slots);
@@ -141,12 +141,12 @@ public final class CloningGuide implements IRecipeCategory<CloningGuide.Recipe> 
         }
         DnaSampleContents contents = DnaSampleItem.getContents(shown);
         if (contents == null) return null;
-        return contents.entityNbt().getString("id").flatMap(EntityType::byString)
+        return EntityType.byString(contents.entityNbt().getString("id"))
                 .map(type -> mobs.get(type, false)).orElse(null);
     }
 
     /** A small downward-pointing triangle (5×3 px), centred, its top row at {@code y}. */
-    private static void drawDownArrow(GuiGraphicsExtractor g, int y) {
+    private static void drawDownArrow(GuiGraphics g, int y) {
         int cx = WIDTH / 2;
         g.fill(cx - 2, y, cx + 3, y + 1, ARROW_COLOR);
         g.fill(cx - 1, y + 1, cx + 2, y + 2, ARROW_COLOR);

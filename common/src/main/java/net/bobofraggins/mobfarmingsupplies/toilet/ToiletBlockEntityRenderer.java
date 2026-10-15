@@ -3,22 +3,17 @@ package net.bobofraggins.mobfarmingsupplies.toilet;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommon;
 import net.bobofraggins.mobfarmingsupplies.client.model.ExtraBlockModels;
+import net.bobofraggins.mobfarmingsupplies.shared.render.BlockEntityRenderState;
+import net.bobofraggins.mobfarmingsupplies.shared.render.StateBlockEntityRenderer;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
-import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
-import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
-
-import java.util.List;
 
 /**
  * Draws the toilet's lid ({@code block/toilet_lid}, the "lid" group of {@code block/toilet}),
@@ -26,10 +21,10 @@ import java.util.List;
  * the bowl only ({@code block/toilet_bowl}).
  */
 public class ToiletBlockEntityRenderer
-        implements BlockEntityRenderer<ToiletBlockEntity, ToiletBlockEntityRenderer.ToiletState> {
+        extends StateBlockEntityRenderer<ToiletBlockEntity, ToiletBlockEntityRenderer.ToiletState> {
 
-    public static final Identifier LID_MODEL_ID =
-            Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "block/toilet_lid");
+    public static final ResourceLocation LID_MODEL_ID =
+            ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "block/toilet_lid");
 
     // Hinge, in north-facing model space: the lid's back top edge, just in front of the cistern.
     // Swinging 90 degrees about X stands the lid up at z 10-11, y 6-16.
@@ -54,24 +49,14 @@ public class ToiletBlockEntityRenderer
     }
 
     @Override
-    public void extractRenderState(
-            ToiletBlockEntity be,
-            ToiletState state,
-            float partialTick,
-            Vec3 camera,
-            ModelFeatureRenderer.CrumblingOverlay crumbling) {
-        BlockEntityRenderState.extractBase(be, state, crumbling);
+    public void extractRenderState(ToiletBlockEntity be, ToiletState state, float partialTick) {
         state.facing = be.getBlockState().getValue(ToiletBlock.FACING);
         state.lidAngleDeg = be.getLidAngle(partialTick);
     }
 
     @Override
-    public void submit(
-            ToiletState state,
-            PoseStack poseStack,
-            SubmitNodeCollector collector,
-            CameraRenderState cameraState) {
-        BlockStateModelPart lid = ExtraBlockModels.get(LID_MODEL_ID);
+    public void submit(ToiletState state, PoseStack poseStack, MultiBufferSource buffers) {
+        BakedModel lid = ExtraBlockModels.get(LID_MODEL_ID);
         if (lid == null) return;
 
         poseStack.pushPose();
@@ -89,14 +74,7 @@ public class ToiletBlockEntityRenderer
         poseStack.mulPose(LID_QUAT.rotationX(state.lidAngleDeg * Mth.DEG_TO_RAD));
         poseStack.translate(0, -HINGE_Y, -HINGE_Z);
 
-        collector.submitBlockModel(
-                poseStack,
-                Sheets.cutoutBlockSheet(),
-                List.of(lid),
-                new int[0],
-                state.lightCoords,
-                OverlayTexture.NO_OVERLAY,
-                0);
+        ExtraBlockModels.render(poseStack, buffers, lid, Sheets.cutoutBlockSheet(), state.lightCoords, OverlayTexture.NO_OVERLAY);
         poseStack.popPose();
     }
 }

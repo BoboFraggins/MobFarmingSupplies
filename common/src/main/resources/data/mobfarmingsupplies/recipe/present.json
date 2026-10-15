@@ -6,9 +6,15 @@
     "PPP"
   ],
   "key": {
-    "G": "minecraft:green_dye",
-    "P": "minecraft:paper",
-    "R": "minecraft:red_dye"
+    "G": {
+      "item": "minecraft:green_dye"
+    },
+    "P": {
+      "item": "minecraft:paper"
+    },
+    "R": {
+      "item": "minecraft:red_dye"
+    }
   },
   "result": {
     "id": "mobfarmingsupplies:present",

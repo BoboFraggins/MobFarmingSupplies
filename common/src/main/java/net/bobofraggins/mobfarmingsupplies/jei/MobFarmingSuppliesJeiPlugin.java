@@ -1,5 +1,9 @@
 package net.bobofraggins.mobfarmingsupplies.jei;
 
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.entity.EntityType;
+import mezz.jei.api.ingredients.subtypes.UidContext;
+import mezz.jei.api.ingredients.subtypes.ISubtypeInterpreter;
 import java.util.List;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
@@ -16,7 +20,7 @@ import mezz.jei.api.registration.IRecipeRegistration;
 import net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommon;
 import net.bobofraggins.mobfarmingsupplies.filterscribingterminal.FilterScribingTerminalScreen;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
 import mezz.jei.api.registration.IExtraIngredientRegistration;
 import net.minecraft.world.item.ItemStack;
@@ -37,11 +41,11 @@ import net.minecraft.world.item.ItemStack;
 @JeiPlugin
 public class MobFarmingSuppliesJeiPlugin implements IModPlugin {
 
-    private static final Identifier PLUGIN_ID =
-            Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "jei_plugin");
+    private static final ResourceLocation PLUGIN_ID =
+            ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "jei_plugin");
 
     @Override
-    public Identifier getPluginUid() {
+    public ResourceLocation getPluginUid() {
         return PLUGIN_ID;
     }
 
@@ -66,7 +70,18 @@ public class MobFarmingSuppliesJeiPlugin implements IModPlugin {
     /** Each mob's Mob Head is its own JEI entry (one item, told apart by its mob type). */
     @Override
     public void registerItemSubtypes(ISubtypeRegistration reg) {
-        reg.registerFromDataComponentTypes(Registration.MOB_HEAD_ITEM.get(), Registration.MOB_HEAD_TYPE.get());
+        reg.registerSubtypeInterpreter(Registration.MOB_HEAD_ITEM.get(), new ISubtypeInterpreter<>() {
+            @Override
+            public Object getSubtypeData(ItemStack stack, UidContext context) {
+                return stack.get(Registration.MOB_HEAD_TYPE.get());
+            }
+
+            @Override
+            public String getLegacyStringSubtypeInfo(ItemStack stack, UidContext context) {
+                EntityType<?> type = stack.get(Registration.MOB_HEAD_TYPE.get());
+                return type == null ? "" : BuiltInRegistries.ENTITY_TYPE.getKey(type).toString();
+            }
+        });
     }
 
     /**

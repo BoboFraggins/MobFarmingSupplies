@@ -1,16 +1,17 @@
 package net.bobofraggins.mobfarmingsupplies.crushing;
 
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeBookCategories;
-import net.minecraft.world.item.crafting.RecipeBookCategory;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SingleItemRecipe;
+import net.minecraft.world.item.crafting.SingleRecipeInput;
+import net.minecraft.world.level.Level;
 
 /**
  * {@code mobfarmingsupplies:anvil_crushing} — item entities lying where a falling anvil lands
@@ -25,42 +26,40 @@ import net.minecraft.world.item.crafting.SingleItemRecipe;
  */
 public class AnvilCrushingRecipe extends SingleItemRecipe {
 
-    public static final MapCodec<AnvilCrushingRecipe> MAP_CODEC = simpleMapCodec(AnvilCrushingRecipe::new);
-    public static final StreamCodec<RegistryFriendlyByteBuf, AnvilCrushingRecipe> STREAM_CODEC =
-            simpleStreamCodec(AnvilCrushingRecipe::new);
+    public static final MapCodec<AnvilCrushingRecipe> MAP_CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
+            Codec.STRING.optionalFieldOf("group", "").forGetter(SingleItemRecipe::getGroup),
+            Ingredient.CODEC_NONEMPTY.fieldOf("ingredient").forGetter(r -> r.ingredient),
+            ItemStack.STRICT_CODEC.fieldOf("result").forGetter(r -> r.result)
+    ).apply(i, AnvilCrushingRecipe::new));
 
-    public AnvilCrushingRecipe(CommonInfo commonInfo, Ingredient input, ItemStackTemplate result) {
-        super(commonInfo, input, result);
+    public static final StreamCodec<RegistryFriendlyByteBuf, AnvilCrushingRecipe> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.STRING_UTF8, SingleItemRecipe::getGroup,
+            Ingredient.CONTENTS_STREAM_CODEC, r -> r.ingredient,
+            ItemStack.STREAM_CODEC, r -> r.result,
+            AnvilCrushingRecipe::new);
+
+    public AnvilCrushingRecipe(String group, Ingredient input, ItemStack result) {
+        super(Registration.ANVIL_CRUSHING_TYPE.get(), Registration.ANVIL_CRUSHING_SERIALIZER.get(), group, input, result);
+    }
+
+    /** What the recipe crushes. */
+    public Ingredient input() {
+        return ingredient;
     }
 
     /** Number of result items produced per input item. */
     public int resultCountPerItem() {
-        return result().count();
+        return result.getCount();
     }
 
     @Override
-    public RecipeType<AnvilCrushingRecipe> getType() {
-        return Registration.ANVIL_CRUSHING_TYPE.get();
-    }
-
-    @Override
-    public RecipeSerializer<AnvilCrushingRecipe> getSerializer() {
-        return Registration.ANVIL_CRUSHING_SERIALIZER.get();
-    }
-
-    @Override
-    public String group() {
-        return "";
+    public boolean matches(SingleRecipeInput input, Level level) {
+        return ingredient.test(input.item());
     }
 
     /** Not a crafting-table recipe — keep it out of the recipe book. */
     @Override
     public boolean isSpecial() {
         return true;
-    }
-
-    @Override
-    public RecipeBookCategory recipeBookCategory() {
-        return RecipeBookCategories.CRAFTING_MISC;
     }
 }

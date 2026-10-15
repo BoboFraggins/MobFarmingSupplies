@@ -1,13 +1,10 @@
 package net.bobofraggins.mobfarmingsupplies.neoforge.tank;
 
-import net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommon;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
-import net.minecraft.resources.Identifier;
+import net.bobofraggins.mobfarmingsupplies.tank.TankScreen;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
-import net.neoforged.neoforge.client.event.RegisterSpecialModelRendererEvent;
-import net.bobofraggins.mobfarmingsupplies.tank.TankScreen;
 
 public final class TankClientEvents {
 
@@ -21,12 +18,5 @@ public final class TankClientEvents {
     @SubscribeEvent
     public static void onRegisterMenuScreens(RegisterMenuScreensEvent event) {
         event.register(Registration.TANK_MENU.get(), TankScreen::new);
-    }
-
-    @SubscribeEvent
-    public static void onRegisterSpecialModelRenderers(RegisterSpecialModelRendererEvent event) {
-        event.register(
-                Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "tank_renderer"),
-                TankItemRenderer.Unbaked.MAP_CODEC);
     }
 }

@@ -1,7 +1,7 @@
 package net.bobofraggins.mobfarmingsupplies.neoforge.transfer;
 
-import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
-import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+import net.bobofraggins.mobfarmingsupplies.neoforge.transfer.api.transaction.SnapshotJournal;
+import net.bobofraggins.mobfarmingsupplies.neoforge.transfer.api.transaction.TransactionContext;
 
 /** Runs code only if a transfer really happens, not when it is simulated or rolled back. */
 public final class CommitCallbacks {

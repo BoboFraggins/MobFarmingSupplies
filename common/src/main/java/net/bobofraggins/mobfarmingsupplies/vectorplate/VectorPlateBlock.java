@@ -5,8 +5,7 @@ import net.bobofraggins.mobfarmingsupplies.shared.ForcedMovement;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.InsideBlockEffectApplier;
-import net.minecraft.world.entity.animal.squid.Squid;
+import net.minecraft.world.entity.animal.Squid;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -100,8 +99,7 @@ public class VectorPlateBlock extends HorizontalDirectionalBlock {
      * a harvester or collector pile up forever and lag the world.
      */
     @Override
-    protected void entityInside(BlockState state, Level level, BlockPos pos, Entity entity,
-                                InsideBlockEffectApplier effectApplier, boolean flag) {
+    protected void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
         if (level.isClientSide() || entity.isShiftKeyDown()) return;
 
         Direction dir = state.getValue(FACING);

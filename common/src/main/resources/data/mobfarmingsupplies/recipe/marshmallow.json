@@ -6,8 +6,12 @@
     "SSS"
   ],
   "key": {
-    "S": "minecraft:sugar",
-    "B": "minecraft:experience_bottle"
+    "S": {
+      "item": "minecraft:sugar"
+    },
+    "B": {
+      "item": "minecraft:experience_bottle"
+    }
   },
   "result": {
     "id": "mobfarmingsupplies:marshmallow",

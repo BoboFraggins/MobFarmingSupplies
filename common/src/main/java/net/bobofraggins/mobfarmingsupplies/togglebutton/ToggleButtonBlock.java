@@ -131,11 +131,12 @@ public class ToggleButtonBlock extends FaceAttachedHorizontalDirectionalBlock {
     }
 
     @Override
-    protected void affectNeighborsAfterRemoval(BlockState state, ServerLevel level, BlockPos pos, boolean movedByPiston) {
+    protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
         // Breaking a powered button must de-power whatever it was driving.
-        if (!movedByPiston && state.getValue(POWERED)) {
+        if (!movedByPiston && !state.is(newState.getBlock()) && state.getValue(POWERED)) {
             updateNeighbours(state, level, pos);
         }
+        super.onRemove(state, level, pos, newState, movedByPiston);
     }
 
     private void updateNeighbours(BlockState state, Level level, BlockPos pos) {

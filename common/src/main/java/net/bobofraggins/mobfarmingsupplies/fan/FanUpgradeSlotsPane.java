@@ -3,7 +3,7 @@ package net.bobofraggins.mobfarmingsupplies.fan;
 import net.bobofraggins.mobfarmingsupplies.shared.ui.IDialogPane;
 import net.bobofraggins.mobfarmingsupplies.shared.ui.PlayerInventoryPane;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 
 /**
  * Dialog pane that renders the "Upgrades" header and three Fan upgrade slot backgrounds in a centred row.
@@ -29,9 +29,9 @@ public class FanUpgradeSlotsPane implements IDialogPane {
     }
 
     @Override
-    public void render(GuiGraphicsExtractor g, Font font, int width,
+    public void render(GuiGraphics g, Font font, int width,
                        int localMouseX, int localMouseY, float partialTick) {
-        g.text(font, net.minecraft.network.chat.Component.literal("Upgrades"),
+        g.drawString(font, net.minecraft.network.chat.Component.literal("Upgrades"),
                 8, HEADER_Y, 0xFF404040, false);
         for (int i = 0; i < FanBlockEntity.UPGRADE_SLOTS; i++) {
             PlayerInventoryPane.drawSlotBg(g, FanMenu.UPGRADE_X_START + i * 18, ROW_Y);

@@ -1,5 +1,9 @@
 package net.bobofraggins.mobfarmingsupplies.bridge;
 
+import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.HolderLookup;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.ArrayList;
@@ -7,13 +11,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommon;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.saveddata.SavedData;
-import net.minecraft.world.level.saveddata.SavedDataType;
 
 /**
  * The settings Einstein-Rosen Bridges share per channel — kept "in the aether" (the world's saved
@@ -55,15 +58,31 @@ public final class BridgeChannelData extends SavedData {
     private static final Codec<BridgeChannelData> CODEC = Entry.CODEC.listOf().xmap(
             BridgeChannelData::fromEntries, BridgeChannelData::toEntries);
 
+    private static final String NAME = MobFarmingSuppliesCommon.MODID + "_einstein_rosen_bridges";
+    private static final String CHANNELS_KEY = "channels";
+
     // Data fixers only touch data saved by older game versions; ours is a plain compound either way.
-    private static final SavedDataType<BridgeChannelData> TYPE = new SavedDataType<>(
-            Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "einstein_rosen_bridges"),
-            BridgeChannelData::new, CODEC, DataFixTypes.SAVED_DATA_COMMAND_STORAGE);
+    private static final SavedData.Factory<BridgeChannelData> FACTORY = new SavedData.Factory<>(
+            BridgeChannelData::new, BridgeChannelData::load, DataFixTypes.SAVED_DATA_COMMAND_STORAGE);
 
     private final Map<Integer, Settings> channels = new HashMap<>();
 
     public static BridgeChannelData get(MinecraftServer server) {
-        return server.getDataStorage().computeIfAbsent(TYPE);
+        return server.overworld().getDataStorage().computeIfAbsent(FACTORY, NAME);
+    }
+
+    private static BridgeChannelData load(CompoundTag tag, HolderLookup.Provider registries) {
+        Tag channels = tag.get(CHANNELS_KEY);
+        if (channels == null) return new BridgeChannelData();
+        return CODEC.parse(registries.createSerializationContext(NbtOps.INSTANCE), channels)
+                .result().orElseGet(BridgeChannelData::new);
+    }
+
+    @Override
+    public CompoundTag save(CompoundTag tag, HolderLookup.Provider registries) {
+        CODEC.encodeStart(registries.createSerializationContext(NbtOps.INSTANCE), this)
+                .result().ifPresent(channels -> tag.put(CHANNELS_KEY, channels));
+        return tag;
     }
 
     /** The settings for {@code channel}, created with defaults the first time it's used. */

@@ -1,5 +1,8 @@
 package net.bobofraggins.mobfarmingsupplies.glamping.magichat;
 
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.Equipable;
+import java.util.List;
 import net.minecraft.server.level.ServerPlayer;
 import net.bobofraggins.mobfarmingsupplies.advancement.MFSTriggers;
 import net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommon;
@@ -9,14 +12,14 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -27,10 +30,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
-import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.storage.TagValueOutput;
 import net.minecraft.world.phys.Vec3;
 
 /**
@@ -45,12 +46,12 @@ import net.minecraft.world.phys.Vec3;
  * <p>Capture is handled by {@link MagicHatCaptureEvents}, not a plain
  * {@code interactLivingEntity} override here — see that class's javadoc for why.
  */
-public class MagicHatItem extends Item {
+public class MagicHatItem extends Item implements Equipable {
 
     public static final String MOB_KEY = "CapturedMob";
 
-    public static final Identifier LUCK_MODIFIER_ID =
-            Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "magic_hat_luck");
+    public static final ResourceLocation LUCK_MODIFIER_ID =
+            ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "magic_hat_luck");
 
     public static final ItemAttributeModifiers DEFAULT_MODIFIERS = ItemAttributeModifiers.builder()
             .add(
@@ -61,6 +62,11 @@ public class MagicHatItem extends Item {
 
     public MagicHatItem(Properties properties) {
         super(properties);
+    }
+
+    @Override
+    public EquipmentSlot getEquipmentSlot() {
+        return EquipmentSlot.HEAD;
     }
 
     // -------------------------------------------------------------------------
@@ -79,15 +85,15 @@ public class MagicHatItem extends Item {
     }
 
     @Override
-    public InteractionResult use(Level level, Player player, InteractionHand hand) {
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (hasMob(stack)) {
             if (!level.isClientSide()) {
                 releaseMob(stack, player, level);
             }
-            return InteractionResult.SUCCESS;
+            return new InteractionResultHolder<>(InteractionResult.SUCCESS, player.getItemInHand(hand));
         }
-        return InteractionResult.PASS;
+        return new InteractionResultHolder<>(InteractionResult.PASS, player.getItemInHand(hand));
     }
 
     private static void releaseMob(ItemStack stack, Player player, Level level) {
@@ -96,15 +102,14 @@ public class MagicHatItem extends Item {
         if (customData == null) return;
         CompoundTag wrapper = customData.copyTag();
         if (!wrapper.contains(MOB_KEY)) return;
-        CompoundTag mobTag = wrapper.getCompoundOrEmpty(MOB_KEY);
+        CompoundTag mobTag = wrapper.getCompound(MOB_KEY);
 
         Vec3 look = player.getLookAngle();
         double spawnX = player.getX() + look.x * 1.5;
         double spawnY = player.getY();
         double spawnZ = player.getZ() + look.z * 1.5;
 
-        Entity entity = EntityType.loadEntityRecursive(
-                mobTag, serverLevel, EntitySpawnReason.LOAD, e -> {
+        Entity entity = EntityType.loadEntityRecursive(mobTag, serverLevel, e -> {
             e.setPos(spawnX, spawnY, spawnZ);
             e.setDeltaMovement(Vec3.ZERO);
             return e;
@@ -138,10 +143,10 @@ public class MagicHatItem extends Item {
         if (!hasMob(stack)) return base;
         CustomData data = stack.get(DataComponents.CUSTOM_DATA);
         if (data == null) return base;
-        Optional<String> idString = data.copyTag().getCompoundOrEmpty(MOB_KEY).getString("id");
+        Optional<String> idString = Optional.of(data.copyTag().getCompound(MOB_KEY).getString("id")).filter(id -> !id.isEmpty());
         if (idString.isEmpty()) return base;
-        Identifier id = Identifier.tryParse(idString.get());
-        EntityType<?> type = id != null ? BuiltInRegistries.ENTITY_TYPE.getValue(id) : null;
+        ResourceLocation id = ResourceLocation.tryParse(idString.get());
+        EntityType<?> type = id != null ? BuiltInRegistries.ENTITY_TYPE.get(id) : null;
         if (type == null) return base;
         return Component.empty().append(base).append(" (").append(type.getDescription()).append(")");
     }
@@ -151,10 +156,9 @@ public class MagicHatItem extends Item {
     public void appendHoverText(
             ItemStack stack,
             Item.TooltipContext context,
-            TooltipDisplay lines,
-            Consumer<Component> tooltipAdder,
-            TooltipFlag flag) {
-        super.appendHoverText(stack, context, lines, tooltipAdder, flag);
+            List<Component> tooltipAdderLines, TooltipFlag flag) {
+        Consumer<Component> tooltipAdder = tooltipAdderLines::add;
+        super.appendHoverText(stack, context, tooltipAdderLines, flag);
         if (hasMob(stack)) {
             tooltipAdder.accept(Component.translatable("item.mobfarmingsupplies.magic_hat.tooltip_release"));
         } else {

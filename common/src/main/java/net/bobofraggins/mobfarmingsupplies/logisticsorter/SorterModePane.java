@@ -4,7 +4,7 @@ import net.bobofraggins.mobfarmingsupplies.shared.ui.IDialogPane;
 import net.bobofraggins.mobfarmingsupplies.shared.ui.PlayerInventoryPane;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.network.chat.Component;
@@ -30,7 +30,7 @@ class SorterModePane implements IDialogPane {
     @Override public int preferredHeight() { return HEIGHT; }
 
     @Override
-    public void render(GuiGraphicsExtractor g, Font font, int width, int mouseX, int mouseY, float pt) {
+    public void render(GuiGraphics g, Font font, int width, int mouseX, int mouseY, float pt) {
         boolean and = config.andMode();
         ToggleSwitch.draw(g, font, TOGGLE_X, TOGGLE_Y, !and, Component.translatable(
                 and ? "gui.mobfarmingsupplies.toggle.and" : "gui.mobfarmingsupplies.toggle.or"));

@@ -6,10 +6,18 @@
     "IAI"
   ],
   "key": {
-    "I": "minecraft:iron_bars",
-    "A": "minecraft:apple",
-    "B": "minecraft:bread",
-    "C": "minecraft:chest"
+    "I": {
+      "item": "minecraft:iron_bars"
+    },
+    "A": {
+      "item": "minecraft:apple"
+    },
+    "B": {
+      "item": "minecraft:bread"
+    },
+    "C": {
+      "item": "minecraft:chest"
+    }
   },
   "result": {
     "id": "mobfarmingsupplies:picnic_basket",

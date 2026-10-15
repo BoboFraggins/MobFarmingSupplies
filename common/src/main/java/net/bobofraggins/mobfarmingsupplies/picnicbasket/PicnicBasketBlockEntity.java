@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.picnicbasket;
 
+import net.minecraft.core.registries.Registries;
 import net.bobofraggins.mobfarmingsupplies.register.MFSRegistryHelper;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
@@ -14,7 +15,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.util.Util;
+import net.minecraft.Util;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -25,8 +26,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.ContainerOpenersCounter;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import net.bobofraggins.mobfarmingsupplies.shared.nbt.ValueInput;
+import net.bobofraggins.mobfarmingsupplies.shared.nbt.ValueOutput;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
@@ -96,7 +97,7 @@ public class PicnicBasketBlockEntity extends BlockEntity implements MenuProvider
 
     public void startOpen(Player player) {
         if (!isRemoved() && !player.isSpectator()) {
-            openersCounter.incrementOpeners(player, getLevel(), getBlockPos(), getBlockState(), 64.0);
+            openersCounter.incrementOpeners(player, getLevel(), getBlockPos(), getBlockState());
         }
     }
 
@@ -196,28 +197,30 @@ public class PicnicBasketBlockEntity extends BlockEntity implements MenuProvider
     // ── NBT ──────────────────────────────────────────────────────────────────────
 
     @Override
-    protected void saveAdditional(ValueOutput output) {
-        super.saveAdditional(output);
+    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.saveAdditional(tag, registries);
+        ValueOutput output = new ValueOutput(tag, registries);
         List<ItemStack> stacks = new ArrayList<>(SLOT_COUNT);
         for (int i = 0; i < SLOT_COUNT; i++) stacks.add(inventory.getItem(i));
         output.store("Items", ItemStack.OPTIONAL_CODEC.listOf(), stacks);
         output.putBoolean("AutoFeed", autoFeed);
         if (lootTable != null) {
-            output.store("LootTable", LootTable.KEY_CODEC, lootTable);
+            output.store("LootTable", ResourceKey.codec(Registries.LOOT_TABLE), lootTable);
             if (lootTableSeed != 0L) output.putLong("LootTableSeed", lootTableSeed);
         }
     }
 
     @Override
-    protected void loadAdditional(ValueInput input) {
-        super.loadAdditional(input);
+    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.loadAdditional(tag, registries);
+        ValueInput input = new ValueInput(tag, registries);
         input.read("Items", ItemStack.OPTIONAL_CODEC.listOf()).ifPresent(loaded -> {
             for (int i = 0; i < Math.min(loaded.size(), SLOT_COUNT); i++) {
                 inventory.setItem(i, loaded.get(i));
             }
         });
         autoFeed = input.getBooleanOr("AutoFeed", true);
-        lootTable = input.read("LootTable", LootTable.KEY_CODEC).orElse(null);
+        lootTable = input.read("LootTable", ResourceKey.codec(Registries.LOOT_TABLE)).orElse(null);
         lootTableSeed = input.getLongOr("LootTableSeed", 0L);
     }
 

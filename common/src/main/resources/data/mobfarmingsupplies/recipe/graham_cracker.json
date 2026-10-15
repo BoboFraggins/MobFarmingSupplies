@@ -6,8 +6,12 @@
     "WWW"
   ],
   "key": {
-    "W": "minecraft:wheat",
-    "B": "minecraft:experience_bottle"
+    "W": {
+      "item": "minecraft:wheat"
+    },
+    "B": {
+      "item": "minecraft:experience_bottle"
+    }
   },
   "result": {
     "id": "mobfarmingsupplies:graham_cracker",

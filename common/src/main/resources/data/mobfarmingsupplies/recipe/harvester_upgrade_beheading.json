@@ -2,8 +2,12 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    "minecraft:iron_helmet",
-    "mobfarmingsupplies:blank_upgrade"
+    {
+      "item": "minecraft:iron_helmet"
+    },
+    {
+      "item": "mobfarmingsupplies:blank_upgrade"
+    }
   ],
   "result": {
     "count": 1,

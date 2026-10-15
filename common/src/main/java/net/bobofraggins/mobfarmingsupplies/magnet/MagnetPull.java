@@ -101,7 +101,7 @@ public final class MagnetPull {
                 return;
             }
         }
-        player.sendOverlayMessage(Component.translatable("message.mobfarmingsupplies.superconducting_magnet.not_found"));
+        player.displayClientMessage(Component.translatable("message.mobfarmingsupplies.superconducting_magnet.not_found"), true);
     }
 
     /** {@code stack} switched the other way, with a chime and a message for {@code player}. */
@@ -111,9 +111,9 @@ public final class MagnetPull {
         else stack.remove(Registration.MAGNET_ON.get());
         player.level().playSound(null, player.getX(), player.getY(), player.getZ(),
                 SoundEvents.NOTE_BLOCK_BELL.value(), SoundSource.PLAYERS, 0.4f, on ? 1.6f : 0.9f);
-        player.sendOverlayMessage(Component.translatable(on
+        player.displayClientMessage(Component.translatable(on
                 ? "message.mobfarmingsupplies.superconducting_magnet.on"
-                : "message.mobfarmingsupplies.superconducting_magnet.off"));
+                : "message.mobfarmingsupplies.superconducting_magnet.off"), true);
         return stack;
     }
 }

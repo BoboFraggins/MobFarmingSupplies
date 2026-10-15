@@ -15,8 +15,7 @@ import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
@@ -80,7 +79,7 @@ public class ToiletSeatEntity extends Entity {
         } finally {
             swappingRider = false;
         }
-        player.startRiding(this, true, true);
+        player.startRiding(this, true);
     }
 
     @Override
@@ -198,13 +197,13 @@ public class ToiletSeatEntity extends Entity {
     protected void defineSynchedData(SynchedEntityData.Builder builder) {}
 
     @Override
-    public boolean hurtServer(ServerLevel level, DamageSource source, float damage) {
+    public boolean hurt(DamageSource source, float damage) {
         return false;
     }
 
     @Override
-    protected void readAdditionalSaveData(ValueInput input) {}
+    protected void readAdditionalSaveData(CompoundTag tag) {}
 
     @Override
-    protected void addAdditionalSaveData(ValueOutput output) {}
+    protected void addAdditionalSaveData(CompoundTag tag) {}
 }

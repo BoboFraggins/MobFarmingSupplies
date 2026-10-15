@@ -36,7 +36,7 @@ public final class AnvilCrushingGuide {
                 new GuideRecipe.Step(
                         List.of(new ItemStack(Items.ANVIL), new ItemStack(Items.CHIPPED_ANVIL),
                                 new ItemStack(Items.DAMAGED_ANVIL)),
-                        RecipeIngredientRole.CRAFTING_STATION,
+                        RecipeIngredientRole.CATALYST,
                         Component.translatable("jei.mobfarmingsupplies.anvil_crushing.step.anvil")),
                 new GuideRecipe.Step(
                         new ItemStack(Items.QUARTZ),

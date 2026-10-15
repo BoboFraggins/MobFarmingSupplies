@@ -2,15 +2,14 @@ package net.bobofraggins.mobfarmingsupplies.neoforge.glamping.magichat;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import net.minecraft.client.Minecraft;
+import net.bobofraggins.mobfarmingsupplies.shared.render.ItemModelResolver;
+import net.bobofraggins.mobfarmingsupplies.shared.render.ItemStackRenderState;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
-import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
-import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import top.theillusivec4.curios.api.SlotContext;
@@ -20,17 +19,19 @@ import top.theillusivec4.curios.api.client.ICurioRenderer;
 public class MagicHatCurioRenderer implements ICurioRenderer {
 
     @Override
-    public <S extends LivingEntityRenderState, M extends EntityModel<? super S>> void render(
+    public <T extends LivingEntity, M extends EntityModel<T>> void render(
             ItemStack stack,
             SlotContext slotContext,
             PoseStack poseStack,
-            SubmitNodeCollector collector,
+            RenderLayerParent<T, M> renderLayerParent,
+            MultiBufferSource buffers,
             int light,
-            S renderState,
-            RenderLayerParent<S, M> renderLayerParent,
-            EntityRendererProvider.Context context,
-            float yRotation,
-            float xRotation) {
+            float limbSwing,
+            float limbSwingAmount,
+            float partialTicks,
+            float ageInTicks,
+            float netHeadYaw,
+            float headPitch) {
 
         if (stack.isEmpty()) return;
         M model = renderLayerParent.getModel();
@@ -43,10 +44,8 @@ public class MagicHatCurioRenderer implements ICurioRenderer {
         poseStack.translate(0.0, 1.0, 0.0);
 
         ItemStackRenderState irs = new ItemStackRenderState();
-        Minecraft.getInstance()
-                .getItemModelResolver()
-                .updateForTopItem(irs, stack, ItemDisplayContext.NONE, null, null, 0);
-        irs.submit(poseStack, collector, light, OverlayTexture.NO_OVERLAY, 0);
+        ItemModelResolver.INSTANCE.updateForTopItem(irs, stack, ItemDisplayContext.NONE, null, null, 0);
+        irs.submit(poseStack, buffers, light, OverlayTexture.NO_OVERLAY, 0);
 
         poseStack.popPose();
     }

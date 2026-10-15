@@ -1,12 +1,12 @@
 package net.bobofraggins.mobfarmingsupplies.picnicbasket;
 
+import net.minecraft.nbt.CompoundTag;
 import com.mojang.serialization.MapCodec;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
@@ -27,7 +27,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.Property;
-import net.minecraft.world.level.storage.TagValueOutput;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
@@ -94,7 +93,7 @@ public class PicnicBasketBlock extends BaseEntityBlock {
     }
 
     @Override
-    public VoxelShape getOcclusionShape(BlockState state) {
+    protected VoxelShape getOcclusionShape(BlockState state, BlockGetter level, BlockPos pos) {
         return Shapes.empty();
     }
 
@@ -132,9 +131,9 @@ public class PicnicBasketBlock extends BaseEntityBlock {
                 if (player.isShiftKeyDown()) {
                     boolean newValue = !be.isAutoFeed();
                     be.setAutoFeed(newValue);
-                    sp.sendOverlayMessage(Component.translatable(newValue
+                    sp.displayClientMessage(Component.translatable(newValue
                             ? "message.mobfarmingsupplies.picnic_basket.autofeed_on"
-                            : "message.mobfarmingsupplies.picnic_basket.autofeed_off"));
+                            : "message.mobfarmingsupplies.picnic_basket.autofeed_off"), true);
                 } else {
                     be.unpackLootTable(player);
                     be.startOpen(player);
@@ -155,10 +154,7 @@ public class PicnicBasketBlock extends BaseEntityBlock {
             basket.unpackLootTable(params.getOptionalParameter(LootContextParams.THIS_ENTITY) instanceof Player p ? p : null);
             for (ItemStack drop : drops) {
                 if (drop.getItem() instanceof BlockItem) {
-                    TagValueOutput beOut = TagValueOutput.createWithContext(
-                            ProblemReporter.DISCARDING,
-                            params.getLevel().registryAccess());
-                    basket.saveCustomOnly(beOut);
+                    CompoundTag beOut = basket.saveCustomOnly(params.getLevel().registryAccess());
                     BlockItem.setBlockEntityData(drop, basket.getType(), beOut);
                 }
             }

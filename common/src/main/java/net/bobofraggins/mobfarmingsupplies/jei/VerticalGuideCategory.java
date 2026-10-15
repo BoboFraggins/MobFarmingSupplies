@@ -6,7 +6,7 @@ import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 
 /**
@@ -102,7 +102,7 @@ public class VerticalGuideCategory implements IRecipeCategory<GuideRecipe> {
     public void draw(
             GuideRecipe recipe,
             IRecipeSlotsView recipeSlotsView,
-            GuiGraphicsExtractor guiGraphics,
+            GuiGraphics guiGraphics,
             double mouseX,
             double mouseY) {
         var rows = recipe.rows();
@@ -119,7 +119,7 @@ public class VerticalGuideCategory implements IRecipeCategory<GuideRecipe> {
      * Draws a small downward-pointing triangle (5×3 px) centred horizontally in the background,
      * with its top row at {@code y}.
      */
-    private void drawDownArrow(GuiGraphicsExtractor g, int y) {
+    private void drawDownArrow(GuiGraphics g, int y) {
         int cx = width / 2;
         g.fill(cx - 2, y, cx + 3, y + 1, ARROW_COLOR);
         g.fill(cx - 1, y + 1, cx + 2, y + 2, ARROW_COLOR);
@@ -127,7 +127,7 @@ public class VerticalGuideCategory implements IRecipeCategory<GuideRecipe> {
     }
 
     /** Draws a small plus sign (5×5 px) centred on ({@code cx}, {@code cy}). */
-    private static void drawPlus(GuiGraphicsExtractor g, int cx, int cy) {
+    private static void drawPlus(GuiGraphics g, int cx, int cy) {
         g.fill(cx - 2, cy, cx + 3, cy + 1, ARROW_COLOR);
         g.fill(cx, cy - 2, cx + 1, cy + 3, ARROW_COLOR);
     }

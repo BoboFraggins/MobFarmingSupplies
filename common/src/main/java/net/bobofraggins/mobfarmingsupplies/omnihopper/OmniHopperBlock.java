@@ -1,14 +1,16 @@
 package net.bobofraggins.mobfarmingsupplies.omnihopper;
 
-import net.minecraft.world.level.redstone.Orientation;
-import net.bobofraggins.mobfarmingsupplies.shared.TransferSchedule;
 import com.mojang.serialization.MapCodec;
 import dev.architectury.registry.menu.MenuRegistry;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
+import net.bobofraggins.mobfarmingsupplies.shared.TransferSchedule;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
@@ -16,6 +18,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -23,14 +26,10 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
-import net.minecraft.world.level.storage.TagValueOutput;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Omnidirectional Hopper — moves items, fluids, energy and Mekanism chemicals from its INPUT
@@ -74,9 +73,7 @@ public class OmniHopperBlock extends BaseEntityBlock {
         if (be instanceof OmniHopperBlockEntity hopper) {
             for (ItemStack drop : drops) {
                 if (drop.getItem() instanceof BlockItem) {
-                    TagValueOutput beOut = TagValueOutput.createWithContext(
-                            ProblemReporter.DISCARDING, params.getLevel().registryAccess());
-                    hopper.saveCustomOnly(beOut);
+                    CompoundTag beOut = hopper.saveCustomOnly(params.getLevel().registryAccess());
                     BlockItem.setBlockEntityData(drop, hopper.getType(), beOut);
                 }
             }
@@ -96,8 +93,8 @@ public class OmniHopperBlock extends BaseEntityBlock {
     /** A neighbour changed: try moving things again straight away (see {@link TransferSchedule}). */
     @Override
     protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block block,
-                                   @Nullable Orientation orientation, boolean movedByPiston) {
-        super.neighborChanged(state, level, pos, block, orientation, movedByPiston);
+                                   BlockPos neighborPos, boolean movedByPiston) {
+        super.neighborChanged(state, level, pos, block, neighborPos, movedByPiston);
         TransferSchedule.resetAt(level, pos);
     }
 
@@ -119,5 +116,11 @@ public class OmniHopperBlock extends BaseEntityBlock {
             MenuRegistry.openExtendedMenu(sp, be, buf -> buf.writeBlockPos(pos));
         }
         return InteractionResult.SUCCESS;
+    }
+
+    /** Drawn from its block model (1.21.1's {@code BaseEntityBlock} defaults to invisible). */
+    @Override
+    protected RenderShape getRenderShape(BlockState state) {
+        return RenderShape.MODEL;
     }
 }

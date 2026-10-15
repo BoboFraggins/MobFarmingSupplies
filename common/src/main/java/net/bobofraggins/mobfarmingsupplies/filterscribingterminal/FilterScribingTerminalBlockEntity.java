@@ -1,5 +1,7 @@
 package net.bobofraggins.mobfarmingsupplies.filterscribingterminal;
 
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
 import net.bobofraggins.mobfarmingsupplies.register.MFSRegistryHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.Containers;
@@ -7,8 +9,8 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import net.bobofraggins.mobfarmingsupplies.shared.nbt.ValueInput;
+import net.bobofraggins.mobfarmingsupplies.shared.nbt.ValueOutput;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,22 +46,23 @@ public class FilterScribingTerminalBlockEntity extends BlockEntity {
     public void removeInputListener(Runnable listener) { inputListeners.remove(listener); }
 
     @Override
-    protected void saveAdditional(ValueOutput output) {
-        super.saveAdditional(output);
+    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.saveAdditional(tag, registries);
+        ValueOutput output = new ValueOutput(tag, registries);
         output.store(TAG_INPUT, ItemStack.OPTIONAL_CODEC, input.getItem(0));
     }
 
     @Override
-    protected void loadAdditional(ValueInput in) {
-        super.loadAdditional(in);
+    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.loadAdditional(tag, registries);
+        ValueInput in = new ValueInput(tag, registries);
         input.setItem(0, in.read(TAG_INPUT, ItemStack.OPTIONAL_CODEC).orElse(ItemStack.EMPTY));
     }
 
-    @Override
+    /** Called by the block when it is removed (see its {@code onRemove}). */
     public void preRemoveSideEffects(BlockPos pos, BlockState state) {
         if (level != null && !level.isClientSide()) {
             Containers.dropContents(level, pos, input);
         }
-        super.preRemoveSideEffects(pos, state);
     }
 }

@@ -4,7 +4,6 @@ import dev.architectury.fluid.FluidStack;
 import net.bobofraggins.mobfarmingsupplies.register.MFSRegistryHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -20,8 +19,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import net.bobofraggins.mobfarmingsupplies.shared.nbt.ValueInput;
+import net.bobofraggins.mobfarmingsupplies.shared.nbt.ValueOutput;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -207,8 +206,9 @@ public class TankBlockEntity extends BlockEntity implements MenuProvider {
     private static final String TAG_TRANSFER = "Transfer";
 
     @Override
-    protected void saveAdditional(ValueOutput output) {
-        super.saveAdditional(output);
+    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.saveAdditional(tag, registries);
+        ValueOutput output = new ValueOutput(tag, registries);
         if (!storedFluid.isEmpty()) {
             output.store(TAG_FLUID, FluidStack.CODEC, storedFluid);
         }
@@ -219,8 +219,9 @@ public class TankBlockEntity extends BlockEntity implements MenuProvider {
     }
 
     @Override
-    protected void loadAdditional(ValueInput input) {
-        super.loadAdditional(input);
+    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.loadAdditional(tag, registries);
+        ValueInput input = new ValueInput(tag, registries);
         storedFluid = input.read(TAG_FLUID, FluidStack.CODEC)
                 .filter(f -> !f.isEmpty())
                 .map(f -> f.copyWithAmount(1))
@@ -243,7 +244,7 @@ public class TankBlockEntity extends BlockEntity implements MenuProvider {
     }
 
     @Override
-    protected void applyImplicitComponents(DataComponentGetter input) {
+    protected void applyImplicitComponents(BlockEntity.DataComponentInput input) {
         super.applyImplicitComponents(input);
         TankContents contents = input.get(MFSRegistryHelper.<TankContents>getDataComponentType("tank_contents"));
         if (contents != null) {
@@ -256,9 +257,9 @@ public class TankBlockEntity extends BlockEntity implements MenuProvider {
 
     @SuppressWarnings("deprecation")
     @Override
-    public void removeComponentsFromTag(ValueOutput output) {
-        output.discard(TAG_FLUID);
-        output.discard(TAG_AMOUNT);
+    public void removeComponentsFromTag(CompoundTag tag) {
+        tag.remove(TAG_FLUID);
+        tag.remove(TAG_AMOUNT);
     }
 
     // ── Client sync ────────────────────────────────────────────────────────────

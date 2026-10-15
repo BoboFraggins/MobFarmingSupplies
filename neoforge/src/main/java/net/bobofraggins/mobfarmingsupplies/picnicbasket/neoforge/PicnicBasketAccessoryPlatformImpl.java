@@ -27,7 +27,7 @@ public final class PicnicBasketAccessoryPlatformImpl {
     private PicnicBasketAccessoryPlatformImpl() {}
 
     public static ItemStack findAccessoryBasket(Player player) {
-        ICuriosItemHandler inv = CuriosApi.getCuriosInventoryOrNull(player);
+        ICuriosItemHandler inv = CuriosApi.getCuriosInventory(player).orElse(null);
         if (inv == null) return ItemStack.EMPTY;
         return inv.findFirstCurio(PicnicBasketItemUtils::isBasket)
                 .map(SlotResult::stack)
@@ -35,7 +35,7 @@ public final class PicnicBasketAccessoryPlatformImpl {
     }
 
     public static void writeAccessoryBasket(Player player, ItemStack stack) {
-        ICuriosItemHandler inv = CuriosApi.getCuriosInventoryOrNull(player);
+        ICuriosItemHandler inv = CuriosApi.getCuriosInventory(player).orElse(null);
         if (inv == null) return;
         inv.findFirstCurio(PicnicBasketItemUtils::isBasket).ifPresent(result ->
                 inv.setEquippedCurio(result.slotContext().identifier(), result.slotContext().index(), stack));

@@ -27,12 +27,12 @@ public final class AnvilCrushing {
         for (ItemEntity ie : items) {
             ItemStack stack = ie.getItem();
             SingleRecipeInput input = new SingleRecipeInput(stack);
-            Optional<RecipeHolder<AnvilCrushingRecipe>> match = level.recipeAccess()
+            Optional<RecipeHolder<AnvilCrushingRecipe>> match = level.getRecipeManager()
                     .getRecipeFor(Registration.ANVIL_CRUSHING_TYPE.get(), input, level);
             if (match.isEmpty()) continue;
 
             AnvilCrushingRecipe recipe = match.get().value();
-            ItemStack result = recipe.assemble(input);
+            ItemStack result = recipe.assemble(input, level.registryAccess());
             int remaining = stack.getCount() * recipe.resultCountPerItem();
             ie.discard();
             while (remaining > 0) {

@@ -7,7 +7,7 @@ import net.bobofraggins.mobfarmingsupplies.shared.ui.PlayerInventoryPane;
 import net.bobofraggins.mobfarmingsupplies.shared.ui.ToggleSwitch;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -40,10 +40,10 @@ class VoidExcessPane implements IDialogPane {
     }
 
     @Override
-    public void render(GuiGraphicsExtractor g, Font font, int width, int mouseX, int mouseY, float pt) {
+    public void render(GuiGraphics g, Font font, int width, int mouseX, int mouseY, float pt) {
         boolean on = isOn();
         int tx = toggleX(font);
-        g.text(font, LABEL, tx - LABEL_GAP - font.width(LABEL), (HEIGHT - font.lineHeight) / 2 + 1, TEXT_COLOR, false);
+        g.drawString(font, LABEL, tx - LABEL_GAP - font.width(LABEL), (HEIGHT - font.lineHeight) / 2 + 1, TEXT_COLOR, false);
         ToggleSwitch.draw(g, font, tx, TOGGLE_Y, on, Component.translatable(
                 on ? "gui.mobfarmingsupplies.toggle.on" : "gui.mobfarmingsupplies.toggle.off"));
     }

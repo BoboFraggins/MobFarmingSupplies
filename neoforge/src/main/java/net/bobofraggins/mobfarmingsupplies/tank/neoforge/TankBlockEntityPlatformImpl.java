@@ -4,15 +4,11 @@ import dev.architectury.fluid.FluidStack;
 import dev.architectury.hooks.fluid.forge.FluidStackHooksForge;
 import net.bobofraggins.mobfarmingsupplies.tank.TankBlockEntity;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.access.ItemAccess;
-import net.neoforged.neoforge.transfer.fluid.FluidResource;
-import net.neoforged.neoforge.transfer.item.VanillaContainerWrapper;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import org.jetbrains.annotations.Nullable;
 
 public final class TankBlockEntityPlatformImpl {
@@ -21,61 +17,40 @@ public final class TankBlockEntityPlatformImpl {
 
     @Nullable
     public static ItemStack tryTransferFluidWithItem(TankBlockEntity be, ItemStack input) {
-        SimpleContainer tmp = new SimpleContainer(input.copy());
-        var wrapper    = VanillaContainerWrapper.of(tmp);
-        var itemAccess = ItemAccess.forHandlerIndex(wrapper, 0).oneByOne();
-        ResourceHandler<FluidResource> cap =
-                tmp.getItem(0).getCapability(Capabilities.Fluid.ITEM, itemAccess);
-        if (cap == null) return null;
+        IFluidHandlerItem cap = input.copyWithCount(1).getCapability(Capabilities.FluidHandler.ITEM);
+        if (cap == null || cap.getTanks() == 0) return null;
 
-        FluidResource containedRes = cap.getResource(0);
-        long containedAmt = cap.getAmountAsLong(0);
+        net.neoforged.neoforge.fluids.FluidStack contained = cap.getFluidInTank(0);
 
-        if (!containedRes.isEmpty() && containedAmt > 0) {
+        if (!contained.isEmpty()) {
             // Item has fluid → drain into tank
-            FluidStack archFluid = FluidStackHooksForge.fromForge(containedRes.toStack(1));
+            FluidStack archFluid = FluidStackHooksForge.fromForge(contained.copyWithAmount(1));
             if (!be.storedFluid.isEmpty()
                     && (!be.storedFluid.isFluidEqual(archFluid) || !be.storedFluid.isComponentEqual(archFluid))) {
                 return null;
             }
             long space = Math.max(0, be.getCapacity() - be.amount);
-            int toDrain = (int) Math.min(containedAmt, Math.min(space, Integer.MAX_VALUE));
+            int toDrain = (int) Math.min(contained.getAmount(), Math.min(space, Integer.MAX_VALUE));
             if (toDrain <= 0) return null;
 
-            int drained;
-            try (Transaction tx = Transaction.openRoot()) {
-                drained = cap.extract(0, containedRes, toDrain, tx);
-                if (drained > 0) tx.commit();
-            }
+            int drained = cap.drain(contained.copyWithAmount(toDrain), IFluidHandler.FluidAction.EXECUTE).getAmount();
             if (drained <= 0) return null;
 
             be.insert(FluidStack.create(archFluid, drained), drained, false);
-            return tmp.getItem(0);
+            return cap.getContainer();
 
         } else {
             // Item is empty → fill from tank
             if (be.storedFluid.isEmpty() || be.amount == 0) return null;
 
-            net.neoforged.neoforge.fluids.FluidStack neoStored =
-                    FluidStackHooksForge.toForge(be.storedFluid.copyWithAmount(1));
-            FluidResource storedRes = FluidResource.of(neoStored);
+            int canFill = (int) Math.min(be.amount, Integer.MAX_VALUE);
+            net.neoforged.neoforge.fluids.FluidStack offered =
+                    FluidStackHooksForge.toForge(be.storedFluid.copyWithAmount(canFill));
+            int filled = cap.fill(offered, IFluidHandler.FluidAction.EXECUTE);
+            if (filled <= 0) return null;
 
-            if (!cap.isValid(0, storedRes)) return null;
-            long capCapacity = cap.getCapacityAsLong(0, storedRes);
-            int canFill = (int) Math.min(be.amount, Math.min(capCapacity, Integer.MAX_VALUE));
-            if (canFill <= 0) return null;
-
-            int actualInserted;
-            try (Transaction tx = Transaction.openRoot()) {
-                actualInserted = cap.insert(0, storedRes, canFill, tx);
-                if (actualInserted > 0) {
-                    be.extract(actualInserted, false);
-                    tx.commit();
-                }
-            }
-            if (actualInserted <= 0) return null;
-
-            return tmp.getItem(0);
+            be.extract(filled, false);
+            return cap.getContainer();
         }
     }
 
@@ -85,6 +60,6 @@ public final class TankBlockEntityPlatformImpl {
 
     public static boolean isFluidContainer(ItemStack stack) {
         return !stack.isEmpty()
-                && stack.getCapability(Capabilities.Fluid.ITEM, ItemAccess.forStack(stack)) != null;
+                && stack.copyWithCount(1).getCapability(Capabilities.FluidHandler.ITEM) != null;
     }
 }

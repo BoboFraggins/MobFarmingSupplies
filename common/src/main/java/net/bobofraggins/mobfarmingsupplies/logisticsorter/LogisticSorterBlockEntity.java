@@ -24,8 +24,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import net.bobofraggins.mobfarmingsupplies.shared.nbt.ValueInput;
+import net.bobofraggins.mobfarmingsupplies.shared.nbt.ValueOutput;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -204,8 +204,9 @@ public class LogisticSorterBlockEntity extends BlockEntity implements SideOrient
     // ── NBT ──────────────────────────────────────────────────────────────────────
 
     @Override
-    protected void saveAdditional(ValueOutput output) {
-        super.saveAdditional(output);
+    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.saveAdditional(tag, registries);
+        ValueOutput output = new ValueOutput(tag, registries);
         SideLayout.save(output, sideOrientation);
         output.putInt("Sides", packedSides());
         output.putBoolean("AndMode", andMode);
@@ -215,8 +216,9 @@ public class LogisticSorterBlockEntity extends BlockEntity implements SideOrient
     }
 
     @Override
-    protected void loadAdditional(ValueInput input) {
-        super.loadAdditional(input);
+    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.loadAdditional(tag, registries);
+        ValueInput input = new ValueInput(tag, registries);
         sideOrientation = SideLayout.load(input);
         int packed = input.getIntOr("Sides", 0);
         for (Direction d : Direction.values()) sides[d.get3DDataValue()] = unpackSide(packed, d);

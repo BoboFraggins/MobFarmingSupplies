@@ -1,13 +1,14 @@
 package net.bobofraggins.mobfarmingsupplies.glamping.present;
 
+import net.minecraft.core.HolderLookup;
 import net.bobofraggins.mobfarmingsupplies.register.MFSRegistryHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import net.bobofraggins.mobfarmingsupplies.shared.nbt.ValueInput;
+import net.bobofraggins.mobfarmingsupplies.shared.nbt.ValueOutput;
 import org.jetbrains.annotations.Nullable;
 import net.minecraft.core.registries.BuiltInRegistries;
 
@@ -47,8 +48,9 @@ public class PresentBlockEntity extends BlockEntity {
     }
 
     @Override
-    protected void saveAdditional(ValueOutput output) {
-        super.saveAdditional(output);
+    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.saveAdditional(tag, registries);
+        ValueOutput output = new ValueOutput(tag, registries);
         if (wrappedState != null) {
             output.store(TAG_WRAPPED_STATE, CompoundTag.CODEC, NbtUtils.writeBlockState(wrappedState));
         }
@@ -58,11 +60,12 @@ public class PresentBlockEntity extends BlockEntity {
     }
 
     @Override
-    protected void loadAdditional(ValueInput input) {
-        super.loadAdditional(input);
+    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.loadAdditional(tag, registries);
+        ValueInput input = new ValueInput(tag, registries);
         wrappedEntityData = input.read(TAG_WRAPPED_ENTITY, CompoundTag.CODEC).orElse(null);
         wrappedState = input.read(TAG_WRAPPED_STATE, CompoundTag.CODEC)
-                .map(tag -> NbtUtils.readBlockState(BuiltInRegistries.BLOCK, tag))
+                .map(saved -> NbtUtils.readBlockState(BuiltInRegistries.BLOCK.asLookup(), saved))
                 .orElse(null);
     }
 }

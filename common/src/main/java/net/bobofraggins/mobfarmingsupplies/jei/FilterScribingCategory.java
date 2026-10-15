@@ -17,7 +17,7 @@ import net.bobofraggins.mobfarmingsupplies.filterscribingterminal.ScribingContro
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.bobofraggins.mobfarmingsupplies.shared.ui.Dialog;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
@@ -79,7 +79,7 @@ public class FilterScribingCategory implements IRecipeCategory<FilterScribingExa
     public void setRecipe(IRecipeLayoutBuilder builder, FilterScribingExamples.Recipe recipe, IFocusGroup focuses) {
         var examples = recipe.examples();
         builder.addSlot(RecipeIngredientRole.INPUT, FilterScribingTerminalMenu.INPUT_X, FilterScribingTerminalMenu.SLOT_Y)
-                .add(new ItemStack(Registration.BLANK_FILTER.get()));
+                .addItemStack(new ItemStack(Registration.BLANK_FILTER.get()));
         // Render-only: the example items aren't ingredients, so they shouldn't gain a JEI "use".
         IRecipeSlotBuilder matcher = builder.addSlot(RecipeIngredientRole.RENDER_ONLY, ghostX, ghostY)
                 .addItemStacks(examples.stream().map(FilterScribingExamples.Example::matcherItem).toList());
@@ -93,7 +93,7 @@ public class FilterScribingCategory implements IRecipeCategory<FilterScribingExa
     public void draw(
             FilterScribingExamples.Recipe recipe,
             IRecipeSlotsView slots,
-            GuiGraphicsExtractor g,
+            GuiGraphics g,
             double mouseX,
             double mouseY) {
         FilterScribingExamples.Example shown = currentExample(recipe, slots);

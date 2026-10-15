@@ -5,17 +5,14 @@ import net.bobofraggins.mobfarmingsupplies.glamping.NaturalSpawnRolls;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.ProblemReporter;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.monster.zombie.Zombie;
+import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.storage.TagValueOutput;
 
 /**
  * Gives a random 5% of naturally-spawning zombies a Magic Hat containing a surprise mob.
@@ -48,12 +45,12 @@ public final class MagicHatZombieHandler {
 
         EntityType<?> mobType = pickMobType(random);
         Level level = zombie.level();
-        Entity mob = mobType.create(level, EntitySpawnReason.TRIGGERED);
+        Entity mob = mobType.create(level);
         if (mob == null) return;
 
-        TagValueOutput tagOut = TagValueOutput.createWithoutContext(ProblemReporter.DISCARDING);
+        CompoundTag tagOut = new CompoundTag();
         if (!mob.save(tagOut)) return;
-        CompoundTag mobTag = tagOut.buildResult();
+        CompoundTag mobTag = tagOut;
 
         CompoundTag wrapper = new CompoundTag();
         wrapper.put(MagicHatItem.MOB_KEY, mobTag);

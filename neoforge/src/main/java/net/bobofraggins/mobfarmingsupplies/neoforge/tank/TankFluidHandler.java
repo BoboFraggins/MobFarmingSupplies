@@ -2,10 +2,10 @@ package net.bobofraggins.mobfarmingsupplies.neoforge.tank;
 
 import dev.architectury.fluid.FluidStack;
 import dev.architectury.hooks.fluid.forge.FluidStackHooksForge;
-import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.fluid.FluidResource;
-import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
-import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+import net.bobofraggins.mobfarmingsupplies.neoforge.transfer.api.ResourceHandler;
+import net.bobofraggins.mobfarmingsupplies.neoforge.transfer.api.fluid.FluidResource;
+import net.bobofraggins.mobfarmingsupplies.neoforge.transfer.api.transaction.SnapshotJournal;
+import net.bobofraggins.mobfarmingsupplies.neoforge.transfer.api.transaction.TransactionContext;
 import net.bobofraggins.mobfarmingsupplies.tank.TankBlockEntity;
 
 /**

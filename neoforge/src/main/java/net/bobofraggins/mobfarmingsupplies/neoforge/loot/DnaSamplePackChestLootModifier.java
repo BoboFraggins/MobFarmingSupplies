@@ -6,7 +6,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.bobofraggins.mobfarmingsupplies.MFSConfig;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -50,8 +50,8 @@ public class DnaSamplePackChestLootModifier extends LootModifier {
     @Nullable private transient Item resolvedItem;
     private transient boolean itemResolved = false;
 
-    protected DnaSamplePackChestLootModifier(LootItemCondition[] conditions, int priority, String itemId, String chanceTier) {
-        super(conditions, priority);
+    protected DnaSamplePackChestLootModifier(LootItemCondition[] conditions, String itemId, String chanceTier) {
+        super(conditions);
         this.itemId = itemId;
         this.chanceTier = chanceTier;
     }
@@ -60,9 +60,9 @@ public class DnaSamplePackChestLootModifier extends LootModifier {
     private Item getItem() {
         if (!itemResolved) {
             itemResolved = true;
-            Identifier rl = Identifier.tryParse(itemId);
+            ResourceLocation rl = ResourceLocation.tryParse(itemId);
             if (rl != null) {
-                Item found = BuiltInRegistries.ITEM.getValue(rl);
+                Item found = BuiltInRegistries.ITEM.get(rl);
                 resolvedItem = (found != null && found != Items.AIR) ? found : null;
             }
         }

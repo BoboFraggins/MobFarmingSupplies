@@ -2,7 +2,7 @@ package net.bobofraggins.mobfarmingsupplies.absorptionhopper;
 
 import net.bobofraggins.mobfarmingsupplies.shared.ui.IDialogPane;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 
 /**
@@ -35,10 +35,10 @@ public class OffsetControlsPane implements IDialogPane {
 
     @Override
     public void render(
-            GuiGraphicsExtractor g, Font font, int width, int localMouseX, int localMouseY, float partialTick) {
-        g.text(font, Component.literal("Pickup Zone:"), 8, 4, TEXT_COLOR, false);
-        g.text(font, Component.literal("X"), AXIS_LETTER_X_X, LABEL_Y, TEXT_COLOR, false);
-        g.text(font, Component.literal("Y"), AXIS_LETTER_X_Y, LABEL_Y, TEXT_COLOR, false);
-        g.text(font, Component.literal("Z"), AXIS_LETTER_X_Z, LABEL_Y, TEXT_COLOR, false);
+            GuiGraphics g, Font font, int width, int localMouseX, int localMouseY, float partialTick) {
+        g.drawString(font, Component.literal("Pickup Zone:"), 8, 4, TEXT_COLOR, false);
+        g.drawString(font, Component.literal("X"), AXIS_LETTER_X_X, LABEL_Y, TEXT_COLOR, false);
+        g.drawString(font, Component.literal("Y"), AXIS_LETTER_X_Y, LABEL_Y, TEXT_COLOR, false);
+        g.drawString(font, Component.literal("Z"), AXIS_LETTER_X_Z, LABEL_Y, TEXT_COLOR, false);
     }
 }

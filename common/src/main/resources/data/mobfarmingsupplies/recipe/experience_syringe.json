@@ -1,9 +1,15 @@
 {
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
-    "minecraft:glass",
-    "minecraft:bucket",
-    "minecraft:iron_ingot"
+    {
+      "item": "minecraft:glass"
+    },
+    {
+      "item": "minecraft:bucket"
+    },
+    {
+      "item": "minecraft:iron_ingot"
+    }
   ],
   "result": {
     "id": "mobfarmingsupplies:experience_syringe",

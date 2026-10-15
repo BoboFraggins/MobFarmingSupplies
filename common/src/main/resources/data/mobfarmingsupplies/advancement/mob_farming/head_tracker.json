@@ -164,19 +164,6 @@
         ]
       }
     },
-    "camel_husk_head": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "items": "mobfarmingsupplies:mob_head",
-            "components": {
-              "mobfarmingsupplies:mob_head_type": "minecraft:camel_husk"
-            }
-          }
-        ]
-      }
-    },
     "cat_head": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
@@ -216,19 +203,6 @@
         ]
       }
     },
-    "copper_golem_head": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "items": "mobfarmingsupplies:mob_head",
-            "components": {
-              "mobfarmingsupplies:mob_head_type": "minecraft:copper_golem"
-            }
-          }
-        ]
-      }
-    },
     "cow_head": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
@@ -237,19 +211,6 @@
             "items": "mobfarmingsupplies:mob_head",
             "components": {
               "mobfarmingsupplies:mob_head_type": "minecraft:cow"
-            }
-          }
-        ]
-      }
-    },
-    "creaking_head": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "items": "mobfarmingsupplies:mob_head",
-            "components": {
-              "mobfarmingsupplies:mob_head_type": "minecraft:creaking"
             }
           }
         ]
@@ -398,19 +359,6 @@
         ]
       }
     },
-    "happy_ghast_head": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "items": "mobfarmingsupplies:mob_head",
-            "components": {
-              "mobfarmingsupplies:mob_head_type": "minecraft:happy_ghast"
-            }
-          }
-        ]
-      }
-    },
     "hoglin_head": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
@@ -549,19 +497,6 @@
             "items": "mobfarmingsupplies:mob_head",
             "components": {
               "mobfarmingsupplies:mob_head_type": "minecraft:panda"
-            }
-          }
-        ]
-      }
-    },
-    "parched_head": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "items": "mobfarmingsupplies:mob_head",
-            "components": {
-              "mobfarmingsupplies:mob_head_type": "minecraft:parched"
             }
           }
         ]
@@ -976,9 +911,6 @@
       "camel_head"
     ],
     [
-      "camel_husk_head"
-    ],
-    [
       "cat_head"
     ],
     [
@@ -988,13 +920,7 @@
       "chicken_head"
     ],
     [
-      "copper_golem_head"
-    ],
-    [
       "cow_head"
-    ],
-    [
-      "creaking_head"
     ],
     [
       "dolphin_head"
@@ -1030,9 +956,6 @@
       "guardian_head"
     ],
     [
-      "happy_ghast_head"
-    ],
-    [
       "hoglin_head"
     ],
     [
@@ -1064,9 +987,6 @@
     ],
     [
       "panda_head"
-    ],
-    [
-      "parched_head"
     ],
     [
       "parrot_head"

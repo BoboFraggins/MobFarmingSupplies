@@ -2,11 +2,10 @@ package net.bobofraggins.mobfarmingsupplies.tank;
 
 import net.bobofraggins.mobfarmingsupplies.shared.ui.Dialog;
 import net.bobofraggins.mobfarmingsupplies.shared.ui.PlayerInventoryPane;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
 /**
@@ -25,23 +24,25 @@ import net.minecraft.world.entity.player.Inventory;
  */
 public class TankScreen extends AbstractContainerScreen<TankMenu> {
 
-    private static final Identifier GHOST_BUCKET  =
-            Identifier.fromNamespaceAndPath("mobfarmingsupplies", "textures/item/bucket_ghost.png");
-    private static final Identifier GHOST_BOTTLE  =
-            Identifier.fromNamespaceAndPath("mobfarmingsupplies", "textures/item/glass_bottle_ghost.png");
-    private static final Identifier GHOST_SYRINGE =
-            Identifier.fromNamespaceAndPath("mobfarmingsupplies", "textures/item/experience_syringe_ghost.png");
+    private static final ResourceLocation GHOST_BUCKET  =
+            ResourceLocation.fromNamespaceAndPath("mobfarmingsupplies", "textures/item/bucket_ghost.png");
+    private static final ResourceLocation GHOST_BOTTLE  =
+            ResourceLocation.fromNamespaceAndPath("mobfarmingsupplies", "textures/item/glass_bottle_ghost.png");
+    private static final ResourceLocation GHOST_SYRINGE =
+            ResourceLocation.fromNamespaceAndPath("mobfarmingsupplies", "textures/item/experience_syringe_ghost.png");
 
     private static final int SETTINGS_PANE_H = 71;
 
     private final Dialog dialog;
 
     public TankScreen(TankMenu menu, Inventory inv, Component title) {
+        super(menu, inv, title);
         Dialog d = new Dialog(
                 Dialog.blankPane(PlayerInventoryPane.WIDTH, SETTINGS_PANE_H),
                 new PlayerInventoryPane(TankMenu.INV_START_X));
-        super(menu, inv, title, d.totalWidth(), d.totalHeight());
         dialog = d;
+        imageWidth = d.totalWidth();
+        imageHeight = d.totalHeight();
     }
 
     @Override
@@ -51,13 +52,13 @@ public class TankScreen extends AbstractContainerScreen<TankMenu> {
     }
 
     @Override
-    public void extractRenderState(GuiGraphicsExtractor g, int mouseX, int mouseY, float partialTick) {
-        extractBackground(g, mouseX, mouseY, partialTick);
-        super.extractRenderState(g, mouseX, mouseY, partialTick);
+    public void render(GuiGraphics g, int mouseX, int mouseY, float partialTick) {
+        super.render(g, mouseX, mouseY, partialTick);
+        renderTooltip(g, mouseX, mouseY);
     }
 
     @Override
-    public void extractContents(GuiGraphicsExtractor g, int mouseX, int mouseY, float partialTick) {
+    protected void renderBg(GuiGraphics g, float partialTick, int mouseX, int mouseY) {
         dialog.render(g, font, title, mouseX, mouseY, partialTick);
 
         int x = leftPos;
@@ -72,30 +73,28 @@ public class TankScreen extends AbstractContainerScreen<TankMenu> {
             long gameTime = this.minecraft != null && this.minecraft.level != null
                     ? this.minecraft.level.getGameTime() : 0L;
             int phase = (int) ((gameTime / 30) % 3); // 30 ticks ≈ 1.5 s
-            Identifier ghostTex = switch (phase) {
+            ResourceLocation ghostTex = switch (phase) {
                 case 0  -> GHOST_BUCKET;
                 case 1  -> GHOST_BOTTLE;
                 default -> GHOST_SYRINGE;
             };
-            g.blit(RenderPipelines.GUI_TEXTURED, ghostTex,
+            g.blit(ghostTex,
                     x + TankMenu.FLUID_IN_X, y + TankMenu.FLUID_IN_Y,
                     0, 0, 16, 16, 16, 16);
         }
 
         // Down-arrow between the two slots
         drawDownArrow(g, x + TankMenu.FLUID_IN_X, y + TankMenu.FLUID_IN_Y + 18);
-
-        super.extractContents(g, mouseX, mouseY, partialTick);
     }
 
     @Override
-    protected void extractLabels(GuiGraphicsExtractor g, int mouseX, int mouseY) {
+    protected void renderLabels(GuiGraphics g, int mouseX, int mouseY) {
         // Title is drawn by Dialog; suppress the default title/inventory labels.
     }
 
     // ── Drawing helpers ───────────────────────────────────────────────────────────
 
-    private static void drawSlot(GuiGraphicsExtractor g, int sx, int sy) {
+    private static void drawSlot(GuiGraphics g, int sx, int sy) {
         g.fill(sx,      sy,      sx + 16, sy + 1,  0xFF373737); // top
         g.fill(sx,      sy + 1,  sx + 1,  sy + 16, 0xFF373737); // left
         g.fill(sx,      sy + 16, sx + 17, sy + 17, 0xFFFFFFFF); // bottom
@@ -103,7 +102,7 @@ public class TankScreen extends AbstractContainerScreen<TankMenu> {
         g.fill(sx + 1,  sy + 1,  sx + 16, sy + 16, 0xFF8B8B8B); // interior
     }
 
-    private static void drawDownArrow(GuiGraphicsExtractor g, int gapX, int gapY) {
+    private static void drawDownArrow(GuiGraphics g, int gapX, int gapY) {
         int cx  = gapX + 8;
         int top = gapY + 3;
         g.fill(cx - 1, top,      cx + 1, top + 9,  0xFF555555); // stem

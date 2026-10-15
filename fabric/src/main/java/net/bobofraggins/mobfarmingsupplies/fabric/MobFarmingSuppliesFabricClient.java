@@ -1,45 +1,28 @@
 package net.bobofraggins.mobfarmingsupplies.fabric;
 
-import com.mojang.serialization.MapCodec;
 import dev.architectury.platform.Platform;
+import dev.architectury.registry.client.level.entity.EntityRendererRegistry;
 import dev.architectury.registry.client.rendering.BlockEntityRendererRegistry;
-import java.lang.reflect.Field;
-import net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommon;
 import net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommonClient;
 import net.bobofraggins.mobfarmingsupplies.client.model.fabric.ExtraBlockModelsImpl;
 import net.bobofraggins.mobfarmingsupplies.cloneomatic.CloneOMaticBlockEntityRenderer;
-import net.bobofraggins.mobfarmingsupplies.client.model.AnimatedItemModel;
 import net.bobofraggins.mobfarmingsupplies.enderinhibitor.EnderInhibitorBlockEntityRenderer;
-import net.bobofraggins.mobfarmingsupplies.enderinhibitor.InhibitorItemRenderer;
-import net.minecraft.client.renderer.item.ItemModel;
-import net.minecraft.client.renderer.item.ItemModels;
 import net.bobofraggins.mobfarmingsupplies.fan.FanBlockEntityRenderer;
-import net.bobofraggins.mobfarmingsupplies.glamping.magichat.MagicHatHelmetLayer;
 import net.bobofraggins.mobfarmingsupplies.glamping.magichat.fabric.MagicHatTrinketClientSetup;
 import net.bobofraggins.mobfarmingsupplies.glamping.present.PresentRenderer;
 import net.bobofraggins.mobfarmingsupplies.mobharvester.MobHarvesterRenderer;
+import net.bobofraggins.mobfarmingsupplies.mobhead.MobHeadBlockEntityRenderer;
 import net.bobofraggins.mobfarmingsupplies.picnicbasket.PicnicBasketRenderer;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
+import net.bobofraggins.mobfarmingsupplies.shared.render.SpecialItemRenderers;
+import net.bobofraggins.mobfarmingsupplies.tank.TankTier;
 import net.bobofraggins.mobfarmingsupplies.tank.fabric.TankItemRenderer;
-import net.bobofraggins.mobfarmingsupplies.logisticsorter.LogisticSorterItemRenderer;
-import net.bobofraggins.mobfarmingsupplies.omnihopper.OmniHopperItemRenderer;
-import net.bobofraggins.mobfarmingsupplies.mobhead.MobHeadBlockEntityRenderer;
-import net.bobofraggins.mobfarmingsupplies.mobhead.MobHeadItemRenderer;
 import net.bobofraggins.mobfarmingsupplies.tank.fabric.TankRenderer;
-import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityRenderLayerRegistrationCallback;
-import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.renderer.entity.LivingEntityRenderer;
-import net.minecraft.client.renderer.entity.player.AvatarRenderer;
-import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
-import net.minecraft.client.renderer.special.SpecialModelRenderer;
-import net.minecraft.client.renderer.special.SpecialModelRenderers;
-import net.minecraft.resources.Identifier;
-import net.minecraft.util.ExtraCodecs;
-import net.minecraft.world.entity.EntityType;
-import dev.architectury.registry.client.level.entity.EntityRendererRegistry;
 import net.bobofraggins.mobfarmingsupplies.toilet.ToiletBlockEntityRenderer;
+import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
 import net.minecraft.client.renderer.entity.NoopRenderer;
+import net.minecraft.world.item.Item;
 
 public class MobFarmingSuppliesFabricClient implements ClientModInitializer {
 
@@ -79,90 +62,27 @@ public class MobFarmingSuppliesFabricClient implements ClientModInitializer {
         // The toilet seat is invisible: only its rider is drawn.
         EntityRendererRegistry.register(Registration.TOILET_SEAT, NoopRenderer::new);
         ExtraBlockModelsImpl.registerModelLoadingPlugin();
-        registerSpecialModelRenderers();
-        registerMagicHatLayer();
-        // Magic Hat Trinkets Updated render layer — soft dependency, registered only if
+        registerItemRenderers();
+        // Magic Hat Trinkets render layer — soft dependency, registered only if
         // present. MUST check isModLoaded() before ever calling into MagicHatTrinketClientSetup:
         // see that class's javadoc (and MagicHatTrinketSetup's) for why.
-        if (Platform.isModLoaded("trinkets_updated")) {
+        if (Platform.isModLoaded("trinkets")) {
             MagicHatTrinketClientSetup.registerClient();
         }
     }
 
     /**
-     * Registers {@link MagicHatHelmetLayer} on players, armor stands, and zombies — the
-     * same three targets as NeoForge's {@code EntityRenderersEvent.AddLayers} listener,
-     * via Fabric API's per-renderer registration callback instead.
+     * Gives every item drawn in code ({@link SpecialItemRenderers}) its renderer, through Fabric's
+     * built-in item renderer registry. The Tanks' renderer is Fabric's own; the rest are common.
      */
-    private static void registerMagicHatLayer() {
-        LivingEntityRenderLayerRegistrationCallback.EVENT.register((entityType, entityRenderer, registrationHelper, context) -> {
-            if (entityRenderer instanceof AvatarRenderer<?> avatarRenderer) {
-                addMagicHatLayer(avatarRenderer, registrationHelper);
-            } else if (entityType == EntityType.ARMOR_STAND || entityType == EntityType.ZOMBIE) {
-                addMagicHatLayer(entityRenderer, registrationHelper);
-            }
-        });
-    }
-
-    @SuppressWarnings("unchecked")
-    private static <S extends HumanoidRenderState, M extends HumanoidModel<S>> void addMagicHatLayer(
-            LivingEntityRenderer<?, ?, ?> renderer,
-            LivingEntityRenderLayerRegistrationCallback.RegistrationHelper registrationHelper) {
-        LivingEntityRenderer<?, S, M> typed = (LivingEntityRenderer<?, S, M>) renderer;
-        registrationHelper.register(new MagicHatHelmetLayer<>(typed));
-    }
-
-    /**
-     * Registers {@code mobfarmingsupplies:tank_renderer} and {@code logistic_sorter_renderer} and {@code omnidirectional_hopper_renderer} (referenced by
-     * {@code items/tank.json} and {@code items/logistic_sorter.json})
-     * against vanilla's {@code SpecialModelRenderers.ID_MAPPER}.
-     *
-     * <p>NeoForge has {@code RegisterSpecialModelRendererEvent} for this; Fabric has no
-     * equivalent API, so we reach the (private but late-bound, live-map-backed) ID_MAPPER
-     * field via reflection. Must run before the first model bake / resource reload, which
-     * {@code onInitializeClient()} satisfies.
-     */
-    @SuppressWarnings("unchecked")
-    private static void registerSpecialModelRenderers() {
-        try {
-            Field idMapperField = SpecialModelRenderers.class.getDeclaredField("ID_MAPPER");
-            idMapperField.setAccessible(true);
-            ExtraCodecs.LateBoundIdMapper<Identifier, MapCodec<? extends SpecialModelRenderer.Unbaked<?>>> idMapper =
-                    (ExtraCodecs.LateBoundIdMapper<Identifier, MapCodec<? extends SpecialModelRenderer.Unbaked<?>>>)
-                            idMapperField.get(null);
-            idMapper.put(
-                    Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "tank_renderer"),
-                    TankItemRenderer.Unbaked.MAP_CODEC);
-            idMapper.put(
-                    Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "logistic_sorter_renderer"),
-                    LogisticSorterItemRenderer.Unbaked.MAP_CODEC);
-            idMapper.put(
-                    Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "omnidirectional_hopper_renderer"),
-                    OmniHopperItemRenderer.Unbaked.MAP_CODEC);
-            idMapper.put(
-                    Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "einstein_rosen_bridge_renderer"),
-                    OmniHopperItemRenderer.BridgeUnbaked.MAP_CODEC);
-            idMapper.put(
-                    Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "mob_head_renderer"),
-                    MobHeadItemRenderer.Unbaked.MAP_CODEC);
-            idMapper.put(
-                    Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "inhibitor_item"),
-                    InhibitorItemRenderer.Unbaked.MAP_CODEC);
-        } catch (ReflectiveOperationException e) {
-            throw new RuntimeException("Failed to register mobfarmingsupplies special model renderers", e);
-        }
-        try {
-            // Item model types, likewise registered in vanilla's private ItemModels.ID_MAPPER.
-            Field idMapperField = ItemModels.class.getDeclaredField("ID_MAPPER");
-            idMapperField.setAccessible(true);
-            ExtraCodecs.LateBoundIdMapper<Identifier, MapCodec<? extends ItemModel.Unbaked>> idMapper =
-                    (ExtraCodecs.LateBoundIdMapper<Identifier, MapCodec<? extends ItemModel.Unbaked>>)
-                            idMapperField.get(null);
-            idMapper.put(
-                    Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "animated"),
-                    AnimatedItemModel.Unbaked.MAP_CODEC);
-        } catch (ReflectiveOperationException e) {
-            throw new RuntimeException("Failed to register mobfarmingsupplies item model types", e);
+    private static void registerItemRenderers() {
+        SpecialItemRenderers.register(Registration.TANK_ITEM.get(), new TankItemRenderer(TankTier.BASIC));
+        SpecialItemRenderers.register(Registration.GOLD_TANK_ITEM.get(), new TankItemRenderer(TankTier.GOLD));
+        SpecialItemRenderers.register(Registration.DIAMOND_TANK_ITEM.get(), new TankItemRenderer(TankTier.DIAMOND));
+        SpecialItemRenderers.register(Registration.EMERALD_TANK_ITEM.get(), new TankItemRenderer(TankTier.EMERALD));
+        MobFarmingSuppliesCommonClient.registerItemRenderers();
+        for (Item item : SpecialItemRenderers.all().keySet()) {
+            BuiltinItemRendererRegistry.INSTANCE.register(item, SpecialItemRenderers::render);
         }
     }
 }

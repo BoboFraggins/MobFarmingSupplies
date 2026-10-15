@@ -5,7 +5,7 @@ import net.bobofraggins.mobfarmingsupplies.network.SetInhibitorOffsetPacket;
 import net.bobofraggins.mobfarmingsupplies.shared.ui.Dialog;
 import net.bobofraggins.mobfarmingsupplies.shared.ui.IDialogPane;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
@@ -43,6 +43,7 @@ public class EnderInhibitorScreen extends AbstractContainerScreen<EnderInhibitor
     private final Dialog dialog;
 
     public EnderInhibitorScreen(EnderInhibitorMenu menu, Inventory inv, Component title) {
+        super(menu, inv, title);
         IDialogPane offsetsPane = new EnderInhibitorSettingsPane();
         Dialog dialog_ = new Dialog(
                 Dialog.blankPane(EnderInhibitorSettingsPane.WIDTH, 8),              // PANE_TOP_GAP
@@ -50,8 +51,9 @@ public class EnderInhibitorScreen extends AbstractContainerScreen<EnderInhibitor
                 Dialog.blankPane(EnderInhibitorSettingsPane.WIDTH, 4),              // PANE_GAP1
                 Dialog.blankPane(EnderInhibitorSettingsPane.WIDTH, SHOW_AREA_PANE_H), // PANE_SHOW_AREA
                 Dialog.blankPane(EnderInhibitorSettingsPane.WIDTH, 8));             // PANE_BOTTOM_GAP
-        super(menu, inv, title, dialog_.totalWidth(), dialog_.totalHeight());
         dialog = dialog_;
+        imageWidth = dialog_.totalWidth();
+        imageHeight = dialog_.totalHeight();
     }
 
     // ── Init ────────────────────────────────────────────────────────────────────
@@ -115,28 +117,27 @@ public class EnderInhibitorScreen extends AbstractContainerScreen<EnderInhibitor
     // ── Rendering ────────────────────────────────────────────────────────────────
 
     @Override
-    public void extractContents(GuiGraphicsExtractor g, int mouseX, int mouseY, float partialTick) {
+    protected void renderBg(GuiGraphics g, float partialTick, int mouseX, int mouseY) {
         dialog.render(g, font, title, mouseX, mouseY, partialTick);
-        super.extractContents(g, mouseX, mouseY, partialTick);
     }
 
     @Override
-    public void extractRenderState(GuiGraphicsExtractor g, int mouseX, int mouseY, float partialTick) {
-        extractBackground(g, mouseX, mouseY, partialTick);
-        super.extractRenderState(g, mouseX, mouseY, partialTick);
+    public void render(GuiGraphics g, int mouseX, int mouseY, float partialTick) {
+        super.render(g, mouseX, mouseY, partialTick);
+        renderTooltip(g, mouseX, mouseY);
     }
 
     @Override
-    protected void extractLabels(GuiGraphicsExtractor g, int mouseX, int mouseY) {
+    protected void renderLabels(GuiGraphics g, int mouseX, int mouseY) {
         // No player inventory label — this dialog has no item slots.
     }
 
     // ── Input ───────────────────────────────────────────────────────────────────
 
     @Override
-    public boolean mouseClicked(net.minecraft.client.input.MouseButtonEvent event, boolean consumed) {
-        if (dialog.mouseClicked(event.x(), event.y(), event.button())) return true;
-        return super.mouseClicked(event, consumed);
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (dialog.mouseClicked(mouseX, mouseY, button)) return true;
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 
     @Override
@@ -146,14 +147,14 @@ public class EnderInhibitorScreen extends AbstractContainerScreen<EnderInhibitor
     }
 
     @Override
-    public boolean mouseDragged(net.minecraft.client.input.MouseButtonEvent event, double dragX, double dragY) {
-        if (dialog.mouseDragged(event.x(), event.y(), event.button(), dragX, dragY)) return true;
-        return super.mouseDragged(event, dragX, dragY);
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
+        if (dialog.mouseDragged(mouseX, mouseY, button, dragX, dragY)) return true;
+        return super.mouseDragged(mouseX, mouseY, button, dragX, dragY);
     }
 
     @Override
-    public boolean mouseReleased(net.minecraft.client.input.MouseButtonEvent event) {
-        if (dialog.mouseReleased(event.x(), event.y(), event.button())) return true;
-        return super.mouseReleased(event);
+    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+        if (dialog.mouseReleased(mouseX, mouseY, button)) return true;
+        return super.mouseReleased(mouseX, mouseY, button);
     }
 }

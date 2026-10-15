@@ -1,9 +1,15 @@
 {
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
-    "minecraft:black_wool",
-    "minecraft:red_dye",
-    "minecraft:string"
+    {
+      "item": "minecraft:black_wool"
+    },
+    {
+      "item": "minecraft:red_dye"
+    },
+    {
+      "item": "minecraft:string"
+    }
   ],
   "result": {
     "id": "mobfarmingsupplies:magic_hat",

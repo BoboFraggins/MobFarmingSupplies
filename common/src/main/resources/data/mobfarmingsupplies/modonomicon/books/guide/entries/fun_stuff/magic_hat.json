@@ -43,7 +43,7 @@
       "text": "book.mobfarmingsupplies.guide.fun_stuff.magic_hat.p3.text",
       "condition": {
         "type": "modonomicon:mod_loaded",
-        "mod_id": "trinkets_updated"
+        "mod_id": "trinkets"
       }
     }
   ]

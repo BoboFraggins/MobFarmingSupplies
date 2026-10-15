@@ -1,7 +1,5 @@
 package net.bobofraggins.mobfarmingsupplies.dna;
 
-import net.minecraft.world.level.storage.TagValueOutput;
-import net.minecraft.util.ProblemReporter;
 import net.bobofraggins.mobfarmingsupplies.mixin.MobFarmAccessor;
 import net.bobofraggins.mobfarmingsupplies.register.MFSTags;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
@@ -13,8 +11,6 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityProcessor;
-import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.Item;
@@ -90,9 +86,9 @@ public class DnaSampleItem extends Item implements IDnaSampleItem {
      * its name. Used by the DNA Collector and by the {@code set_dna_sample} loot function.
      */
     public static ItemStack createSample(Entity entity) {
-        TagValueOutput output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, entity.level().registryAccess());
+        CompoundTag output = new CompoundTag();
         entity.save(output);
-        CompoundTag entityNbt = stripSampleNbt(output.buildResult());
+        CompoundTag entityNbt = stripSampleNbt(output);
         String mobName = entity.hasCustomName()
                 ? entity.getCustomName().getString()
                 : entity.getType().getDescription().getString();
@@ -111,8 +107,7 @@ public class DnaSampleItem extends Item implements IDnaSampleItem {
     public Entity createSpawnEntity(ItemStack stack, ServerLevel level, BlockPos pos, RandomSource random) {
         DnaSampleContents contents = getContents(stack);
         if (contents == null) return null;
-        Entity entity = EntityType.loadEntityRecursive(
-                stripSampleNbt(contents.entityNbt()), level, EntitySpawnReason.SPAWNER, EntityProcessor.NOP);
+        Entity entity = EntityType.loadEntityRecursive(stripSampleNbt(contents.entityNbt()), level, e -> e);
         if (entity == null) return null;
         // Samples taken before a mob was denied sampling must not keep cloning it.
         if (entity.getType().builtInRegistryHolder().is(MFSTags.EntityTypes.NO_DNA_SAMPLING)) return null;

@@ -21,10 +21,10 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.animal.squid.GlowSquid;
-import net.minecraft.world.entity.animal.squid.Squid;
+import net.minecraft.world.entity.GlowSquid;
+import net.minecraft.world.entity.animal.Squid;
 import net.minecraft.world.entity.monster.EnderMan;
-import net.minecraft.world.entity.monster.zombie.Zombie;
+import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -32,8 +32,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import net.bobofraggins.mobfarmingsupplies.shared.nbt.ValueInput;
+import net.bobofraggins.mobfarmingsupplies.shared.nbt.ValueOutput;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -264,12 +264,11 @@ public class CloneOMaticBlockEntity extends BlockEntity implements MenuProvider 
 
     // ── Lifecycle ─────────────────────────────────────────────────────────────────
 
-    @Override
+    /** Called by the block when it is removed (see its {@code onRemove}). */
     public void preRemoveSideEffects(BlockPos pos, BlockState state) {
         if (level != null && !level.isClientSide()) {
             Containers.dropContents(level, pos, dnaSlots);
         }
-        super.preRemoveSideEffects(pos, state);
     }
 
     // ── Notifications ────────────────────────────────────────────────────────────
@@ -285,8 +284,9 @@ public class CloneOMaticBlockEntity extends BlockEntity implements MenuProvider 
     // ── NBT ──────────────────────────────────────────────────────────────────────
 
     @Override
-    protected void saveAdditional(ValueOutput output) {
-        super.saveAdditional(output);
+    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.saveAdditional(tag, registries);
+        ValueOutput output = new ValueOutput(tag, registries);
         java.util.List<ItemStack> stacks = new java.util.ArrayList<>(DNA_SLOTS);
         for (int i = 0; i < DNA_SLOTS; i++) stacks.add(dnaSlots.getItem(i));
         output.store("DnaSlots", ItemStack.OPTIONAL_CODEC.listOf(), stacks);
@@ -294,8 +294,9 @@ public class CloneOMaticBlockEntity extends BlockEntity implements MenuProvider 
     }
 
     @Override
-    protected void loadAdditional(ValueInput input) {
-        super.loadAdditional(input);
+    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.loadAdditional(tag, registries);
+        ValueInput input = new ValueInput(tag, registries);
         input.read("DnaSlots", ItemStack.OPTIONAL_CODEC.listOf()).ifPresent(loaded -> {
             for (int i = 0; i < Math.min(loaded.size(), DNA_SLOTS); i++) {
                 dnaSlots.setItem(i, loaded.get(i));

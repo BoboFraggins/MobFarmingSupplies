@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.register;
 
+import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraft.world.item.ItemStack;
 import net.bobofraggins.mobfarmingsupplies.biosludge.BiosludgeItem;
 import net.bobofraggins.mobfarmingsupplies.guide.GuideBook;
@@ -95,7 +96,7 @@ import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.TagKey;
@@ -108,10 +109,7 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.equipment.ArmorMaterials;
-import net.minecraft.world.item.equipment.ArmorType;
-import net.minecraft.world.item.equipment.EquipmentAssets;
-import net.minecraft.world.item.equipment.Equippable;
+import net.minecraft.world.item.ArmorMaterials;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.material.FlowingFluid;
@@ -123,27 +121,17 @@ import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 import net.bobofraggins.mobfarmingsupplies.crushing.AnvilCrushingRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.bobofraggins.mobfarmingsupplies.shared.recipe.SimpleRecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 
 public final class Registration {
 
     private Registration() {}
 
-    // MC 26.x requires Properties.setId() before block/item construction.
-    // Architectury's DeferredRegister does not inject the id automatically,
-    // so we call setId() explicitly in every registration lambda.
-    private static ResourceKey<Block> blockKey(String name) {
-        return ResourceKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, name));
-    }
-
-    static ResourceKey<Item> itemKey(String name) {
-        return ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, name));
-    }
-
     // ── Fluid tags ──────────────────────────────────────────────────────────────
 
     public static final TagKey<Fluid> TAG_EXPERIENCE_FLUID =
-            TagKey.create(Registries.FLUID, Identifier.fromNamespaceAndPath("c", "experience"));
+            TagKey.create(Registries.FLUID, ResourceLocation.fromNamespaceAndPath("c", "experience"));
 
     // ── Deferred registers ──────────────────────────────────────────────────────
 
@@ -177,7 +165,7 @@ public final class Registration {
     public static final DeferredRegister<RecipeType<?>> RECIPE_TYPES =
             DeferredRegister.create(MobFarmingSuppliesCommon.MODID, Registries.RECIPE_TYPE);
 
-    public static final DeferredRegister<MapCodec<? extends LootItemFunction>> LOOT_FUNCTIONS =
+    public static final DeferredRegister<LootItemFunctionType<?>> LOOT_FUNCTIONS =
             DeferredRegister.create(MobFarmingSuppliesCommon.MODID, Registries.LOOT_FUNCTION_TYPE);
 
     public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS =
@@ -195,60 +183,60 @@ public final class Registration {
 
     public static final RegistrySupplier<RecipeSerializer<AnvilCrushingRecipe>> ANVIL_CRUSHING_SERIALIZER =
             RECIPE_SERIALIZERS.register("anvil_crushing",
-                    () -> new RecipeSerializer<>(AnvilCrushingRecipe.MAP_CODEC, AnvilCrushingRecipe.STREAM_CODEC));
+                    () -> new SimpleRecipeSerializer<>(AnvilCrushingRecipe.MAP_CODEC, AnvilCrushingRecipe.STREAM_CODEC));
 
     /** Shaped recipe that upgrades a tank a tier and keeps its contents. */
     public static final RegistrySupplier<RecipeSerializer<TankUpgradeRecipe>> TANK_UPGRADE_SERIALIZER =
             RECIPE_SERIALIZERS.register("tank_upgrade",
-                    () -> new RecipeSerializer<>(TankUpgradeRecipe.MAP_CODEC, TankUpgradeRecipe.STREAM_CODEC));
+                    () -> new SimpleRecipeSerializer<>(TankUpgradeRecipe.MAP_CODEC, TankUpgradeRecipe.STREAM_CODEC));
 
     /** Shaped recipe for a linked pair of Einstein-Rosen Bridges on a new random channel. */
     public static final RegistrySupplier<RecipeSerializer<BridgePairRecipe>> BRIDGE_PAIR_SERIALIZER =
             RECIPE_SERIALIZERS.register("bridge_pair",
-                    () -> new RecipeSerializer<>(BridgePairRecipe.MAP_CODEC, BridgePairRecipe.STREAM_CODEC));
+                    () -> new SimpleRecipeSerializer<>(BridgePairRecipe.MAP_CODEC, BridgePairRecipe.STREAM_CODEC));
 
     /** Shapeless recipe adding another Einstein-Rosen Bridge to an existing bridge's channel. */
     public static final RegistrySupplier<RecipeSerializer<BridgeLinkRecipe>> BRIDGE_LINK_SERIALIZER =
             RECIPE_SERIALIZERS.register("bridge_link",
-                    () -> new RecipeSerializer<>(BridgeLinkRecipe.MAP_CODEC, BridgeLinkRecipe.STREAM_CODEC));
+                    () -> new SimpleRecipeSerializer<>(BridgeLinkRecipe.MAP_CODEC, BridgeLinkRecipe.STREAM_CODEC));
 
     // ── Loot functions (chest loot) ───────────────────────────────────────────────
 
-    public static final RegistrySupplier<MapCodec<SetSyringeLevelsFunction>> SET_SYRINGE_LEVELS =
-            LOOT_FUNCTIONS.register("set_syringe_levels", () -> SetSyringeLevelsFunction.CODEC);
+    public static final RegistrySupplier<LootItemFunctionType<SetSyringeLevelsFunction>> SET_SYRINGE_LEVELS =
+            LOOT_FUNCTIONS.register("set_syringe_levels", () -> new LootItemFunctionType<>(SetSyringeLevelsFunction.CODEC));
 
-    public static final RegistrySupplier<MapCodec<SetBridgeChannelFunction>> SET_BRIDGE_CHANNEL =
-            LOOT_FUNCTIONS.register("set_bridge_channel", () -> SetBridgeChannelFunction.CODEC);
+    public static final RegistrySupplier<LootItemFunctionType<SetBridgeChannelFunction>> SET_BRIDGE_CHANNEL =
+            LOOT_FUNCTIONS.register("set_bridge_channel", () -> new LootItemFunctionType<>(SetBridgeChannelFunction.CODEC));
 
-    public static final RegistrySupplier<MapCodec<net.bobofraggins.mobfarmingsupplies.loot.SetDnaSampleFunction>> SET_DNA_SAMPLE =
-            LOOT_FUNCTIONS.register("set_dna_sample", () -> net.bobofraggins.mobfarmingsupplies.loot.SetDnaSampleFunction.CODEC);
+    public static final RegistrySupplier<LootItemFunctionType<net.bobofraggins.mobfarmingsupplies.loot.SetDnaSampleFunction>> SET_DNA_SAMPLE =
+            LOOT_FUNCTIONS.register("set_dna_sample", () -> new LootItemFunctionType<>(net.bobofraggins.mobfarmingsupplies.loot.SetDnaSampleFunction.CODEC));
 
     // ── Sound events ─────────────────────────────────────────────────────────────
 
     public static final RegistrySupplier<SoundEvent> RED_ALERT_SOUND =
             SOUND_EVENTS.register("red_alert",
                     () -> SoundEvent.createVariableRangeEvent(
-                            Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "red_alert")));
+                            ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "red_alert")));
 
     public static final RegistrySupplier<SoundEvent> DRAMATIC_SOUND =
             SOUND_EVENTS.register("dramatic",
                     () -> SoundEvent.createVariableRangeEvent(
-                            Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "dramatic")));
+                            ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "dramatic")));
 
     public static final RegistrySupplier<SoundEvent> RIMSHOT_SOUND =
             SOUND_EVENTS.register("rimshot",
                     () -> SoundEvent.createVariableRangeEvent(
-                            Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "rimshot")));
+                            ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "rimshot")));
 
     public static final RegistrySupplier<SoundEvent> WILHELM_SOUND =
             SOUND_EVENTS.register("wilhelm",
                     () -> SoundEvent.createVariableRangeEvent(
-                            Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "wilhelm")));
+                            ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "wilhelm")));
 
     public static final RegistrySupplier<SoundEvent> TOILET_FLUSH_SOUND =
             SOUND_EVENTS.register("flush",
                     () -> SoundEvent.createVariableRangeEvent(
-                            Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "flush")));
+                            ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "flush")));
 
     // ── Data components ─────────────────────────────────────────────────────────
 
@@ -316,13 +304,11 @@ public final class Registration {
     public static final RegistrySupplier<DnaCollectorItem> DNA_COLLECTOR =
             ITEMS.register("dna_collector",
                     () -> new DnaCollectorItem(new Item.Properties()
-                            .setId(itemKey("dna_collector"))
                             .stacksTo(DnaCollectorItem.STACK_SIZE)));
 
     public static final RegistrySupplier<DnaSampleItem> DNA_SAMPLE =
             ITEMS.register("dna_sample",
                     () -> new DnaSampleItem(new Item.Properties()
-                            .setId(itemKey("dna_sample"))
                             .stacksTo(1)));
 
     // ── Magic Hat ────────────────────────────────────────────────────────────────
@@ -330,43 +316,31 @@ public final class Registration {
     public static final RegistrySupplier<MagicHatItem> MAGIC_HAT_ITEM =
             ITEMS.register("magic_hat",
                     () -> new MagicHatItem(new Item.Properties()
-                            .setId(itemKey("magic_hat"))
                             .stacksTo(1)
-                            .attributes(MagicHatItem.DEFAULT_MODIFIERS)
-                            .component(
-                                    DataComponents.EQUIPPABLE,
-                                    Equippable.builder(EquipmentSlot.HEAD)
-                                            .setAsset(ResourceKey.create(
-                                                    EquipmentAssets.ROOT_ID,
-                                                    Identifier.fromNamespaceAndPath(
-                                                            MobFarmingSuppliesCommon.MODID, "magic_hat")))
-                                            .build())));
+                            .attributes(MagicHatItem.DEFAULT_MODIFIERS)));
 
     // ── Present ──────────────────────────────────────────────────────────────────
 
     public static final RegistrySupplier<PresentBlock> PRESENT =
             BLOCKS.register("present",
                     () -> new PresentBlock(BlockBehaviour.Properties.of()
-                            .setId(blockKey("present"))
                             .strength(3.0f, 1000.0f)
                             .sound(SoundType.WOOD)
                             .noOcclusion()));
 
     public static final RegistrySupplier<PresentBlockItem> PRESENT_ITEM =
             ITEMS.register("present",
-                    () -> new PresentBlockItem(PRESENT.get(), new Item.Properties()
-                            .setId(itemKey("present"))));
+                    () -> new PresentBlockItem(PRESENT.get(), new Item.Properties()));
 
     public static final RegistrySupplier<BlockEntityType<PresentBlockEntity>> PRESENT_BE_TYPE =
             BLOCK_ENTITIES.register("present",
-                    () -> BlockEntityTypePlatform.create(PresentBlockEntity::new, PRESENT.get()));
+                    () -> BlockEntityType.Builder.of(PresentBlockEntity::new, PRESENT.get()).build(null));
 
     // ── Mob Harvester ────────────────────────────────────────────────────────────
 
     public static final RegistrySupplier<MobHarvesterBlock> MOB_HARVESTER =
             BLOCKS.register("mob_harvester",
                     () -> new MobHarvesterBlock(BlockBehaviour.Properties.of()
-                            .setId(blockKey("mob_harvester"))
                             .strength(3.5f)
                             .explosionResistance(Float.MAX_VALUE)
                             .sound(SoundType.METAL)
@@ -374,51 +348,44 @@ public final class Registration {
 
     public static final RegistrySupplier<BlockItem> MOB_HARVESTER_ITEM =
             ITEMS.register("mob_harvester",
-                    () -> new BlockItem(MOB_HARVESTER.get(), new Item.Properties()
-                            .setId(itemKey("mob_harvester"))));
+                    () -> new BlockItem(MOB_HARVESTER.get(), new Item.Properties()));
 
     public static final RegistrySupplier<MenuType<MobHarvesterMenu>> MOB_HARVESTER_MENU =
             MENUS.register("mob_harvester", () -> MenuRegistry.ofExtended(MobHarvesterMenu::new));
 
     public static final RegistrySupplier<BlockEntityType<MobHarvesterBlockEntity>> MOB_HARVESTER_BE_TYPE =
             BLOCK_ENTITIES.register("mob_harvester",
-                    () -> BlockEntityTypePlatform.create(MobHarvesterBlockEntity::new, MOB_HARVESTER.get()));
+                    () -> BlockEntityType.Builder.of(MobHarvesterBlockEntity::new, MOB_HARVESTER.get()).build(null));
 
     public static final RegistrySupplier<HarvesterUpgradeItem> HARVESTER_UPGRADE_SHARPNESS =
             ITEMS.register("harvester_upgrade_sharpness",
-                    () -> new HarvesterUpgradeItem(new Item.Properties()
-                            .setId(itemKey("harvester_upgrade_sharpness")),
+                    () -> new HarvesterUpgradeItem(new Item.Properties(),
                             HarvesterUpgradeItem.UpgradeType.SHARPNESS));
 
     public static final RegistrySupplier<HarvesterUpgradeItem> HARVESTER_UPGRADE_LOOTING =
             ITEMS.register("harvester_upgrade_looting",
-                    () -> new HarvesterUpgradeItem(new Item.Properties()
-                            .setId(itemKey("harvester_upgrade_looting")),
+                    () -> new HarvesterUpgradeItem(new Item.Properties(),
                             HarvesterUpgradeItem.UpgradeType.LOOTING));
 
     public static final RegistrySupplier<HarvesterUpgradeItem> HARVESTER_UPGRADE_BEHEADING =
             ITEMS.register("harvester_upgrade_beheading",
-                    () -> new HarvesterUpgradeItem(new Item.Properties()
-                            .setId(itemKey("harvester_upgrade_beheading")),
+                    () -> new HarvesterUpgradeItem(new Item.Properties(),
                             HarvesterUpgradeItem.UpgradeType.BEHEADING));
 
     public static final RegistrySupplier<HarvesterUpgradeItem> HARVESTER_UPGRADE_FIRE_ASPECT =
             ITEMS.register("harvester_upgrade_fire_aspect",
-                    () -> new HarvesterUpgradeItem(new Item.Properties()
-                            .setId(itemKey("harvester_upgrade_fire_aspect")),
+                    () -> new HarvesterUpgradeItem(new Item.Properties(),
                             HarvesterUpgradeItem.UpgradeType.FIRE_ASPECT));
 
     public static final RegistrySupplier<Item> HARVESTER_SWORD =
             ITEMS.register("harvester_sword",
-                    () -> new HarvesterSword(new Item.Properties()
-                            .setId(itemKey("harvester_sword"))));
+                    () -> new HarvesterSword(new Item.Properties()));
 
     // ── Clone-O-Matic ─────────────────────────────────────────────────────────────
 
     public static final RegistrySupplier<CloneOMaticBlock> CLONE_O_MATIC =
             BLOCKS.register("clone_o_matic",
                     () -> new CloneOMaticBlock(BlockBehaviour.Properties.of()
-                            .setId(blockKey("clone_o_matic"))
                             .strength(3.5f)
                             .explosionResistance(Float.MAX_VALUE)
                             .sound(SoundType.METAL)
@@ -426,22 +393,20 @@ public final class Registration {
 
     public static final RegistrySupplier<BlockItem> CLONE_O_MATIC_ITEM =
             ITEMS.register("clone_o_matic",
-                    () -> new BlockItem(CLONE_O_MATIC.get(), new Item.Properties()
-                            .setId(itemKey("clone_o_matic"))));
+                    () -> new BlockItem(CLONE_O_MATIC.get(), new Item.Properties()));
 
     public static final RegistrySupplier<MenuType<CloneOMaticMenu>> CLONE_O_MATIC_MENU =
             MENUS.register("clone_o_matic", () -> MenuRegistry.ofExtended(CloneOMaticMenu::new));
 
     public static final RegistrySupplier<BlockEntityType<CloneOMaticBlockEntity>> CLONE_O_MATIC_BE_TYPE =
             BLOCK_ENTITIES.register("clone_o_matic",
-                    () -> BlockEntityTypePlatform.create(CloneOMaticBlockEntity::new, CLONE_O_MATIC.get()));
+                    () -> BlockEntityType.Builder.of(CloneOMaticBlockEntity::new, CLONE_O_MATIC.get()).build(null));
 
     // ── Absorption Hopper ─────────────────────────────────────────────────────────
 
     public static final RegistrySupplier<AbsorptionHopperBlock> ABSORPTION_HOPPER =
             BLOCKS.register("absorption_hopper",
                     () -> new AbsorptionHopperBlock(BlockBehaviour.Properties.of()
-                            .setId(blockKey("absorption_hopper"))
                             .strength(3.5f)
                             .explosionResistance(Float.MAX_VALUE)
                             .sound(SoundType.METAL)
@@ -449,22 +414,20 @@ public final class Registration {
 
     public static final RegistrySupplier<BlockItem> ABSORPTION_HOPPER_ITEM =
             ITEMS.register("absorption_hopper",
-                    () -> new OrientedBlockItem(ABSORPTION_HOPPER.get(), new Item.Properties()
-                            .setId(itemKey("absorption_hopper"))));
+                    () -> new OrientedBlockItem(ABSORPTION_HOPPER.get(), new Item.Properties()));
 
     public static final RegistrySupplier<MenuType<AbsorptionHopperMenu>> ABSORPTION_HOPPER_MENU =
             MENUS.register("absorption_hopper", () -> MenuRegistry.ofExtended(AbsorptionHopperMenu::new));
 
     public static final RegistrySupplier<BlockEntityType<AbsorptionHopperBlockEntity>> ABSORPTION_HOPPER_BE_TYPE =
             BLOCK_ENTITIES.register("absorption_hopper",
-                    () -> BlockEntityTypePlatform.create(AbsorptionHopperBlockEntity::new, ABSORPTION_HOPPER.get()));
+                    () -> BlockEntityType.Builder.of(AbsorptionHopperBlockEntity::new, ABSORPTION_HOPPER.get()).build(null));
 
     // ── Ender Inhibitor ───────────────────────────────────────────────────────────
 
     public static final RegistrySupplier<EnderInhibitorBlock> ENDER_INHIBITOR =
             BLOCKS.register("ender_inhibitor",
                     () -> new EnderInhibitorBlock(BlockBehaviour.Properties.of()
-                            .setId(blockKey("ender_inhibitor"))
                             .strength(3.0f)
                             .explosionResistance(Float.MAX_VALUE)
                             .sound(SoundType.METAL)
@@ -472,22 +435,20 @@ public final class Registration {
 
     public static final RegistrySupplier<BlockItem> ENDER_INHIBITOR_ITEM =
             ITEMS.register("ender_inhibitor",
-                    () -> new BlockItem(ENDER_INHIBITOR.get(), new Item.Properties()
-                            .setId(itemKey("ender_inhibitor"))));
+                    () -> new BlockItem(ENDER_INHIBITOR.get(), new Item.Properties()));
 
     public static final RegistrySupplier<MenuType<EnderInhibitorMenu>> ENDER_INHIBITOR_MENU =
             MENUS.register("ender_inhibitor", () -> MenuRegistry.ofExtended(EnderInhibitorMenu::new));
 
     public static final RegistrySupplier<BlockEntityType<EnderInhibitorBlockEntity>> ENDER_INHIBITOR_BE_TYPE =
             BLOCK_ENTITIES.register("ender_inhibitor",
-                    () -> BlockEntityTypePlatform.create(EnderInhibitorBlockEntity::new, ENDER_INHIBITOR.get()));
+                    () -> BlockEntityType.Builder.of(EnderInhibitorBlockEntity::new, ENDER_INHIBITOR.get()).build(null));
 
     // ── Wither Inhibitor ──────────────────────────────────────────────────────────
 
     public static final RegistrySupplier<net.bobofraggins.mobfarmingsupplies.witherinhibitor.WitherInhibitorBlock> WITHER_INHIBITOR =
             BLOCKS.register("wither_inhibitor",
                     () -> new net.bobofraggins.mobfarmingsupplies.witherinhibitor.WitherInhibitorBlock(BlockBehaviour.Properties.of()
-                            .setId(blockKey("wither_inhibitor"))
                             .strength(3.0f)
                             .explosionResistance(Float.MAX_VALUE)
                             .sound(SoundType.METAL)
@@ -495,20 +456,18 @@ public final class Registration {
 
     public static final RegistrySupplier<BlockItem> WITHER_INHIBITOR_ITEM =
             ITEMS.register("wither_inhibitor",
-                    () -> new BlockItem(WITHER_INHIBITOR.get(), new Item.Properties()
-                            .setId(itemKey("wither_inhibitor"))));
+                    () -> new BlockItem(WITHER_INHIBITOR.get(), new Item.Properties()));
 
     public static final RegistrySupplier<BlockEntityType<net.bobofraggins.mobfarmingsupplies.witherinhibitor.WitherInhibitorBlockEntity>> WITHER_INHIBITOR_BE_TYPE =
             BLOCK_ENTITIES.register("wither_inhibitor",
-                    () -> BlockEntityTypePlatform.create(net.bobofraggins.mobfarmingsupplies.witherinhibitor.WitherInhibitorBlockEntity::new,
-                            WITHER_INHIBITOR.get()));
+                    () -> BlockEntityType.Builder.of(net.bobofraggins.mobfarmingsupplies.witherinhibitor.WitherInhibitorBlockEntity::new,
+                            WITHER_INHIBITOR.get()).build(null));
 
     // ── Fan ───────────────────────────────────────────────────────────────────────
 
     public static final RegistrySupplier<FanBlock> FAN =
             BLOCKS.register("fan",
                     () -> new FanBlock(BlockBehaviour.Properties.of()
-                            .setId(blockKey("fan"))
                             .strength(2.5f)
                             .explosionResistance(Float.MAX_VALUE)
                             .sound(SoundType.METAL)
@@ -516,37 +475,32 @@ public final class Registration {
 
     public static final RegistrySupplier<BlockItem> FAN_ITEM =
             ITEMS.register("fan",
-                    () -> new BlockItem(FAN.get(), new Item.Properties()
-                            .setId(itemKey("fan"))));
+                    () -> new BlockItem(FAN.get(), new Item.Properties()));
 
     public static final RegistrySupplier<MenuType<FanMenu>> FAN_MENU =
             MENUS.register("fan", () -> MenuRegistry.ofExtended(FanMenu::new));
 
     public static final RegistrySupplier<BlockEntityType<FanBlockEntity>> FAN_BE_TYPE =
             BLOCK_ENTITIES.register("fan",
-                    () -> BlockEntityTypePlatform.create(FanBlockEntity::new, FAN.get()));
+                    () -> BlockEntityType.Builder.of(FanBlockEntity::new, FAN.get()).build(null));
 
     public static final RegistrySupplier<FanUpgradeItem> FAN_UPGRADE_WIDTH =
             ITEMS.register("fan_upgrade_width",
-                    () -> new FanUpgradeItem(FanUpgradeItem.UpgradeType.WIDTH, new Item.Properties()
-                            .setId(itemKey("fan_upgrade_width"))));
+                    () -> new FanUpgradeItem(FanUpgradeItem.UpgradeType.WIDTH, new Item.Properties()));
 
     public static final RegistrySupplier<FanUpgradeItem> FAN_UPGRADE_HEIGHT =
             ITEMS.register("fan_upgrade_height",
-                    () -> new FanUpgradeItem(FanUpgradeItem.UpgradeType.HEIGHT, new Item.Properties()
-                            .setId(itemKey("fan_upgrade_height"))));
+                    () -> new FanUpgradeItem(FanUpgradeItem.UpgradeType.HEIGHT, new Item.Properties()));
 
     public static final RegistrySupplier<FanUpgradeItem> FAN_UPGRADE_DISTANCE =
             ITEMS.register("fan_upgrade_distance",
-                    () -> new FanUpgradeItem(FanUpgradeItem.UpgradeType.DISTANCE, new Item.Properties()
-                            .setId(itemKey("fan_upgrade_distance"))));
+                    () -> new FanUpgradeItem(FanUpgradeItem.UpgradeType.DISTANCE, new Item.Properties()));
 
     // ── Vector Plate ──────────────────────────────────────────────────────────────
 
     public static final RegistrySupplier<VectorPlateBlock> VECTOR_PLATE =
             BLOCKS.register("vector_plate",
                     () -> new VectorPlateBlock(BlockBehaviour.Properties.of()
-                            .setId(blockKey("vector_plate"))
                             .strength(2.0f)
                             .explosionResistance(Float.MAX_VALUE)
                             .sound(SoundType.METAL)
@@ -555,15 +509,13 @@ public final class Registration {
 
     public static final RegistrySupplier<BlockItem> VECTOR_PLATE_ITEM =
             ITEMS.register("vector_plate",
-                    () -> new BlockItem(VECTOR_PLATE.get(), new Item.Properties()
-                            .setId(itemKey("vector_plate"))));
+                    () -> new BlockItem(VECTOR_PLATE.get(), new Item.Properties()));
 
     // ── Halting Plate ─────────────────────────────────────────────────────────────
 
     public static final RegistrySupplier<HaltingPlateBlock> HALTING_PLATE =
             BLOCKS.register("halting_plate",
                     () -> new HaltingPlateBlock(BlockBehaviour.Properties.of()
-                            .setId(blockKey("halting_plate"))
                             .strength(2.0f)
                             .explosionResistance(Float.MAX_VALUE)
                             .sound(SoundType.METAL)
@@ -572,15 +524,13 @@ public final class Registration {
 
     public static final RegistrySupplier<BlockItem> HALTING_PLATE_ITEM =
             ITEMS.register("halting_plate",
-                    () -> new BlockItem(HALTING_PLATE.get(), new Item.Properties()
-                            .setId(itemKey("halting_plate"))));
+                    () -> new BlockItem(HALTING_PLATE.get(), new Item.Properties()));
 
     // ── Wither-Proof Glass ────────────────────────────────────────────────────────
 
     public static final RegistrySupplier<WitherProofGlassBlock> WITHER_PROOF_GLASS =
             BLOCKS.register("wither_proof_glass",
                     () -> new WitherProofGlassBlock(BlockBehaviour.Properties.of()
-                            .setId(blockKey("wither_proof_glass"))
                             .strength(1.5f)
                             .explosionResistance(Float.MAX_VALUE)
                             .sound(SoundType.GLASS)
@@ -589,15 +539,13 @@ public final class Registration {
 
     public static final RegistrySupplier<BlockItem> WITHER_PROOF_GLASS_ITEM =
             ITEMS.register("wither_proof_glass",
-                    () -> new BlockItem(WITHER_PROOF_GLASS.get(), new Item.Properties()
-                            .setId(itemKey("wither_proof_glass"))));
+                    () -> new BlockItem(WITHER_PROOF_GLASS.get(), new Item.Properties()));
 
     // ── Mob Exclusion Glass ───────────────────────────────────────────────────────
 
     public static final RegistrySupplier<MobExclusionGlassBlock> MOB_EXCLUSION_GLASS =
             BLOCKS.register("mob_exclusion_glass",
                     () -> new MobExclusionGlassBlock(BlockBehaviour.Properties.of()
-                            .setId(blockKey("mob_exclusion_glass"))
                             .strength(1.5f)
                             .explosionResistance(Float.MAX_VALUE)
                             .sound(SoundType.GLASS)
@@ -607,15 +555,13 @@ public final class Registration {
 
     public static final RegistrySupplier<BlockItem> MOB_EXCLUSION_GLASS_ITEM =
             ITEMS.register("mob_exclusion_glass",
-                    () -> new BlockItem(MOB_EXCLUSION_GLASS.get(), new Item.Properties()
-                            .setId(itemKey("mob_exclusion_glass"))));
+                    () -> new BlockItem(MOB_EXCLUSION_GLASS.get(), new Item.Properties()));
 
     // ── Toggle Buttons ────────────────────────────────────────────────────────────
 
     public static final RegistrySupplier<ToggleButtonBlock> RED_ALERT_BUTTON =
             BLOCKS.register("red_alert_button",
                     () -> new ToggleButtonBlock(BlockBehaviour.Properties.of()
-                            .setId(blockKey("red_alert_button"))
                             .strength(0.5f)
                             .sound(SoundType.STONE)
                             .noOcclusion(),
@@ -623,13 +569,11 @@ public final class Registration {
 
     public static final RegistrySupplier<BlockItem> RED_ALERT_BUTTON_ITEM =
             ITEMS.register("red_alert_button",
-                    () -> new BlockItem(RED_ALERT_BUTTON.get(), new Item.Properties()
-                            .setId(itemKey("red_alert_button"))));
+                    () -> new BlockItem(RED_ALERT_BUTTON.get(), new Item.Properties()));
 
     public static final RegistrySupplier<ToggleButtonBlock> DRAMATIC_BUTTON =
             BLOCKS.register("dramatic_button",
                     () -> new ToggleButtonBlock(BlockBehaviour.Properties.of()
-                            .setId(blockKey("dramatic_button"))
                             .strength(0.5f)
                             .sound(SoundType.STONE)
                             .noOcclusion(),
@@ -637,13 +581,11 @@ public final class Registration {
 
     public static final RegistrySupplier<BlockItem> DRAMATIC_BUTTON_ITEM =
             ITEMS.register("dramatic_button",
-                    () -> new BlockItem(DRAMATIC_BUTTON.get(), new Item.Properties()
-                            .setId(itemKey("dramatic_button"))));
+                    () -> new BlockItem(DRAMATIC_BUTTON.get(), new Item.Properties()));
 
     public static final RegistrySupplier<ToggleButtonBlock> RIMSHOT_BUTTON =
             BLOCKS.register("rimshot_button",
                     () -> new ToggleButtonBlock(BlockBehaviour.Properties.of()
-                            .setId(blockKey("rimshot_button"))
                             .strength(0.5f)
                             .sound(SoundType.STONE)
                             .noOcclusion(),
@@ -651,13 +593,11 @@ public final class Registration {
 
     public static final RegistrySupplier<BlockItem> RIMSHOT_BUTTON_ITEM =
             ITEMS.register("rimshot_button",
-                    () -> new BlockItem(RIMSHOT_BUTTON.get(), new Item.Properties()
-                            .setId(itemKey("rimshot_button"))));
+                    () -> new BlockItem(RIMSHOT_BUTTON.get(), new Item.Properties()));
 
     public static final RegistrySupplier<ToggleButtonBlock> WILHELM_BUTTON =
             BLOCKS.register("wilhelm_button",
                     () -> new ToggleButtonBlock(BlockBehaviour.Properties.of()
-                            .setId(blockKey("wilhelm_button"))
                             .strength(0.5f)
                             .sound(SoundType.STONE)
                             .noOcclusion(),
@@ -665,8 +605,7 @@ public final class Registration {
 
     public static final RegistrySupplier<BlockItem> WILHELM_BUTTON_ITEM =
             ITEMS.register("wilhelm_button",
-                    () -> new BlockItem(WILHELM_BUTTON.get(), new Item.Properties()
-                            .setId(itemKey("wilhelm_button"))));
+                    () -> new BlockItem(WILHELM_BUTTON.get(), new Item.Properties()));
 
     // ── XP Juice fluid ────────────────────────────────────────────────────────────
 
@@ -681,8 +620,7 @@ public final class Registration {
             BLOCKS.register("xp_juice",
                     () -> new LiquidBlock(XP_JUICE_SOURCE.get(),
                             BlockBehaviour.Properties.of()
-                                    .setId(blockKey("xp_juice"))
-                                    .noCollision()
+                                    .noCollission()
                                     .strength(100f)
                                     .noLootTable()
                                     .liquid()
@@ -693,7 +631,6 @@ public final class Registration {
             ITEMS.register("xp_juice_bucket",
                     () -> new BucketItem(XP_JUICE_SOURCE.get(),
                             new Item.Properties()
-                                    .setId(itemKey("xp_juice_bucket"))
                                     .stacksTo(1)
                                     .craftRemainder(Items.BUCKET)));
 
@@ -712,14 +649,13 @@ public final class Registration {
     /** One block entity type for every tier: the capacity comes from the block (see {@link TankTier}). */
     public static final RegistrySupplier<BlockEntityType<TankBlockEntity>> TANK_BE_TYPE =
             BLOCK_ENTITIES.register("tank",
-                    () -> BlockEntityTypePlatform.create(TankBlockEntity::new,
-                            TANK.get(), GOLD_TANK.get(), DIAMOND_TANK.get(), EMERALD_TANK.get()));
+                    () -> BlockEntityType.Builder.of(TankBlockEntity::new,
+                            TANK.get(), GOLD_TANK.get(), DIAMOND_TANK.get(), EMERALD_TANK.get()).build(null));
 
     /** Every tier is the same glass tank; only its capacity and texture differ. */
     private static RegistrySupplier<TankBlock> registerTank(String name, TankTier tier) {
         return BLOCKS.register(name,
                 () -> new TankBlock(tier, BlockBehaviour.Properties.of()
-                        .setId(blockKey(name))
                         .mapColor(MapColor.NONE)
                         .strength(0.3f)
                         .explosionResistance(Float.MAX_VALUE)
@@ -730,8 +666,7 @@ public final class Registration {
 
     private static RegistrySupplier<TankBlockItem> registerTankItem(String name, RegistrySupplier<TankBlock> block) {
         return ITEMS.register(name,
-                () -> new TankBlockItem(block.get(), new Item.Properties()
-                        .setId(itemKey(name))));
+                () -> new TankBlockItem(block.get(), new Item.Properties()));
     }
 
     public static final RegistrySupplier<MenuType<TankMenu>> TANK_MENU =
@@ -742,13 +677,11 @@ public final class Registration {
     public static final RegistrySupplier<net.bobofraggins.mobfarmingsupplies.magnet.SuperconductingMagnetItem>
             SUPERCONDUCTING_MAGNET = ITEMS.register("superconducting_magnet",
                     () -> new net.bobofraggins.mobfarmingsupplies.magnet.SuperconductingMagnetItem(new Item.Properties()
-                            .setId(itemKey("superconducting_magnet"))
                             .stacksTo(1)));
 
     public static final RegistrySupplier<ExperienceSyringeItem> EXPERIENCE_SYRINGE =
             ITEMS.register("experience_syringe",
                     () -> new ExperienceSyringeItem(new Item.Properties()
-                            .setId(itemKey("experience_syringe"))
                             .stacksTo(1)));
 
     // ── DNA Sample Pack items ─────────────────────────────────────────────────────
@@ -758,56 +691,48 @@ public final class Registration {
     public static final RegistrySupplier<DnaSamplePackItem> DNA_SAMPLE_COMMON_HOSTILE =
             ITEMS.register("dna_sample_common_hostile",
                     () -> new DnaSamplePackItem(new Item.Properties()
-                            .setId(itemKey("dna_sample_common_hostile"))
                             .stacksTo(1),
                             MFSConfig::getCommonHostilePackMobs, MobCategory.MONSTER));
 
     public static final RegistrySupplier<DnaSamplePackItem> DNA_SAMPLE_COMMON_PASSIVE =
             ITEMS.register("dna_sample_common_passive",
                     () -> new DnaSamplePackItem(new Item.Properties()
-                            .setId(itemKey("dna_sample_common_passive"))
                             .stacksTo(1),
                             MFSConfig::getCommonPassivePackMobs, MobCategory.CREATURE));
 
     public static final RegistrySupplier<DnaSamplePackItem> DNA_SAMPLE_AQUATIC =
             ITEMS.register("dna_sample_aquatic",
                     () -> new DnaSamplePackItem(new Item.Properties()
-                            .setId(itemKey("dna_sample_aquatic"))
                             .stacksTo(1),
                             MFSConfig::getAquaticPackMobs));
 
     public static final RegistrySupplier<DnaSamplePackItem> DNA_SAMPLE_RARE =
             ITEMS.register("dna_sample_rare",
                     () -> new DnaSamplePackItem(new Item.Properties()
-                            .setId(itemKey("dna_sample_rare"))
                             .stacksTo(1),
                             MFSConfig::getRareHostilePackMobs));
 
     public static final RegistrySupplier<DnaSamplePackItem> DNA_SAMPLE_PASSIVE_RARE =
             ITEMS.register("dna_sample_passive_rare",
                     () -> new DnaSamplePackItem(new Item.Properties()
-                            .setId(itemKey("dna_sample_passive_rare"))
                             .stacksTo(1),
                             MFSConfig::getRarePassivePackMobs));
 
     public static final RegistrySupplier<DnaSamplePackItem> DNA_SAMPLE_NETHER =
             ITEMS.register("dna_sample_nether",
                     () -> new DnaSamplePackItem(new Item.Properties()
-                            .setId(itemKey("dna_sample_nether"))
                             .stacksTo(1),
                             MFSConfig::getNetherPackMobs));
 
     public static final RegistrySupplier<DnaSamplePackItem> DNA_SAMPLE_BABY =
             ITEMS.register("dna_sample_baby",
                     () -> new DnaSamplePackItem(new Item.Properties()
-                            .setId(itemKey("dna_sample_baby"))
                             .stacksTo(1),
                             MFSConfig::getBabyPackMobs, true));
 
     public static final RegistrySupplier<DnaSamplePackItem> DNA_SAMPLE_WRONG =
             ITEMS.register("dna_sample_wrong",
                     () -> new DnaSamplePackItem(new Item.Properties()
-                            .setId(itemKey("dna_sample_wrong"))
                             .stacksTo(1),
                             MFSConfig::getWrongMobsPackMobs));
 
@@ -816,7 +741,6 @@ public final class Registration {
     public static final RegistrySupplier<PicnicBasketBlock> PICNIC_BASKET =
             BLOCKS.register("picnic_basket",
                     () -> new PicnicBasketBlock(BlockBehaviour.Properties.of()
-                            .setId(blockKey("picnic_basket"))
                             .strength(2.5f)
                             .sound(SoundType.WOOD)
                             .noOcclusion()));
@@ -824,7 +748,6 @@ public final class Registration {
     public static final RegistrySupplier<PicnicBasketItem> PICNIC_BASKET_ITEM =
             ITEMS.register("picnic_basket",
                     () -> new PicnicBasketItem(PICNIC_BASKET.get(), new Item.Properties()
-                            .setId(itemKey("picnic_basket"))
                             .stacksTo(1)));
 
     public static final RegistrySupplier<MenuType<PicnicBasketMenu>> PICNIC_BASKET_MENU =
@@ -832,7 +755,7 @@ public final class Registration {
 
     public static final RegistrySupplier<BlockEntityType<PicnicBasketBlockEntity>> PICNIC_BASKET_BE_TYPE =
             BLOCK_ENTITIES.register("picnic_basket",
-                    () -> BlockEntityTypePlatform.create(PicnicBasketBlockEntity::new, PICNIC_BASKET.get()));
+                    () -> BlockEntityType.Builder.of(PicnicBasketBlockEntity::new, PICNIC_BASKET.get()).build(null));
 
     // ── S'mores ───────────────────────────────────────────────────────────────────
 
@@ -845,31 +768,26 @@ public final class Registration {
     public static final RegistrySupplier<Item> GRAHAM_CRACKER =
             ITEMS.register("graham_cracker",
                     () -> new Item(new Item.Properties()
-                            .setId(itemKey("graham_cracker"))
                             .food(SNACK_FOOD)));
 
     public static final RegistrySupplier<Item> CHOCOLATE_BAR =
             ITEMS.register("chocolate_bar",
                     () -> new Item(new Item.Properties()
-                            .setId(itemKey("chocolate_bar"))
                             .food(SNACK_FOOD)));
 
     public static final RegistrySupplier<Item> MARSHMALLOW =
             ITEMS.register("marshmallow",
                     () -> new Item(new Item.Properties()
-                            .setId(itemKey("marshmallow"))
                             .food(SNACK_FOOD)));
 
     public static final RegistrySupplier<Item> TOASTED_MARSHMALLOW =
             ITEMS.register("toasted_marshmallow",
                     () -> new Item(new Item.Properties()
-                            .setId(itemKey("toasted_marshmallow"))
                             .food(SNACK_FOOD)));
 
     public static final RegistrySupplier<Item> SMORE =
             ITEMS.register("smore",
                     () -> new Item(new Item.Properties()
-                            .setId(itemKey("smore"))
                             .food(SMORE_FOOD)));
 
     // ── Filter Scribing Terminal ──────────────────────────────────────────────────
@@ -877,20 +795,18 @@ public final class Registration {
     public static final RegistrySupplier<FilterScribingTerminalBlock> FILTER_SCRIBING_TERMINAL =
             BLOCKS.register("filter_scribing_terminal",
                     () -> new FilterScribingTerminalBlock(BlockBehaviour.Properties.of()
-                            .setId(blockKey("filter_scribing_terminal"))
                             .strength(2.5f)
                             .sound(SoundType.WOOD)
                             .noOcclusion()));
 
     public static final RegistrySupplier<BlockItem> FILTER_SCRIBING_TERMINAL_ITEM =
             ITEMS.register("filter_scribing_terminal",
-                    () -> new BlockItem(FILTER_SCRIBING_TERMINAL.get(), new Item.Properties()
-                            .setId(itemKey("filter_scribing_terminal"))));
+                    () -> new BlockItem(FILTER_SCRIBING_TERMINAL.get(), new Item.Properties()));
 
     public static final RegistrySupplier<BlockEntityType<FilterScribingTerminalBlockEntity>> FILTER_SCRIBING_TERMINAL_BE_TYPE =
             BLOCK_ENTITIES.register("filter_scribing_terminal",
-                    () -> BlockEntityTypePlatform.create(
-                            FilterScribingTerminalBlockEntity::new, FILTER_SCRIBING_TERMINAL.get()));
+                    () -> BlockEntityType.Builder.of(
+                            FilterScribingTerminalBlockEntity::new, FILTER_SCRIBING_TERMINAL.get()).build(null));
 
     public static final RegistrySupplier<MenuType<FilterScribingTerminalMenu>> FILTER_SCRIBING_TERMINAL_MENU =
             MENUS.register("filter_scribing_terminal",
@@ -901,19 +817,17 @@ public final class Registration {
     public static final RegistrySupplier<LogisticSorterBlock> LOGISTIC_SORTER =
             BLOCKS.register("logistic_sorter",
                     () -> new LogisticSorterBlock(BlockBehaviour.Properties.of()
-                            .setId(blockKey("logistic_sorter"))
                             .strength(3.5f)
                             .sound(SoundType.METAL)
                             .noOcclusion()));
 
     public static final RegistrySupplier<BlockItem> LOGISTIC_SORTER_ITEM =
             ITEMS.register("logistic_sorter",
-                    () -> new LogisticSorterBlockItem(LOGISTIC_SORTER.get(), new Item.Properties()
-                            .setId(itemKey("logistic_sorter"))));
+                    () -> new LogisticSorterBlockItem(LOGISTIC_SORTER.get(), new Item.Properties()));
 
     public static final RegistrySupplier<BlockEntityType<LogisticSorterBlockEntity>> LOGISTIC_SORTER_BE_TYPE =
             BLOCK_ENTITIES.register("logistic_sorter",
-                    () -> BlockEntityTypePlatform.create(LogisticSorterBlockEntity::new, LOGISTIC_SORTER.get()));
+                    () -> BlockEntityType.Builder.of(LogisticSorterBlockEntity::new, LOGISTIC_SORTER.get()).build(null));
 
     public static final RegistrySupplier<MenuType<LogisticSorterMenu>> LOGISTIC_SORTER_MENU =
             MENUS.register("logistic_sorter", () -> MenuRegistry.ofExtended(LogisticSorterMenu::new));
@@ -923,19 +837,17 @@ public final class Registration {
     public static final RegistrySupplier<OmniHopperBlock> OMNI_HOPPER =
             BLOCKS.register("omnidirectional_hopper",
                     () -> new OmniHopperBlock(BlockBehaviour.Properties.of()
-                            .setId(blockKey("omnidirectional_hopper"))
                             .strength(3.5f)
                             .sound(SoundType.METAL)
                             .noOcclusion()));
 
     public static final RegistrySupplier<BlockItem> OMNI_HOPPER_ITEM =
             ITEMS.register("omnidirectional_hopper",
-                    () -> new OmniHopperBlockItem(OMNI_HOPPER.get(), new Item.Properties()
-                            .setId(itemKey("omnidirectional_hopper"))));
+                    () -> new OmniHopperBlockItem(OMNI_HOPPER.get(), new Item.Properties()));
 
     public static final RegistrySupplier<BlockEntityType<OmniHopperBlockEntity>> OMNI_HOPPER_BE_TYPE =
             BLOCK_ENTITIES.register("omnidirectional_hopper",
-                    () -> BlockEntityTypePlatform.create(OmniHopperBlockEntity::new, OMNI_HOPPER.get()));
+                    () -> BlockEntityType.Builder.of(OmniHopperBlockEntity::new, OMNI_HOPPER.get()).build(null));
 
     public static final RegistrySupplier<MenuType<OmniHopperMenu>> OMNI_HOPPER_MENU =
             MENUS.register("omnidirectional_hopper", () -> MenuRegistry.ofExtended(OmniHopperMenu::new));
@@ -945,7 +857,6 @@ public final class Registration {
     public static final RegistrySupplier<EinsteinRosenBridgeBlock> EINSTEIN_ROSEN_BRIDGE =
             BLOCKS.register("einstein_rosen_bridge",
                     () -> new EinsteinRosenBridgeBlock(BlockBehaviour.Properties.of()
-                            .setId(blockKey("einstein_rosen_bridge"))
                             .lightLevel(state -> 11) // like a nether portal
                             .strength(3.5f)
                             .sound(SoundType.METAL)
@@ -953,12 +864,11 @@ public final class Registration {
 
     public static final RegistrySupplier<BlockItem> EINSTEIN_ROSEN_BRIDGE_ITEM =
             ITEMS.register("einstein_rosen_bridge",
-                    () -> new EinsteinRosenBridgeBlockItem(EINSTEIN_ROSEN_BRIDGE.get(), new Item.Properties()
-                            .setId(itemKey("einstein_rosen_bridge"))));
+                    () -> new EinsteinRosenBridgeBlockItem(EINSTEIN_ROSEN_BRIDGE.get(), new Item.Properties()));
 
     public static final RegistrySupplier<BlockEntityType<EinsteinRosenBridgeBlockEntity>> BRIDGE_BE_TYPE =
             BLOCK_ENTITIES.register("einstein_rosen_bridge",
-                    () -> BlockEntityTypePlatform.create(EinsteinRosenBridgeBlockEntity::new, EINSTEIN_ROSEN_BRIDGE.get()));
+                    () -> BlockEntityType.Builder.of(EinsteinRosenBridgeBlockEntity::new, EINSTEIN_ROSEN_BRIDGE.get()).build(null));
 
     public static final RegistrySupplier<MenuType<EinsteinRosenBridgeMenu>> BRIDGE_MENU =
             MENUS.register("einstein_rosen_bridge", () -> MenuRegistry.ofExtended(EinsteinRosenBridgeMenu::new));
@@ -968,7 +878,6 @@ public final class Registration {
     public static final RegistrySupplier<MobHeadBlock> MOB_HEAD =
             BLOCKS.register("mob_head",
                     () -> new MobHeadBlock(BlockBehaviour.Properties.of()
-                            .setId(blockKey("mob_head"))
                             .instrument(NoteBlockInstrument.CUSTOM_HEAD)
                             .strength(1.0f)
                             .pushReaction(PushReaction.DESTROY)));
@@ -976,46 +885,39 @@ public final class Registration {
     public static final RegistrySupplier<MobWallHeadBlock> MOB_WALL_HEAD =
             BLOCKS.register("mob_wall_head",
                     () -> new MobWallHeadBlock(BlockBehaviour.Properties.of()
-                            .setId(blockKey("mob_wall_head"))
                             .instrument(NoteBlockInstrument.CUSTOM_HEAD)
                             .strength(1.0f)
                             .pushReaction(PushReaction.DESTROY)
-                            .overrideLootTable(MOB_HEAD.get().getLootTable())
-                            .overrideDescription(MOB_HEAD.get().getDescriptionId())));
+                            .dropsLike(MOB_HEAD.get())));
 
     public static final RegistrySupplier<MobHeadItem> MOB_HEAD_ITEM =
             ITEMS.register("mob_head",
                     () -> new MobHeadItem(MOB_HEAD.get(), MOB_WALL_HEAD.get(), new Item.Properties()
-                            .setId(itemKey("mob_head"))
                             .rarity(Rarity.UNCOMMON)
-                            .equippableUnswappable(EquipmentSlot.HEAD)
                             // Worn, a head protects like an Iron Helmet and takes helmet
                             // enchantments, but has no durability so heads still stack.
-                            .attributes(ArmorMaterials.IRON.createAttributes(ArmorType.HELMET))
-                            .enchantable(ArmorMaterials.IRON.enchantmentValue())));
+                            .attributes(MobHeadItem.ATTRIBUTES)));
 
     public static final RegistrySupplier<BlockEntityType<MobHeadBlockEntity>> MOB_HEAD_BE_TYPE =
             BLOCK_ENTITIES.register("mob_head",
-                    () -> BlockEntityTypePlatform.create(MobHeadBlockEntity::new, MOB_HEAD.get(), MOB_WALL_HEAD.get()));
+                    () -> BlockEntityType.Builder.of(MobHeadBlockEntity::new, MOB_HEAD.get(), MOB_WALL_HEAD.get()).build(null));
 
     // ── Toilet ────────────────────────────────────────────────────────────────────
 
     public static final RegistrySupplier<ToiletBlock> TOILET =
             BLOCKS.register("toilet",
                     () -> new ToiletBlock(BlockBehaviour.Properties.of()
-                            .setId(blockKey("toilet"))
                             .strength(0.8f)
                             .sound(SoundType.CALCITE)
                             .noOcclusion()));
 
     public static final RegistrySupplier<BlockItem> TOILET_ITEM =
             ITEMS.register("toilet",
-                    () -> new ToiletBlockItem(TOILET.get(), new Item.Properties()
-                            .setId(itemKey("toilet"))));
+                    () -> new ToiletBlockItem(TOILET.get(), new Item.Properties()));
 
     public static final RegistrySupplier<BlockEntityType<ToiletBlockEntity>> TOILET_BE_TYPE =
             BLOCK_ENTITIES.register("toilet",
-                    () -> BlockEntityTypePlatform.create(ToiletBlockEntity::new, TOILET.get()));
+                    () -> BlockEntityType.Builder.of(ToiletBlockEntity::new, TOILET.get()).build(null));
 
     public static final RegistrySupplier<EntityType<ToiletSeatEntity>> TOILET_SEAT =
             ENTITY_TYPES.register("toilet_seat",
@@ -1023,51 +925,42 @@ public final class Registration {
                             .sized(0.0f, 0.0f)
                             .noSummon()
                             .clientTrackingRange(10)
-                            .build(ResourceKey.create(Registries.ENTITY_TYPE,
-                                    Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "toilet_seat"))));
+                            .build("toilet_seat"));
 
     // ── Crafting materials ────────────────────────────────────────────────────────
 
     public static final RegistrySupplier<Item> SILICON =
             ITEMS.register("silicon",
-                    () -> new Item(new Item.Properties()
-                            .setId(itemKey("silicon"))));
+                    () -> new Item(new Item.Properties()));
 
     public static final RegistrySupplier<Item> SILICON_CLUMP =
             ITEMS.register("silicon_clump",
-                    () -> new Item(new Item.Properties()
-                            .setId(itemKey("silicon_clump"))));
+                    () -> new Item(new Item.Properties()));
 
     public static final RegistrySupplier<BiosludgeItem> BIOSLUDGE =
             ITEMS.register("biosludge",
-                    () -> new BiosludgeItem(new Item.Properties()
-                            .setId(itemKey("biosludge"))));
+                    () -> new BiosludgeItem(new Item.Properties()));
 
     /** Smelted from Biosludge. */
     public static final RegistrySupplier<Item> BIOPLASTIC =
             ITEMS.register("bioplastic",
-                    () -> new Item(new Item.Properties()
-                            .setId(itemKey("bioplastic"))));
+                    () -> new Item(new Item.Properties()));
 
     public static final RegistrySupplier<Item> SILICON_WAFER =
             ITEMS.register("silicon_wafer",
-                    () -> new Item(new Item.Properties()
-                            .setId(itemKey("silicon_wafer"))));
+                    () -> new Item(new Item.Properties()));
 
     public static final RegistrySupplier<Item> BLANK_FILTER =
             ITEMS.register("blank_filter",
-                    () -> new Item(new Item.Properties()
-                            .setId(itemKey("blank_filter"))));
+                    () -> new Item(new Item.Properties()));
 
     public static final RegistrySupplier<Item> BLANK_UPGRADE =
             ITEMS.register("blank_upgrade",
-                    () -> new Item(new Item.Properties()
-                            .setId(itemKey("blank_upgrade"))));
+                    () -> new Item(new Item.Properties()));
 
     public static final RegistrySupplier<ItemFilterItem> ITEM_FILTER =
             ITEMS.register("item_filter",
-                    () -> new ItemFilterItem(new Item.Properties()
-                            .setId(itemKey("item_filter"))));
+                    () -> new ItemFilterItem(new Item.Properties()));
 
     // ── Creative tab ──────────────────────────────────────────────────────────────
 

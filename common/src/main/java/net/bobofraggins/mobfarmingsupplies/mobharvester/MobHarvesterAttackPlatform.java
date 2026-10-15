@@ -83,13 +83,29 @@ public final class MobHarvesterAttackPlatform {
      */
     public static void hurtWithoutPlayer(ServerLevel level, ItemStack sword, List<LivingEntity> targets) {
         // A player's base attack damage is 1.0; the sword's modifiers add to it, as for a real hit.
-        double base = sword.getOrDefault(DataComponents.ATTRIBUTE_MODIFIERS, ItemAttributeModifiers.EMPTY)
-                .compute(Attributes.ATTACK_DAMAGE, 1.0, EquipmentSlot.MAINHAND);
+        double base = attackDamage(sword);
         DamageSource source = new DamageSource(level.registryAccess()
                 .lookupOrThrow(Registries.DAMAGE_TYPE).getOrThrow(DamageTypes.MOB_ATTACK_NO_AGGRO));
         for (LivingEntity target : targets) {
             float damage = EnchantmentHelper.modifyDamage(level, sword, target, source, (float) base);
-            target.hurtServer(level, source, damage);
+            target.hurt(source, damage);
         }
     }
+
+    /** A player's attack damage holding {@code sword}: base 1.0 plus the sword's main-hand modifiers. */
+    private static double attackDamage(ItemStack sword) {
+        double[] added = new double[3]; // add value, multiply base, multiply total
+        sword.getOrDefault(DataComponents.ATTRIBUTE_MODIFIERS, ItemAttributeModifiers.EMPTY)
+                .forEach(EquipmentSlot.MAINHAND, (attribute, modifier) -> {
+                    if (!attribute.is(Attributes.ATTACK_DAMAGE)) return;
+                    switch (modifier.operation()) {
+                        case ADD_VALUE -> added[0] += modifier.amount();
+                        case ADD_MULTIPLIED_BASE -> added[1] += modifier.amount();
+                        case ADD_MULTIPLIED_TOTAL -> added[2] = (1 + added[2]) * (1 + modifier.amount()) - 1;
+                    }
+                });
+        double base = 1.0 + added[0];
+        return (base + base * added[1]) * (1 + added[2]);
+    }
+
 }

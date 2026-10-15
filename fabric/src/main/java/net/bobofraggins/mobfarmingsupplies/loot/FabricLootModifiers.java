@@ -4,7 +4,7 @@ import dev.architectury.platform.Platform;
 import net.bobofraggins.mobfarmingsupplies.MFSConfig;
 import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.core.registries.Registries;
@@ -32,7 +32,7 @@ public final class FabricLootModifiers {
     public static void register() {
         LootTableEvents.MODIFY.register((id, tableBuilder, source, registries) -> {
             // The event hands over a ResourceKey, whose toString() isn't the plain id.
-            String tableId = id.identifier().toString();
+            String tableId = id.location().toString();
 
             float commonChance = (float) MFSConfig.getDnaSamplePackCommonChestChance();
             float rareChance = (float) MFSConfig.getDnaSamplePackRareChestChance();
@@ -107,7 +107,7 @@ public final class FabricLootModifiers {
     /** Adds a pool that rolls {@code mobfarmingsupplies:chests/inject/<name>} once. */
     private static void addTable(LootTable.Builder tableBuilder, String name) {
         ResourceKey<LootTable> inject = ResourceKey.create(Registries.LOOT_TABLE,
-                Identifier.fromNamespaceAndPath("mobfarmingsupplies", "chests/inject/" + name));
+                ResourceLocation.fromNamespaceAndPath("mobfarmingsupplies", "chests/inject/" + name));
         tableBuilder.withPool(LootPool.lootPool()
                 .setRolls(ConstantValue.exactly(1))
                 .add(NestedLootTable.lootTableReference(inject)));
@@ -119,9 +119,9 @@ public final class FabricLootModifiers {
 
     /** Adds a pool giving {@code min}-{@code max} of the item with the given chance. */
     private static void addItem(LootTable.Builder tableBuilder, String itemId, float chance, int min, int max) {
-        Identifier rl = Identifier.tryParse(itemId);
+        ResourceLocation rl = ResourceLocation.tryParse(itemId);
         if (rl == null) return;
-        Item item = BuiltInRegistries.ITEM.getValue(rl);
+        Item item = BuiltInRegistries.ITEM.get(rl);
         if (item == null || item == Items.AIR) return;
         tableBuilder.withPool(LootPool.lootPool()
                 .setRolls(ConstantValue.exactly(1))

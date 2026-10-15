@@ -7,7 +7,7 @@ import dev.architectury.registry.client.keymappings.KeyMappingRegistry;
 import net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommon;
 import net.bobofraggins.mobfarmingsupplies.network.OpenPicnicBasketPacket;
 import net.minecraft.client.KeyMapping;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * Client-side keybind to open a worn/carried Picnic Basket, needed because an equipped
@@ -20,8 +20,7 @@ public final class PicnicBasketKeybinds {
     private PicnicBasketKeybinds() {}
 
     /** The mod's key category, shared by all its keys. */
-    public static final KeyMapping.Category CATEGORY = KeyMapping.Category.register(
-            Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "category"));
+    public static final String CATEGORY = "key.category." + MobFarmingSuppliesCommon.MODID + ".category";
 
     public static final KeyMapping OPEN_BASKET = new KeyMapping(
             "key.mobfarmingsupplies.open_picnic_basket",

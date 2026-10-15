@@ -16,15 +16,14 @@ import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
-import net.minecraft.core.Holder;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.material.Fluid;
 
-import java.util.stream.Stream;
+import java.util.List;
 
 /**
  * Fabric equivalent of {@code FluidContainerIngredient} (NeoForge).
@@ -46,12 +45,12 @@ import java.util.stream.Stream;
 @SuppressWarnings("UnstableApiUsage")
 public class FabricFluidContainerIngredient implements CustomIngredient {
 
-    public static final Identifier ID =
-            Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "fluid_container");
+    public static final ResourceLocation ID =
+            ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "fluid_container");
 
     public static final MapCodec<FabricFluidContainerIngredient> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(
-                    Identifier.CODEC
+                    ResourceLocation.CODEC
                             .xmap(id -> TagKey.create(Registries.FLUID, id), TagKey::location)
                             .fieldOf("fluid_tag")
                             .forGetter(i -> i.fluidTag),
@@ -67,7 +66,7 @@ public class FabricFluidContainerIngredient implements CustomIngredient {
                         buf.writeVarInt(val.amount);
                     },
                     buf -> new FabricFluidContainerIngredient(
-                            TagKey.create(Registries.FLUID, Identifier.parse(buf.readUtf())),
+                            TagKey.create(Registries.FLUID, ResourceLocation.parse(buf.readUtf())),
                             buf.readVarInt()
                     )
             );
@@ -75,13 +74,13 @@ public class FabricFluidContainerIngredient implements CustomIngredient {
     public static final CustomIngredientSerializer<FabricFluidContainerIngredient> SERIALIZER =
             new CustomIngredientSerializer<>() {
                 @Override
-                public Identifier getIdentifier() { return ID; }
+                public ResourceLocation getIdentifier() { return ID; }
 
                 @Override
-                public MapCodec<FabricFluidContainerIngredient> getCodec() { return CODEC; }
+                public MapCodec<FabricFluidContainerIngredient> getCodec(boolean allowEmpty) { return CODEC; }
 
                 @Override
-                public StreamCodec<RegistryFriendlyByteBuf, FabricFluidContainerIngredient> getStreamCodec() {
+                public StreamCodec<RegistryFriendlyByteBuf, FabricFluidContainerIngredient> getPacketCodec() {
                     return PACKET_CODEC;
                 }
             };
@@ -111,10 +110,10 @@ public class FabricFluidContainerIngredient implements CustomIngredient {
     }
 
     @Override
-    public Stream<Holder<Item>> items() {
+    public List<ItemStack> getMatchingStacks() {
         Item item = MFSRegistryHelper.getItem("xp_juice_bucket");
-        if (item == null || item == Items.AIR) return Stream.empty();
-        return Stream.of(item.builtInRegistryHolder());
+        if (item == null || item == Items.AIR) return List.of();
+        return List.of(new ItemStack(item));
     }
 
     @Override

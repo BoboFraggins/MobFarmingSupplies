@@ -10,7 +10,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.gamerules.GameRules;
+import net.minecraft.world.level.GameRules;
 
 /**
  * The Mob Harvester's Beheading Upgrade: something killed by the harvester (its fake player
@@ -34,11 +34,11 @@ public final class BeheadingDrops {
         int beheadingLevel = weapon.getOrDefault(Registration.BEHEADING_LEVEL.get(), 0);
         if (beheadingLevel <= 0 || level.getRandom().nextInt(10) >= beheadingLevel) return EventResult.pass();
         // Mobs follow the mob-loot rule; players always lose their head.
-        if (!(entity instanceof Player) && !level.getGameRules().get(GameRules.MOB_DROPS)) return EventResult.pass();
+        if (!(entity instanceof Player) && !level.getGameRules().getBoolean(GameRules.RULE_DOMOBLOOT)) return EventResult.pass();
 
         ItemStack head = MobHeads.headFor(entity);
         if (!head.isEmpty()) {
-            entity.spawnAtLocation(level, head);
+            entity.spawnAtLocation(head);
             MFSTriggers.triggerNear(MFSTriggers.MOB_BEHEADED, level, entity.blockPosition(), "");
         }
         return EventResult.pass();

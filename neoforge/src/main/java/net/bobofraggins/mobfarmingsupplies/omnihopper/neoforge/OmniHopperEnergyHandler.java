@@ -1,8 +1,8 @@
 package net.bobofraggins.mobfarmingsupplies.omnihopper.neoforge;
 
 import net.bobofraggins.mobfarmingsupplies.omnihopper.HopperNode;
-import net.neoforged.neoforge.transfer.energy.EnergyHandler;
-import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+import net.bobofraggins.mobfarmingsupplies.neoforge.transfer.api.energy.EnergyHandler;
+import net.bobofraggins.mobfarmingsupplies.neoforge.transfer.api.transaction.TransactionContext;
 
 /**
  * Insert-only energy handler exposed on an Omnidirectional Hopper's (or Einstein-Rosen Bridge's) INPUT sides: energy pushed in

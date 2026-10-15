@@ -100,7 +100,7 @@ public final class FabricTankFluidStorage
     // ── Conversion helpers (package-accessible for TankBlockEntityPlatformImpl) ─
 
     public static FluidStack fromFabric(FluidVariant variant, long amount) {
-        return FluidStack.create(variant.getFluid(), amount, variant.getComponentsPatch());
+        return FluidStack.create(variant.getFluid(), amount, variant.getComponents());
     }
 
     public static FluidVariant toFabric(FluidStack archFluid) {

@@ -2,8 +2,12 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    "minecraft:flint_and_steel",
-    "mobfarmingsupplies:blank_upgrade"
+    {
+      "item": "minecraft:flint_and_steel"
+    },
+    {
+      "item": "mobfarmingsupplies:blank_upgrade"
+    }
   ],
   "result": {
     "count": 1,

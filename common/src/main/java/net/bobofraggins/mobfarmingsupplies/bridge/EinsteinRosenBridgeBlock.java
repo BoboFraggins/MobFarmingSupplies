@@ -1,18 +1,19 @@
 package net.bobofraggins.mobfarmingsupplies.bridge;
 
-import net.minecraft.world.level.redstone.Orientation;
-import net.bobofraggins.mobfarmingsupplies.shared.TransferSchedule;
 import com.mojang.serialization.MapCodec;
 import dev.architectury.registry.menu.MenuRegistry;
+import java.util.List;
+import java.util.Map;
 import net.bobofraggins.mobfarmingsupplies.omnihopper.HopperSide;
 import net.bobofraggins.mobfarmingsupplies.omnihopper.OmniHopperBlock;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
+import net.bobofraggins.mobfarmingsupplies.shared.TransferSchedule;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
-import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
@@ -21,6 +22,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -28,13 +30,10 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
-import net.minecraft.world.level.storage.TagValueOutput;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Einstein-Rosen Bridge — an Omnidirectional Hopper linked to every other bridge on its channel
@@ -73,9 +72,7 @@ public class EinsteinRosenBridgeBlock extends BaseEntityBlock {
         if (be instanceof EinsteinRosenBridgeBlockEntity bridge) {
             for (ItemStack drop : drops) {
                 if (drop.getItem() instanceof BlockItem) {
-                    TagValueOutput beOut = TagValueOutput.createWithContext(
-                            ProblemReporter.DISCARDING, params.getLevel().registryAccess());
-                    bridge.saveCustomOnly(beOut);
+                    CompoundTag beOut = bridge.saveCustomOnly(params.getLevel().registryAccess());
                     BlockItem.setBlockEntityData(drop, bridge.getType(), beOut);
                     if (bridge.getChannel() != 0) drop.set(Registration.BRIDGE_CHANNEL.get(), bridge.getChannel());
                 }
@@ -87,8 +84,8 @@ public class EinsteinRosenBridgeBlock extends BaseEntityBlock {
     // ── Pick block (and Jade's name) — show the channel ─────────────────────────
 
     @Override
-    protected ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state, boolean includeData) {
-        ItemStack stack = super.getCloneItemStack(level, pos, state, includeData);
+    public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state) {
+        ItemStack stack = super.getCloneItemStack(level, pos, state);
         if (level.getBlockEntity(pos) instanceof EinsteinRosenBridgeBlockEntity bridge && bridge.getChannel() != 0) {
             stack.set(Registration.BRIDGE_CHANNEL.get(), bridge.getChannel());
         }
@@ -129,8 +126,8 @@ public class EinsteinRosenBridgeBlock extends BaseEntityBlock {
     /** A neighbour changed: try moving things again straight away (see {@link TransferSchedule}). */
     @Override
     protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block block,
-                                   @Nullable Orientation orientation, boolean movedByPiston) {
-        super.neighborChanged(state, level, pos, block, orientation, movedByPiston);
+                                   BlockPos neighborPos, boolean movedByPiston) {
+        super.neighborChanged(state, level, pos, block, neighborPos, movedByPiston);
         TransferSchedule.resetAt(level, pos);
     }
 
@@ -152,5 +149,11 @@ public class EinsteinRosenBridgeBlock extends BaseEntityBlock {
             MenuRegistry.openExtendedMenu(sp, be, buf -> buf.writeBlockPos(pos));
         }
         return InteractionResult.SUCCESS;
+    }
+
+    /** Drawn from its block model (1.21.1's {@code BaseEntityBlock} defaults to invisible). */
+    @Override
+    protected RenderShape getRenderShape(BlockState state) {
+        return RenderShape.MODEL;
     }
 }

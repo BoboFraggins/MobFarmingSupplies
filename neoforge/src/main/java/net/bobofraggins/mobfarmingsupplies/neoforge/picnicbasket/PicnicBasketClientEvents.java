@@ -19,7 +19,7 @@ public final class PicnicBasketClientEvents {
     }
 
     // NeoForge's RegisterMenuScreensEvent has already fired by the time the common
-    // MenuScreenRegistry.registerScreenFactory call runs, so register here directly.
+    // MenuRegistry.registerScreenFactory call runs, so register here directly.
     @SubscribeEvent
     public static void onRegisterMenuScreens(RegisterMenuScreensEvent event) {
         event.register(Registration.PICNIC_BASKET_MENU.get(), PicnicBasketScreen::new);

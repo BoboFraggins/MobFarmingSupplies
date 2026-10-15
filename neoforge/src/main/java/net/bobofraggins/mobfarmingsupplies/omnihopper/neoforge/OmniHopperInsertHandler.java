@@ -4,10 +4,10 @@ import java.util.function.Predicate;
 import java.util.function.ToLongFunction;
 import net.bobofraggins.mobfarmingsupplies.omnihopper.HopperNode;
 import net.minecraft.core.Direction;
-import net.neoforged.neoforge.capabilities.BlockCapability;
-import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.resource.Resource;
-import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+import net.bobofraggins.mobfarmingsupplies.neoforge.transfer.api.BlockCapability;
+import net.bobofraggins.mobfarmingsupplies.neoforge.transfer.api.ResourceHandler;
+import net.bobofraggins.mobfarmingsupplies.neoforge.transfer.api.resource.Resource;
+import net.bobofraggins.mobfarmingsupplies.neoforge.transfer.api.transaction.TransactionContext;
 
 /**
  * Insert-only handler exposed on an Omnidirectional Hopper's (or Einstein-Rosen Bridge's) INPUT sides, for items, fluids or

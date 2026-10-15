@@ -12,12 +12,13 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.Mirror;
+import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -110,20 +111,17 @@ public class EnderInhibitorBlock extends Block implements EntityBlock {
     @Override
     protected BlockState updateShape(
             BlockState state,
-            LevelReader level,
-            ScheduledTickAccess scheduledTickAccess,
-            BlockPos pos,
             Direction direction,
-            BlockPos neighborPos,
             BlockState neighborState,
-            RandomSource random) {
+            LevelAccessor level,
+            BlockPos pos,
+            BlockPos neighborPos) {
         // Only react to changes on the side our base is attached to
         if (direction == state.getValue(FACING).getOpposite()
                 && !canSurvive(state, level, pos)) {
             return Blocks.AIR.defaultBlockState();
         }
-        return super.updateShape(state, level, scheduledTickAccess, pos,
-                direction, neighborPos, neighborState, random);
+        return super.updateShape(state, direction, neighborState, level, pos, neighborPos);
     }
 
     // ── Ambient particles ────────────────────────────────────────────────────────
@@ -206,5 +204,19 @@ public class EnderInhibitorBlock extends Block implements EntityBlock {
     @Override
     protected BlockState mirror(BlockState state, Mirror mirror) {
         return state.setValue(FACING, mirror.mirror(state.getValue(FACING)));
+    }
+
+    @Override
+    protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
+        if (!state.is(newState.getBlock()) && level.getBlockEntity(pos) instanceof EnderInhibitorBlockEntity be) {
+            be.preRemoveSideEffects(pos, state);
+        }
+        super.onRemove(state, level, pos, newState, movedByPiston);
+    }
+
+    /** Drawn from its block model (1.21.1's {@code BaseEntityBlock} defaults to invisible). */
+    @Override
+    protected RenderShape getRenderShape(BlockState state) {
+        return RenderShape.MODEL;
     }
 }

@@ -17,7 +17,7 @@ import net.bobofraggins.mobfarmingsupplies.dna.DnaSampleContents;
 import net.bobofraggins.mobfarmingsupplies.dna.DnaSampleItem;
 import net.bobofraggins.mobfarmingsupplies.register.MFSTags;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -119,7 +119,7 @@ public final class DnaSamplingGuide implements IRecipeCategory<DnaSamplingGuide.
     }
 
     @Override
-    public void draw(Recipe recipe, IRecipeSlotsView slots, GuiGraphicsExtractor graphics, double mouseX, double mouseY) {
+    public void draw(Recipe recipe, IRecipeSlotsView slots, GuiGraphics graphics, double mouseX, double mouseY) {
         drawDownArrow(graphics, SLOT_SIZE + 1);
         drawDownArrow(graphics, MOB_TOP + MOB_HEIGHT + 2);
         LivingEntity mob = shownMob(slots);
@@ -142,12 +142,12 @@ public final class DnaSamplingGuide implements IRecipeCategory<DnaSamplingGuide.
                 .flatMap(view -> view.getDisplayedItemStack()).orElse(ItemStack.EMPTY);
         DnaSampleContents contents = DnaSampleItem.getContents(shown);
         if (contents == null) return null;
-        Optional<EntityType<?>> type = contents.entityNbt().getString("id").flatMap(EntityType::byString);
+        Optional<EntityType<?>> type = EntityType.byString(contents.entityNbt().getString("id"));
         return type.map(t -> mobs.get(t, false)).orElse(null);
     }
 
     /** A small downward-pointing triangle (5×3 px), centred, its top row at {@code y}. */
-    private static void drawDownArrow(GuiGraphicsExtractor g, int y) {
+    private static void drawDownArrow(GuiGraphics g, int y) {
         int cx = WIDTH / 2;
         g.fill(cx - 2, y, cx + 3, y + 1, ARROW_COLOR);
         g.fill(cx - 1, y + 1, cx + 2, y + 2, ARROW_COLOR);

@@ -1,5 +1,5 @@
 {
   "icon": "mobfarmingsupplies:slot/charm",
   "order": 1,
-  "validator_predicates": ["trinkets:default"]
+  "validator_predicates": ["trinkets:tag"]
 }

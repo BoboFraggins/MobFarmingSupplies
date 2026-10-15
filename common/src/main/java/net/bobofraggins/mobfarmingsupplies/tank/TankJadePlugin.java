@@ -3,7 +3,7 @@ package net.bobofraggins.mobfarmingsupplies.tank;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import dev.architectury.fluid.FluidStack;
 import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.IBlockComponentProvider;
@@ -28,8 +28,8 @@ import snownee.jade.api.config.IPluginConfig;
 @WailaPlugin
 public class TankJadePlugin implements IWailaPlugin {
 
-    static final Identifier TANK_PROVIDER =
-            Identifier.fromNamespaceAndPath("mobfarmingsupplies", "tank");
+    static final ResourceLocation TANK_PROVIDER =
+            ResourceLocation.fromNamespaceAndPath("mobfarmingsupplies", "tank");
 
     private static final String KEY_AMOUNT   = "Amount";
     private static final String KEY_CAPACITY = "Capacity";
@@ -69,7 +69,7 @@ public class TankJadePlugin implements IWailaPlugin {
         }
 
         @Override
-        public Identifier getUid() {
+        public ResourceLocation getUid() {
             return TANK_PROVIDER;
         }
     }
@@ -92,13 +92,13 @@ public class TankJadePlugin implements IWailaPlugin {
                     .parse(
                             accessor.getLevel().registryAccess()
                                     .createSerializationContext(NbtOps.INSTANCE),
-                            data.getCompound(KEY_FLUID).orElse(new CompoundTag()))
+                            data.getCompound(KEY_FLUID))
                     .result()
                     .orElse(FluidStack.empty());
             if (fluid.isEmpty()) return;
 
-            long amount   = data.getLongOr(KEY_AMOUNT,   0L);
-            long capacity = data.getLongOr(KEY_CAPACITY, 0L);
+            long amount   = data.getLong(KEY_AMOUNT);
+            long capacity = data.getLong(KEY_CAPACITY);
             tooltip.add(Component.translatable(
                     "jade.mobfarmingsupplies.tank.contents",
                     amount,
@@ -107,7 +107,7 @@ public class TankJadePlugin implements IWailaPlugin {
         }
 
         @Override
-        public Identifier getUid() {
+        public ResourceLocation getUid() {
             return TANK_PROVIDER;
         }
     }

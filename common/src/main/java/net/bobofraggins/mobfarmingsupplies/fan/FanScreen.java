@@ -3,12 +3,11 @@ package net.bobofraggins.mobfarmingsupplies.fan;
 import net.bobofraggins.mobfarmingsupplies.shared.ui.Dialog;
 import net.bobofraggins.mobfarmingsupplies.shared.ui.PlayerInventoryPane;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
 import org.jetbrains.annotations.Nullable;
@@ -32,10 +31,10 @@ import org.jetbrains.annotations.Nullable;
  */
 public class FanScreen extends AbstractContainerScreen<FanMenu> {
 
-    private static final Identifier[] GHOST_UPGRADES = {
-        Identifier.fromNamespaceAndPath("mobfarmingsupplies", "textures/item/fan_upgrade_width_ghost.png"),
-        Identifier.fromNamespaceAndPath("mobfarmingsupplies", "textures/item/fan_upgrade_height_ghost.png"),
-        Identifier.fromNamespaceAndPath("mobfarmingsupplies", "textures/item/fan_upgrade_distance_ghost.png"),
+    private static final ResourceLocation[] GHOST_UPGRADES = {
+        ResourceLocation.fromNamespaceAndPath("mobfarmingsupplies", "textures/item/fan_upgrade_width_ghost.png"),
+        ResourceLocation.fromNamespaceAndPath("mobfarmingsupplies", "textures/item/fan_upgrade_height_ghost.png"),
+        ResourceLocation.fromNamespaceAndPath("mobfarmingsupplies", "textures/item/fan_upgrade_distance_ghost.png"),
     };
 
     private static final int PANE_GAP1      = 0;
@@ -51,6 +50,7 @@ public class FanScreen extends AbstractContainerScreen<FanMenu> {
     private final Dialog dialog;
 
     public FanScreen(FanMenu menu, Inventory inv, Component title) {
+        super(menu, inv, title);
         Dialog d = new Dialog(
                 Dialog.blankPane(PlayerInventoryPane.WIDTH, 8),
                 new FanUpgradeSlotsPane(),
@@ -58,8 +58,9 @@ public class FanScreen extends AbstractContainerScreen<FanMenu> {
                 Dialog.blankPane(PlayerInventoryPane.WIDTH, SHOW_AREA_PANE_H),
                 Dialog.blankPane(PlayerInventoryPane.WIDTH, 12),
                 new PlayerInventoryPane(FanMenu.SLOT_LEFT));
-        super(menu, inv, title, d.totalWidth(), d.totalHeight());
         dialog = d;
+        imageWidth = d.totalWidth();
+        imageHeight = d.totalHeight();
     }
 
     // ── Init ────────────────────────────────────────────────────────────────────
@@ -97,31 +98,29 @@ public class FanScreen extends AbstractContainerScreen<FanMenu> {
     // ── Rendering ────────────────────────────────────────────────────────────────
 
     @Override
-    public void extractContents(GuiGraphicsExtractor g, int mouseX, int mouseY, float partialTick) {
+    protected void renderBg(GuiGraphics g, float partialTick, int mouseX, int mouseY) {
         dialog.render(g, font, title, mouseX, mouseY, partialTick);
 
         for (int i = 0; i < FanBlockEntity.UPGRADE_SLOTS; i++) {
             if (menu.getSlot(i).getItem().isEmpty()) {
-                g.blit(RenderPipelines.GUI_TEXTURED, GHOST_UPGRADES[i],
+                g.blit(GHOST_UPGRADES[i],
                         leftPos + FanMenu.UPGRADE_X_START + i * 18,
                         topPos + FanMenu.UPGRADE_TOP,
                         0, 0, 16, 16, 16, 16);
             }
         }
-
-        super.extractContents(g, mouseX, mouseY, partialTick);
     }
 
     @Override
-    public void extractRenderState(GuiGraphicsExtractor g, int mouseX, int mouseY, float partialTick) {
-        extractBackground(g, mouseX, mouseY, partialTick);
-        super.extractRenderState(g, mouseX, mouseY, partialTick);
+    public void render(GuiGraphics g, int mouseX, int mouseY, float partialTick) {
+        super.render(g, mouseX, mouseY, partialTick);
+        renderTooltip(g, mouseX, mouseY);
     }
 
     @Override
-    protected void extractLabels(GuiGraphicsExtractor g, int mouseX, int mouseY) {
+    protected void renderLabels(GuiGraphics g, int mouseX, int mouseY) {
         // Title is drawn by Dialog; render the "Inventory" label above player slots.
-        g.text(font,
+        g.drawString(font,
                 Component.translatable("container.inventory"),
                 FanMenu.SLOT_LEFT,
                 FanMenu.INV_TOP - 10,
@@ -132,8 +131,8 @@ public class FanScreen extends AbstractContainerScreen<FanMenu> {
     // ── Input ───────────────────────────────────────────────────────────────────
 
     @Override
-    public boolean mouseClicked(net.minecraft.client.input.MouseButtonEvent event, boolean consumed) {
-        if (dialog.mouseClicked(event.x(), event.y(), event.button())) return true;
-        return super.mouseClicked(event, consumed);
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (dialog.mouseClicked(mouseX, mouseY, button)) return true;
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 }

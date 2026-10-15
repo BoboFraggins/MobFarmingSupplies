@@ -1,30 +1,18 @@
 package net.bobofraggins.mobfarmingsupplies.logisticsorter;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.QuadInstance;
-import com.mojang.serialization.MapCodec;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
+import net.bobofraggins.mobfarmingsupplies.shared.render.SpecialModelRenderer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.Sheets;
-import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
-import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
-import net.minecraft.client.renderer.special.SpecialModelRenderer;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.util.RandomSource;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Vector3fc;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Consumer;
 
 /**
  * Item renderer for the Logistic Sorter: draws the block model for the configuration saved on
@@ -34,19 +22,13 @@ import java.util.function.Consumer;
  */
 public class LogisticSorterItemRenderer implements SpecialModelRenderer<BlockState> {
 
-    /** Model parts per block state — block models never change after bake. */
-    private final Map<BlockState, List<BlockStateModelPart>> partsCache = new HashMap<>();
-
-    @Override
-    public void getExtents(Consumer<Vector3fc> output) {}
-
     @Override
     public BlockState extractArgument(ItemStack stack) {
         BlockState state = Registration.LOGISTIC_SORTER.get().defaultBlockState();
         var data = stack.get(DataComponents.BLOCK_ENTITY_DATA);
         if (data == null) return state;
         CompoundTag tag = data.getUnsafe(); // read-only access
-        int sides = tag.getIntOr("Sides", 0);
+        int sides = tag.getInt("Sides");
         boolean in = false, out = false;
         for (Direction d : Direction.values()) {
             SideMode mode = LogisticSorterBlockEntity.unpackSide(sides, d);
@@ -57,7 +39,7 @@ public class LogisticSorterItemRenderer implements SpecialModelRenderer<BlockSta
         // Same "configured and ready" rule as LogisticSorterBlockEntity#isActive. The filter
         // slots only accept Item Filters, so any non-empty saved slot counts as a filter.
         boolean anyFilter = false;
-        for (Tag t : tag.getListOrEmpty("Filters")) {
+        for (Tag t : tag.getList("Filters", Tag.TAG_COMPOUND)) {
             if (t instanceof CompoundTag c && !c.isEmpty()) {
                 anyFilter = true;
                 break;
@@ -69,45 +51,13 @@ public class LogisticSorterItemRenderer implements SpecialModelRenderer<BlockSta
     @Override
     public void submit(
             @Nullable BlockState state,
+            ItemDisplayContext context,
             PoseStack poseStack,
-            SubmitNodeCollector collector,
+            MultiBufferSource buffers,
             int packedLight,
             int packedOverlay,
-            boolean hasFoil,
-            int tint) {
+            boolean hasFoil) {
         if (state == null) return;
-        List<BlockStateModelPart> parts = partsCache.computeIfAbsent(state, s -> {
-            BlockStateModel model = Minecraft.getInstance().getModelManager().getBlockStateModelSet().get(s);
-            List<BlockStateModelPart> out = new ArrayList<>();
-            model.collectParts(RandomSource.create(), out);
-            return out;
-        });
-        collector.submitCustomGeometry(poseStack, Sheets.cutoutBlockSheet(), (pose, vc) -> {
-            QuadInstance qi = new QuadInstance();
-            qi.setColor(0xFFFFFFFF);
-            qi.setLightCoords(packedLight);
-            qi.setOverlayCoords(packedOverlay);
-            for (BlockStateModelPart part : parts) {
-                for (Direction dir : Direction.values()) {
-                    for (var quad : part.getQuads(dir)) vc.putBakedQuad(pose, quad, qi);
-                }
-                for (var quad : part.getQuads(null)) vc.putBakedQuad(pose, quad, qi);
-            }
-        });
-    }
-
-    public record Unbaked() implements SpecialModelRenderer.Unbaked<BlockState> {
-        public static final MapCodec<Unbaked> MAP_CODEC = MapCodec.unit(new Unbaked());
-
-        @Override
-        @Nullable
-        public SpecialModelRenderer<BlockState> bake(SpecialModelRenderer.BakingContext context) {
-            return new LogisticSorterItemRenderer();
-        }
-
-        @Override
-        public MapCodec<? extends SpecialModelRenderer.Unbaked<BlockState>> type() {
-            return MAP_CODEC;
-        }
+        Minecraft.getInstance().getBlockRenderer().renderSingleBlock(state, poseStack, buffers, packedLight, packedOverlay);
     }
 }

@@ -10,7 +10,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.Item;
@@ -37,9 +37,9 @@ import org.jetbrains.annotations.Nullable;
 public record ItemMatcher(Kind kind, ItemStack item, String key) {
 
     private static final TagKey<Item> MELEE_WEAPONS =
-            TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath("c", "tools/melee_weapon"));
+            TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "tools/melee_weapon"));
     private static final TagKey<Item> RANGED_WEAPONS =
-            TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath("c", "tools/ranged_weapon"));
+            TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "tools/ranged_weapon"));
 
     public enum Kind implements StringRepresentable {
         EXACT, ITEM, MOD, TAG, PROPERTY;
@@ -105,7 +105,7 @@ public record ItemMatcher(Kind kind, ItemStack item, String key) {
 
     public static ItemMatcher mod(String namespace) { return new ItemMatcher(Kind.MOD, ItemStack.EMPTY, namespace); }
 
-    public static ItemMatcher tag(Identifier tag) { return new ItemMatcher(Kind.TAG, ItemStack.EMPTY, tag.toString()); }
+    public static ItemMatcher tag(ResourceLocation tag) { return new ItemMatcher(Kind.TAG, ItemStack.EMPTY, tag.toString()); }
 
     public static ItemMatcher property(Property p) { return new ItemMatcher(Kind.PROPERTY, ItemStack.EMPTY, p.id()); }
 
@@ -119,7 +119,7 @@ public record ItemMatcher(Kind kind, ItemStack item, String key) {
             case ITEM -> stack.is(item.getItem());
             case MOD -> BuiltInRegistries.ITEM.getKey(stack.getItem()).getNamespace().equals(key);
             case TAG -> {
-                Identifier id = Identifier.tryParse(key);
+                ResourceLocation id = ResourceLocation.tryParse(key);
                 yield id != null && stack.is(TagKey.create(Registries.ITEM, id));
             }
             case PROPERTY -> {
@@ -151,7 +151,7 @@ public record ItemMatcher(Kind kind, ItemStack item, String key) {
     public Component description() {
         return switch (kind) {
             case EXACT -> Component.translatable("filter.mobfarmingsupplies.exact", item.getHoverName());
-            case ITEM -> item.getItemName();
+            case ITEM -> item.getItem().getDescription();
             case MOD -> "minecraft".equals(key)
                     ? Component.translatable("filter.mobfarmingsupplies.vanilla")
                     : Component.translatable("filter.mobfarmingsupplies.from",

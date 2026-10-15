@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.loot;
 
+import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -49,7 +50,7 @@ public class SetSyringeLevelsFunction extends LootItemConditionalFunction {
     }
 
     @Override
-    public MapCodec<SetSyringeLevelsFunction> codec() {
-        return CODEC;
+    public LootItemFunctionType<SetSyringeLevelsFunction> getType() {
+        return Registration.SET_SYRINGE_LEVELS.get();
     }
 }

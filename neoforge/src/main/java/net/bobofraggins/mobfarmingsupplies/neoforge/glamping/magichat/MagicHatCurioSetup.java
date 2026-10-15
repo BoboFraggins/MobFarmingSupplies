@@ -34,7 +34,7 @@ public final class MagicHatCurioSetup {
 
     public static void onClientSetup(IEventBus modEventBus) {
         modEventBus.addListener((FMLClientSetupEvent event) -> event.enqueueWork(() ->
-                top.theillusivec4.curios.api.client.ICurioRenderer.register(
+                top.theillusivec4.curios.api.client.CuriosRendererRegistry.register(
                         Registration.MAGIC_HAT_ITEM.get(), MagicHatCurioRenderer::new)));
     }
 }

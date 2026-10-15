@@ -28,8 +28,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import net.bobofraggins.mobfarmingsupplies.shared.nbt.ValueInput;
+import net.bobofraggins.mobfarmingsupplies.shared.nbt.ValueOutput;
 import net.minecraft.world.phys.AABB;
 
 import java.util.List;
@@ -325,8 +325,9 @@ public class AbsorptionHopperBlockEntity extends BlockEntity implements SideOrie
     // ── NBT ──────────────────────────────────────────────────────────────────────
 
     @Override
-    protected void saveAdditional(ValueOutput output) {
-        super.saveAdditional(output);
+    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.saveAdditional(tag, registries);
+        ValueOutput output = new ValueOutput(tag, registries);
         SideLayout.save(output, sideOrientation);
         java.util.List<ItemStack> stacks = new java.util.ArrayList<>(SLOT_COUNT);
         for (int i = 0; i < SLOT_COUNT; i++) stacks.add(inventory.getItem(i));
@@ -345,8 +346,9 @@ public class AbsorptionHopperBlockEntity extends BlockEntity implements SideOrie
     }
 
     @Override
-    protected void loadAdditional(ValueInput input) {
-        super.loadAdditional(input);
+    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.loadAdditional(tag, registries);
+        ValueInput input = new ValueInput(tag, registries);
         sideOrientation = SideLayout.load(input);
         input.read("Items", ItemStack.OPTIONAL_CODEC.listOf()).ifPresent(loaded -> {
             for (int i = 0; i < Math.min(loaded.size(), SLOT_COUNT); i++) {

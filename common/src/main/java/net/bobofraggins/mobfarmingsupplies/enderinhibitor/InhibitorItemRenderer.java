@@ -3,38 +3,32 @@ package net.bobofraggins.mobfarmingsupplies.enderinhibitor;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import java.util.function.Consumer;
+import java.util.function.Supplier;
+import net.bobofraggins.mobfarmingsupplies.shared.render.Geometry;
+import net.bobofraggins.mobfarmingsupplies.shared.render.ItemModelResolver;
+import net.bobofraggins.mobfarmingsupplies.shared.render.ItemStackRenderState;
+import net.bobofraggins.mobfarmingsupplies.shared.render.SpecialModelRenderer;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.item.ItemStackRenderState;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.renderer.special.SpecialModelRenderer;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.data.AtlasIds;
-import net.minecraft.resources.Identifier;
-import net.minecraft.util.StringRepresentable;
-import net.minecraft.util.Util;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix3f;
 import org.joml.Vector3f;
-import org.joml.Vector3fc;
 
 /**
  * Item renderer for the Ender and Wither Inhibitors: the item that floats above the prongs (an
  * Ender Pearl or a Wither Skeleton Skull), turning as it does on the placed block, and the block's
  * particles. Particles only exist in the world, so these are drawn here as particle sprites that
- * move as the real ones do, scaled down to stay around the item. Drawn over the block model by the
- * item's composite model, which is marked animated so icons keep moving.
+ * move as the real ones do, scaled down to stay around the item. Draws the block model first.
  */
 public class InhibitorItemRenderer implements SpecialModelRenderer<Void> {
 
@@ -42,34 +36,24 @@ public class InhibitorItemRenderer implements SpecialModelRenderer<Void> {
     private static final float OFFSET = 0.225f;
     /** Where the block's particles start, above its centre, and how far either side. */
     private static final float EMIT_OFFSET = 0.3f, EMIT_SPREAD = 0.625f;
-    private static final RenderType PARTICLE_TYPE = RenderTypes.entityCutout(TextureAtlas.LOCATION_PARTICLES);
+    private static final RenderType PARTICLE_TYPE = RenderType.entityCutout(TextureAtlas.LOCATION_PARTICLES);
     private static final int FULL_BRIGHT = 0xF000F0;
 
     /** Which of the blocks' particles to draw. */
-    public enum Particles implements StringRepresentable {
-        NONE, PORTAL, SMOKE;
+    public enum Particles { NONE, PORTAL, SMOKE }
 
-        public static final Codec<Particles> CODEC = StringRepresentable.fromEnum(Particles::values);
-
-        @Override
-        public String getSerializedName() {
-            return name().toLowerCase(java.util.Locale.ROOT);
-        }
-    }
-
+    private final Supplier<? extends Block> block;
     private final Item floating;
     private final Particles particles;
     /** The floating item's model, resolved on first use; its look never changes. */
     @Nullable private ItemStackRenderState floatingState;
     @Nullable private TextureAtlasSprite[] sprites;
 
-    public InhibitorItemRenderer(Item floating, Particles particles) {
+    public InhibitorItemRenderer(Supplier<? extends Block> block, Item floating, Particles particles) {
+        this.block = block;
         this.floating = floating;
         this.particles = particles;
     }
-
-    @Override
-    public void getExtents(Consumer<Vector3fc> output) {}
 
     @Nullable
     @Override
@@ -78,11 +62,13 @@ public class InhibitorItemRenderer implements SpecialModelRenderer<Void> {
     }
 
     @Override
-    public void submit(@Nullable Void argument, PoseStack poseStack, SubmitNodeCollector collector,
-                       int packedLight, int packedOverlay, boolean hasFoil, int tint) {
+    public void submit(@Nullable Void argument, ItemDisplayContext context, PoseStack poseStack,
+                       MultiBufferSource buffers, int packedLight, int packedOverlay, boolean hasFoil) {
+        Minecraft.getInstance().getBlockRenderer().renderSingleBlock(
+                block.get().defaultBlockState(), poseStack, buffers, packedLight, packedOverlay);
         if (floatingState == null) {
             floatingState = new ItemStackRenderState();
-            Minecraft.getInstance().getItemModelResolver().updateForTopItem(
+            ItemModelResolver.INSTANCE.updateForTopItem(
                     floatingState, new ItemStack(floating), ItemDisplayContext.FIXED, null, null, 0);
         }
         poseStack.pushPose();
@@ -90,10 +76,10 @@ public class InhibitorItemRenderer implements SpecialModelRenderer<Void> {
         poseStack.mulPose(Axis.YP.rotationDegrees(EnderInhibitorBlockEntityRenderer.spinDegrees()));
         float scale = EnderInhibitorBlockEntityRenderer.ITEM_SCALE;
         poseStack.scale(scale, scale, scale);
-        floatingState.submit(poseStack, collector, packedLight, packedOverlay, 0);
+        floatingState.submit(poseStack, buffers, packedLight, packedOverlay, 0);
         poseStack.popPose();
 
-        if (particles != Particles.NONE) submitParticles(poseStack, collector, packedLight, Util.getMillis() / 50f);
+        if (particles != Particles.NONE) submitParticles(poseStack, buffers, packedLight, Util.getMillis() / 50f);
     }
 
     // ── Particles ─────────────────────────────────────────────────────────────────
@@ -105,14 +91,14 @@ public class InhibitorItemRenderer implements SpecialModelRenderer<Void> {
     /** Portal particles fly in from up to a block away; this keeps them around the item. */
     private static final float PORTAL_REACH = 0.3f;
 
-    private void submitParticles(PoseStack poseStack, SubmitNodeCollector collector, int light, float ticks) {
+    private void submitParticles(PoseStack poseStack, MultiBufferSource buffers, int light, float ticks) {
         if (sprites == null) {
-            TextureAtlas atlas = Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(AtlasIds.PARTICLES);
+            TextureAtlas atlas = (TextureAtlas) Minecraft.getInstance().getTextureManager().getTexture(TextureAtlas.LOCATION_PARTICLES);
             sprites = new TextureAtlasSprite[8];
-            for (int i = 0; i < 8; i++) sprites[i] = atlas.getSprite(Identifier.withDefaultNamespace("generic_" + i));
+            for (int i = 0; i < 8; i++) sprites[i] = atlas.getSprite(ResourceLocation.withDefaultNamespace("generic_" + i));
         }
         TextureAtlasSprite[] generic = sprites;
-        collector.submitCustomGeometry(poseStack, PARTICLE_TYPE, (pose, vc) -> {
+        Geometry.custom(poseStack, buffers, PARTICLE_TYPE, (pose, vc) -> {
             // Face the viewer: the screen's right and up, in the item's own space.
             Matrix3f toLocal = new Matrix3f(pose.pose()).invert();
             Vector3f right = toLocal.transform(new Vector3f(1, 0, 0)).normalize();
@@ -195,22 +181,5 @@ public class InhibitorItemRenderer implements SpecialModelRenderer<Void> {
         h = (h ^ (h >>> 27)) * 0x94D049BB133111EBL;
         h ^= h >>> 31;
         return (h >>> 40) / (float) (1 << 24);
-    }
-
-    public record Unbaked(Item floating, Particles particles) implements SpecialModelRenderer.Unbaked<Void> {
-        public static final MapCodec<Unbaked> MAP_CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-                BuiltInRegistries.ITEM.byNameCodec().fieldOf("item").forGetter(Unbaked::floating),
-                Particles.CODEC.optionalFieldOf("particles", Particles.NONE).forGetter(Unbaked::particles)
-        ).apply(i, Unbaked::new));
-
-        @Override
-        public SpecialModelRenderer<Void> bake(SpecialModelRenderer.BakingContext context) {
-            return new InhibitorItemRenderer(floating, particles);
-        }
-
-        @Override
-        public MapCodec<? extends SpecialModelRenderer.Unbaked<Void>> type() {
-            return MAP_CODEC;
-        }
     }
 }

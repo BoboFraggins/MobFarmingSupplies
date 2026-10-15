@@ -2,7 +2,7 @@ package net.bobofraggins.mobfarmingsupplies.register;
 
 import net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommon;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.block.Block;
@@ -26,7 +26,7 @@ public final class MFSTags {
          * so those mods leave it alone - their pick-up click is the Present's unwrap click.
          */
         public static final TagKey<Block> RELOCATION_NOT_SUPPORTED = TagKey.create(
-                Registries.BLOCK, Identifier.fromNamespaceAndPath("c", "relocation_not_supported"));
+                Registries.BLOCK, ResourceLocation.fromNamespaceAndPath("c", "relocation_not_supported"));
 
         private Blocks() {}
     }
@@ -43,7 +43,7 @@ public final class MFSTags {
          */
         public static final TagKey<EntityType<?>> NO_DNA_SAMPLING = TagKey.create(
                 Registries.ENTITY_TYPE,
-                Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "no_dna_sampling"));
+                ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "no_dna_sampling"));
 
         /**
          * Mobs in this tag never sit down on a Toilet they walk onto (players never do anyway).
@@ -53,7 +53,7 @@ public final class MFSTags {
          */
         public static final TagKey<EntityType<?>> CANNOT_USE_TOILET = TagKey.create(
                 Registries.ENTITY_TYPE,
-                Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "cannot_use_toilet"));
+                ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "cannot_use_toilet"));
 
         private EntityTypes() {}
     }

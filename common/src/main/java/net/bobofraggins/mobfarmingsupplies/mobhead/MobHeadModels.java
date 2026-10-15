@@ -11,21 +11,18 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.block.BlockModelRenderState;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
-import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
-import net.minecraft.client.renderer.entity.state.MushroomCowRenderState;
-import net.minecraft.client.renderer.entity.state.SheepRenderState;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.animal.MushroomCow;
+import net.minecraft.world.entity.animal.Sheep;
+import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
@@ -48,10 +45,10 @@ public final class MobHeadModels {
     /** Vanilla heads are 8 pixels across; every Mob Head is scaled so its largest side matches. */
     private static final float HEAD_SIZE = 0.5f;
 
-    private static final Identifier ENDERMAN_EYES = Identifier.withDefaultNamespace("textures/entity/enderman/enderman_eyes.png");
-    private static final Identifier SHEEP_WOOL = Identifier.withDefaultNamespace("textures/entity/sheep/sheep_wool.png");
-    private static final Identifier SLIME = Identifier.withDefaultNamespace("textures/entity/slime/slime.png");
-    private static final Identifier DROWNED_OUTER = Identifier.withDefaultNamespace("textures/entity/zombie/drowned_outer_layer.png");
+    private static final ResourceLocation ENDERMAN_EYES = ResourceLocation.withDefaultNamespace("textures/entity/enderman/enderman_eyes.png");
+    private static final ResourceLocation SHEEP_WOOL = ResourceLocation.withDefaultNamespace("textures/entity/sheep/sheep_fur.png");
+    private static final ResourceLocation SLIME = ResourceLocation.withDefaultNamespace("textures/entity/slime/slime.png");
+    private static final ResourceLocation DROWNED_OUTER = ResourceLocation.withDefaultNamespace("textures/entity/zombie/drowned_outer_layer.png");
 
     /** One pass of a head: a model part drawn with a render type and tint (-1 = none). */
     public record Layer(ModelPart part, RenderType renderType, int tint) {}
@@ -61,7 +58,7 @@ public final class MobHeadModels {
      * wears on its head. Its bounds are in the model's own space (block units, y down, facing
      * -z); {@link #submit} centres it, stands it on y = 0 and scales it to vanilla head size.
      */
-    public record Head(List<Layer> layers, @Nullable BlockModelRenderState mushroom,
+    public record Head(List<Layer> layers, @Nullable BlockState mushroom,
                        float scale, float centreX, float bottomY, float centreZ) {}
 
     private static final Map<EntityType<?>, Optional<Head>> CACHE = new HashMap<>();
@@ -94,15 +91,15 @@ public final class MobHeadModels {
      * Draws {@code type}'s head with its base on y = 0, centred on x and z, facing -z — the same
      * space a vanilla skull model is drawn in after its block or item transform.
      */
-    public static void submit(EntityType<?> type, PoseStack poseStack, SubmitNodeCollector collector, int light) {
+    public static void submit(EntityType<?> type, PoseStack poseStack, MultiBufferSource buffers, int light) {
         Head head = get(type);
         if (head == null) return;
         poseStack.pushPose();
         poseStack.scale(head.scale(), head.scale(), head.scale());
         poseStack.translate(-head.centreX(), -head.bottomY(), -head.centreZ());
         for (Layer layer : head.layers()) {
-            collector.submitModelPart(layer.part(), poseStack, layer.renderType(), light, OverlayTexture.NO_OVERLAY,
-                    null, false, false, layer.tint(), null, 0);
+            layer.part().render(poseStack, buffers.getBuffer(layer.renderType()), light, OverlayTexture.NO_OVERLAY,
+                    layer.tint());
         }
         if (head.mushroom() != null) {
             // Where MushroomCowMushroomLayer puts the mushroom on the head.
@@ -111,7 +108,8 @@ public final class MobHeadModels {
             poseStack.mulPose(Axis.YP.rotationDegrees(-78f));
             poseStack.scale(-1f, -1f, 1f);
             poseStack.translate(-0.5f, -0.5f, -0.5f);
-            head.mushroom().submit(poseStack, collector, light, OverlayTexture.NO_OVERLAY, 0);
+            Minecraft.getInstance().getBlockRenderer().renderSingleBlock(
+                    head.mushroom(), poseStack, buffers, light, OverlayTexture.NO_OVERLAY);
         }
         poseStack.popPose();
     }
@@ -120,39 +118,37 @@ public final class MobHeadModels {
     @SuppressWarnings({"unchecked", "rawtypes"})
     private static Head build(EntityType<?> type) {
         Minecraft mc = Minecraft.getInstance();
-        Identifier id = BuiltInRegistries.ENTITY_TYPE.getKey(type);
+        ResourceLocation id = BuiltInRegistries.ENTITY_TYPE.getKey(type);
         ModelPart part = bakeHead(layerFor(id), headPartFor(id));
         if (part == null) return null;
 
-        Entity dummy = type.create(mc.level, EntitySpawnReason.LOAD);
+        Entity dummy = type.create(mc.level);
         if (!(dummy instanceof LivingEntity living)) return null;
         dummy.setId(nextDummyId++); // never added to a level, which is what assigns IDs
         if (!(mc.getEntityRenderDispatcher().getRenderer(living) instanceof LivingEntityRenderer renderer)) return null;
-        LivingEntityRenderState state = (LivingEntityRenderState) renderer.createRenderState();
-        renderer.extractRenderState(living, state, 0f);
-        Identifier texture = renderer.getTextureLocation(state);
+        ResourceLocation texture = renderer.getTextureLocation(living);
         List<Layer> layers = new ArrayList<>();
         layers.add(new Layer(part, renderer.getModel().renderType(texture), -1));
-        BlockModelRenderState mushroom = null;
+        BlockState mushroom = null;
         ModelPart sizedBy = part;
         switch (id.getPath()) {
-            case "enderman" -> layers.add(new Layer(part, RenderTypes.eyes(ENDERMAN_EYES), -1));
+            case "enderman" -> layers.add(new Layer(part, RenderType.eyes(ENDERMAN_EYES), -1));
             case "sheep" -> {
-                ModelPart wool = bakeHead(ModelLayers.SHEEP_WOOL, "head");
-                if (wool != null) layers.add(new Layer(wool, RenderTypes.entityCutout(SHEEP_WOOL),
-                        state instanceof SheepRenderState sheep ? sheep.getWoolColor() : -1));
+                ModelPart wool = bakeHead(ModelLayers.SHEEP_FUR, "head");
+                if (wool != null) layers.add(new Layer(wool, RenderType.entityCutout(SHEEP_WOOL),
+                        living instanceof Sheep sheep ? Sheep.getColor(sheep.getColor()) : -1));
             }
             case "drowned" -> {
                 ModelPart outer = bakeHead(ModelLayers.DROWNED_OUTER_LAYER, "head");
-                if (outer != null) layers.add(new Layer(outer, RenderTypes.entityCutout(DROWNED_OUTER), -1));
+                if (outer != null) layers.add(new Layer(outer, RenderType.entityCutout(DROWNED_OUTER), -1));
             }
             case "slime" -> {
                 ModelPart outer = bakeHead(ModelLayers.SLIME_OUTER, null);
-                layers.add(new Layer(outer, RenderTypes.entityTranslucent(SLIME), -1));
+                layers.add(new Layer(outer, RenderType.entityTranslucent(SLIME), -1));
                 sizedBy = outer; // the jelly, not the core inside it
             }
             case "mooshroom" -> {
-                if (state instanceof MushroomCowRenderState cow && !cow.mushroomModel.isEmpty()) mushroom = cow.mushroomModel;
+                if (living instanceof MushroomCow cow) mushroom = cow.getVariant().getBlockState();
             }
             default -> {}
         }
@@ -171,9 +167,8 @@ public final class MobHeadModels {
     }
 
     /** The model layer a mob's head comes from: its own, except where it borrows another mob's. */
-    private static ModelLayerLocation layerFor(Identifier id) {
+    private static ModelLayerLocation layerFor(ResourceLocation id) {
         return switch (id.getPath()) {
-            case "camel_husk" -> ModelLayers.CAMEL; // drawn with the camel model and its own texture
             default -> new ModelLayerLocation(id, "main");
         };
     }
@@ -183,9 +178,9 @@ public final class MobHeadModels {
      * all head.
      */
     @Nullable
-    private static String headPartFor(Identifier id) {
+    private static String headPartFor(ResourceLocation id) {
         return switch (id.getPath()) {
-            case "ghast", "happy_ghast" -> "body";
+            case "ghast" -> "body";
             case "slime", "magma_cube" -> null;
             default -> "head";
         };
@@ -198,13 +193,18 @@ public final class MobHeadModels {
     @Nullable
     private static ModelPart bakeHead(ModelLayerLocation layer, @Nullable String partName) {
         ModelPart root = Minecraft.getInstance().getEntityModels().bakeLayer(layer);
-        var lookup = root.createPartLookup();
         for (int i = 0; ; i++) {
-            ModelPart tentacle = lookup.apply("tentacle" + i);
+            ModelPart tentacle = find(root, "tentacle" + i);
             if (tentacle == null) break;
             tentacle.visible = false;
         }
-        return partName == null ? root : lookup.apply(partName);
+        return partName == null ? root : find(root, partName);
+    }
+
+    /** The part named {@code name} anywhere under {@code root}, or null. */
+    @Nullable
+    private static ModelPart find(ModelPart root, String name) {
+        return root.getAllParts().filter(p -> p.hasChild(name)).findFirst().map(p -> p.getChild(name)).orElse(null);
     }
 
     /**

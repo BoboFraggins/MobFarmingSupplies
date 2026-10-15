@@ -4,7 +4,9 @@
   "cookingtime": 100,
   "experience": 0.1,
   "group": "bioplastic",
-  "ingredient": "mobfarmingsupplies:biosludge",
+  "ingredient": {
+    "item": "mobfarmingsupplies:biosludge"
+  },
   "result": {
     "id": "mobfarmingsupplies:bioplastic"
   }

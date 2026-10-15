@@ -2,10 +2,11 @@ package net.bobofraggins.mobfarmingsupplies.neoforge.register;
 
 import com.mojang.serialization.MapCodec;
 import net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommon;
-import net.bobofraggins.mobfarmingsupplies.absorptionhopper.AbsorptionHopperBlockEntity;
+import net.bobofraggins.mobfarmingsupplies.crafting.FluidContainerIngredient;
+import net.bobofraggins.mobfarmingsupplies.logisticsorter.SideMode;
+import net.bobofraggins.mobfarmingsupplies.logisticsorter.neoforge.LogisticSorterItemHandler;
 import net.bobofraggins.mobfarmingsupplies.neoforge.absorptionhopper.AbsorptionHopperFluidHandler;
 import net.bobofraggins.mobfarmingsupplies.neoforge.absorptionhopper.AbsorptionHopperItemHandler;
-import net.bobofraggins.mobfarmingsupplies.crafting.FluidContainerIngredient;
 import net.bobofraggins.mobfarmingsupplies.neoforge.experiencesyringe.ExperienceSyringeFluidHandler;
 import net.bobofraggins.mobfarmingsupplies.neoforge.loot.DnaSamplePackChestLootModifier;
 import net.bobofraggins.mobfarmingsupplies.neoforge.loot.MagicHatChestLootModifier;
@@ -13,14 +14,16 @@ import net.bobofraggins.mobfarmingsupplies.neoforge.loot.SmoreChestLootModifier;
 import net.bobofraggins.mobfarmingsupplies.neoforge.loot.ToggleButtonChestLootModifier;
 import net.bobofraggins.mobfarmingsupplies.neoforge.tank.TankFluidHandler;
 import net.bobofraggins.mobfarmingsupplies.neoforge.tank.TankItemFluidHandler;
+import net.bobofraggins.mobfarmingsupplies.neoforge.toilet.ToiletFluidHandler;
+import net.bobofraggins.mobfarmingsupplies.neoforge.toilet.ToiletItemHandler;
+import net.bobofraggins.mobfarmingsupplies.neoforge.transfer.api.Capabilities;
 import net.bobofraggins.mobfarmingsupplies.neoforge.xpjuice.XpJuiceFluid;
+import net.bobofraggins.mobfarmingsupplies.omnihopper.neoforge.OmniHopperCapabilities;
+import net.bobofraggins.mobfarmingsupplies.register.ModCompatRegistration;
+import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.minecraft.sounds.SoundEvents;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
-import net.bobofraggins.mobfarmingsupplies.logisticsorter.SideMode;
-import net.bobofraggins.mobfarmingsupplies.logisticsorter.neoforge.LogisticSorterItemHandler;
-import net.bobofraggins.mobfarmingsupplies.omnihopper.neoforge.OmniHopperCapabilities;
 import net.neoforged.neoforge.common.SoundActions;
 import net.neoforged.neoforge.common.crafting.IngredientType;
 import net.neoforged.neoforge.common.loot.IGlobalLootModifier;
@@ -28,10 +31,6 @@ import net.neoforged.neoforge.fluids.BaseFlowingFluid;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
-import net.bobofraggins.mobfarmingsupplies.register.ModCompatRegistration;
-import net.bobofraggins.mobfarmingsupplies.register.Registration;
-import net.bobofraggins.mobfarmingsupplies.neoforge.toilet.ToiletFluidHandler;
-import net.bobofraggins.mobfarmingsupplies.neoforge.toilet.ToiletItemHandler;
 
 public final class NeoForgeOnlyRegistration {
 
@@ -138,35 +137,35 @@ public final class NeoForgeOnlyRegistration {
 
     // NeoForge capability registration — Fabric equivalents registered in MobFarmingSuppliesFabric.
     private static void registerCapabilities(RegisterCapabilitiesEvent event) {
-        event.registerBlockEntity(
-                Capabilities.Fluid.BLOCK,
+        Capabilities.Fluid.BLOCK.registerBlockEntity(
+                event,
                 Registration.TANK_BE_TYPE.get(),
                 (be, side) -> new TankFluidHandler(be));
 
         event.registerItem(
-                Capabilities.Fluid.ITEM,
+                net.neoforged.neoforge.capabilities.Capabilities.FluidHandler.ITEM,
                 (stack, ctx) -> new TankItemFluidHandler(stack),
                 Registration.TANK_ITEM.get(), Registration.GOLD_TANK_ITEM.get(),
                 Registration.DIAMOND_TANK_ITEM.get(), Registration.EMERALD_TANK_ITEM.get());
 
         event.registerItem(
-                Capabilities.Fluid.ITEM,
-                (stack, ctx) -> ctx != null ? new ExperienceSyringeFluidHandler(ctx) : null,
+                net.neoforged.neoforge.capabilities.Capabilities.FluidHandler.ITEM,
+                (stack, ctx) -> new ExperienceSyringeFluidHandler(stack),
                 Registration.EXPERIENCE_SYRINGE.get());
 
-        event.registerBlockEntity(
-                Capabilities.Item.BLOCK,
+        Capabilities.Item.BLOCK.registerBlockEntity(
+                event,
                 Registration.ABSORPTION_HOPPER_BE_TYPE.get(),
                 (be, side) -> new AbsorptionHopperItemHandler(be));
 
-        event.registerBlockEntity(
-                Capabilities.Fluid.BLOCK,
+        Capabilities.Fluid.BLOCK.registerBlockEntity(
+                event,
                 Registration.ABSORPTION_HOPPER_BE_TYPE.get(),
                 (be, side) -> new AbsorptionHopperFluidHandler(be));
 
         // Logistic Sorter: insert-only, and only on INPUT sides.
-        event.registerBlockEntity(
-                Capabilities.Item.BLOCK,
+        Capabilities.Item.BLOCK.registerBlockEntity(
+                event,
                 Registration.LOGISTIC_SORTER_BE_TYPE.get(),
                 (be, side) -> side != null && be.getSide(side) == SideMode.INPUT
                         ? new LogisticSorterItemHandler(be) : null);
@@ -175,13 +174,13 @@ public final class NeoForgeOnlyRegistration {
         OmniHopperCapabilities.register(event);
 
         // Toilet: voids any item pushed in and supplies unlimited water, on every side.
-        event.registerBlockEntity(
-                Capabilities.Item.BLOCK,
+        Capabilities.Item.BLOCK.registerBlockEntity(
+                event,
                 Registration.TOILET_BE_TYPE.get(),
                 (be, side) -> new ToiletItemHandler(be.getLevel(), be.getBlockPos()));
 
-        event.registerBlockEntity(
-                Capabilities.Fluid.BLOCK,
+        Capabilities.Fluid.BLOCK.registerBlockEntity(
+                event,
                 Registration.TOILET_BE_TYPE.get(),
                 (be, side) -> ToiletFluidHandler.INSTANCE);
     }

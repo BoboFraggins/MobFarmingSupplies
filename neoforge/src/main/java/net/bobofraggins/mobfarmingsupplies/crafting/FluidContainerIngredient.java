@@ -6,9 +6,8 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.bobofraggins.mobfarmingsupplies.register.MFSRegistryHelper;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
@@ -16,9 +15,6 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.common.crafting.ICustomIngredient;
 import net.neoforged.neoforge.common.crafting.IngredientType;
 import net.neoforged.neoforge.registries.DeferredHolder;
-import net.neoforged.neoforge.transfer.access.ItemAccess;
-import net.neoforged.neoforge.transfer.fluid.FluidResource;
-import net.neoforged.neoforge.transfer.item.VanillaContainerWrapper;
 
 import java.util.stream.Stream;
 
@@ -39,7 +35,7 @@ public class FluidContainerIngredient implements ICustomIngredient {
 
     public static final MapCodec<FluidContainerIngredient> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(
-                    Identifier.CODEC
+                    ResourceLocation.CODEC
                             .xmap(id -> TagKey.create(Registries.FLUID, id), TagKey::location)
                             .fieldOf("fluid_tag")
                             .forGetter(i -> i.fluidTag),
@@ -64,16 +60,11 @@ public class FluidContainerIngredient implements ICustomIngredient {
     @Override
     public boolean test(ItemStack stack) {
         if (stack.isEmpty()) return false;
-        SimpleContainer tmp = new SimpleContainer(stack.copy());
-        var wrapper = VanillaContainerWrapper.of(tmp);
-        var access = ItemAccess.forHandlerIndex(wrapper, 0).oneByOne();
-        var cap = stack.getCapability(Capabilities.Fluid.ITEM, access);
+        var cap = stack.copyWithCount(1).getCapability(Capabilities.FluidHandler.ITEM);
         if (cap == null) return false;
-        for (int i = 0; i < cap.size(); i++) {
-            FluidResource res = cap.getResource(i);
-            if (!res.isEmpty()
-                    && res.toStack(1).is(fluidTag)
-                    && cap.getAmountAsLong(i) >= amount) {
+        for (int i = 0; i < cap.getTanks(); i++) {
+            var fluid = cap.getFluidInTank(i);
+            if (!fluid.isEmpty() && fluid.is(fluidTag) && fluid.getAmount() >= amount) {
                 return true;
             }
         }
@@ -81,10 +72,10 @@ public class FluidContainerIngredient implements ICustomIngredient {
     }
 
     @Override
-    public Stream<Holder<Item>> items() {
+    public Stream<ItemStack> getItems() {
         if (xpJuiceBucketHolder == null)
             xpJuiceBucketHolder = MFSRegistryHelper.getItem("xp_juice_bucket").builtInRegistryHolder();
-        return Stream.of(xpJuiceBucketHolder);
+        return Stream.of(new ItemStack(xpJuiceBucketHolder));
     }
 
     @Override

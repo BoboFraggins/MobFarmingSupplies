@@ -1,7 +1,9 @@
 {
   "type": "minecraft:campfire_cooking",
   "category": "food",
-  "ingredient": "mobfarmingsupplies:marshmallow",
+  "ingredient": {
+    "item": "mobfarmingsupplies:marshmallow"
+  },
   "result": {
     "id": "mobfarmingsupplies:toasted_marshmallow"
   },

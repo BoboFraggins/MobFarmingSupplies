@@ -8,7 +8,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
-import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -31,8 +30,6 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.Property;
-import net.minecraft.world.level.storage.TagValueInput;
-import net.minecraft.world.level.storage.TagValueOutput;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
@@ -110,7 +107,7 @@ public class PresentBlock extends BaseEntityBlock {
     }
 
     @Override
-    public VoxelShape getOcclusionShape(BlockState state) {
+    protected VoxelShape getOcclusionShape(BlockState state, BlockGetter level, BlockPos pos) {
         return Shapes.empty();
     }
 
@@ -141,18 +138,12 @@ public class PresentBlock extends BaseEntityBlock {
         BlockState wrapped = present.getWrappedState();
         CompoundTag entityData = present.getWrappedEntityData();
 
-        // UPDATE_SKIP_BLOCK_ENTITY_SIDEEFFECTS: the Present's own block entity isn't a
-        // Container so this is a no-op today, but skip vanilla's automatic side effects here
-        // too since we're manually transplanting the wrapped block-entity data ourselves right
-        // below — matches the wrap side in PresentWrapEvents for the same reason.
-        level.setBlock(pos, wrapped,
-                Block.UPDATE_ALL | Block.UPDATE_SUPPRESS_DROPS | Block.UPDATE_SKIP_BLOCK_ENTITY_SIDEEFFECTS);
+        level.setBlock(pos, wrapped, Block.UPDATE_ALL | Block.UPDATE_SUPPRESS_DROPS);
 
         if (entityData != null) {
             BlockEntity newBe = level.getBlockEntity(pos);
             if (newBe != null) {
-                newBe.loadCustomOnly(
-                        TagValueInput.create(ProblemReporter.DISCARDING, level.registryAccess(), entityData));
+                newBe.loadCustomOnly(entityData, level.registryAccess());
                 newBe.setChanged();
             }
         }
@@ -184,9 +175,7 @@ public class PresentBlock extends BaseEntityBlock {
         if (present != null) {
             for (ItemStack drop : drops) {
                 if (drop.getItem() instanceof BlockItem) {
-                    TagValueOutput beOut = TagValueOutput.createWithContext(
-                            ProblemReporter.DISCARDING, params.getLevel().registryAccess());
-                    present.saveCustomOnly(beOut);
+                    CompoundTag beOut = present.saveCustomOnly(params.getLevel().registryAccess());
                     BlockItem.setBlockEntityData(drop, present.getType(), beOut);
                 }
             }
@@ -219,12 +208,10 @@ public class PresentBlock extends BaseEntityBlock {
     // -------------------------------------------------------------------------
 
     @Override
-    protected ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state, boolean creative) {
-        ItemStack stack = super.getCloneItemStack(level, pos, state, creative);
+    public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state) {
+        ItemStack stack = super.getCloneItemStack(level, pos, state);
         if (level.getBlockEntity(pos) instanceof PresentBlockEntity present && present.hasWrappedBlock()) {
-            TagValueOutput beOut =
-                    TagValueOutput.createWithContext(ProblemReporter.DISCARDING, level.registryAccess());
-            present.saveCustomOnly(beOut);
+            CompoundTag beOut = present.saveCustomOnly(level.registryAccess());
             BlockItem.setBlockEntityData(stack, present.getType(), beOut);
         }
         return stack;

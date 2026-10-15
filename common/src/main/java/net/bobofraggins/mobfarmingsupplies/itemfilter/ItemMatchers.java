@@ -2,7 +2,7 @@ package net.bobofraggins.mobfarmingsupplies.itemfilter;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 
@@ -30,7 +30,7 @@ public final class ItemMatchers {
      * Fabric (the shared {@code c:} set), plus vanilla tags where {@code c:} has no equivalent
      * (e.g. swords, armor slots). Each needs a {@code filter.mobfarmingsupplies.tag.*} lang entry.
      */
-    static final List<Identifier> CURATED_TAGS = Stream.of(
+    static final List<ResourceLocation> CURATED_TAGS = Stream.of(
             // Tool and weapon types
             "minecraft:swords", "minecraft:axes", "minecraft:pickaxes", "minecraft:shovels", "minecraft:hoes",
             "minecraft:spears", "c:tools/bow", "c:tools/crossbow", "c:tools/trident", "c:tools/mace",
@@ -55,7 +55,7 @@ public final class ItemMatchers {
             // Miscellaneous
             "c:music_discs", "c:buckets", "c:shulker_boxes", "c:chests", "c:barrels", "c:ropes",
             "minecraft:boats", "minecraft:beds", "minecraft:banners")
-            .map(Identifier::parse)
+            .map(ResourceLocation::parse)
             .toList();
 
     /** All matchers applicable to {@code stack}, or an empty list if it's empty. */
@@ -65,7 +65,7 @@ public final class ItemMatchers {
         out.add(ItemMatcher.exact(stack));
         out.add(ItemMatcher.item(stack.getItem()));
         out.add(ItemMatcher.mod(BuiltInRegistries.ITEM.getKey(stack.getItem()).getNamespace()));
-        for (Identifier tag : CURATED_TAGS) {
+        for (ResourceLocation tag : CURATED_TAGS) {
             if (stack.is(TagKey.create(Registries.ITEM, tag))) out.add(ItemMatcher.tag(tag));
         }
         for (ItemMatcher.Property p : ItemMatcher.Property.values()) {

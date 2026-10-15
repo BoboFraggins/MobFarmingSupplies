@@ -3,15 +3,25 @@
   "category": "misc",
   "key": {
     "B": {
-      "neoforge:ingredient_type": "mobfarmingsupplies:fluid_container",
+      "type": "mobfarmingsupplies:fluid_container",
       "fluid_tag": "c:experience",
       "amount": 1000
     },
-    "Z": "minecraft:blaze_powder",
-    "P": "minecraft:porkchop",
-    "D": "mobfarmingsupplies:dna_collector",
-    "N": "#c:bones",
-    "C": "minecraft:coal"
+    "Z": {
+      "item": "minecraft:blaze_powder"
+    },
+    "P": {
+      "item": "minecraft:porkchop"
+    },
+    "D": {
+      "item": "mobfarmingsupplies:dna_collector"
+    },
+    "N": {
+      "tag": "c:bones"
+    },
+    "C": {
+      "item": "minecraft:coal"
+    }
   },
   "pattern": [
     "BZB",

@@ -8,7 +8,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
@@ -21,7 +21,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 public record SetPushSidesPacket(BlockPos pos, int sidesMask) implements CustomPacketPayload {
 
     public static final Type<SetPushSidesPacket> TYPE =
-            new Type<>(Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "set_push_sides"));
+            new Type<>(ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "set_push_sides"));
 
     public static final StreamCodec<FriendlyByteBuf, SetPushSidesPacket> STREAM_CODEC =
             StreamCodec.composite(

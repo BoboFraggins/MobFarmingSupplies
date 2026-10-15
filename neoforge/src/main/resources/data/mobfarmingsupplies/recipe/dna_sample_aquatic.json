@@ -3,15 +3,25 @@
   "category": "misc",
   "key": {
     "B": {
-      "neoforge:ingredient_type": "mobfarmingsupplies:fluid_container",
+      "type": "mobfarmingsupplies:fluid_container",
       "fluid_tag": "c:experience",
       "amount": 1000
     },
-    "P": "minecraft:prismarine_shard",
-    "C": "minecraft:cod",
-    "D": "mobfarmingsupplies:dna_collector",
-    "F": "minecraft:salmon",
-    "I": "minecraft:ink_sac"
+    "P": {
+      "item": "minecraft:prismarine_shard"
+    },
+    "C": {
+      "item": "minecraft:cod"
+    },
+    "D": {
+      "item": "mobfarmingsupplies:dna_collector"
+    },
+    "F": {
+      "item": "minecraft:salmon"
+    },
+    "I": {
+      "item": "minecraft:ink_sac"
+    }
   },
   "pattern": [
     "BPB",

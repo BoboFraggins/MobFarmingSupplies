@@ -3,22 +3,21 @@ package net.bobofraggins.mobfarmingsupplies.neoforge.transfer;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Predicate;
+import net.bobofraggins.mobfarmingsupplies.neoforge.transfer.api.BlockCapability;
+import net.bobofraggins.mobfarmingsupplies.neoforge.transfer.api.ResourceHandler;
+import net.bobofraggins.mobfarmingsupplies.neoforge.transfer.api.energy.EnergyHandler;
+import net.bobofraggins.mobfarmingsupplies.neoforge.transfer.api.resource.Resource;
 import net.bobofraggins.mobfarmingsupplies.shared.TransferSchedule;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.capabilities.BlockCapability;
-import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
-import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.energy.EnergyHandler;
-import net.neoforged.neoforge.transfer.resource.Resource;
 import org.jetbrains.annotations.Nullable;
 
 /**
  * NeoForge lookups and quick checks for the hoppers' transfer code. Each hopper keeps one of these
- * in its {@link TransferSchedule}: it holds a {@link BlockCapabilityCache} per neighbour and
+ * in its {@link TransferSchedule}: it holds a {@link BlockCapability.Cache} per neighbour and
  * capability, so a transfer doesn't look the neighbour's handler up again. NeoForge invalidates
  * the caches itself when a neighbour changes.
  *
@@ -33,7 +32,7 @@ public final class HopperLookups {
     private record Key(BlockCapability<?, Direction> capability, ResourceKey<Level> dimension, BlockPos pos,
                        Direction side) {}
 
-    private final Map<Key, BlockCapabilityCache<?, Direction>> caches = new HashMap<>();
+    private final Map<Key, BlockCapability.Cache<?>> caches = new HashMap<>();
 
     /** The lookups of a hopper. */
     public static HopperLookups of(TransferSchedule.Holder hopper) {
@@ -49,12 +48,12 @@ public final class HopperLookups {
     public <H> H at(Level level, BlockPos pos, Direction side, BlockCapability<H, Direction> capability) {
         BlockPos neighbour = pos.relative(side);
         if (!level.isLoaded(neighbour)) return null;
-        if (!(level instanceof ServerLevel server)) return level.getCapability(capability, neighbour, side.getOpposite());
+        if (!(level instanceof ServerLevel server)) return capability.getCapability(level, neighbour, side.getOpposite());
         Key key = new Key(capability, level.dimension(), neighbour, side.getOpposite());
-        BlockCapabilityCache<?, Direction> cache = caches.get(key);
+        BlockCapability.Cache<?> cache = caches.get(key);
         if (cache == null) {
             if (caches.size() >= MAX_CACHED) caches.clear();
-            cache = BlockCapabilityCache.create(capability, server, neighbour, side.getOpposite());
+            cache = capability.createCache(server, neighbour, side.getOpposite());
             caches.put(key, cache);
         }
         return (H) cache.getCapability();

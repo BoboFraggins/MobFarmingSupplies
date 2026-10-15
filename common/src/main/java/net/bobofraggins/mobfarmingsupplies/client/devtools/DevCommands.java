@@ -8,7 +8,7 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.function.Consumer;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 import net.minecraft.client.CameraType;
@@ -79,14 +79,14 @@ public final class DevCommands {
             return;
         }
         if (line.startsWith("RECIPES ")) {
-            Identifier id = Identifier.tryParse(line.substring(8).strip());
+            ResourceLocation id = ResourceLocation.tryParse(line.substring(8).strip());
             if (showRecipes != null && id != null) {
-                showRecipes.accept(new ItemStack(BuiltInRegistries.ITEM.getValue(id)));
+                showRecipes.accept(new ItemStack(BuiltInRegistries.ITEM.get(id)));
             }
             return;
         }
         if (line.startsWith("SCREENSHOT ")) {
-            Screenshot.grab(mc.gameDirectory, line.substring(11).strip() + ".png", mc.getMainRenderTarget(), 1,
+            Screenshot.grab(mc.gameDirectory, line.substring(11).strip() + ".png", mc.getMainRenderTarget(),
                     message -> LOGGER.info("{}", message.getString()));
             return;
         }
@@ -96,7 +96,7 @@ public final class DevCommands {
             var player = server.getPlayerList().getPlayers().getFirst();
             // The server's own source, acting as the player: the player may not be allowed commands.
             server.getCommands().performPrefixedCommand(server.createCommandSourceStack()
-                    .withEntity(player).withPosition(player.position()).withLevel(player.level()), command);
+                    .withEntity(player).withPosition(player.position()).withLevel(player.serverLevel()), command);
         });
     }
 }

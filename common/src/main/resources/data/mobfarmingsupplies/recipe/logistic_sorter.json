@@ -6,9 +6,15 @@
     "WHW"
   ],
   "key": {
-    "W": "#minecraft:logs",
-    "H": "minecraft:hopper",
-    "B": "mobfarmingsupplies:blank_filter"
+    "W": {
+      "tag": "minecraft:logs"
+    },
+    "H": {
+      "item": "minecraft:hopper"
+    },
+    "B": {
+      "item": "mobfarmingsupplies:blank_filter"
+    }
   },
   "result": {
     "id": "mobfarmingsupplies:logistic_sorter",

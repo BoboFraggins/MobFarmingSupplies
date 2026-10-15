@@ -3,7 +3,9 @@
   "category": "misc",
   "cookingtime": 200,
   "experience": 0.1,
-  "ingredient": "mobfarmingsupplies:silicon_clump",
+  "ingredient": {
+    "item": "mobfarmingsupplies:silicon_clump"
+  },
   "result": {
     "id": "mobfarmingsupplies:silicon"
   }

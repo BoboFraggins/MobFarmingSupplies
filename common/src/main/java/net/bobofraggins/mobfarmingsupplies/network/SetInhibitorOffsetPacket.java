@@ -8,7 +8,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
@@ -22,7 +22,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 public record SetInhibitorOffsetPacket(BlockPos pos, int axis, int delta) implements CustomPacketPayload {
 
     public static final Type<SetInhibitorOffsetPacket> TYPE =
-            new Type<>(Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "set_inhibitor_offset"));
+            new Type<>(ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "set_inhibitor_offset"));
 
     public static final StreamCodec<FriendlyByteBuf, SetInhibitorOffsetPacket> STREAM_CODEC =
             StreamCodec.composite(

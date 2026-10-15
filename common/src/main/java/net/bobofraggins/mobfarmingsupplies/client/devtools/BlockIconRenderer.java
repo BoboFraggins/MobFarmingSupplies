@@ -1,16 +1,15 @@
 package net.bobofraggins.mobfarmingsupplies.client.devtools;
 
-import net.minecraft.commands.arguments.item.ItemParser;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.brigadier.StringReader;
-import com.mojang.blaze3d.buffers.GpuBuffer;
+import com.mojang.blaze3d.pipeline.TextureTarget;
+import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.platform.NativeImage;
-import com.mojang.blaze3d.systems.CommandEncoder;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.textures.GpuTexture;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexSorting;
+import com.mojang.brigadier.StringReader;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import dev.architectury.event.events.client.ClientTickEvent;
 import dev.architectury.platform.Platform;
-import java.lang.reflect.Field;
 import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -18,22 +17,22 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
 import net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommon;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.render.GuiItemAtlas;
-import net.minecraft.client.gui.render.GuiRenderer;
+import net.minecraft.client.Screenshot;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.feature.FeatureRenderDispatcher;
-import net.minecraft.client.renderer.item.TrackingItemStackRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.commands.arguments.item.ItemParser;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import org.joml.Matrix4f;
+import org.joml.Matrix4fStack;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,10 +47,10 @@ import org.slf4j.LoggerFactory;
  * every block item in the mod: a comma-separated list of items written as for {@code /give},
  * components included, each optionally prefixed with {@code name=} to choose its file name.
  *
- * <p>Each item is drawn into its own {@link GuiItemAtlas} with a single large slot. That is the
- * class the GUI uses for every item icon, so the angle, lighting and orthographic projection
- * match, and the slot starts out transparent. The result is cropped to the item, scaled with an
- * area filter so its larger side is {@link #FILL} of {@link #SIZE}, and centred.
+ * <p>Each item is drawn into its own transparent offscreen target with the projection, transform
+ * and lighting {@code GuiGraphics} uses for item icons, so the angle and lighting match. The result
+ * is cropped to the item, scaled with an area filter so its larger side is {@link #FILL} of
+ * {@link #SIZE}, and centred.
  */
 public final class BlockIconRenderer {
 
@@ -69,7 +68,6 @@ public final class BlockIconRenderer {
     private record Icon(String name, ItemStack stack) {}
 
     private static Deque<Icon> queue;
-    private static final AtomicInteger pending = new AtomicInteger();
     private static int written;
     private static int worldTicks;
     private static boolean finished;
@@ -97,7 +95,7 @@ public final class BlockIconRenderer {
             } catch (Exception e) {
                 LOGGER.error("Couldn't render {}", next.name(), e);
             }
-        } else if (pending.get() == 0 && !finished) {
+        } else if (!finished) {
             finished = true;
             LOGGER.info("Wrote {} block icons to {}", written, outputDir);
             mc.stop();
@@ -117,7 +115,8 @@ public final class BlockIconRenderer {
                     spec = entry.substring(eq + 1);
                 }
                 try {
-                    ItemStack stack = parser.parse(new StringReader(spec)).createItemStack(1);
+                    ItemParser.ItemResult parsed = parser.parse(new StringReader(spec));
+                    ItemStack stack = new ItemStack(parsed.item(), 1, parsed.components());
                     icons.add(new Icon(name != null ? name : BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath(), stack));
                 } catch (CommandSyntaxException e) {
                     LOGGER.warn("Couldn't read item {}: {}", spec, e.getMessage());
@@ -126,7 +125,7 @@ public final class BlockIconRenderer {
             return icons;
         }
         for (Item item : BuiltInRegistries.ITEM) {
-            Identifier key = BuiltInRegistries.ITEM.getKey(item);
+            ResourceLocation key = BuiltInRegistries.ITEM.getKey(item);
             // Mob Heads need a mob type to draw anything; list specific ones with their component instead.
             if (key.getNamespace().equals(MobFarmingSuppliesCommon.MODID) && item instanceof BlockItem
                     && !key.getPath().equals("mob_head")) {
@@ -156,42 +155,53 @@ public final class BlockIconRenderer {
         return parts;
     }
 
-    private static void render(Minecraft mc, Icon icon) throws ReflectiveOperationException {
+    private static void render(Minecraft mc, Icon icon) throws Exception {
         ItemStack stack = icon.stack();
-        GuiRenderer gui = (GuiRenderer) field(mc.gameRenderer, "guiRenderer");
-        GuiItemAtlas atlas = new GuiItemAtlas(
-                (SubmitNodeCollector) field(gui, "submitNodeCollector"),
-                (FeatureRenderDispatcher) field(gui, "featureRenderDispatcher"),
-                (MultiBufferSource.BufferSource) field(gui, "bufferSource"),
-                RENDER_SIZE, RENDER_SIZE);
-        TrackingItemStackRenderState state = new TrackingItemStackRenderState();
-        mc.getItemModelResolver().updateForTopItem(state, stack, ItemDisplayContext.GUI, mc.level, null, 0);
-        if (!atlas.tryPrepareFor(Set.of(state.getModelIdentity()))) {
-            atlas.close();
-            throw new IllegalStateException("no room in the atlas");
-        }
-        atlas.getOrUpdate(state);
-        atlas.endFrame();
+        TextureTarget target = new TextureTarget(RENDER_SIZE, RENDER_SIZE, true, Minecraft.ON_OSX);
+        target.setClearColor(0f, 0f, 0f, 0f);
+        target.clear(Minecraft.ON_OSX);
+        target.bindWrite(true);
 
-        String name = icon.name();
-        GpuTexture texture = (GpuTexture) field(atlas, "texture");
-        int pixelSize = texture.getFormat().pixelSize();
-        GpuBuffer buffer = RenderSystem.getDevice().createBuffer(
-                () -> "Block icon " + name, GpuBuffer.USAGE_MAP_READ | GpuBuffer.USAGE_COPY_DST,
-                (long) RENDER_SIZE * RENDER_SIZE * pixelSize);
-        CommandEncoder encoder = RenderSystem.getDevice().createCommandEncoder();
-        pending.incrementAndGet();
-        encoder.copyTextureToBuffer(texture, buffer, 0, () -> {
-            try (GpuBuffer.MappedView view = encoder.mapBuffer(buffer, true, false)) {
-                save(name, view.data(), pixelSize);
-            } catch (Exception e) {
-                LOGGER.error("Couldn't save the icon for {}", name, e);
-            } finally {
-                buffer.close();
-                atlas.close();
-                pending.decrementAndGet();
+        // As GuiGraphics draws an item, at RENDER_SIZE pixels instead of 16.
+        Matrix4f projection = new Matrix4f().setOrtho(0f, RENDER_SIZE, RENDER_SIZE, 0f, 1000f, 21000f);
+        RenderSystem.backupProjectionMatrix();
+        RenderSystem.setProjectionMatrix(projection, VertexSorting.ORTHOGRAPHIC_Z);
+        Matrix4fStack modelView = RenderSystem.getModelViewStack();
+        modelView.pushMatrix();
+        modelView.identity();
+        modelView.translate(0f, 0f, -11000f);
+        RenderSystem.applyModelViewMatrix();
+        try {
+            PoseStack pose = new PoseStack();
+            pose.translate(RENDER_SIZE / 2f, RENDER_SIZE / 2f, 150f);
+            pose.scale(RENDER_SIZE, -RENDER_SIZE, RENDER_SIZE);
+            BakedModel model = mc.getItemRenderer().getModel(stack, mc.level, null, 0);
+            if (model.usesBlockLight()) Lighting.setupFor3DItems();
+            else Lighting.setupForFlatItems();
+            MultiBufferSource.BufferSource buffers = mc.renderBuffers().bufferSource();
+            mc.getItemRenderer().render(stack, ItemDisplayContext.GUI, false, pose, buffers,
+                    LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, model);
+            buffers.endBatch();
+        } finally {
+            modelView.popMatrix();
+            RenderSystem.applyModelViewMatrix();
+            RenderSystem.restoreProjectionMatrix();
+            mc.getMainRenderTarget().bindWrite(true);
+        }
+
+        // takeScreenshot gives rows top to bottom; save reads them bottom to top, as the GPU has them.
+        try (NativeImage image = Screenshot.takeScreenshot(target)) {
+            int n = RENDER_SIZE;
+            ByteBuffer data = ByteBuffer.allocate(n * n * 4);
+            for (int y = 0; y < n; y++) {
+                for (int x = 0; x < n; x++) {
+                    data.putInt((x + (n - 1 - y) * n) * 4, image.getPixelRGBA(x, y));
+                }
             }
-        }, 0);
+            save(icon.name(), data, 4);
+        } finally {
+            target.destroyBuffers();
+        }
     }
 
     /** Crops the rendered item, scales it to fit {@link #FILL} of the image, and writes the PNG. */
@@ -242,7 +252,7 @@ public final class BlockIconRenderer {
                     if (count == 0 || sa == 0) continue;
                     int a = (int) (sa / count);
                     int r = (int) (sr / sa), g = (int) (sg / sa), b = (int) (sb / sa);
-                    image.setPixel(offX + ox, offY + oy, a << 24 | r << 16 | g << 8 | b);
+                    image.setPixelRGBA(offX + ox, offY + oy, a << 24 | b << 16 | g << 8 | r);
                 }
             }
             Files.createDirectories(outputDir);
@@ -250,19 +260,5 @@ public final class BlockIconRenderer {
             written++;
             LOGGER.info("Wrote {}.png", name);
         }
-    }
-
-    private static Object field(Object owner, String name) throws ReflectiveOperationException {
-        Class<?> type = owner.getClass();
-        while (type != null) {
-            try {
-                Field f = type.getDeclaredField(name);
-                f.setAccessible(true);
-                return f.get(owner);
-            } catch (NoSuchFieldException e) {
-                type = type.getSuperclass();
-            }
-        }
-        throw new NoSuchFieldException(name);
     }
 }

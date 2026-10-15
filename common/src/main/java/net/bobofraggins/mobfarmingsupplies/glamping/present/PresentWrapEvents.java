@@ -9,7 +9,6 @@ import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -20,7 +19,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.ChestType;
-import net.minecraft.world.level.storage.TagValueOutput;
 
 /**
  * Wrapping logic for the Present item, hooked via Architectury's
@@ -45,7 +43,7 @@ public final class PresentWrapEvents {
         InteractionEvent.RIGHT_CLICK_BLOCK.register(PresentWrapEvents::onRightClickBlock);
     }
 
-    private static InteractionResult onRightClickBlock(Player player, InteractionHand hand, BlockPos pos, Direction face) {
+    private static EventResult onRightClickBlock(Player player, InteractionHand hand, BlockPos pos, Direction face) {
         Level level = player.level();
         // Sneak + empty main hand on a Present unwraps it, whatever is in the offhand. Handled
         // here because vanilla never calls PresentBlock#useWithoutItem for a sneaking player
@@ -53,12 +51,10 @@ public final class PresentWrapEvents {
         // just forwards the click; the server decides.
         if (hand == InteractionHand.MAIN_HAND && player.isShiftKeyDown() && player.getMainHandItem().isEmpty()
                 && level.getBlockState(pos).getBlock() instanceof PresentBlock) {
-            if (level.isClientSide()) return InteractionResult.SUCCESS;
-            return PresentBlock.unwrap(level, pos, player) ? InteractionResult.SUCCESS : InteractionResult.PASS;
+            if (level.isClientSide()) return EventResult.interruptTrue();
+            return PresentBlock.unwrap(level, pos, player) ? EventResult.interruptTrue() : EventResult.pass();
         }
-        EventResult result = onUseItemOnBlock(
-                level, player, hand, player.getItemInHand(hand), level.getBlockState(pos), pos);
-        return result.interruptsFurtherEvaluation() ? InteractionResult.SUCCESS : InteractionResult.PASS;
+        return onUseItemOnBlock(level, player, hand, player.getItemInHand(hand), level.getBlockState(pos), pos);
     }
 
     private static EventResult onUseItemOnBlock(
@@ -73,15 +69,16 @@ public final class PresentWrapEvents {
             CompoundTag entityData = captureBlockEntity(level, pos);
 
             // UPDATE_SUPPRESS_DROPS only suppresses the replaced block's own item drop — a
-            // container being replaced (chest, barrel, ...) still spills its inventory via
-            // BlockEntity#preRemoveSideEffects's default Containers.dropContents() call unless
-            // UPDATE_SKIP_BLOCK_ENTITY_SIDEEFFECTS is also set. entityData above already has a
-            // full snapshot of the contents to restore, so vanilla's own spill would just dupe.
+            // container being replaced (chest, barrel, ...) still spills its inventory from its
+            // block's onRemove if its block entity is still there. entityData above already has a
+            // full snapshot of the contents to restore, so remove the block entity first; vanilla's
+            // own spill would just dupe.
             Direction facing = player.getDirection().getOpposite();
+            level.removeBlockEntity(pos);
             level.setBlock(
                     pos,
                     Registration.PRESENT.get().defaultBlockState().setValue(PresentBlock.FACING, facing),
-                    Block.UPDATE_ALL | Block.UPDATE_SUPPRESS_DROPS | Block.UPDATE_SKIP_BLOCK_ENTITY_SIDEEFFECTS);
+                    Block.UPDATE_ALL | Block.UPDATE_SUPPRESS_DROPS);
 
             if (level.getBlockEntity(pos) instanceof PresentBlockEntity present) {
                 present.setWrappedBlock(state, entityData);
@@ -138,9 +135,8 @@ public final class PresentWrapEvents {
     private static CompoundTag captureBlockEntity(Level level, BlockPos pos) {
         BlockEntity be = level.getBlockEntity(pos);
         if (be == null) return null;
-        TagValueOutput beOut = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, level.registryAccess());
-        be.saveCustomOnly(beOut);
-        CompoundTag saved = beOut.buildResult();
+        CompoundTag beOut = be.saveCustomOnly(level.registryAccess());
+        CompoundTag saved = beOut;
         return saved.isEmpty() ? null : saved;
     }
 }

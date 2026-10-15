@@ -6,10 +6,23 @@
     "PWP"
   ],
   "key": {
-    "C": "#c:nuggets/copper",
-    "P": "#c:plastics",
-    "S": "#c:plates/silicon",
-    "W": "#c:dyes/white"
+    "C": [
+      {
+        "tag": "c:nuggets/copper"
+      },
+      {
+        "tag": "c:nuggets/iron"
+      }
+    ],
+    "P": {
+      "tag": "c:plastics"
+    },
+    "S": {
+      "tag": "c:plates/silicon"
+    },
+    "W": {
+      "tag": "c:dyes/white"
+    }
   },
   "result": {
     "id": "mobfarmingsupplies:blank_upgrade",

@@ -4,7 +4,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import net.bobofraggins.mobfarmingsupplies.shared.ui.IDialogPane;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
@@ -126,10 +126,10 @@ public class ScribingControlsPane implements IDialogPane {
     @Override public int preferredHeight() { return HEIGHT; }
 
     @Override
-    public void render(GuiGraphicsExtractor g, Font font, int width, int mouseX, int mouseY, float pt) {
+    public void render(GuiGraphics g, Font font, int width, int mouseX, int mouseY, float pt) {
         // Ghost slot
         drawInset(g, GHOST_X, GHOST_Y, 18, 18);
-        if (!ghostItem.isEmpty()) g.item(ghostItem, GHOST_X + 1, GHOST_Y + 1);
+        if (!ghostItem.isEmpty()) g.renderItem(ghostItem, GHOST_X + 1, GHOST_Y + 1);
         if (inGhost(mouseX, mouseY)) g.fill(GHOST_X + 1, GHOST_Y + 1, GHOST_X + 17, GHOST_Y + 17, 0x80FFFFFF);
 
         // Toggle
@@ -148,7 +148,7 @@ public class ScribingControlsPane implements IDialogPane {
             if (selected) g.fill(LIST_X + 1, ry, LIST_X + 1 + rowW, ry + ROW_H, COLOR_ROW_SEL);
             else if (index == hovered) g.fill(LIST_X + 1, ry, LIST_X + 1 + rowW, ry + ROW_H, COLOR_ROW_HOVER);
             String text = font.plainSubstrByWidth(rows.get(index).getString(), rowW - 4);
-            g.text(font, Component.literal(text), LIST_X + 3, ry + 2, selected ? COLOR_TEXT_SEL : COLOR_TEXT, false);
+            g.drawString(font, Component.literal(text), LIST_X + 3, ry + 2, selected ? COLOR_TEXT_SEL : COLOR_TEXT, false);
         }
 
         if (maxScroll() > 0) {
@@ -262,7 +262,7 @@ public class ScribingControlsPane implements IDialogPane {
         scrollOffset = Mth.clamp((int) Math.round(frac * maxScroll()), 0, maxScroll());
     }
 
-    private static void drawInset(GuiGraphicsExtractor g, int x, int y, int w, int h) {
+    private static void drawInset(GuiGraphics g, int x, int y, int w, int h) {
         g.fill(x, y, x + w - 1, y + 1, COLOR_FRAME_DARK);            // top
         g.fill(x, y + 1, x + 1, y + h - 1, COLOR_FRAME_DARK);        // left
         g.fill(x + 1, y + h - 1, x + w, y + h, COLOR_FRAME_LIGHT);   // bottom

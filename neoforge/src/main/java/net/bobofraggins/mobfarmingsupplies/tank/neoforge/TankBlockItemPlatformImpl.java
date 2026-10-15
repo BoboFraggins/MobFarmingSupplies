@@ -7,16 +7,19 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.transfer.fluid.FluidUtil;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.fluids.FluidUtil;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 public final class TankBlockItemPlatformImpl {
 
     public static ItemStack tryPlaceFluidInWorld(
             ItemStack stack, Player player, Level level, InteractionHand hand, BlockPos targetPos) {
         TankItemFluidHandler tankHandler = new TankItemFluidHandler(stack.copy());
-        net.neoforged.neoforge.fluids.FluidStack placed =
-                FluidUtil.tryPlaceFluid(tankHandler, player, level, hand, targetPos);
-        if (!placed.isEmpty()) {
+        FluidStack bucket = tankHandler.drain(FluidType.BUCKET_VOLUME, IFluidHandler.FluidAction.SIMULATE);
+        if (bucket.getAmount() < FluidType.BUCKET_VOLUME) return null;
+        if (FluidUtil.tryPlaceFluid(player, level, hand, targetPos, tankHandler, bucket)) {
             return tankHandler.getContainer();
         }
         return null;

@@ -1,7 +1,7 @@
 package net.bobofraggins.mobfarmingsupplies.shared.ui;
 
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 
 /**
  * Dialog pane that renders the player inventory and hotbar slot backgrounds.
@@ -51,7 +51,7 @@ public class PlayerInventoryPane implements IDialogPane {
 
     @Override
     public void render(
-            GuiGraphicsExtractor graphics, Font font, int width, int localMouseX, int localMouseY, float partialTick) {
+            GuiGraphics graphics, Font font, int width, int localMouseX, int localMouseY, float partialTick) {
         for (int row = 0; row < INV_ROWS; row++) {
             for (int col = 0; col < COLS; col++) {
                 drawSlotBg(graphics, invX + col * SLOT_SIZE, row * SLOT_SIZE);
@@ -62,7 +62,7 @@ public class PlayerInventoryPane implements IDialogPane {
         }
     }
 
-    public static void drawSlotBg(GuiGraphicsExtractor graphics, int sx, int sy) {
+    public static void drawSlotBg(GuiGraphics graphics, int sx, int sy) {
         graphics.fill(sx,      sy,      sx + 16, sy + 1,  DARK);
         graphics.fill(sx,      sy + 1,  sx + 1,  sy + 16, DARK);
         graphics.fill(sx,      sy + 16, sx + 17, sy + 17, LIGHT);

@@ -2,9 +2,9 @@ package net.bobofraggins.mobfarmingsupplies.logisticsorter.neoforge;
 
 import net.bobofraggins.mobfarmingsupplies.logisticsorter.LogisticSorterBlockEntity;
 import net.minecraft.world.item.Item;
-import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.item.ItemResource;
-import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+import net.bobofraggins.mobfarmingsupplies.neoforge.transfer.api.ResourceHandler;
+import net.bobofraggins.mobfarmingsupplies.neoforge.transfer.api.item.ItemResource;
+import net.bobofraggins.mobfarmingsupplies.neoforge.transfer.api.transaction.TransactionContext;
 
 /**
  * Insert-only item handler exposed on a Logistic Sorter's INPUT sides. The sorter holds no

@@ -5,7 +5,7 @@ import net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommon;
 import net.bobofraggins.mobfarmingsupplies.magnet.MagnetPull;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
 /**
@@ -15,7 +15,7 @@ import net.minecraft.server.level.ServerPlayer;
 public record ToggleMagnetPacket() implements CustomPacketPayload {
 
     public static final Type<ToggleMagnetPacket> TYPE =
-            new Type<>(Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "toggle_magnet"));
+            new Type<>(ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "toggle_magnet"));
 
     public static final StreamCodec<net.minecraft.network.FriendlyByteBuf, ToggleMagnetPacket> STREAM_CODEC =
             StreamCodec.unit(new ToggleMagnetPacket());

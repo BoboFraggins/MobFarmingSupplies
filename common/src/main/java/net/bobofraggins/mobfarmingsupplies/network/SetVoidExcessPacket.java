@@ -8,7 +8,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
@@ -16,7 +16,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 public record SetVoidExcessPacket(BlockPos pos, boolean on) implements CustomPacketPayload {
 
     public static final Type<SetVoidExcessPacket> TYPE =
-            new Type<>(Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "set_void_excess"));
+            new Type<>(ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "set_void_excess"));
 
     public static final StreamCodec<FriendlyByteBuf, SetVoidExcessPacket> STREAM_CODEC =
             StreamCodec.composite(

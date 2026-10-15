@@ -3,7 +3,7 @@ package net.bobofraggins.mobfarmingsupplies.picnicbasket;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 
 /**
- * Whether this platform's accessory-slot mod (Curios on NeoForge, Trinkets Updated on Fabric)
+ * Whether this platform's accessory-slot mod (Curios on NeoForge, Trinkets on Fabric)
  * is installed.
  *
  * <p>This is a deliberately separate {@code @ExpectPlatform} bridge from

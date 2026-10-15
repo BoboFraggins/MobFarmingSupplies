@@ -1,32 +1,24 @@
 package net.bobofraggins.mobfarmingsupplies.tank.fabric;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.QuadInstance;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.architectury.fluid.FluidStack;
 import dev.architectury.hooks.fluid.fabric.FluidStackHooksFabric;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Consumer;
+import net.bobofraggins.mobfarmingsupplies.fabric.client.FluidSprites;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
+import net.bobofraggins.mobfarmingsupplies.shared.render.Geometry;
+import net.bobofraggins.mobfarmingsupplies.shared.render.SpecialModelRenderer;
 import net.bobofraggins.mobfarmingsupplies.tank.TankContents;
 import net.bobofraggins.mobfarmingsupplies.tank.TankFluidGeometry;
 import net.bobofraggins.mobfarmingsupplies.tank.TankTier;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
-import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
-import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
-import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
-import net.minecraft.util.RandomSource;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Vector3fc;
 
 /**
  * Fabric port of the NeoForge {@code TankItemRenderer}.
@@ -41,15 +33,9 @@ public class TankItemRenderer implements SpecialModelRenderer<TankContents> {
     /** Which tank this renders: decides the case model and the capacity the fill level is relative to. */
     private final TankTier tier;
 
-    /** Cached once on first render — block model parts never change after bake. */
-    private List<BlockStateModelPart> cachedBlkParts = null;
-
     public TankItemRenderer(TankTier tier) {
         this.tier = tier;
     }
-
-    @Override
-    public void getExtents(Consumer<Vector3fc> output) {}
 
     @Override
     @Nullable
@@ -58,56 +44,24 @@ public class TankItemRenderer implements SpecialModelRenderer<TankContents> {
     }
 
     @Override
-    @SuppressWarnings("deprecation")
     public void submit(
             @Nullable TankContents data,
+            ItemDisplayContext context,
             PoseStack poseStack,
-            SubmitNodeCollector collector,
+            MultiBufferSource buffers,
             int packedLight,
             int packedOverlay,
-            boolean hasFoil,
-            int tint) {
-        Minecraft mc = Minecraft.getInstance();
-
-        if (cachedBlkParts == null) {
-            BlockStateModel blkModel = mc.getModelManager()
-                    .getBlockStateModelSet()
-                    .get(tier.block().defaultBlockState());
-            List<BlockStateModelPart> parts = new ArrayList<>();
-            blkModel.collectParts(RandomSource.create(), parts);
-            cachedBlkParts = parts;
-        }
-        List<BlockStateModelPart> blkParts = cachedBlkParts;
-        collector.submitCustomGeometry(poseStack, Sheets.cutoutBlockSheet(), (pose, vc) -> {
-            QuadInstance qi = new QuadInstance();
-            qi.setColor(0xFFFFFFFF);
-            qi.setLightCoords(packedLight);
-            qi.setOverlayCoords(packedOverlay);
-            for (BlockStateModelPart part : blkParts) {
-                for (Direction dir : Direction.values()) {
-                    for (var quad : part.getQuads(dir)) {
-                        vc.putBakedQuad(pose, quad, qi);
-                    }
-                }
-                for (var quad : part.getQuads(null)) {
-                    vc.putBakedQuad(pose, quad, qi);
-                }
-            }
-        });
+            boolean hasFoil) {
+        Minecraft.getInstance().getBlockRenderer().renderSingleBlock(
+                tier.block().defaultBlockState(), poseStack, buffers, packedLight, packedOverlay);
 
         if (data == null || data.isEmpty()) return;
 
         float fillFrac = Math.min(1f, Math.max(0.01f, (float) data.amount() / tier.capacity()));
         FluidStack archFluid = data.storedFluid();
 
-        var fluidModel = mc.getModelManager()
-                .getFluidStateModelSet()
-                .get(archFluid.getFluid().defaultFluidState());
-        TextureAtlasSprite sprite = fluidModel.stillMaterial().sprite();
-
-        int fluidTint = fluidModel.tintSource() != null
-                ? fluidModel.tintSource().color(archFluid.getFluid().defaultFluidState().createLegacyBlock())
-                : 0xFFFFFFFF;
+        TextureAtlasSprite sprite = FluidSprites.still(archFluid);
+        int fluidTint = FluidSprites.tint(archFluid, null, null);
         int fr = (fluidTint >> 16) & 0xFF;
         int fg = (fluidTint >>  8) & 0xFF;
         int fb = fluidTint & 0xFF;
@@ -123,26 +77,8 @@ public class TankItemRenderer implements SpecialModelRenderer<TankContents> {
         float vMax = sprite.getV1();
 
         final int ffrF = fr, ffgF = fg, ffbF = fb, ffaF = fa, flF = fluidLight, overlayF = packedOverlay;
-        collector.submitCustomGeometry(poseStack, Sheets.translucentBlockSheet(),
+        Geometry.custom(poseStack, buffers, Sheets.translucentItemSheet(),
                 (pose, vc) -> TankFluidGeometry.renderCubeFill(
                         vc, pose, ffrF, ffgF, ffbF, ffaF, flF, overlayF, uL, vT, uR, vB, vMax, fillTop));
-    }
-
-    /** {@code tier} comes from the item's model JSON ({@code "tier": "gold"}); a basic tank leaves it out. */
-    public record Unbaked(TankTier tier) implements SpecialModelRenderer.Unbaked<TankContents> {
-        public static final MapCodec<Unbaked> MAP_CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-                TankTier.CODEC.optionalFieldOf("tier", TankTier.BASIC).forGetter(Unbaked::tier)
-        ).apply(i, Unbaked::new));
-
-        @Override
-        @Nullable
-        public SpecialModelRenderer<TankContents> bake(SpecialModelRenderer.BakingContext context) {
-            return new TankItemRenderer(tier);
-        }
-
-        @Override
-        public MapCodec<? extends SpecialModelRenderer.Unbaked<TankContents>> type() {
-            return MAP_CODEC;
-        }
     }
 }

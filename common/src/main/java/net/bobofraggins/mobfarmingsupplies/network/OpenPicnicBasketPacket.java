@@ -9,7 +9,7 @@ import net.bobofraggins.mobfarmingsupplies.picnicbasket.PicnicBasketMenu;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.SimpleMenuProvider;
 import net.bobofraggins.mobfarmingsupplies.shared.menu.ExtendedMenus;
@@ -25,7 +25,7 @@ import java.util.Optional;
 public record OpenPicnicBasketPacket() implements CustomPacketPayload {
 
     public static final Type<OpenPicnicBasketPacket> TYPE =
-            new Type<>(Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "open_picnic_basket"));
+            new Type<>(ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "open_picnic_basket"));
 
     public static final StreamCodec<net.minecraft.network.FriendlyByteBuf, OpenPicnicBasketPacket> STREAM_CODEC =
             StreamCodec.unit(new OpenPicnicBasketPacket());
@@ -40,7 +40,7 @@ public record OpenPicnicBasketPacket() implements CustomPacketPayload {
             if (!(ctx.getPlayer() instanceof ServerPlayer player)) return;
             PicnicBasketLocator locator = PicnicBasketItemUtils.findBasketLocator(player);
             if (locator == null) {
-                player.sendOverlayMessage(Component.translatable("message.mobfarmingsupplies.picnic_basket.not_found"));
+                player.displayClientMessage(Component.translatable("message.mobfarmingsupplies.picnic_basket.not_found"), true);
                 return;
             }
             PicnicBasketItemContainer container = new PicnicBasketItemContainer(player, locator);

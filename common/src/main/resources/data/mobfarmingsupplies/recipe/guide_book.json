@@ -16,8 +16,12 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    "minecraft:book",
-    "mobfarmingsupplies:silicon_clump"
+    {
+      "item": "minecraft:book"
+    },
+    {
+      "item": "mobfarmingsupplies:silicon_clump"
+    }
   ],
   "result": {
     "id": "modonomicon:modonomicon",

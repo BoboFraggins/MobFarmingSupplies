@@ -6,8 +6,12 @@
     "GGG"
   ],
   "key": {
-    "G": "minecraft:glass",
-    "B": "minecraft:bucket"
+    "G": {
+      "item": "minecraft:glass"
+    },
+    "B": {
+      "item": "minecraft:bucket"
+    }
   },
   "result": {
     "id": "mobfarmingsupplies:tank",

@@ -2,30 +2,27 @@ package net.bobofraggins.mobfarmingsupplies.enderinhibitor;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.bobofraggins.mobfarmingsupplies.shared.render.BlockEntityRenderState;
+import net.bobofraggins.mobfarmingsupplies.shared.render.Geometry;
+import net.bobofraggins.mobfarmingsupplies.shared.render.ItemModelResolver;
+import net.bobofraggins.mobfarmingsupplies.shared.render.ItemStackRenderState;
+import net.bobofraggins.mobfarmingsupplies.shared.render.StateBlockEntityRenderer;
+import net.minecraft.Util;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
-import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.item.ItemModelResolver;
-import net.minecraft.client.renderer.item.ItemStackRenderState;
-import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
-import net.minecraft.util.Util;
-import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
-
-import org.jetbrains.annotations.Nullable;
 
 /**
  * Block-entity renderer for the Ender Inhibitor.
@@ -39,7 +36,7 @@ import org.jetbrains.annotations.Nullable;
  * offset suppression point — when {@link EnderInhibitorBlockEntity#showArea} is set.
  */
 public class EnderInhibitorBlockEntityRenderer<T extends EnderInhibitorBlockEntity>
-        implements BlockEntityRenderer<T, EnderInhibitorBlockEntityRenderer.PearlState> {
+        extends StateBlockEntityRenderer<T, EnderInhibitorBlockEntityRenderer.PearlState> {
 
     private static final int WF_A = 200;
     /** The area wireframe's colour, red, green and blue. */
@@ -77,7 +74,7 @@ public class EnderInhibitorBlockEntityRenderer<T extends EnderInhibitorBlockEnti
     }
 
     public EnderInhibitorBlockEntityRenderer(BlockEntityRendererProvider.Context ctx, Item floating, int r, int g, int b) {
-        this.itemModelResolver = ctx.itemModelResolver();
+        this.itemModelResolver = ItemModelResolver.INSTANCE;
         this.floating = floating;
         this.wfR = r;
         this.wfG = g;
@@ -127,15 +124,7 @@ public class EnderInhibitorBlockEntityRenderer<T extends EnderInhibitorBlockEnti
     // ── Two-phase rendering ───────────────────────────────────────────────────────
 
     @Override
-    public void extractRenderState(
-            T be,
-            PearlState state,
-            float partialTick,
-            Vec3 camera,
-            ModelFeatureRenderer.CrumblingOverlay crumbling) {
-
-        BlockEntityRenderState.extractBase(be, state, crumbling);
-
+    public void extractRenderState(T be, PearlState state, float partialTick) {
         Level level = be.getLevel();
         state.angleDeg = spinDegrees();
         state.facing   = be.getBlockState().getValue(EnderInhibitorBlock.FACING);
@@ -166,17 +155,11 @@ public class EnderInhibitorBlockEntityRenderer<T extends EnderInhibitorBlockEnti
     }
 
     @Override
-    public void submit(
-            PearlState state,
-            PoseStack poseStack,
-            SubmitNodeCollector collector,
-            CameraRenderState cameraState) {
-
+    public void submit(PearlState state, PoseStack poseStack, MultiBufferSource buffers) {
         if (state.localAreaAABB != null) {
             AABB box = state.localAreaAABB;
-            collector.submitCustomGeometry(
-                    poseStack,
-                    RenderTypes.LINES,
+            Geometry.custom(poseStack, buffers,
+                    RenderType.lines(),
                     (pose, vc) -> drawLineBox(vc, pose.pose(),
                             box.minX, box.minY, box.minZ,
                             box.maxX, box.maxY, box.maxZ,
@@ -207,7 +190,7 @@ public class EnderInhibitorBlockEntityRenderer<T extends EnderInhibitorBlockEnti
         // Scale down to roughly gem-sized; ItemDisplayContext.FIXED renders at
         // full item-frame scale so we need to bring it in ourselves.
         poseStack.scale(ITEM_SCALE, ITEM_SCALE, ITEM_SCALE);
-        state.itemState.submit(poseStack, collector, state.lightCoords, OverlayTexture.NO_OVERLAY, 0);
+        state.itemState.submit(poseStack, buffers, state.lightCoords, OverlayTexture.NO_OVERLAY, 0);
 
         poseStack.popPose();
     }
@@ -248,7 +231,7 @@ public class EnderInhibitorBlockEntityRenderer<T extends EnderInhibitorBlockEnti
         float len = Mth.sqrt(dx * dx + dy * dy + dz * dz);
         if (len < 1e-5f) return;
         dx /= len; dy /= len; dz /= len;
-        vc.addVertex(mat, x0, y0, z0).setColor(r, g, b, a).setNormal(dx, dy, dz).setLineWidth(lineWidth);
-        vc.addVertex(mat, x1, y1, z1).setColor(r, g, b, a).setNormal(dx, dy, dz).setLineWidth(lineWidth);
+        vc.addVertex(mat, x0, y0, z0).setColor(r, g, b, a).setNormal(dx, dy, dz);
+        vc.addVertex(mat, x1, y1, z1).setColor(r, g, b, a).setNormal(dx, dy, dz);
     }
 }

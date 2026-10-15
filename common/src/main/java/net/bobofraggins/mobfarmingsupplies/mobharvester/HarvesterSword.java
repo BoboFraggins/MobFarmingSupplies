@@ -1,6 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.mobharvester;
 
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -20,10 +20,10 @@ import net.minecraft.world.item.component.ItemAttributeModifiers;
  */
 public class HarvesterSword extends Item {
 
-    private static final Identifier DAMAGE_ID =
-            Identifier.fromNamespaceAndPath("mobfarmingsupplies", "harvester_sword_damage");
-    private static final Identifier SPEED_ID =
-            Identifier.fromNamespaceAndPath("mobfarmingsupplies", "harvester_sword_distance");
+    private static final ResourceLocation DAMAGE_ID =
+            ResourceLocation.fromNamespaceAndPath("mobfarmingsupplies", "harvester_sword_damage");
+    private static final ResourceLocation SPEED_ID =
+            ResourceLocation.fromNamespaceAndPath("mobfarmingsupplies", "harvester_sword_distance");
 
     public HarvesterSword(Properties props) {
         super(props.attributes(buildAttributes()));

@@ -6,9 +6,15 @@
     " S "
   ],
   "key": {
-    "P": "minecraft:wither_skeleton_skull",
-    "O": "#c:obsidians",
-    "S": "minecraft:stone_slab"
+    "P": {
+      "item": "minecraft:wither_skeleton_skull"
+    },
+    "O": {
+      "tag": "c:obsidians"
+    },
+    "S": {
+      "item": "minecraft:stone_slab"
+    }
   },
   "result": {
     "id": "mobfarmingsupplies:wither_inhibitor",

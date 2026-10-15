@@ -8,7 +8,7 @@ import net.minecraft.world.item.ItemStack;
  * Cross-platform access to a worn Picnic Basket in an accessory-slot mod.
  *
  * <p>NeoForge implementation: Curios ({@code top.theillusivec4.curios}), a soft dependency.
- * Fabric implementation: Trinkets Updated ({@code eu.pb4.trinkets}), a soft dependency.
+ * Fabric implementation: Trinkets ({@code dev.emi.trinkets}), a soft dependency.
  * Both implementations must guard against the accessory mod being absent and return
  * {@link ItemStack#EMPTY} / no-op in that case.
  */

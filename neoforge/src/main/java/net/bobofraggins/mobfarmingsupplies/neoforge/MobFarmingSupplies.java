@@ -11,7 +11,6 @@ import net.bobofraggins.mobfarmingsupplies.neoforge.logisticsorter.LogisticSorte
 import net.bobofraggins.mobfarmingsupplies.neoforge.omnihopper.OmniHopperClientEvents;
 import net.bobofraggins.mobfarmingsupplies.neoforge.enderinhibitor.NeoForgeEnderInhibitorEvents;
 import net.bobofraggins.mobfarmingsupplies.neoforge.fan.FanClientEvents;
-import net.bobofraggins.mobfarmingsupplies.neoforge.glamping.magichat.MagicHatClientEvents;
 import net.bobofraggins.mobfarmingsupplies.neoforge.glamping.magichat.MagicHatCurioSetup;
 import net.bobofraggins.mobfarmingsupplies.neoforge.glamping.magichat.MagicHatSpawnEvents;
 import net.bobofraggins.mobfarmingsupplies.neoforge.glamping.present.PresentClientEvents;
@@ -73,13 +72,13 @@ public class MobFarmingSupplies {
             modEventBus.register(MobHarvesterClientEvents.class);
             modEventBus.register(PicnicBasketClientEvents.class);
             modEventBus.register(ExtraBlockModelsClientEvents.class);
-            modEventBus.register(MagicHatClientEvents.class);
             modEventBus.register(PresentClientEvents.class);
             if (curiosLoaded) {
                 MagicHatCurioSetup.onClientSetup(modEventBus);
             }
             modEventBus.register(ToiletClientEvents.class);
             modEventBus.register(MobHeadClientEvents.class);
+            modEventBus.register(net.bobofraggins.mobfarmingsupplies.neoforge.client.ItemRendererClientEvents.class);
         }
 
         MobFarmingSuppliesCommon.init();

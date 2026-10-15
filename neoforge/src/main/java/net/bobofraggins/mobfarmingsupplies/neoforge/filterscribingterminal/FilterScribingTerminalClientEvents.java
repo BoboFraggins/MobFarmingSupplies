@@ -10,7 +10,7 @@ public final class FilterScribingTerminalClientEvents {
     private FilterScribingTerminalClientEvents() {}
 
     // NeoForge's RegisterMenuScreensEvent has already fired by the time the common
-    // MenuScreenRegistry.registerScreenFactory call runs, so register here directly.
+    // MenuRegistry.registerScreenFactory call runs, so register here directly.
     @SubscribeEvent
     public static void onRegisterMenuScreens(RegisterMenuScreensEvent event) {
         event.register(Registration.FILTER_SCRIBING_TERMINAL_MENU.get(), FilterScribingTerminalScreen::new);

@@ -70,7 +70,6 @@ public final class ModCompatRegistration {
             DNA_BOOSTER_AQUACULTURE = Registration.ITEMS.register(
                     "dna_booster_pack_aquaculture",
                     () -> new DnaSamplePackItem(new Item.Properties()
-                            .setId(Registration.itemKey("dna_booster_pack_aquaculture"))
                             .stacksTo(1), () -> AQUACULTURE_MOBS));
         }
 
@@ -78,12 +77,10 @@ public final class ModCompatRegistration {
             DNA_BOOSTER_AETHER_PASSIVE = Registration.ITEMS.register(
                     "dna_booster_pack_aether_passive",
                     () -> new DnaSamplePackItem(new Item.Properties()
-                            .setId(Registration.itemKey("dna_booster_pack_aether_passive"))
                             .stacksTo(1), () -> AETHER_PASSIVE_MOBS));
             DNA_BOOSTER_AETHER_HOSTILE = Registration.ITEMS.register(
                     "dna_booster_pack_aether_hostile",
                     () -> new DnaSamplePackItem(new Item.Properties()
-                            .setId(Registration.itemKey("dna_booster_pack_aether_hostile"))
                             .stacksTo(1), () -> AETHER_HOSTILE_MOBS));
         }
 
@@ -91,7 +88,6 @@ public final class ModCompatRegistration {
             DNA_BOOSTER_EVILCRAFT = Registration.ITEMS.register(
                     "dna_booster_pack_evilcraft",
                     () -> new DnaSamplePackItem(new Item.Properties()
-                            .setId(Registration.itemKey("dna_booster_pack_evilcraft"))
                             .stacksTo(1), () -> EVILCRAFT_MOBS));
         }
     }

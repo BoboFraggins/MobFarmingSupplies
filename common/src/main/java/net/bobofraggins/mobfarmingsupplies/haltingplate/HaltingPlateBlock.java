@@ -3,7 +3,6 @@ package net.bobofraggins.mobfarmingsupplies.haltingplate;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.InsideBlockEffectApplier;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -66,8 +65,7 @@ public class HaltingPlateBlock extends Block {
     }
 
     @Override
-    protected void entityInside(BlockState state, Level level, BlockPos pos, Entity entity,
-                                InsideBlockEffectApplier effectApplier, boolean flag) {
+    protected void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
         if (!(entity instanceof LivingEntity) || entity.isShiftKeyDown()) return;
         // Judged by where the entity was at the start of this tick, not after this tick's move:
         // a hard push can carry it past the edge (and off the ground) within that one move.
@@ -80,7 +78,7 @@ public class HaltingPlateBlock extends Block {
 
         double cx = pos.getX() + 0.5;
         double cz = pos.getZ() + 0.5;
-        if (entity.isLocalInstanceAuthoritative()) keepMovingInward(entity, cx, cz, pos.getY() + TOP);
+        if (entity.isControlledByLocalInstance()) keepMovingInward(entity, cx, cz, pos.getY() + TOP);
 
         double dx = entity.getX() - cx;
         double dz = entity.getZ() - cz;

@@ -6,7 +6,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.bobofraggins.mobfarmingsupplies.MFSConfig;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -35,8 +35,8 @@ public class ToggleButtonChestLootModifier extends LootModifier {
     @Nullable private transient Item resolvedItem;
     private transient boolean itemResolved = false;
 
-    protected ToggleButtonChestLootModifier(LootItemCondition[] conditions, int priority, String itemId) {
-        super(conditions, priority);
+    protected ToggleButtonChestLootModifier(LootItemCondition[] conditions, String itemId) {
+        super(conditions);
         this.itemId = itemId;
     }
 
@@ -44,9 +44,9 @@ public class ToggleButtonChestLootModifier extends LootModifier {
     private Item getItem() {
         if (!itemResolved) {
             itemResolved = true;
-            Identifier rl = Identifier.tryParse(itemId);
+            ResourceLocation rl = ResourceLocation.tryParse(itemId);
             if (rl != null) {
-                Item found = BuiltInRegistries.ITEM.getValue(rl);
+                Item found = BuiltInRegistries.ITEM.get(rl);
                 resolvedItem = (found != null && found != Items.AIR) ? found : null;
             }
         }

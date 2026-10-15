@@ -3,33 +3,30 @@ package net.bobofraggins.mobfarmingsupplies.mobharvester;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommon;
 import net.bobofraggins.mobfarmingsupplies.client.model.ExtraBlockModels;
+import net.bobofraggins.mobfarmingsupplies.shared.render.BlockEntityRenderState;
+import net.bobofraggins.mobfarmingsupplies.shared.render.ItemModelResolver;
+import net.bobofraggins.mobfarmingsupplies.shared.render.ItemStackRenderState;
+import net.bobofraggins.mobfarmingsupplies.shared.render.StateBlockEntityRenderer;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
-import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.core.Direction;
-import net.minecraft.resources.Identifier;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
-import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.item.ItemModelResolver;
-import net.minecraft.client.renderer.item.ItemStackRenderState;
-import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import java.util.HashMap;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -56,24 +53,24 @@ import java.util.List;
  * </ul>
  */
 public class MobHarvesterRenderer
-        implements BlockEntityRenderer<MobHarvesterBlockEntity, MobHarvesterRenderer.HarvesterState> {
+        extends StateBlockEntityRenderer<MobHarvesterBlockEntity, MobHarvesterRenderer.HarvesterState> {
 
     // ── Arm/head extra block model ids ──────────────────────────────────────────────
 
-    public static final Identifier LEFT_ARM_FRONT_MODEL_ID =
-            Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "block/mob_harvester_left_arm_front");
-    public static final Identifier LEFT_ARM_SIDE_MODEL_ID =
-            Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "block/mob_harvester_left_arm_side");
-    public static final Identifier LEFT_ARM_REAR_MODEL_ID =
-            Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "block/mob_harvester_left_arm_rear");
-    public static final Identifier RIGHT_ARM_FRONT_MODEL_ID =
-            Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "block/mob_harvester_right_arm_front");
-    public static final Identifier RIGHT_ARM_SIDE_MODEL_ID =
-            Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "block/mob_harvester_right_arm_side");
-    public static final Identifier RIGHT_ARM_REAR_MODEL_ID =
-            Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "block/mob_harvester_right_arm_rear");
-    public static final Identifier HEAD_MODEL_ID =
-            Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "block/mob_harvester_head");
+    public static final ResourceLocation LEFT_ARM_FRONT_MODEL_ID =
+            ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "block/mob_harvester_left_arm_front");
+    public static final ResourceLocation LEFT_ARM_SIDE_MODEL_ID =
+            ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "block/mob_harvester_left_arm_side");
+    public static final ResourceLocation LEFT_ARM_REAR_MODEL_ID =
+            ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "block/mob_harvester_left_arm_rear");
+    public static final ResourceLocation RIGHT_ARM_FRONT_MODEL_ID =
+            ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "block/mob_harvester_right_arm_front");
+    public static final ResourceLocation RIGHT_ARM_SIDE_MODEL_ID =
+            ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "block/mob_harvester_right_arm_side");
+    public static final ResourceLocation RIGHT_ARM_REAR_MODEL_ID =
+            ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "block/mob_harvester_right_arm_rear");
+    public static final ResourceLocation HEAD_MODEL_ID =
+            ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "block/mob_harvester_head");
 
     // ── Weapons ───────────────────────────────────────────────────────────────────
 
@@ -240,7 +237,7 @@ public class MobHarvesterRenderer
     private final ItemModelResolver itemModelResolver;
 
     public MobHarvesterRenderer(BlockEntityRendererProvider.Context ctx) {
-        this.itemModelResolver = ctx.itemModelResolver();
+        this.itemModelResolver = ItemModelResolver.INSTANCE;
     }
 
     // ── Render state ──────────────────────────────────────────────────────────────
@@ -275,15 +272,8 @@ public class MobHarvesterRenderer
     // ── Two-phase rendering ───────────────────────────────────────────────────────
 
     @Override
-    public void extractRenderState(
-            MobHarvesterBlockEntity be,
-            HarvesterState state,
-            float partialTick,
-            Vec3 camera,
-            ModelFeatureRenderer.CrumblingOverlay crumbling) {
-
+    public void extractRenderState(MobHarvesterBlockEntity be, HarvesterState state, float partialTick) {
         ensureItems();
-        BlockEntityRenderState.extractBase(be, state, crumbling);
 
         Level level   = be.getLevel();
         BlockState blockState = be.getBlockState();
@@ -370,12 +360,7 @@ public class MobHarvesterRenderer
     }
 
     @Override
-    public void submit(
-            HarvesterState state,
-            PoseStack poseStack,
-            SubmitNodeCollector collector,
-            CameraRenderState cameraState) {
-
+    public void submit(HarvesterState state, PoseStack poseStack, MultiBufferSource buffers) {
         // Rotate all BER geometry around the block's XZ centre to match its facing.
         // The static block model is already rotated by the blockstate JSON y-rotation.
         poseStack.pushPose();
@@ -388,22 +373,22 @@ public class MobHarvesterRenderer
         float rSwing = state.bladeSwingRad[1];
 
         // Front/rear: X-axis swing; side: Z-axis swing (up/down in its own plane).
-        submitBlade(poseStack, collector, state,
+        submitBlade(poseStack, buffers, state,
                 ExtraBlockModels.get(LEFT_ARM_FRONT_MODEL_ID),
                 LEFT_ORIGIN,  lSwing, false);
-        submitBlade(poseStack, collector, state,
+        submitBlade(poseStack, buffers, state,
                 ExtraBlockModels.get(LEFT_ARM_SIDE_MODEL_ID),
                 LEFT_ORIGIN,  lSwing, true);
-        submitBlade(poseStack, collector, state,
+        submitBlade(poseStack, buffers, state,
                 ExtraBlockModels.get(LEFT_ARM_REAR_MODEL_ID),
                 LEFT_ORIGIN,  lSwing, false);
-        submitBlade(poseStack, collector, state,
+        submitBlade(poseStack, buffers, state,
                 ExtraBlockModels.get(RIGHT_ARM_FRONT_MODEL_ID),
                 RIGHT_ORIGIN, rSwing, false);
-        submitBlade(poseStack, collector, state,
+        submitBlade(poseStack, buffers, state,
                 ExtraBlockModels.get(RIGHT_ARM_SIDE_MODEL_ID),
                 RIGHT_ORIGIN, rSwing, true);
-        submitBlade(poseStack, collector, state,
+        submitBlade(poseStack, buffers, state,
                 ExtraBlockModels.get(RIGHT_ARM_REAR_MODEL_ID),
                 RIGHT_ORIGIN, rSwing, false);
 
@@ -437,7 +422,7 @@ public class MobHarvesterRenderer
             poseStack.mulPose(YAW_QUAT.rotationY(BLADE_YAW[i]));
             poseStack.scale(ITEM_SCALE, ITEM_SCALE, ITEM_SCALE);
             state.weapons[i].submit(
-                    poseStack, collector,
+                    poseStack, buffers,
                     state.lightCoords, OverlayTexture.NO_OVERLAY, 0);
             poseStack.popPose();
         }
@@ -463,18 +448,11 @@ public class MobHarvesterRenderer
 
             if (state.powered) {
                 // Powered: render custom block model with mob_harvester_head_* textures.
-                BlockStateModelPart headModel = ExtraBlockModels.get(HEAD_MODEL_ID);
+                BakedModel headModel = ExtraBlockModels.get(HEAD_MODEL_ID);
                 if (headModel != null) {
                     // Block model occupies [0,1]³; center it at the pivot.
                     poseStack.translate(-0.5, -0.5, -0.5);
-                    collector.submitBlockModel(
-                            poseStack,
-                            Sheets.cutoutBlockSheet(),
-                            List.of(headModel),
-                            new int[0],
-                            state.lightCoords,
-                            OverlayTexture.NO_OVERLAY,
-                            0);
+                    ExtraBlockModels.render(poseStack, buffers, headModel, Sheets.cutoutBlockSheet(), state.lightCoords, OverlayTexture.NO_OVERLAY);
                 }
             } else if (!state.headState.isEmpty()) {
                 // Unpowered: vanilla Carved Pumpkin item.
@@ -482,7 +460,7 @@ public class MobHarvesterRenderer
                 // pumpkin matches the powered head model which renders at full block scale.
                 poseStack.scale(2f, 2f, 2f);
                 state.headState.submit(
-                        poseStack, collector,
+                        poseStack, buffers,
                         state.lightCoords, OverlayTexture.NO_OVERLAY, 0);
             }
 
@@ -502,9 +480,9 @@ public class MobHarvesterRenderer
      */
     private static void submitBlade(
             PoseStack poseStack,
-            SubmitNodeCollector collector,
+            MultiBufferSource buffers,
             HarvesterState state,
-            BlockStateModelPart model,
+            BakedModel model,
             float[] origin,
             float swingRad,
             boolean swingOnZ) {
@@ -520,14 +498,7 @@ public class MobHarvesterRenderer
         }
         poseStack.translate(-origin[0], -origin[1], -origin[2]);
 
-        collector.submitBlockModel(
-                poseStack,
-                Sheets.cutoutBlockSheet(),
-                List.of(model),
-                new int[0],
-                state.lightCoords,
-                OverlayTexture.NO_OVERLAY,
-                0);
+        ExtraBlockModels.render(poseStack, buffers, model, Sheets.cutoutBlockSheet(), state.lightCoords, OverlayTexture.NO_OVERLAY);
 
         poseStack.popPose();
     }

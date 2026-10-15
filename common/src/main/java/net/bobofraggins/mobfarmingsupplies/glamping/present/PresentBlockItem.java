@@ -1,18 +1,18 @@
 package net.bobofraggins.mobfarmingsupplies.glamping.present;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.block.Block;
 
 /**
@@ -37,8 +37,8 @@ public class PresentBlockItem extends BlockItem {
         Component base = super.getName(stack);
         Optional<String> blockId = wrappedBlockId(stack);
         if (blockId.isEmpty()) return base;
-        return blockId.flatMap(id -> Optional.ofNullable(Identifier.tryParse(id)))
-                .map(rl -> BuiltInRegistries.BLOCK.getValue(rl))
+        return blockId.flatMap(id -> Optional.ofNullable(ResourceLocation.tryParse(id)))
+                .map(rl -> BuiltInRegistries.BLOCK.get(rl))
                 .map(block -> {
                     Item item = block.asItem();
                     Component wrappedName =
@@ -57,10 +57,9 @@ public class PresentBlockItem extends BlockItem {
     public void appendHoverText(
             ItemStack stack,
             Item.TooltipContext context,
-            TooltipDisplay lines,
-            Consumer<Component> tooltipAdder,
-            TooltipFlag flag) {
-        super.appendHoverText(stack, context, lines, tooltipAdder, flag);
+            List<Component> tooltipAdderLines, TooltipFlag flag) {
+        Consumer<Component> tooltipAdder = tooltipAdderLines::add;
+        super.appendHoverText(stack, context, tooltipAdderLines, flag);
         if (hasWrappedBlock(stack)) {
             tooltipAdder.accept(Component.translatable("item.mobfarmingsupplies.present.tooltip_unwrap"));
         } else {
@@ -79,9 +78,9 @@ public class PresentBlockItem extends BlockItem {
     private static Optional<String> wrappedBlockId(ItemStack stack) {
         var data = stack.get(DataComponents.BLOCK_ENTITY_DATA);
         if (data == null) return Optional.empty();
-        CompoundTag wrapped = data.copyTagWithoutId().getCompoundOrEmpty(PresentBlockEntity.TAG_WRAPPED_STATE);
+        CompoundTag wrapped = data.copyTag().getCompound(PresentBlockEntity.TAG_WRAPPED_STATE);
         // NbtUtils.writeBlockState() writes the registry id under "Name" in MC 26.1.2 (it
         // became "id" in 26.3 — keep this key in sync with the branch's NbtUtils).
-        return wrapped.getString("Name");
+        return Optional.of(wrapped.getString("Name")).filter(name -> !name.isEmpty());
     }
 }
