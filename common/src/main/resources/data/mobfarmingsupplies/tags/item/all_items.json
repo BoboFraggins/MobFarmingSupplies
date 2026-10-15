@@ -8,10 +8,12 @@
     "mobfarmingsupplies:harvester_upgrade_sharpness",
     "mobfarmingsupplies:harvester_upgrade_looting",
     "mobfarmingsupplies:harvester_upgrade_beheading",
+    "mobfarmingsupplies:harvester_upgrade_fire_aspect",
     "mobfarmingsupplies:harvester_sword",
     "mobfarmingsupplies:clone_o_matic",
     "mobfarmingsupplies:absorption_hopper",
     "mobfarmingsupplies:ender_inhibitor",
+    "mobfarmingsupplies:wither_inhibitor",
     "mobfarmingsupplies:fan",
     "mobfarmingsupplies:fan_upgrade_width",
     "mobfarmingsupplies:fan_upgrade_height",
@@ -49,11 +51,15 @@
     "mobfarmingsupplies:silicon",
     "mobfarmingsupplies:silicon_clump",
     "mobfarmingsupplies:silicon_wafer",
+    "mobfarmingsupplies:biosludge",
+    "mobfarmingsupplies:bioplastic",
     "mobfarmingsupplies:blank_filter",
+    "mobfarmingsupplies:blank_upgrade",
     "mobfarmingsupplies:item_filter",
     "mobfarmingsupplies:tank",
     "mobfarmingsupplies:gold_tank",
     "mobfarmingsupplies:diamond_tank",
-    "mobfarmingsupplies:emerald_tank"
+    "mobfarmingsupplies:emerald_tank",
+    "mobfarmingsupplies:superconducting_magnet"
   ]
 }

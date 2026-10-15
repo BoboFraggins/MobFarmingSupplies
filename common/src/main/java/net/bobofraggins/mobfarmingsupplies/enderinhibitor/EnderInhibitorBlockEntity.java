@@ -14,6 +14,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -39,14 +40,23 @@ public class EnderInhibitorBlockEntity extends BlockEntity implements MenuProvid
     public boolean showArea = false;
 
     public EnderInhibitorBlockEntity(BlockPos pos, BlockState state) {
-        super(MFSRegistryHelper.getBEType("ender_inhibitor"), pos, state);
+        this(MFSRegistryHelper.getBEType("ender_inhibitor"), pos, state);
+    }
+
+    protected EnderInhibitorBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+        super(type, pos, state);
+    }
+
+    /** Where this kind of inhibitor records itself. */
+    protected InhibitorRegistry registry() {
+        return InhibitorRegistry.ENDER;
     }
 
     @Override
     public void setLevel(Level level) {
         super.setLevel(level);
         if (!level.isClientSide()) {
-            EnderInhibitorEvents.addInhibitor(level, worldPosition, effectiveCenter());
+            registry().add(level, worldPosition, effectiveCenter());
         }
     }
 
@@ -54,14 +64,14 @@ public class EnderInhibitorBlockEntity extends BlockEntity implements MenuProvid
     // No @Override because onChunkUnloaded() is a NeoForge extension, not vanilla.
     public void onChunkUnloaded() {
         if (level != null && !level.isClientSide()) {
-            EnderInhibitorEvents.removeInhibitor(level, worldPosition);
+            registry().remove(level, worldPosition);
         }
     }
 
     @Override
     public void preRemoveSideEffects(BlockPos pos, BlockState state) {
         if (level != null && !level.isClientSide()) {
-            EnderInhibitorEvents.removeInhibitor(level, worldPosition);
+            registry().remove(level, worldPosition);
         }
         super.preRemoveSideEffects(pos, state);
     }
@@ -84,7 +94,7 @@ public class EnderInhibitorBlockEntity extends BlockEntity implements MenuProvid
             case 2 -> offsetZ = Math.max(-OFFSET_MAX, Math.min(OFFSET_MAX, offsetZ + delta));
         }
         if (level != null && !level.isClientSide()) {
-            EnderInhibitorEvents.addInhibitor(level, worldPosition, effectiveCenter());
+            registry().add(level, worldPosition, effectiveCenter());
         }
         setChanged();
         if (level != null) {
@@ -96,7 +106,7 @@ public class EnderInhibitorBlockEntity extends BlockEntity implements MenuProvid
 
     @Override
     public Component getDisplayName() {
-        return Component.translatable("block.mobfarmingsupplies.ender_inhibitor");
+        return getBlockState().getBlock().getName();
     }
 
     @Override

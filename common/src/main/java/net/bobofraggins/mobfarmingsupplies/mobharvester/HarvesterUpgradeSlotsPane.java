@@ -6,10 +6,10 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 /**
- * Dialog pane that renders the "Upgrades" header and three Mob Harvester upgrade slot backgrounds.
+ * Dialog pane that renders the "Upgrades" header and the four Mob Harvester upgrade slot backgrounds.
  *
  * <p>The slots are arranged in a single centred row:
- * Sharpness | Looting | Beheading
+ * Sharpness | Looting | Beheading | Fire Aspect
  *
  * <p>Pane height = 10 (header) + 6 (top pad) + 18 (one row) + 2 (bottom pad) = {@value #HEIGHT} px.
  */

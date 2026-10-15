@@ -406,7 +406,8 @@ public final class MFSServerConfig {
                 .comment("Items moved per side each item transfer.")
                 .defineInRange("itemsPerTransfer", MFSConfig.DEFAULT_HOPPER_ITEMS_PER_TRANSFER, 1, 4096);
         OMNI_HOPPER_TRANSFER_INTERVAL = b
-                .comment("Ticks between item transfers.")
+                .comment("Ticks between transfers. Items, fluids, energy and chemicals all move on this interval;",
+                         "the per-tick rates below are scaled by it, so it doesn't change how much moves overall.")
                 .defineInRange("itemTransferIntervalTicks", MFSConfig.DEFAULT_HOPPER_TRANSFER_INTERVAL, 1, 200);
         OMNI_HOPPER_FLUID_PER_TICK = b
                 .comment("Fluid (mB) moved per side each tick (Omnidirectional Hopper, Bridge, and the Absorption Hopper's XP).")

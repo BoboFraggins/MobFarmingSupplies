@@ -20,9 +20,10 @@ public final class LogisticSorterPlatform {
      * Pulls items from the inventory on each INPUT side and moves them to a MATCH side
      * (items passing the filters) or a NO_MATCH side (the rest), up to
      * {@link net.bobofraggins.mobfarmingsupplies.MFSConfig#getHopperItemsPerTransfer()} items per INPUT side.
+     * Returns how many items moved.
      */
     @ExpectPlatform
-    public static void pullPhase(LogisticSorterBlockEntity be, Level level, BlockPos pos) {
+    public static long pullPhase(LogisticSorterBlockEntity be, Level level, BlockPos pos) {
         throw new AssertionError("Missing platform implementation");
     }
 

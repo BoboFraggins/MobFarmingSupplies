@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "minecraft:slime_ball",
+    "minecraft:spider_eye",
+    "minecraft:rotten_flesh"
+  ],
+  "result": {
+    "id": "mobfarmingsupplies:biosludge"
+  }
+}

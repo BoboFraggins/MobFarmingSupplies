@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.omnihopper;
 
+import net.bobofraggins.mobfarmingsupplies.shared.TransferSchedule;
 import net.bobofraggins.mobfarmingsupplies.shared.sides.SideLayout;
 import net.bobofraggins.mobfarmingsupplies.shared.sides.SideOriented;
 import net.minecraft.core.FrontAndTop;
@@ -40,8 +41,8 @@ import java.util.List;
  * <p>Up to nine Item Filters (combined with AND or OR) limit which items move; with none
  * installed every item moves. Filters don't apply to fluids, energy or chemicals.
  *
- * <p>Items move every {@link MFSConfig#getHopperTransferInterval()} ticks; fluids, energy and
- * chemicals move every tick. Rates are per INPUT side and configurable.
+ * <p>Everything moves once every {@link MFSConfig#getHopperTransferInterval()} ticks, backing off
+ * while nothing moves (see {@link TransferSchedule}). Rates are per INPUT side and configurable.
  */
 public class OmniHopperBlockEntity extends BlockEntity implements SideOriented, MenuProvider, HopperNode, HopperConfigurable {
 
@@ -74,7 +75,7 @@ public class OmniHopperBlockEntity extends BlockEntity implements SideOriented, 
         }
     };
 
-    private int tickCounter = 0;
+    private final TransferSchedule transferSchedule = new TransferSchedule();
     private boolean stateDirty = true;
     private int rotation = 0;          // round-robin offset for which output gets an uneven split's extras
     private boolean routing = false;   // re-entrancy guard for pushed-in resources
@@ -89,9 +90,11 @@ public class OmniHopperBlockEntity extends BlockEntity implements SideOriented, 
     public static void serverTick(Level level, BlockPos pos, BlockState state, OmniHopperBlockEntity be) {
         if (be.stateDirty) be.syncBlockState();
         if (!be.isActive()) return;
-        boolean itemTick = ++be.tickCounter % Math.max(1, MFSConfig.getHopperTransferInterval()) == 0;
-        OmniHopperPlatform.transfer(be, itemTick);
+        if (be.transferSchedule.due(pos)) OmniHopperPlatform.transfer(be);
     }
+
+    @Override
+    public TransferSchedule transferSchedule() { return transferSchedule; }
 
     // ── Configuration ─────────────────────────────────────────────────────────────
 
@@ -142,6 +145,7 @@ public class OmniHopperBlockEntity extends BlockEntity implements SideOriented, 
 
     /** Mirrors side modes into the block state (server only). */
     private void syncBlockState() {
+        transferSchedule.reset(); // settings changed: try everything again
         if (level == null || level.isClientSide()) return;
         stateDirty = false;
         BlockState current = getBlockState();

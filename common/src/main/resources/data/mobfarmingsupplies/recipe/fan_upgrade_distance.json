@@ -1,18 +1,12 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "FIF",
-    "IRI",
-    "FIF"
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "#c:feathers",
+    "mobfarmingsupplies:blank_upgrade"
   ],
-  "key": {
-    "I": "#c:ingots/iron",
-    "F": "#c:feathers",
-    "R": "#c:dusts/redstone"
-  },
   "result": {
-    "id": "mobfarmingsupplies:fan_upgrade_distance",
-    "count": 1
-  },
-  "category": "misc"
+    "count": 1,
+    "id": "mobfarmingsupplies:fan_upgrade_distance"
+  }
 }

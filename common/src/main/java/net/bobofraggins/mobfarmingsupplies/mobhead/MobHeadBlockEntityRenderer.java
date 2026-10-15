@@ -20,6 +20,12 @@ import org.jetbrains.annotations.Nullable;
  */
 public class MobHeadBlockEntityRenderer implements BlockEntityRenderer<MobHeadBlockEntity, MobHeadBlockEntityRenderer.State> {
 
+    /** A head's size in skull space: half a block, as vanilla's. */
+    private static final float HEAD_SIZE = 0.5f;
+    /** How far the rear and base are pulled in (1/16 of a texel): enough to win the depth test. */
+    private static final float INSET = 1f / 256f;
+    private static final float INSET_SCALE = 1f - INSET / HEAD_SIZE;
+
     public static class State extends BlockEntityRenderState {
         @Nullable EntityType<?> mobType;
         Transformation transformation = Transformation.IDENTITY;
@@ -48,6 +54,14 @@ public class MobHeadBlockEntityRenderer implements BlockEntityRenderer<MobHeadBl
         if (state.mobType == null) return;
         poseStack.pushPose();
         poseStack.mulPose(state.transformation);
+        // The head's back sits flush on the wall and its base on the block below. Vanilla skulls
+        // hide that with a z-offset render type, but ours use the mob's own (and the Enderman's
+        // eyes pass), so pull the rear and base in by a hair, keeping the front and top in place.
+        // Skull space has y down and the face toward -z: the top is at y = -HEAD_SIZE and the
+        // front at z = -HEAD_SIZE / 2.
+        poseStack.translate(0f, -HEAD_SIZE, -HEAD_SIZE / 2);
+        poseStack.scale(1f, INSET_SCALE, INSET_SCALE);
+        poseStack.translate(0f, HEAD_SIZE, HEAD_SIZE / 2);
         MobHeadModels.submit(state.mobType, poseStack, collector, state.lightCoords);
         poseStack.popPose();
     }

@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.bridge;
 
+import net.bobofraggins.mobfarmingsupplies.shared.TransferSchedule;
 import net.bobofraggins.mobfarmingsupplies.advancement.MFSTriggers;
 import net.bobofraggins.mobfarmingsupplies.shared.sides.SideLayout;
 import net.bobofraggins.mobfarmingsupplies.shared.sides.SideOriented;
@@ -74,7 +75,7 @@ public class EinsteinRosenBridgeBlockEntity extends BlockEntity implements SideO
     private final HopperSide[] sides = new HopperSide[6]; // indexed by Direction#get3DDataValue
     private boolean clientAndMode = true;                // client copy of the channel's AND / OR
 
-    private int tickCounter = 0;
+    private final TransferSchedule transferSchedule = new TransferSchedule();
     private boolean stateDirty = true;
 
     public EinsteinRosenBridgeBlockEntity(BlockPos pos, BlockState state) {
@@ -89,9 +90,11 @@ public class EinsteinRosenBridgeBlockEntity extends BlockEntity implements SideO
         be.joinNetwork();
         if (be.stateDirty) be.syncBlockState();
         if (!be.isActive()) return;
-        boolean itemTick = ++be.tickCounter % Math.max(1, MFSConfig.getHopperTransferInterval()) == 0;
-        OmniHopperPlatform.transfer(be, itemTick);
+        if (be.transferSchedule.due(pos)) OmniHopperPlatform.transfer(be);
     }
+
+    @Override
+    public TransferSchedule transferSchedule() { return transferSchedule; }
 
     /** A random non-zero channel (0 means "not assigned yet"). */
     public static int randomChannel(RandomSource random) {
@@ -183,6 +186,7 @@ public class EinsteinRosenBridgeBlockEntity extends BlockEntity implements SideO
 
     /** Mirrors side modes into the block state (server only). */
     private void syncBlockState() {
+        transferSchedule.reset(); // settings changed: try everything again
         if (level == null || level.isClientSide()) return;
         stateDirty = false;
         BlockState current = getBlockState();

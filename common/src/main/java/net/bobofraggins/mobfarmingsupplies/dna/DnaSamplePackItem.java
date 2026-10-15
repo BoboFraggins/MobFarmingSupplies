@@ -103,6 +103,23 @@ public class DnaSamplePackItem extends Item implements IDnaSampleItem {
         applyBabyState(entity, forceBaby);
     }
 
+    /** The first configured mob that exists, to show what the pack makes; null if none does. */
+    @Nullable
+    public EntityType<?> exampleMob() {
+        for (String id : mobsConfig.get()) {
+            Identifier loc = Identifier.tryParse(id);
+            if (loc == null) continue;
+            var type = BuiltInRegistries.ENTITY_TYPE.getOptional(loc);
+            if (type.isPresent()) return type.get();
+        }
+        return null;
+    }
+
+    /** Whether every mob this pack makes is a baby. */
+    public boolean forcesBaby() {
+        return forceBaby;
+    }
+
     /** The configured mobs plus (for a pack with a biome category) the biome's spawns, without duplicates. */
     private List<EntityType<?>> mobPool(ServerLevel level, BlockPos pos) {
         Set<EntityType<?>> pool = new LinkedHashSet<>();
@@ -145,7 +162,7 @@ public class DnaSamplePackItem extends Item implements IDnaSampleItem {
      *   <li>{@link Piglin} — piglin (AbstractPiglin does not extend AgeableMob).</li>
      * </ul>
      */
-    private static void applyBabyState(Entity entity, boolean baby) {
+    public static void applyBabyState(Entity entity, boolean baby) {
         if (entity instanceof AgeableMob ageable) {
             ageable.setBaby(baby);
         } else if (entity instanceof Zombie zombie) {

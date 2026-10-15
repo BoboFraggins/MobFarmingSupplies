@@ -12,13 +12,15 @@ import java.util.function.Consumer;
 /**
  * Upgrade item for the Mob Harvester.
  *
- * <p>Three typed variants correspond to the three upgrade slots:
+ * <p>Four typed variants correspond to the four upgrade slots:
  * <ul>
  *   <li>{@link UpgradeType#SHARPNESS} (slot 0) — increases attack damage
  *       via Sharpness × (count × 10)</li>
  *   <li>{@link UpgradeType#LOOTING}   (slot 1) — improves drop rates
  *       via Looting × count</li>
  *   <li>{@link UpgradeType#BEHEADING} (slot 2) — adds a chance to drop mob heads</li>
+ *   <li>{@link UpgradeType#FIRE_ASPECT} (slot 3) — cooks what killed mobs drop
+ *       ({@link FireAspectCooking})</li>
  * </ul>
  *
  * <p>Each slot accepts up to {@link net.bobofraggins.mobfarmingsupplies.MFSConfig#getHarvesterMaxUpgrade()} items of
@@ -29,7 +31,8 @@ public class HarvesterUpgradeItem extends Item {
     public enum UpgradeType {
         SHARPNESS(10),
         LOOTING(10),
-        BEHEADING(5);
+        BEHEADING(5),
+        FIRE_ASPECT(1);
 
         /** Maximum items accepted by this upgrade slot. */
         public final int maxStack;

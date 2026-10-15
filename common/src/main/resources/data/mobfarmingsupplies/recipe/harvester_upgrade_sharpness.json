@@ -1,15 +1,9 @@
 {
-  "type": "minecraft:crafting_shaped",
+  "type": "minecraft:crafting_shapeless",
   "category": "misc",
-  "key": {
-    "G": "#c:nuggets/gold",
-    "R": "#c:dusts/redstone",
-    "S": "minecraft:iron_sword"
-  },
-  "pattern": [
-    "GSG",
-    "SRS",
-    "GSG"
+  "ingredients": [
+    "minecraft:iron_sword",
+    "mobfarmingsupplies:blank_upgrade"
   ],
   "result": {
     "count": 1,

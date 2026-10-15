@@ -3,6 +3,10 @@ package net.bobofraggins.mobfarmingsupplies.jei;
 import java.util.List;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
+import mezz.jei.api.constants.VanillaTypes;
+import mezz.jei.api.recipe.RecipeIngredientRole;
+import mezz.jei.api.runtime.IJeiRuntime;
+import net.bobofraggins.mobfarmingsupplies.client.devtools.DevCommands;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.registration.IGuiHandlerRegistration;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
@@ -47,7 +51,8 @@ public class MobFarmingSuppliesJeiPlugin implements IModPlugin {
     public void registerCategories(IRecipeCategoryRegistration reg) {
         IGuiHelper guiHelper = reg.getJeiHelpers().getGuiHelper();
         reg.addRecipeCategories(XpJuiceGuide.category(guiHelper), AnvilCrushingGuide.category(guiHelper),
-                new FilterScribingCategory(guiHelper), BeheadingGuide.category(guiHelper));
+                new FilterScribingCategory(guiHelper), BeheadingGuide.category(guiHelper),
+                new DnaSamplingGuide(guiHelper), new CloningGuide(guiHelper));
     }
 
     @Override
@@ -56,6 +61,8 @@ public class MobFarmingSuppliesJeiPlugin implements IModPlugin {
         reg.addRecipes(AnvilCrushingGuide.RECIPE_TYPE, List.of(AnvilCrushingGuide.recipe()));
         reg.addRecipes(FilterScribingCategory.RECIPE_TYPE, List.of(FilterScribingExamples.create()));
         reg.addRecipes(BeheadingGuide.RECIPE_TYPE, List.of(BeheadingGuide.recipe()));
+        reg.addRecipes(DnaSamplingGuide.RECIPE_TYPE, List.of(DnaSamplingGuide.recipe()));
+        reg.addRecipes(CloningGuide.RECIPE_TYPE, List.of(CloningGuide.recipe()));
     }
 
     /** Each mob's Mob Head is its own JEI entry (one item, told apart by its mob type). */
@@ -91,5 +98,15 @@ public class MobFarmingSuppliesJeiPlugin implements IModPlugin {
         reg.addCraftingStation(FilterScribingCategory.RECIPE_TYPE, Registration.FILTER_SCRIBING_TERMINAL_ITEM.get());
         reg.addCraftingStation(BeheadingGuide.RECIPE_TYPE,
                 Registration.MOB_HARVESTER_ITEM.get(), Registration.HARVESTER_UPGRADE_BEHEADING.get());
+        reg.addCraftingStation(DnaSamplingGuide.RECIPE_TYPE, Registration.DNA_COLLECTOR.get());
+        reg.addCraftingStation(CloningGuide.RECIPE_TYPE, Registration.CLONE_O_MATIC_ITEM.get());
+    }
+
+    /** Lets the dev command runner open a recipe page ({@code RECIPES <item>}). */
+    @Override
+    public void onRuntimeAvailable(IJeiRuntime runtime) {
+        DevCommands.showRecipes = stack -> runtime.getRecipesGui().show(
+                runtime.getJeiHelpers().getFocusFactory().createFocus(RecipeIngredientRole.OUTPUT,
+                        VanillaTypes.ITEM_STACK, stack));
     }
 }

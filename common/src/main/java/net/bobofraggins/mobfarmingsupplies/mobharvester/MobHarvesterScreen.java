@@ -16,7 +16,7 @@ import net.minecraft.world.entity.player.Inventory;
  * <ol>
  *   <li>Title bar (17 px)</li>
  *   <li>8 px blank gap</li>
- *   <li>{@link HarvesterUpgradeSlotsPane} — "Upgrades" header + 1×3 upgrade slots (36 px)</li>
+ *   <li>{@link HarvesterUpgradeSlotsPane} — "Upgrades" header + 1×4 upgrade slots (36 px)</li>
  *   <li>8 px blank gap</li>
  *   <li>{@link PlayerInventoryPane} — 3×9 inventory + hotbar (80 px)</li>
  *   <li>5 px bottom border padding</li>
@@ -30,6 +30,7 @@ public class MobHarvesterScreen extends AbstractContainerScreen<MobHarvesterMenu
         Identifier.fromNamespaceAndPath("mobfarmingsupplies", "textures/item/harvester_upgrade_sharpness_ghost.png"),
         Identifier.fromNamespaceAndPath("mobfarmingsupplies", "textures/item/harvester_upgrade_looting_ghost.png"),
         Identifier.fromNamespaceAndPath("mobfarmingsupplies", "textures/item/harvester_upgrade_beheading_ghost.png"),
+        Identifier.fromNamespaceAndPath("mobfarmingsupplies", "textures/item/harvester_upgrade_fire_aspect_ghost.png"),
     };
 
     private final Dialog dialog;

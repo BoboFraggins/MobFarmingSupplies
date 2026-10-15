@@ -1,6 +1,8 @@
 package net.bobofraggins.mobfarmingsupplies.bridge;
 
 import net.bobofraggins.mobfarmingsupplies.shared.menu.ExtendedMenus;
+import net.minecraft.world.level.redstone.Orientation;
+import net.bobofraggins.mobfarmingsupplies.shared.TransferSchedule;
 import net.bobofraggins.mobfarmingsupplies.omnihopper.HopperSide;
 import net.bobofraggins.mobfarmingsupplies.omnihopper.OmniHopperBlock;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
@@ -116,6 +118,14 @@ public class EinsteinRosenBridgeBlock extends BaseEntityBlock {
     }
 
     @Nullable
+    /** A neighbour changed: try moving things again straight away (see {@link TransferSchedule}). */
+    @Override
+    protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block block,
+                                   @Nullable Orientation orientation, boolean movedByPiston) {
+        super.neighborChanged(state, level, pos, block, orientation, movedByPiston);
+        TransferSchedule.resetAt(level, pos);
+    }
+
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(
             Level level, BlockState state, BlockEntityType<T> beType) {

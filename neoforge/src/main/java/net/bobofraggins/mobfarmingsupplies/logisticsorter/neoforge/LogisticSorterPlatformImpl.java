@@ -1,6 +1,7 @@
 package net.bobofraggins.mobfarmingsupplies.logisticsorter.neoforge;
 
 import net.bobofraggins.mobfarmingsupplies.MFSConfig;
+import net.bobofraggins.mobfarmingsupplies.neoforge.transfer.HopperLookups;
 import net.bobofraggins.mobfarmingsupplies.logisticsorter.EvenSplit;
 import net.bobofraggins.mobfarmingsupplies.logisticsorter.LogisticSorterBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.logisticsorter.SideMode;
@@ -20,23 +21,26 @@ public final class LogisticSorterPlatformImpl {
 
     private LogisticSorterPlatformImpl() {}
 
-    public static void pullPhase(LogisticSorterBlockEntity be, Level level, BlockPos pos) {
-        if (!be.beginRouting()) return;
+    public static long pullPhase(LogisticSorterBlockEntity be, Level level, BlockPos pos) {
+        if (!be.beginRouting()) return 0;
+        long total = 0;
         try {
             for (Direction in : Direction.values()) {
                 if (be.getSide(in) != SideMode.INPUT) continue;
-                ResourceHandler<ItemResource> source = handlerAt(level, pos, in);
+                ResourceHandler<ItemResource> source = handlerAt(be, level, pos, in);
                 if (source == null) continue;
                 long budget = MFSConfig.getHopperItemsPerTransfer();
                 for (boolean matching : new boolean[]{true, false}) {
                     if (budget <= 0) break;
                     // Split what the source can actually give, not the whole budget - otherwise
                     // 9 items over two outputs would all land in the first one's share of 32.
+                    // Nothing to move: skip without opening a transaction.
+                    if (!HopperLookups.hasAny(source, r -> be.matches(r.toStack(1)) == matching)) continue;
                     int amount = available(source, be, matching, (int) budget);
                     if (amount <= 0) continue;
-                    budget -= EvenSplit.distribute(be.outputs(matching), amount, (out, max) -> {
-                        ResourceHandler<ItemResource> dest = handlerAt(level, pos, out);
-                        if (dest == null) return 0;
+                    long sent = EvenSplit.distribute(be.outputs(matching), amount, (out, max) -> {
+                        ResourceHandler<ItemResource> dest = handlerAt(be, level, pos, out);
+                        if (dest == null || HopperLookups.definitelyFull(dest)) return 0;
                         try (Transaction tx = Transaction.openRoot()) {
                             int moved = ResourceHandlerUtil.moveStacking(source, dest,
                                     r -> be.matches(r.toStack(1)) == matching, (int) max, tx);
@@ -44,11 +48,14 @@ public final class LogisticSorterPlatformImpl {
                             return moved;
                         }
                     });
+                    budget -= sent;
+                    total += sent;
                 }
             }
         } finally {
             be.endRouting();
         }
+        return total;
     }
 
     /** How many items (up to {@code max}) {@code source} can give that match or don't match the filters. */
@@ -78,7 +85,7 @@ public final class LogisticSorterPlatformImpl {
         if (!be.beginRouting()) return 0; // sorters feeding each other in a loop
         try {
             return (int) EvenSplit.distribute(be.outputsFor(resource.toStack(1)), amount, (out, max) -> {
-                ResourceHandler<ItemResource> dest = handlerAt(level, be.getBlockPos(), out);
+                ResourceHandler<ItemResource> dest = handlerAt(be, level, be.getBlockPos(), out);
                 return dest == null ? 0 : dest.insert(resource, (int) max, tx);
             });
         } finally {
@@ -86,8 +93,10 @@ public final class LogisticSorterPlatformImpl {
         }
     }
 
+    /** The item handler beside {@code pos} on {@code side}, from the sorter's cached lookups. */
     @Nullable
-    private static ResourceHandler<ItemResource> handlerAt(Level level, BlockPos pos, Direction side) {
-        return level.getCapability(Capabilities.Item.BLOCK, pos.relative(side), side.getOpposite());
+    private static ResourceHandler<ItemResource> handlerAt(LogisticSorterBlockEntity be, Level level, BlockPos pos,
+                                                           Direction side) {
+        return HopperLookups.of(be).at(level, pos, side, Capabilities.Item.BLOCK);
     }
 }
