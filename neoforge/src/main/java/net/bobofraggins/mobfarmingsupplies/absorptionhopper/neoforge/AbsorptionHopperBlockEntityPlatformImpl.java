@@ -1,5 +1,8 @@
 package net.bobofraggins.mobfarmingsupplies.absorptionhopper.neoforge;
 
+import net.bobofraggins.mobfarmingsupplies.neoforge.transfer.HopperLookups;
+import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
+import net.bobofraggins.mobfarmingsupplies.shared.TransferSchedule;
 import net.bobofraggins.mobfarmingsupplies.MFSConfig;
 import dev.architectury.fluid.FluidStack;
 import dev.architectury.hooks.fluid.forge.FluidStackHooksForge;
@@ -19,26 +22,29 @@ public final class AbsorptionHopperBlockEntityPlatformImpl {
 
     private AbsorptionHopperBlockEntityPlatformImpl() {}
 
-    public static void outputPhase(AbsorptionHopperBlockEntity be, Level level, BlockPos pos, boolean itemTick) {
+    public static boolean pushItems(AbsorptionHopperBlockEntity be, Level level, BlockPos pos) {
+        boolean moved = false;
         int sides = be.getPushSides();
         for (int bit = 0; bit < 6; bit++) {
             if ((sides & (1 << bit)) == 0) continue;
             Direction dir = IAbsorptionHopperBlockEntity.bitToWorldDir(bit);
-            BlockPos adj = pos.relative(dir);
-            Direction fromSide = dir.getOpposite();
-
-            if (itemTick) {
-                ResourceHandler<ItemResource> itemH =
-                        level.getCapability(Capabilities.Item.BLOCK, adj, fromSide);
-                if (itemH != null) pushItems(be, itemH);
-            }
-
-            if (be.tankAmount > 0 && !be.tankFluid.isEmpty()) {
-                ResourceHandler<FluidResource> fluidH =
-                        level.getCapability(Capabilities.Fluid.BLOCK, adj, fromSide);
-                if (fluidH != null) pushFluid(be, fluidH);
-            }
+            ResourceHandler<ItemResource> itemH = HopperLookups.of(be).at(level, pos, dir, Capabilities.Item.BLOCK);
+            if (itemH != null && !HopperLookups.definitelyFull(itemH)) moved |= pushItems(be, itemH);
         }
+        return moved;
+    }
+
+    public static boolean pushFluid(AbsorptionHopperBlockEntity be, Level level, BlockPos pos) {
+        boolean moved = false;
+        int sides = be.getPushSides();
+        for (int bit = 0; bit < 6; bit++) {
+            if ((sides & (1 << bit)) == 0) continue;
+            if (be.tankAmount <= 0 || be.tankFluid.isEmpty()) break;
+            Direction dir = IAbsorptionHopperBlockEntity.bitToWorldDir(bit);
+            ResourceHandler<FluidResource> fluidH = HopperLookups.of(be).at(level, pos, dir, Capabilities.Fluid.BLOCK);
+            if (fluidH != null && !HopperLookups.definitelyFull(fluidH)) moved |= pushFluid(be, fluidH);
+        }
+        return moved;
     }
 
     /** Pushes up to the hoppers' items-per-transfer into {@code dest}, from as many slots as it takes. */
@@ -50,11 +56,10 @@ public final class AbsorptionHopperBlockEntityPlatformImpl {
             if (stack.isEmpty()) continue;
             ItemResource res = ItemResource.of(stack);
             int toSend = Math.min(stack.getCount(), budget);
-            int sent = 0;
+            int sent;
             try (Transaction tx = Transaction.openRoot()) {
-                for (int d = 0; d < dest.size() && sent < toSend; d++) {
-                    sent += dest.insert(d, res, toSend - sent, tx);
-                }
+                // Topping up partial stacks first, then empty slots.
+                sent = ResourceHandlerUtil.insertStacking(dest, res, toSend, tx);
                 if (sent > 0) tx.commit();
             }
             if (sent > 0) {
@@ -68,13 +73,11 @@ public final class AbsorptionHopperBlockEntityPlatformImpl {
     }
 
     private static boolean pushFluid(AbsorptionHopperBlockEntity be, ResourceHandler<FluidResource> dest) {
-        int toSend = Math.min(MFSConfig.getHopperFluidPerTick(), be.tankAmount);
+        int toSend = Math.min(TransferSchedule.perTransfer(MFSConfig.getHopperFluidPerTick()), be.tankAmount);
         FluidResource res = FluidResource.of(FluidStackHooksForge.toForge(be.tankFluid));
-        int sent = 0;
+        int sent;
         try (Transaction tx = Transaction.openRoot()) {
-            for (int d = 0; d < dest.size() && sent < toSend; d++) {
-                sent += dest.insert(d, res, toSend - sent, tx);
-            }
+            sent = ResourceHandlerUtil.insertStacking(dest, res, toSend, tx);
             if (sent > 0) tx.commit();
         }
         if (sent > 0) {

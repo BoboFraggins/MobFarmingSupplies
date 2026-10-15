@@ -1,5 +1,7 @@
 package net.bobofraggins.mobfarmingsupplies.absorptionhopper.fabric;
 
+import net.bobofraggins.mobfarmingsupplies.transfer.fabric.HopperLookups;
+import net.bobofraggins.mobfarmingsupplies.shared.TransferSchedule;
 import net.bobofraggins.mobfarmingsupplies.MFSConfig;
 import dev.architectury.fluid.FluidStack;
 import net.bobofraggins.mobfarmingsupplies.absorptionhopper.AbsorptionHopperBlockEntity;
@@ -21,24 +23,29 @@ public final class AbsorptionHopperBlockEntityPlatformImpl {
 
     private AbsorptionHopperBlockEntityPlatformImpl() {}
 
-    public static void outputPhase(AbsorptionHopperBlockEntity be, Level level, BlockPos pos, boolean itemTick) {
+    public static boolean pushItems(AbsorptionHopperBlockEntity be, Level level, BlockPos pos) {
+        boolean moved = false;
         int sides = be.getPushSides();
         for (int bit = 0; bit < 6; bit++) {
             if ((sides & (1 << bit)) == 0) continue;
             Direction dir = IAbsorptionHopperBlockEntity.bitToWorldDir(bit);
-            BlockPos adj = pos.relative(dir);
-            Direction fromSide = dir.getOpposite();
-
-            if (itemTick) {
-                Storage<ItemVariant> itemStorage = ItemStorage.SIDED.find(level, adj, fromSide);
-                if (itemStorage != null) pushItems(be, itemStorage);
-            }
-
-            if (be.tankAmount > 0 && !be.tankFluid.isEmpty()) {
-                Storage<FluidVariant> fluidStorage = FluidStorage.SIDED.find(level, adj, fromSide);
-                if (fluidStorage != null) pushFluid(be, fluidStorage);
-            }
+            Storage<ItemVariant> itemStorage = HopperLookups.of(be).at(level, pos, dir, ItemStorage.SIDED);
+            if (itemStorage != null && !HopperLookups.definitelyFull(itemStorage)) moved |= pushItems(be, itemStorage);
         }
+        return moved;
+    }
+
+    public static boolean pushFluid(AbsorptionHopperBlockEntity be, Level level, BlockPos pos) {
+        boolean moved = false;
+        int sides = be.getPushSides();
+        for (int bit = 0; bit < 6; bit++) {
+            if ((sides & (1 << bit)) == 0) continue;
+            if (be.tankAmount <= 0 || be.tankFluid.isEmpty()) break;
+            Direction dir = IAbsorptionHopperBlockEntity.bitToWorldDir(bit);
+            Storage<FluidVariant> fluidStorage = HopperLookups.of(be).at(level, pos, dir, FluidStorage.SIDED);
+            if (fluidStorage != null && !HopperLookups.definitelyFull(fluidStorage)) moved |= pushFluid(be, fluidStorage);
+        }
+        return moved;
     }
 
     /** Pushes up to the hoppers' items-per-transfer into {@code dest}, from as many slots as it takes. */
@@ -67,7 +74,7 @@ public final class AbsorptionHopperBlockEntityPlatformImpl {
     }
 
     private static boolean pushFluid(AbsorptionHopperBlockEntity be, Storage<FluidVariant> dest) {
-        long toSend = Math.min(MFSConfig.getHopperFluidPerTick(), be.tankAmount);
+        long toSend = Math.min(TransferSchedule.perTransfer(MFSConfig.getHopperFluidPerTick()), be.tankAmount);
         FluidVariant variant = FluidVariant.of(be.tankFluid.getFluid(), be.tankFluid.getPatch());
         long sent;
         try (Transaction tx = Transaction.openOuter()) {

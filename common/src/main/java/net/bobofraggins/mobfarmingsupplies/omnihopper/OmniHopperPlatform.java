@@ -17,11 +17,12 @@ public final class OmniHopperPlatform {
     private OmniHopperPlatform() {}
 
     /**
-     * Pulls from each INPUT side and pushes to the OUTPUT sides, split evenly. Items only move on
-     * {@code itemTick}; everything else moves every tick.
+     * Pulls from each INPUT side and pushes to the OUTPUT sides, split evenly: one transfer of
+     * every kind of material, each skipped while it backs off (see {@link
+     * net.bobofraggins.mobfarmingsupplies.shared.TransferSchedule}).
      */
     @ExpectPlatform
-    public static void transfer(HopperNode node, boolean itemTick) {
+    public static void transfer(HopperNode node) {
         throw new AssertionError("Missing platform implementation");
     }
 

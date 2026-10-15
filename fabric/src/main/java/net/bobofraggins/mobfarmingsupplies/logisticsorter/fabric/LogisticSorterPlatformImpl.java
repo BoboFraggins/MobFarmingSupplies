@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.logisticsorter.fabric;
 
+import net.bobofraggins.mobfarmingsupplies.transfer.fabric.HopperLookups;
 import net.bobofraggins.mobfarmingsupplies.MFSConfig;
 import net.bobofraggins.mobfarmingsupplies.logisticsorter.EvenSplit;
 import net.bobofraggins.mobfarmingsupplies.logisticsorter.LogisticSorterBlockEntity;
@@ -22,23 +23,26 @@ public final class LogisticSorterPlatformImpl {
 
     private LogisticSorterPlatformImpl() {}
 
-    public static void pullPhase(LogisticSorterBlockEntity be, Level level, BlockPos pos) {
-        if (!be.beginRouting()) return;
+    public static long pullPhase(LogisticSorterBlockEntity be, Level level, BlockPos pos) {
+        if (!be.beginRouting()) return 0;
+        long total = 0;
         try {
             for (Direction in : Direction.values()) {
                 if (be.getSide(in) != SideMode.INPUT) continue;
-                Storage<ItemVariant> source = storageAt(level, pos, in);
+                Storage<ItemVariant> source = storageAt(be, level, pos, in);
                 if (source == null) continue;
                 long budget = MFSConfig.getHopperItemsPerTransfer();
                 for (boolean matching : new boolean[]{true, false}) {
                     if (budget <= 0) break;
                     // Split what the source can actually give, not the whole budget - otherwise
                     // 9 items over two outputs would all land in the first one's share of 32.
+                    // Nothing to move: skip without opening a transaction.
+                    if (!HopperLookups.hasAny(source, v -> be.matches(v.toStack()) == matching)) continue;
                     long amount = available(source, be, matching, budget);
                     if (amount <= 0) continue;
-                    budget -= EvenSplit.distribute(be.outputs(matching), amount, (out, max) -> {
-                        Storage<ItemVariant> dest = storageAt(level, pos, out);
-                        if (dest == null) return 0;
+                    long sent = EvenSplit.distribute(be.outputs(matching), amount, (out, max) -> {
+                        Storage<ItemVariant> dest = storageAt(be, level, pos, out);
+                        if (dest == null || HopperLookups.definitelyFull(dest)) return 0;
                         try (Transaction tx = Transaction.openOuter()) {
                             long moved = StorageUtil.move(source, dest,
                                     v -> be.matches(v.toStack()) == matching, max, tx);
@@ -46,11 +50,14 @@ public final class LogisticSorterPlatformImpl {
                             return moved;
                         }
                     });
+                    budget -= sent;
+                    total += sent;
                 }
             }
         } finally {
             be.endRouting();
         }
+        return total;
     }
 
     /** How many items (up to {@code max}) {@code source} can give that match or don't match the filters. */
@@ -81,7 +88,7 @@ public final class LogisticSorterPlatformImpl {
         if (!be.beginRouting()) return 0; // sorters feeding each other in a loop
         try {
             return EvenSplit.distribute(be.outputsFor(variant.toStack()), amount, (out, max) -> {
-                Storage<ItemVariant> dest = storageAt(level, be.getBlockPos(), out);
+                Storage<ItemVariant> dest = storageAt(be, level, be.getBlockPos(), out);
                 return dest == null ? 0 : dest.insert(variant, max, tx);
             });
         } finally {
@@ -89,8 +96,9 @@ public final class LogisticSorterPlatformImpl {
         }
     }
 
+    /** The item storage beside {@code pos} on {@code side}, from the sorter's cached lookups. */
     @Nullable
-    private static Storage<ItemVariant> storageAt(Level level, BlockPos pos, Direction side) {
-        return ItemStorage.SIDED.find(level, pos.relative(side), side.getOpposite());
+    private static Storage<ItemVariant> storageAt(LogisticSorterBlockEntity be, Level level, BlockPos pos, Direction side) {
+        return HopperLookups.of(be).at(level, pos, side, ItemStorage.SIDED);
     }
 }
