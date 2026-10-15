@@ -1,15 +1,15 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "SSS",
-    "RGR",
-    "HHH"
+    "PGP",
+    "PSP",
+    "PRP"
   ],
   "key": {
-    "S": "minecraft:stone_slab",
-    "R": "#c:dusts/redstone",
+    "P": "#c:plastics",
     "G": "#c:glass_blocks/colorless",
-    "H": "minecraft:hopper"
+    "S": "#c:plates/silicon",
+    "R": "#c:dusts/redstone"
   },
   "result": {
     "id": "mobfarmingsupplies:filter_scribing_terminal",

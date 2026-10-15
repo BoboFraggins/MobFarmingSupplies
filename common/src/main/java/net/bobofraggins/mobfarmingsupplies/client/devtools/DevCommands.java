@@ -6,6 +6,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.function.Consumer;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Screenshot;
@@ -17,13 +22,16 @@ import org.slf4j.LoggerFactory;
  * Development tool: once a singleplayer world has loaded, runs the commands in the file named by
  * the {@code MFS_DEV_COMMANDS} environment variable as the player, one per tick ("WAIT n" waits n
  * ticks), then closes the game. For testing things that need a real player. Two lines act on the
- * client instead: "CAMERA first|back|front" sets the camera, and "SCREENSHOT name" saves
- * {@code screenshots/name.png}.
+ * client instead: "CAMERA first|back|front" sets the camera, "SCREENSHOT name" saves
+ * {@code screenshots/name.png}, and "RECIPES item_id" opens JEI's recipes for an item.
  */
 public final class DevCommands {
 
     private static final Logger LOGGER = LoggerFactory.getLogger("MobFarmingSupplies/DevCommands");
     private static final int SETTLE_TICKS = 100;
+
+    /** Opens JEI's recipes for an item; set by the JEI plugin when JEI is installed. */
+    @Nullable public static Consumer<ItemStack> showRecipes;
 
     private static Deque<String> commands;
     private static int ticks, waiting;
@@ -68,6 +76,13 @@ public final class DevCommands {
                 case "front" -> CameraType.THIRD_PERSON_FRONT;
                 default -> CameraType.FIRST_PERSON;
             });
+            return;
+        }
+        if (line.startsWith("RECIPES ")) {
+            Identifier id = Identifier.tryParse(line.substring(8).strip());
+            if (showRecipes != null && id != null) {
+                showRecipes.accept(new ItemStack(BuiltInRegistries.ITEM.getValue(id)));
+            }
             return;
         }
         if (line.startsWith("SCREENSHOT ")) {

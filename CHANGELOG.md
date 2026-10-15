@@ -11,7 +11,8 @@
 * Added Fire Aspect upgrade for Mob Harvester (auto smelt/cook)
 * Added Wither Inhibitor
 
-* Updated many recipes to match new materials
+* Updated many recipes to use new crafting materials
+* Updated JEI pages for more items
 
 * Fix z-fighting when heads are placed as trophies
 

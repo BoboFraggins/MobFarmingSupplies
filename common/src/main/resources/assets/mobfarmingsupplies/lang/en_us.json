@@ -481,5 +481,13 @@
   "book.mobfarmingsupplies.guide.fun_stuff.buttons.name": "Novelty Buttons",
   "book.mobfarmingsupplies.guide.fun_stuff.buttons.description": "For every occasion.",
   "book.mobfarmingsupplies.guide.fun_stuff.buttons.p0.title": "Novelty Buttons",
-  "book.mobfarmingsupplies.guide.fun_stuff.buttons.p0.text": "Each button switches on with a press and off with the next, giving a redstone signal while on. Switching on plays its sound: a red alert, a dramatic sting, a rimshot or a Wilhelm scream."
+  "book.mobfarmingsupplies.guide.fun_stuff.buttons.p0.text": "Each button switches on with a press and off with the next, giving a redstone signal while on. Switching on plays its sound: a red alert, a dramatic sting, a rimshot or a Wilhelm scream.",
+  "jei.mobfarmingsupplies.dna_sampling": "DNA Sampling",
+  "jei.mobfarmingsupplies.dna_sampling.step.collector": "A DNA Collector, used on a mob...",
+  "jei.mobfarmingsupplies.dna_sampling.step.mob": "...any mob but a player or a boss...",
+  "jei.mobfarmingsupplies.dna_sampling.step.sample": "...gives a DNA Sample of it.",
+  "jei.mobfarmingsupplies.cloning": "Cloning",
+  "jei.mobfarmingsupplies.cloning.step.dna": "DNA Samples or Sample Packs...",
+  "jei.mobfarmingsupplies.cloning.step.machine": "...in a Clone-O-Matic powered by redstone...",
+  "jei.mobfarmingsupplies.cloning.step.mob": "...make mobs. A pack picks one of its mobs at random each time."
 }
