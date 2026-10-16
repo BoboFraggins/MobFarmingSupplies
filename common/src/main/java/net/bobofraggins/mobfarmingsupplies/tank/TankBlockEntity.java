@@ -1,11 +1,14 @@
 package net.bobofraggins.mobfarmingsupplies.tank;
 
+import com.mojang.datafixers.util.Either;
+import com.mojang.serialization.Codec;
 import dev.architectury.fluid.FluidStack;
 import net.bobofraggins.mobfarmingsupplies.register.MFSRegistryHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
@@ -20,6 +23,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 
@@ -203,6 +207,17 @@ public class TankBlockEntity extends BlockEntity implements MenuProvider {
     // ── NBT ────────────────────────────────────────────────────────────────────
 
     private static final String TAG_FLUID    = "StoredFluid";
+
+    /**
+     * Just the fluid of a saved {@link FluidStack}, under either key: Architectury writes the fluid's
+     * id as {@code "fluid"} on Fabric but {@code "id"} on NeoForge, so a tank saved by one loader (in a
+     * world or a structure) would otherwise load with no fluid on the other.
+     */
+    private static final Codec<Fluid> ANY_LOADER_FLUID = Codec.mapEither(
+                    BuiltInRegistries.FLUID.byNameCodec().fieldOf("fluid"),
+                    BuiltInRegistries.FLUID.byNameCodec().fieldOf("id"))
+            .xmap(either -> either.map(fluid -> fluid, fluid -> fluid), Either::left)
+            .codec();
     private static final String TAG_AMOUNT   = "Amount";
     private static final String TAG_TRANSFER = "Transfer";
 
@@ -222,6 +237,7 @@ public class TankBlockEntity extends BlockEntity implements MenuProvider {
     protected void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
         storedFluid = input.read(TAG_FLUID, FluidStack.CODEC)
+                .or(() -> input.read(TAG_FLUID, ANY_LOADER_FLUID).map(fluid -> FluidStack.create(fluid, 1)))
                 .filter(f -> !f.isEmpty())
                 .map(f -> f.copyWithAmount(1))
                 .orElse(FluidStack.empty());
