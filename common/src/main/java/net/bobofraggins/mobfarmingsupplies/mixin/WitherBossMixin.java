@@ -1,5 +1,7 @@
 package net.bobofraggins.mobfarmingsupplies.mixin;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.bobofraggins.mobfarmingsupplies.witherinhibitor.WitherInhibitorEvents;
 import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerLevel;
@@ -11,7 +13,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 /** Applies a nearby Wither Inhibitor to a Wither ({@link WitherInhibitorEvents}). */
@@ -26,14 +27,18 @@ public abstract class WitherBossMixin {
         bossEvent.setVisible(!WitherInhibitorEvents.inhibited((WitherBoss) (Object) this));
     }
 
-    /** No explosion when a summoned Wither finishes powering up. */
-    @Redirect(method = "customServerAiStep", at = @At(value = "INVOKE",
+    /**
+     * No explosion when a summoned Wither finishes powering up. A {@code @WrapOperation} rather than a
+     * {@code @Redirect}: Mixin 0.17.4 made {@code @Redirect}'s {@code at} an array, which MixinExtras
+     * 0.5.4 (shipped by Fabric Loader 0.19) can't read, crashing the game as it loads WitherBoss.
+     */
+    @WrapOperation(method = "customServerAiStep", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/server/level/ServerLevel;explode(Lnet/minecraft/world/entity/Entity;DDDFZLnet/minecraft/world/level/Level$ExplosionInteraction;)V"))
     private void mobfarmingsupplies$skipSummonExplosion(ServerLevel level, Entity source, double x, double y, double z,
                                                         float radius, boolean fire,
-                                                        Level.ExplosionInteraction interaction) {
+                                                        Level.ExplosionInteraction interaction, Operation<Void> original) {
         if (!WitherInhibitorEvents.inhibited((WitherBoss) (Object) this)) {
-            level.explode(source, x, y, z, radius, fire, interaction);
+            original.call(level, source, x, y, z, radius, fire, interaction);
         }
     }
 
