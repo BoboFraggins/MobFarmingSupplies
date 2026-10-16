@@ -1,6 +1,8 @@
 # Mob Farming Supplies
 
-## 26.3.0.5, 26.2.0.6, 26.1.2.8
+## 26.3.0.5, 26.2.0.6, 26.1.2.8, 1.21.1.0
+
+* Initial release for 1.21.1
 
 * Added achievements
 * Added Modonomicon documentation
