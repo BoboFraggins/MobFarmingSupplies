@@ -8,9 +8,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 /**
  * Mobs drawn on the JEI guide pages: made once per type for the current level, and drawn into a
@@ -49,13 +52,36 @@ final class MobDisplay {
 
     /**
      * Draws {@code mob} in the box from ({@code x0}, {@code y0}) to ({@code x1}, {@code y1}) of the
-     * page, in the page's own coordinates (the pose carries JEI's offset).
+     * page, turned towards the mouse, as {@code InventoryScreen.renderEntityInInventoryFollowsMouse}
+     * does but without its scissor: 1.21.1 places the scissor in screen space, ignoring the page's
+     * offset, which clipped the mob away. The mob is scaled to fit the box, so it stays inside.
      */
     static void draw(GuiGraphics graphics, LivingEntity mob, int x0, int y0, int x1, int y1,
                      double mouseX, double mouseY) {
         float size = Math.max(mob.getBbWidth(), mob.getBbHeight());
         float scale = Math.min(MAX_SCALE, (y1 - y0 - 4) / Math.max(size, 0.1f));
-        InventoryScreen.renderEntityInInventoryFollowsMouse(graphics, x0, y0, x1, y1,
-                Math.round(scale), 0.0625f, (float) mouseX, (float) mouseY, mob);
+        float centreX = (x0 + x1) / 2f;
+        float centreY = (y0 + y1) / 2f;
+        float yaw = (float) Math.atan((centreX - mouseX) / 40.0);
+        float pitch = (float) Math.atan((centreY - mouseY) / 40.0);
+        Quaternionf pose = new Quaternionf().rotateZ((float) Math.PI);
+        Quaternionf camera = new Quaternionf().rotateX(pitch * 20.0f * Mth.DEG_TO_RAD);
+        pose.mul(camera);
+
+        float bodyRot = mob.yBodyRot, yRot = mob.getYRot(), xRot = mob.getXRot();
+        float headRotO = mob.yHeadRotO, headRot = mob.yHeadRot;
+        mob.yBodyRot = 180.0f + yaw * 20.0f;
+        mob.setYRot(180.0f + yaw * 40.0f);
+        mob.setXRot(-pitch * 20.0f);
+        mob.yHeadRot = mob.getYRot();
+        mob.yHeadRotO = mob.getYRot();
+        float mobScale = mob.getScale();
+        Vector3f offset = new Vector3f(0.0f, mob.getBbHeight() / 2.0f + 0.0625f * mobScale, 0.0f);
+        InventoryScreen.renderEntityInInventory(graphics, centreX, centreY, scale / mobScale, offset, pose, camera, mob);
+        mob.yBodyRot = bodyRot;
+        mob.setYRot(yRot);
+        mob.setXRot(xRot);
+        mob.yHeadRotO = headRotO;
+        mob.yHeadRot = headRot;
     }
 }

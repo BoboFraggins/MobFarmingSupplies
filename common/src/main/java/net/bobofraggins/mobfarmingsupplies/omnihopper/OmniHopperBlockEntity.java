@@ -99,6 +99,13 @@ public class OmniHopperBlockEntity extends BlockEntity implements SideOriented, 
     // ── Configuration ─────────────────────────────────────────────────────────────
 
     @Override
+    @Nullable
+    public Level nodeLevel() { return getLevel(); }
+
+    @Override
+    public BlockPos nodePos() { return getBlockPos(); }
+
+    @Override
     public HopperSide getSide(Direction dir) { return sides[dir.get3DDataValue()]; }
 
     @Override

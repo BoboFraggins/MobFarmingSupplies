@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies;
 
+import dev.architectury.registry.client.rendering.RenderTypeRegistry;
 import dev.architectury.registry.item.ItemPropertiesRegistry;
 import dev.architectury.registry.menu.MenuRegistry;
 import net.bobofraggins.mobfarmingsupplies.absorptionhopper.AbsorptionHopperScreen;
@@ -21,6 +22,7 @@ import net.bobofraggins.mobfarmingsupplies.picnicbasket.PicnicBasketScreen;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.bobofraggins.mobfarmingsupplies.shared.render.SpecialItemRenderers;
 import net.bobofraggins.mobfarmingsupplies.tank.TankScreen;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
 
@@ -85,6 +87,7 @@ public final class MobFarmingSuppliesCommonClient {
         MenuRegistry.registerScreenFactory(
                 Registration.BRIDGE_MENU.get(),
                 OmniHopperScreen<EinsteinRosenBridgeMenu>::new);
+        registerRenderLayers();
         // The Superconducting Magnet's on/off look (its model's override predicate).
         ItemPropertiesRegistry.register(Registration.SUPERCONDUCTING_MAGNET.get(),
                 ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "magnet_on"),
@@ -106,5 +109,26 @@ public final class MobFarmingSuppliesCommonClient {
                 Registration.ENDER_INHIBITOR, Items.ENDER_PEARL, InhibitorItemRenderer.Particles.PORTAL));
         SpecialItemRenderers.register(Registration.WITHER_INHIBITOR_ITEM.get(), new InhibitorItemRenderer(
                 Registration.WITHER_INHIBITOR, Items.WITHER_SKELETON_SKULL, InhibitorItemRenderer.Particles.SMOKE));
+    }
+
+    /**
+     * Which render layer each block draws in. 26.x works this out from the textures; 1.21.1 needs
+     * it declared (NeoForge also reads a model's {@code render_type}, Fabric doesn't). Cutout for
+     * textures with fully transparent pixels (the Tanks' windows, buttons, hoppers, ...),
+     * translucent for the glass blocks and the Einstein-Rosen Bridge's portal.
+     */
+    private static void registerRenderLayers() {
+        RenderTypeRegistry.register(RenderType.cutout(),
+                Registration.TANK.get(), Registration.GOLD_TANK.get(), Registration.DIAMOND_TANK.get(),
+                Registration.EMERALD_TANK.get(), Registration.ABSORPTION_HOPPER.get(), Registration.CLONE_O_MATIC.get(),
+                Registration.ENDER_INHIBITOR.get(), Registration.WITHER_INHIBITOR.get(), Registration.FAN.get(),
+                Registration.FILTER_SCRIBING_TERMINAL.get(), Registration.HALTING_PLATE.get(),
+                Registration.LOGISTIC_SORTER.get(), Registration.MOB_HARVESTER.get(), Registration.OMNI_HOPPER.get(),
+                Registration.PRESENT.get(), Registration.TOILET.get(), Registration.VECTOR_PLATE.get(),
+                Registration.DRAMATIC_BUTTON.get(), Registration.RED_ALERT_BUTTON.get(),
+                Registration.RIMSHOT_BUTTON.get(), Registration.WILHELM_BUTTON.get());
+        RenderTypeRegistry.register(RenderType.translucent(),
+                Registration.WITHER_PROOF_GLASS.get(), Registration.MOB_EXCLUSION_GLASS.get(),
+                Registration.EINSTEIN_ROSEN_BRIDGE.get());
     }
 }

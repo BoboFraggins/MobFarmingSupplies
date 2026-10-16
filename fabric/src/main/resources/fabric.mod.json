@@ -15,6 +15,11 @@
     ],
     "jei_mod_plugin": [
       "net.bobofraggins.mobfarmingsupplies.jei.MobFarmingSuppliesJeiPlugin"
+    ],
+    "jade": [
+      "net.bobofraggins.mobfarmingsupplies.tank.TankJadePlugin",
+      "net.bobofraggins.mobfarmingsupplies.glamping.present.PresentJadePlugin",
+      "net.bobofraggins.mobfarmingsupplies.bridge.PickedNameJadePlugin"
     ]
   },
   "mixins": [
@@ -24,10 +29,10 @@
     "mobfarmingsupplies-present.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=${fabric_loader_version}",
+    "fabricloader": ">=${fabric_loader_version_min}",
     "fabric-api": "*",
     "minecraft": "${minecraft_version}",
-    "architectury": ">=${architectury_version}"
+    "architectury": ">=${architectury_version_min}"
   },
   "suggests": {
     "modonomicon": "*",

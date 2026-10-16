@@ -2,14 +2,18 @@ package net.bobofraggins.mobfarmingsupplies.tank;
 
 import dev.architectury.fluid.FluidStack;
 import net.bobofraggins.mobfarmingsupplies.register.MFSRegistryHelper;
+import net.bobofraggins.mobfarmingsupplies.shared.nbt.ValueInput;
+import net.bobofraggins.mobfarmingsupplies.shared.nbt.ValueOutput;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -19,8 +23,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.bobofraggins.mobfarmingsupplies.shared.nbt.ValueInput;
-import net.bobofraggins.mobfarmingsupplies.shared.nbt.ValueOutput;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -225,13 +229,26 @@ public class TankBlockEntity extends BlockEntity implements MenuProvider {
         storedFluid = input.read(TAG_FLUID, FluidStack.CODEC)
                 .filter(f -> !f.isEmpty())
                 .map(f -> f.copyWithAmount(1))
-                .orElse(FluidStack.empty());
+                .orElseGet(() -> fluidByName(tag.getCompound(TAG_FLUID)));
         amount = input.getLongOr(TAG_AMOUNT, 0L);
         input.read(TAG_TRANSFER, ItemStack.OPTIONAL_CODEC.listOf()).ifPresent(list -> {
             for (int i = 0; i < Math.min(list.size(), 2); i++) {
                 transferContainer.setItem(i, list.get(i));
             }
         });
+    }
+
+    /**
+     * The fluid in {@code saved} when {@link FluidStack#CODEC} can't read it: Architectury writes the
+     * fluid's id under {@code "fluid"} on Fabric but {@code "id"} on NeoForge (and on 26.x), so a tank
+     * saved by one loader, in a world or a structure, would otherwise come back with no fluid.
+     */
+    private static FluidStack fluidByName(CompoundTag saved) {
+        String id = saved.contains("fluid") ? saved.getString("fluid") : saved.getString("id");
+        ResourceLocation key = ResourceLocation.tryParse(id);
+        if (key == null || !BuiltInRegistries.FLUID.containsKey(key)) return FluidStack.empty();
+        Fluid fluid = BuiltInRegistries.FLUID.get(key);
+        return fluid == Fluids.EMPTY ? FluidStack.empty() : FluidStack.create(fluid, 1);
     }
 
     // ── Data component sync (item ↔ world) ─────────────────────────────────────

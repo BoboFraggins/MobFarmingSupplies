@@ -16,9 +16,15 @@ import org.jetbrains.annotations.Nullable;
  */
 public interface HopperNode extends TransferSchedule.Holder {
 
-    @Nullable Level getLevel();
+    /**
+     * The node's level. Named apart from {@code BlockEntity#getLevel}: on Fabric the release jar is
+     * remapped, and an interface method that a block entity only inherits from Minecraft would be
+     * left without an implementation.
+     */
+    @Nullable Level nodeLevel();
 
-    BlockPos getBlockPos();
+    /** The node's position; named apart from {@code BlockEntity#getBlockPos}, as {@link #nodeLevel}. */
+    BlockPos nodePos();
 
     HopperSide getSide(Direction dir);
 

@@ -118,11 +118,14 @@ public class MobFarmingSuppliesJeiPlugin implements IModPlugin {
         reg.addRecipeCatalyst(Registration.CLONE_O_MATIC_ITEM.get().getDefaultInstance(), CloningGuide.RECIPE_TYPE);
     }
 
-    /** Lets the dev command runner open a recipe page ({@code RECIPES <item>}). */
+    /** Lets the dev command runner open a recipe or uses page ({@code RECIPES <item>}, {@code USES <item>}). */
     @Override
     public void onRuntimeAvailable(IJeiRuntime runtime) {
         DevCommands.showRecipes = stack -> runtime.getRecipesGui().show(
                 runtime.getJeiHelpers().getFocusFactory().createFocus(RecipeIngredientRole.OUTPUT,
+                        VanillaTypes.ITEM_STACK, stack));
+        DevCommands.showUses = stack -> runtime.getRecipesGui().show(
+                runtime.getJeiHelpers().getFocusFactory().createFocus(RecipeIngredientRole.INPUT,
                         VanillaTypes.ITEM_STACK, stack));
     }
 }

@@ -30,10 +30,10 @@ public final class OmniHopperPlatformImpl {
     private OmniHopperPlatformImpl() {}
 
     public static void transfer(HopperNode node) {
-        Level level = node.getLevel();
+        Level level = node.nodeLevel();
         if (level == null || !node.beginRouting()) return;
         try {
-            BlockPos pos = node.getBlockPos();
+            BlockPos pos = node.nodePos();
             TransferSchedule schedule = node.transferSchedule();
             Predicate<ItemResource> items = r -> node.allowsItem(r.toStack(1));
             schedule.attempt(TransferSchedule.Kind.ITEMS, () -> moveResources(node, level, pos,
@@ -145,7 +145,7 @@ public final class OmniHopperPlatformImpl {
      */
     static <T extends Resource> int routeInsert(HopperNode be,
             BlockCapability<ResourceHandler<T>, Direction> cap, T resource, int amount, TransactionContext tx) {
-        Level level = be.getLevel();
+        Level level = be.nodeLevel();
         if (level == null || resource.isEmpty() || amount <= 0 || !be.isActive()) return 0;
         if (!be.beginRouting()) return 0; // hoppers feeding each other in a loop
         try {
@@ -162,7 +162,7 @@ public final class OmniHopperPlatformImpl {
 
     /** Energy version of {@link #routeInsert}. */
     static int routeEnergy(HopperNode be, int amount, TransactionContext tx) {
-        Level level = be.getLevel();
+        Level level = be.nodeLevel();
         if (level == null || amount <= 0 || !be.isActive()) return 0;
         if (!be.beginRouting()) return 0;
         try {
