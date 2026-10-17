@@ -2,12 +2,14 @@
 
 ## 26.3.0.6, 26.2.0.7, 26.1.2.9, 1.21.1.1
 
-* Happy Halloween
+* Spooky Release (Happy Halloween!)
 
 * Added Smite upgrade
 * Added Giant Skeleton Lawn Ornament
+* Added String of Skull Lights
 
-* Changed Wither Inhibitor to require Nether Star
+* Changed mob heads to replace player heads when worn (Trick or Treat!)
+* Changed Wither Inhibitor recipe to require Nether Star
 * Changed Mob Harvester to use Iron Spear instead of Copper Rod (except for 1.21.1)
 
 * Fixed inventory item rendering of mostly black items (glasses, tanks, inhibitors)

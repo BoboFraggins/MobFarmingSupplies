@@ -26,6 +26,7 @@ import net.bobofraggins.mobfarmingsupplies.mobhead.MobHeadItemRenderer;
 import net.bobofraggins.mobfarmingsupplies.omnihopper.OmniHopperItemRenderer;
 import net.bobofraggins.mobfarmingsupplies.picnicbasket.PicnicBasketRenderer;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
+import net.bobofraggins.mobfarmingsupplies.skulllights.SkullLightsRenderer;
 import net.bobofraggins.mobfarmingsupplies.tank.fabric.TankItemRenderer;
 import net.bobofraggins.mobfarmingsupplies.tank.fabric.TankRenderer;
 import net.bobofraggins.mobfarmingsupplies.toilet.ToiletBlockEntityRenderer;
@@ -67,6 +68,9 @@ public class MobFarmingSuppliesFabricClient implements ClientModInitializer {
         BlockEntityRendererRegistry.register(
                 Registration.GIANT_SKELETON_ORNAMENT_BE_TYPE.get(),
                 GiantSkeletonOrnamentRenderer::new);
+        BlockEntityRendererRegistry.register(
+                Registration.SKULL_LIGHT_HOOK_BE_TYPE.get(),
+                SkullLightsRenderer::new);
         BlockEntityRendererRegistry.register(
                 Registration.TANK_BE_TYPE.get(),
                 TankRenderer::new);

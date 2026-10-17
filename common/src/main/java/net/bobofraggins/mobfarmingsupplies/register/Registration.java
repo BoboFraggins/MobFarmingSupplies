@@ -72,6 +72,11 @@ import net.bobofraggins.mobfarmingsupplies.picnicbasket.PicnicBasketBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.picnicbasket.PicnicBasketItem;
 import net.bobofraggins.mobfarmingsupplies.picnicbasket.PicnicBasketMenu;
 import net.bobofraggins.mobfarmingsupplies.shared.sides.OrientedBlockItem;
+import net.bobofraggins.mobfarmingsupplies.skulllights.SkullLightHookBlock;
+import net.bobofraggins.mobfarmingsupplies.skulllights.SkullLightHookBlockEntity;
+import net.bobofraggins.mobfarmingsupplies.skulllights.SkullLights;
+import net.bobofraggins.mobfarmingsupplies.skulllights.SkullLightsRecipe;
+import net.bobofraggins.mobfarmingsupplies.skulllights.StringOfSkullLightsItem;
 import net.bobofraggins.mobfarmingsupplies.tank.TankBlock;
 import net.bobofraggins.mobfarmingsupplies.tank.TankBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.tank.TankBlockItem;
@@ -204,6 +209,10 @@ public final class Registration {
             RECIPE_SERIALIZERS.register("tank_upgrade",
                     () -> new RecipeSerializer<>(TankUpgradeRecipe.MAP_CODEC, TankUpgradeRecipe.STREAM_CODEC));
 
+    public static final RegistrySupplier<RecipeSerializer<SkullLightsRecipe>> SKULL_LIGHTS_SERIALIZER =
+            RECIPE_SERIALIZERS.register("skull_lights",
+                    () -> new RecipeSerializer<>(SkullLightsRecipe.MAP_CODEC, SkullLightsRecipe.STREAM_CODEC));
+
     /** Shaped recipe for a linked pair of Einstein-Rosen Bridges on a new random channel. */
     public static final RegistrySupplier<RecipeSerializer<BridgePairRecipe>> BRIDGE_PAIR_SERIALIZER =
             RECIPE_SERIALIZERS.register("bridge_pair",
@@ -304,6 +313,21 @@ public final class Registration {
                     () -> DataComponentType.<TankContents>builder()
                             .persistent(TankContents.CODEC)
                             .networkSynchronized(TankContents.STREAM_CODEC)
+                            .build());
+
+    public static final RegistrySupplier<DataComponentType<SkullLights>> SKULL_LIGHTS =
+            DATA_COMPONENTS.register("skull_lights",
+                    () -> DataComponentType.<SkullLights>builder()
+                            .persistent(SkullLights.CODEC)
+                            .networkSynchronized(SkullLights.STREAM_CODEC)
+                            .build());
+
+    /** Where a String of Skull Lights being hung was started. */
+    public static final RegistrySupplier<DataComponentType<StringOfSkullLightsItem.Start>> SKULL_LIGHTS_START =
+            DATA_COMPONENTS.register("skull_lights_start",
+                    () -> DataComponentType.<StringOfSkullLightsItem.Start>builder()
+                            .persistent(StringOfSkullLightsItem.Start.CODEC)
+                            .networkSynchronized(StringOfSkullLightsItem.Start.STREAM_CODEC)
                             .build());
 
     public static final RegistrySupplier<DataComponentType<ItemFilterData>> ITEM_FILTER_DATA =
@@ -1044,6 +1068,28 @@ public final class Registration {
             BLOCK_ENTITIES.register("giant_skeleton_lawn_ornament",
                     () -> BlockEntityTypePlatform.create(GiantSkeletonOrnamentBlockEntity::new, GIANT_SKELETON_ORNAMENT.get()));
 
+    // ── String of Skull Lights ───────────────────────────────────────────────────
+
+    public static final RegistrySupplier<SkullLightHookBlock> SKULL_LIGHT_HOOK =
+            BLOCKS.register("skull_light_hook",
+                    () -> new SkullLightHookBlock(BlockBehaviour.Properties.of()
+                            .setId(blockKey("skull_light_hook"))
+                            .strength(0.3f)
+                            .sound(SoundType.CHAIN)
+                            .noCollision()
+                            .noOcclusion()
+                            .pushReaction(PushReaction.DESTROY)));
+
+    public static final RegistrySupplier<BlockEntityType<SkullLightHookBlockEntity>> SKULL_LIGHT_HOOK_BE_TYPE =
+            BLOCK_ENTITIES.register("skull_light_hook",
+                    () -> BlockEntityTypePlatform.create(SkullLightHookBlockEntity::new, SKULL_LIGHT_HOOK.get()));
+
+    public static final RegistrySupplier<StringOfSkullLightsItem> STRING_OF_SKULL_LIGHTS =
+            ITEMS.register("string_of_skull_lights",
+                    () -> new StringOfSkullLightsItem(new Item.Properties()
+                            .setId(itemKey("string_of_skull_lights"))
+                            .stacksTo(16)));
+
     public static final RegistrySupplier<EntityType<ToiletSeatEntity>> TOILET_SEAT =
             ENTITY_TYPES.register("toilet_seat",
                     () -> EntityType.Builder.<ToiletSeatEntity>of(ToiletSeatEntity::new, MobCategory.MISC)
@@ -1124,6 +1170,9 @@ public final class Registration {
                         output.accept(HALTING_PLATE_ITEM.get());
                         output.accept(TOILET_ITEM.get());
                         output.accept(GIANT_SKELETON_ORNAMENT_ITEM.get());
+                        ItemStack skullLights = new ItemStack(STRING_OF_SKULL_LIGHTS.get());
+                        skullLights.set(SKULL_LIGHTS.get(), SkullLights.defaultLights());
+                        output.accept(skullLights);
                         output.accept(FAN_ITEM.get());
                         output.accept(FAN_UPGRADE_WIDTH.get());
                         output.accept(FAN_UPGRADE_HEIGHT.get());

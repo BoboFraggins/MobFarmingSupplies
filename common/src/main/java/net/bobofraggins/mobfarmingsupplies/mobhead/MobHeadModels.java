@@ -22,6 +22,7 @@ import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
@@ -95,6 +96,11 @@ public final class MobHeadModels {
      * space a vanilla skull model is drawn in after its block or item transform.
      */
     public static void submit(EntityType<?> type, PoseStack poseStack, SubmitNodeCollector collector, int light) {
+        submit(type, poseStack, collector, light, -1);
+    }
+
+    /** As {@link #submit(EntityType, PoseStack, SubmitNodeCollector, int)}, every layer tinted {@code tint} (-1 = none). */
+    public static void submit(EntityType<?> type, PoseStack poseStack, SubmitNodeCollector collector, int light, int tint) {
         Head head = get(type);
         if (head == null) return;
         poseStack.pushPose();
@@ -102,7 +108,8 @@ public final class MobHeadModels {
         poseStack.translate(-head.centreX(), -head.bottomY(), -head.centreZ());
         for (Layer layer : head.layers()) {
             collector.submitModelPart(layer.part(), poseStack, layer.renderType(), light, OverlayTexture.NO_OVERLAY,
-                    null, false, false, layer.tint(), null, 0);
+                    null, false, false, tint == -1 ? layer.tint() : layer.tint() == -1 ? tint : ARGB.multiply(layer.tint(), tint),
+                    null, 0);
         }
         if (head.mushroom() != null) {
             // Where MushroomCowMushroomLayer puts the mushroom on the head.

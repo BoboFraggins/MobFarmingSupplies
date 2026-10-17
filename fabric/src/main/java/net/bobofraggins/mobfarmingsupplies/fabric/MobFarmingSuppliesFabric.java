@@ -44,6 +44,7 @@ public class MobFarmingSuppliesFabric implements ModInitializer {
         // Fabric only sends vanilla recipe types to clients; without this, JEI (which reads the
         // client's copy) never sees the Tank Upgrade or Einstein-Rosen Bridge recipes.
         RecipeSynchronization.synchronizeRecipeSerializer(Registration.TANK_UPGRADE_SERIALIZER.get());
+        RecipeSynchronization.synchronizeRecipeSerializer(Registration.SKULL_LIGHTS_SERIALIZER.get());
         RecipeSynchronization.synchronizeRecipeSerializer(Registration.BRIDGE_PAIR_SERIALIZER.get());
         RecipeSynchronization.synchronizeRecipeSerializer(Registration.BRIDGE_LINK_SERIALIZER.get());
         RecipeSynchronization.synchronizeRecipeSerializer(Registration.ANVIL_CRUSHING_SERIALIZER.get());

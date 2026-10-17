@@ -1,0 +1,30 @@
+{
+  "variants": {
+    "facing=up": {
+      "model": "mobfarmingsupplies:block/skull_light_hook"
+    },
+    "facing=down": {
+      "model": "mobfarmingsupplies:block/skull_light_hook",
+      "x": 180
+    },
+    "facing=north": {
+      "model": "mobfarmingsupplies:block/skull_light_hook",
+      "x": 90
+    },
+    "facing=east": {
+      "model": "mobfarmingsupplies:block/skull_light_hook",
+      "x": 90,
+      "y": 90
+    },
+    "facing=south": {
+      "model": "mobfarmingsupplies:block/skull_light_hook",
+      "x": 90,
+      "y": 180
+    },
+    "facing=west": {
+      "model": "mobfarmingsupplies:block/skull_light_hook",
+      "x": 90,
+      "y": 270
+    }
+  }
+}

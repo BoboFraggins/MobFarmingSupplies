@@ -11,6 +11,7 @@ import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 /**
@@ -76,5 +77,14 @@ public class GiantSkeletonOrnamentRenderer
     @Override
     public boolean shouldRenderOffScreen() {
         return true;
+    }
+
+    /**
+     * The box the skeleton fits in. NeoForge culls a block entity's renderer by this box (its
+     * loader renderer overrides {@code getRenderBoundingBox} with it), so the skeleton still draws
+     * when only its head is on screen.
+     */
+    public static AABB renderBounds(GiantSkeletonOrnamentBlockEntity ornament) {
+        return new AABB(ornament.getBlockPos()).expandTowards(0, 2 * SCALE, 0).inflate(SCALE / 2);
     }
 }
