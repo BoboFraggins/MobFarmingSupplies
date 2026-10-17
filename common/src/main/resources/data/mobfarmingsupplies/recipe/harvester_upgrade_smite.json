@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "minecraft:iron_axe",
+    "mobfarmingsupplies:blank_upgrade"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mobfarmingsupplies:harvester_upgrade_smite"
+  }
+}

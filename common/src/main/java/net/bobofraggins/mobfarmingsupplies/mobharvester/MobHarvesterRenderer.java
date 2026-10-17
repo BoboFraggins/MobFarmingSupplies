@@ -5,9 +5,6 @@ import net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommon;
 import net.bobofraggins.mobfarmingsupplies.client.model.ExtraBlockModels;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.core.Direction;
-import net.minecraft.resources.Identifier;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -18,18 +15,25 @@ import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
-import java.util.HashMap;
+import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
 
+import java.time.LocalDate;
+import java.time.Month;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -92,7 +96,7 @@ public class MobHarvesterRenderer
                     new ItemStack(Items.IRON_PICKAXE),
                     new ItemStack(Items.IRON_SHOVEL),
                     new ItemStack(Items.IRON_HOE),
-                    new ItemStack(Items.LIGHTNING_ROD)
+                    new ItemStack(Items.IRON_SPEAR)
             );
             carvedPumpkin = new ItemStack(Items.CARVED_PUMPKIN);
         }
@@ -189,6 +193,15 @@ public class MobHarvesterRenderer
 
     /** Radius (blocks) within which entities are considered look targets. */
     private static final double LOOK_RANGE = 8.0;
+    /**
+     * With players in range, the share of new targets that are the nearest player. Mobs crowd a
+     * working farm, so picking at random among every living thing almost never chose the player.
+     */
+    private static final int PLAYER_LOOK_CHANCE_PCT = 50;
+    /** In the last two weeks of October, how near a player must be to be watched constantly. */
+    private static final double STALK_RANGE = 7.0;
+    /** While watching a player, how much of the remaining turn the head makes per tick. */
+    private static final float STALK_TURN_PER_TICK = 0.25f;
 
     /**
      * Candidate look directions (degrees, where 0 = south / forward).
@@ -228,6 +241,7 @@ public class MobHarvesterRenderer
         float targetPitchDeg = 0f;
         boolean lookingAtPlayer = false;
         boolean turning         = false;
+        float lastFrameTime     = Float.NaN; // game time + partial tick of the last frame drawn
         // Output fields — written here, copied into HarvesterState for submit()
         float headYawDeg  = 0f;
         float headPitchDeg = 0f;
@@ -331,6 +345,23 @@ public class MobHarvesterRenderer
 
         if (powered && level != null) {
             long gameTime = level.getGameTime();
+            float frameTime = gameTime + partialTick;
+            float frameTicks = Float.isNaN(ls.lastFrameTime) ? 1f : Mth.clamp(frameTime - ls.lastFrameTime, 0f, 20f);
+            ls.lastFrameTime = frameTime;
+
+            // ── Late October: keep watching the nearest player ──────────────────────
+            Player stalked = spookySeason() ? nearestPlayer(level, pos, STALK_RANGE) : null;
+            if (stalked != null) {
+                float[] aim = aimAt(stalked, pos, state.facingOffsetDeg);
+                float t = 1f - (float) Math.pow(1f - STALK_TURN_PER_TICK, frameTicks);
+                ls.headYawDeg   = lerpAngleDeg(ls.headYawDeg,   aim[0], t);
+                ls.headPitchDeg = lerpAngleDeg(ls.headPitchDeg, aim[1], t);
+                ls.turnStartTick = -1L; // the look-around picks up from here once they leave
+                ls.turning = false;
+                state.headYawDeg   = ls.headYawDeg;
+                state.headPitchDeg = ls.headPitchDeg;
+                return;
+            }
 
             // ── State machine: pick a new target when first powered or stare expires ──
             if (ls.turnStartTick < 0 || gameTime >= ls.stareUntilTick) {
@@ -364,6 +395,7 @@ public class MobHarvesterRenderer
             ls.headPitchDeg  = 0f;
             ls.turnStartTick = -1L;
             ls.turning       = false;
+            ls.lastFrameTime = Float.NaN;
             state.headYawDeg   = 0f;
             state.headPitchDeg = 0f;
         }
@@ -545,9 +577,10 @@ public class MobHarvesterRenderer
     }
 
     /**
-     * Picks a new look target and stare duration, writing results into {@code state}.
-     * If a living entity is within {@value #LOOK_RANGE} blocks the head tracks it;
-     * otherwise it picks a random direction from {@link #LOOK_TARGETS_DEG}.
+     * Picks a new look target and stare duration, writing results into {@code state}. With a
+     * player within {@value #LOOK_RANGE} blocks, the nearest one is chosen
+     * {@value #PLAYER_LOOK_CHANCE_PCT}% of the time; otherwise a random living entity in range, and
+     * with none, a random direction from {@link #LOOK_TARGETS_DEG}.
      */
     private static void pickNewTarget(LookState ls, long gameTime, Level level,
                                       BlockPos pos, float facingOffsetDeg) {
@@ -564,16 +597,18 @@ public class MobHarvesterRenderer
         h ^= h >>> 17;
         h ^= h >>> 31;
 
-        if (!nearby.isEmpty()) {
-            LivingEntity target = nearby.get((int) Math.floorMod(h, nearby.size()));
-            double dx    = target.getX() - cx;
-            double dy    = target.getEyeY() - cy;
-            double dz    = target.getZ() - cz;
-            double hDist = Math.sqrt(dx * dx + dz * dz);
-            float worldYaw = (float) Math.toDegrees(Math.atan2(-dx, dz));
-            ls.targetYawDeg   = worldYaw - facingOffsetDeg;
-            ls.targetPitchDeg = Math.min(MAX_PITCH_DOWN_DEG, (float) -Math.toDegrees(
-                    Math.atan2(dy, Math.max(hDist, 0.01))));
+        LivingEntity target = null;
+        Player player = nearestPlayer(level, pos, LOOK_RANGE);
+        if (player != null && Math.floorMod(h >>> 8, 100) < PLAYER_LOOK_CHANCE_PCT) {
+            target = player;
+        } else if (!nearby.isEmpty()) {
+            target = nearby.get((int) Math.floorMod(h, nearby.size()));
+        }
+
+        if (target != null) {
+            float[] aim = aimAt(target, pos, facingOffsetDeg);
+            ls.targetYawDeg   = aim[0];
+            ls.targetPitchDeg = aim[1];
             ls.lookingAtPlayer = (target instanceof Player);
         } else {
             int idx = (int)(Math.abs(h) % LOOK_TARGETS_DEG.length);
@@ -587,6 +622,31 @@ public class MobHarvesterRenderer
         int stare = STARE_MIN_TICKS + (int)(Math.abs(h2) % (STARE_MAX_TICKS - STARE_MIN_TICKS));
         if (!ls.lookingAtPlayer) stare /= 2;
         ls.stareUntilTick = gameTime + LOOK_TRANSITION_TICKS + stare;
+    }
+
+    /** The head yaw and pitch (degrees, block-relative) that look at {@code target}'s eyes. */
+    private static float[] aimAt(LivingEntity target, BlockPos pos, float facingOffsetDeg) {
+        double cx = pos.getX() + 0.5, cy = pos.getY() + HEAD_Y, cz = pos.getZ() + 0.5;
+        double dx    = target.getX() - cx;
+        double dy    = target.getEyeY() - cy;
+        double dz    = target.getZ() - cz;
+        double hDist = Math.sqrt(dx * dx + dz * dz);
+        float worldYaw = (float) Math.toDegrees(Math.atan2(-dx, dz));
+        float pitch = Math.min(MAX_PITCH_DOWN_DEG, (float) -Math.toDegrees(Math.atan2(dy, Math.max(hDist, 0.01))));
+        return new float[] {worldYaw - facingOffsetDeg, pitch};
+    }
+
+    /** The nearest player (not a spectator) within {@code range} blocks of the head, or null. */
+    @Nullable
+    private static Player nearestPlayer(Level level, BlockPos pos, double range) {
+        return level.getNearestPlayer(pos.getX() + 0.5, pos.getY() + HEAD_Y, pos.getZ() + 0.5, range,
+                EntitySelector.NO_SPECTATORS);
+    }
+
+    /** October 18 to 31, by the computer's clock: the head watches the nearest player constantly. */
+    private static boolean spookySeason() {
+        LocalDate today = LocalDate.now();
+        return today.getMonth() == Month.OCTOBER && today.getDayOfMonth() >= 18;
     }
 
     /**

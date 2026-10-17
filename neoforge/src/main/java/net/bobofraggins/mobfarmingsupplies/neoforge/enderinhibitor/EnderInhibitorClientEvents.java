@@ -2,16 +2,17 @@ package net.bobofraggins.mobfarmingsupplies.neoforge.enderinhibitor;
 
 import net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommon;
 import net.bobofraggins.mobfarmingsupplies.client.model.AnimatedItemModel;
+import net.bobofraggins.mobfarmingsupplies.client.model.GuiBackdropRenderer;
+import net.bobofraggins.mobfarmingsupplies.enderinhibitor.EnderInhibitorBlockEntityRenderer;
+import net.bobofraggins.mobfarmingsupplies.enderinhibitor.EnderInhibitorScreen;
 import net.bobofraggins.mobfarmingsupplies.enderinhibitor.InhibitorItemRenderer;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.minecraft.resources.Identifier;
-import net.neoforged.neoforge.client.event.RegisterItemModelsEvent;
-import net.neoforged.neoforge.client.event.RegisterSpecialModelRendererEvent;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.event.RegisterItemModelsEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
-import net.bobofraggins.mobfarmingsupplies.enderinhibitor.EnderInhibitorBlockEntityRenderer;
-import net.bobofraggins.mobfarmingsupplies.enderinhibitor.EnderInhibitorScreen;
+import net.neoforged.neoforge.client.event.RegisterSpecialModelRendererEvent;
 
 public final class EnderInhibitorClientEvents {
 
@@ -31,6 +32,8 @@ public final class EnderInhibitorClientEvents {
     public static void onRegisterSpecialModelRenderers(RegisterSpecialModelRendererEvent event) {
         event.register(Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "inhibitor_item"),
                 InhibitorItemRenderer.Unbaked.MAP_CODEC);
+        event.register(Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "gui_backdrop"),
+                GuiBackdropRenderer.Unbaked.MAP_CODEC);
     }
 
     @SubscribeEvent

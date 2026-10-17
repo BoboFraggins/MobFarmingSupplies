@@ -2,22 +2,61 @@
   "model": {
     "type": "mobfarmingsupplies:animated",
     "model": {
-      "type": "minecraft:composite",
-      "models": [
+      "type": "minecraft:select",
+      "property": "minecraft:display_context",
+      "cases": [
         {
-          "type": "minecraft:model",
-          "model": "mobfarmingsupplies:item/wither_inhibitor"
-        },
-        {
-          "type": "minecraft:special",
-          "base": "mobfarmingsupplies:item/wither_inhibitor",
+          "when": "gui",
           "model": {
-            "type": "mobfarmingsupplies:inhibitor_item",
-            "item": "minecraft:wither_skeleton_skull",
-            "particles": "smoke"
+            "type": "minecraft:composite",
+            "models": [
+              {
+                "type": "minecraft:special",
+                "base": "mobfarmingsupplies:item/gui_backdrop",
+                "model": {
+                  "type": "mobfarmingsupplies:gui_backdrop"
+                }
+              },
+              {
+                "type": "minecraft:composite",
+                "models": [
+                  {
+                    "type": "minecraft:model",
+                    "model": "mobfarmingsupplies:item/wither_inhibitor"
+                  },
+                  {
+                    "type": "minecraft:special",
+                    "base": "mobfarmingsupplies:item/wither_inhibitor",
+                    "model": {
+                      "type": "mobfarmingsupplies:inhibitor_item",
+                      "item": "minecraft:wither_skeleton_skull",
+                      "particles": "smoke"
+                    }
+                  }
+                ]
+              }
+            ]
           }
         }
-      ]
+      ],
+      "fallback": {
+        "type": "minecraft:composite",
+        "models": [
+          {
+            "type": "minecraft:model",
+            "model": "mobfarmingsupplies:item/wither_inhibitor"
+          },
+          {
+            "type": "minecraft:special",
+            "base": "mobfarmingsupplies:item/wither_inhibitor",
+            "model": {
+              "type": "mobfarmingsupplies:inhibitor_item",
+              "item": "minecraft:wither_skeleton_skull",
+              "particles": "smoke"
+            }
+          }
+        ]
+      }
     }
   }
 }

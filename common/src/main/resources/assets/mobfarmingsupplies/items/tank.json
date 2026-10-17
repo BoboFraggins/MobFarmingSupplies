@@ -1,9 +1,37 @@
 {
   "model": {
-    "type": "minecraft:special",
-    "base": "mobfarmingsupplies:item/tank",
-    "model": {
-      "type": "mobfarmingsupplies:tank_renderer"
+    "type": "minecraft:select",
+    "property": "minecraft:display_context",
+    "cases": [
+      {
+        "when": "gui",
+        "model": {
+          "type": "minecraft:composite",
+          "models": [
+            {
+              "type": "minecraft:special",
+              "base": "mobfarmingsupplies:item/gui_backdrop",
+              "model": {
+                "type": "mobfarmingsupplies:gui_backdrop"
+              }
+            },
+            {
+              "type": "minecraft:special",
+              "base": "mobfarmingsupplies:item/tank",
+              "model": {
+                "type": "mobfarmingsupplies:tank_renderer"
+              }
+            }
+          ]
+        }
+      }
+    ],
+    "fallback": {
+      "type": "minecraft:special",
+      "base": "mobfarmingsupplies:item/tank",
+      "model": {
+        "type": "mobfarmingsupplies:tank_renderer"
+      }
     }
   }
 }

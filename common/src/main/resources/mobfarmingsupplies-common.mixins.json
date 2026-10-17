@@ -6,6 +6,7 @@
   "mixins": [
     "GoalSelectorAccessor",
     "MobFarmAccessor",
+    "StructureTemplatePoolAccessor",
     "AnvilBlockMixin",
     "EnderManPresentMixin",
     "InventoryChangeTriggerMixin",

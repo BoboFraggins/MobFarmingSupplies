@@ -1,21 +1,26 @@
 package net.bobofraggins.mobfarmingsupplies.register;
 
-import net.minecraft.world.item.ItemStack;
-import net.bobofraggins.mobfarmingsupplies.biosludge.BiosludgeItem;
-import net.bobofraggins.mobfarmingsupplies.guide.GuideBook;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import dev.architectury.registry.menu.MenuRegistry;
 import dev.architectury.registry.registries.DeferredRegister;
 import dev.architectury.registry.registries.RegistrySupplier;
-import net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommon;
 import net.bobofraggins.mobfarmingsupplies.MFSConfig;
+import net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommon;
 import net.bobofraggins.mobfarmingsupplies.absorptionhopper.AbsorptionHopperBlock;
 import net.bobofraggins.mobfarmingsupplies.absorptionhopper.AbsorptionHopperBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.absorptionhopper.AbsorptionHopperMenu;
+import net.bobofraggins.mobfarmingsupplies.biosludge.BiosludgeItem;
+import net.bobofraggins.mobfarmingsupplies.bridge.BridgeLinkRecipe;
+import net.bobofraggins.mobfarmingsupplies.bridge.BridgePairRecipe;
+import net.bobofraggins.mobfarmingsupplies.bridge.EinsteinRosenBridgeBlock;
+import net.bobofraggins.mobfarmingsupplies.bridge.EinsteinRosenBridgeBlockEntity;
+import net.bobofraggins.mobfarmingsupplies.bridge.EinsteinRosenBridgeBlockItem;
+import net.bobofraggins.mobfarmingsupplies.bridge.EinsteinRosenBridgeMenu;
 import net.bobofraggins.mobfarmingsupplies.cloneomatic.CloneOMaticBlock;
 import net.bobofraggins.mobfarmingsupplies.cloneomatic.CloneOMaticBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.cloneomatic.CloneOMaticMenu;
+import net.bobofraggins.mobfarmingsupplies.crushing.AnvilCrushingRecipe;
 import net.bobofraggins.mobfarmingsupplies.dna.DnaCollectorItem;
 import net.bobofraggins.mobfarmingsupplies.dna.DnaSampleContents;
 import net.bobofraggins.mobfarmingsupplies.dna.DnaSampleItem;
@@ -23,47 +28,41 @@ import net.bobofraggins.mobfarmingsupplies.dna.DnaSamplePackItem;
 import net.bobofraggins.mobfarmingsupplies.enderinhibitor.EnderInhibitorBlock;
 import net.bobofraggins.mobfarmingsupplies.enderinhibitor.EnderInhibitorBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.enderinhibitor.EnderInhibitorMenu;
-import net.bobofraggins.mobfarmingsupplies.filterscribingterminal.FilterScribingTerminalBlock;
-import net.bobofraggins.mobfarmingsupplies.filterscribingterminal.FilterScribingTerminalBlockEntity;
-import net.bobofraggins.mobfarmingsupplies.filterscribingterminal.FilterScribingTerminalMenu;
-import net.bobofraggins.mobfarmingsupplies.itemfilter.ItemFilterData;
-import net.bobofraggins.mobfarmingsupplies.logisticsorter.LogisticSorterBlock;
-import net.bobofraggins.mobfarmingsupplies.logisticsorter.LogisticSorterBlockItem;
-import net.bobofraggins.mobfarmingsupplies.logisticsorter.LogisticSorterBlockEntity;
-import net.bobofraggins.mobfarmingsupplies.logisticsorter.LogisticSorterMenu;
-import net.bobofraggins.mobfarmingsupplies.itemfilter.ItemFilterItem;
 import net.bobofraggins.mobfarmingsupplies.experiencesyringe.ExperienceSyringeItem;
 import net.bobofraggins.mobfarmingsupplies.fan.FanBlock;
 import net.bobofraggins.mobfarmingsupplies.fan.FanBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.fan.FanMenu;
 import net.bobofraggins.mobfarmingsupplies.fan.FanUpgradeItem;
+import net.bobofraggins.mobfarmingsupplies.filterscribingterminal.FilterScribingTerminalBlock;
+import net.bobofraggins.mobfarmingsupplies.filterscribingterminal.FilterScribingTerminalBlockEntity;
+import net.bobofraggins.mobfarmingsupplies.filterscribingterminal.FilterScribingTerminalMenu;
 import net.bobofraggins.mobfarmingsupplies.glamping.magichat.MagicHatItem;
 import net.bobofraggins.mobfarmingsupplies.glamping.present.PresentBlock;
 import net.bobofraggins.mobfarmingsupplies.glamping.present.PresentBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.glamping.present.PresentBlockItem;
+import net.bobofraggins.mobfarmingsupplies.guide.GuideBook;
 import net.bobofraggins.mobfarmingsupplies.haltingplate.HaltingPlateBlock;
+import net.bobofraggins.mobfarmingsupplies.itemfilter.ItemFilterData;
+import net.bobofraggins.mobfarmingsupplies.itemfilter.ItemFilterItem;
+import net.bobofraggins.mobfarmingsupplies.lawnornament.GiantSkeletonOrnamentBlock;
+import net.bobofraggins.mobfarmingsupplies.lawnornament.GiantSkeletonOrnamentBlockEntity;
+import net.bobofraggins.mobfarmingsupplies.logisticsorter.LogisticSorterBlock;
+import net.bobofraggins.mobfarmingsupplies.logisticsorter.LogisticSorterBlockEntity;
+import net.bobofraggins.mobfarmingsupplies.logisticsorter.LogisticSorterBlockItem;
+import net.bobofraggins.mobfarmingsupplies.logisticsorter.LogisticSorterMenu;
+import net.bobofraggins.mobfarmingsupplies.loot.SetBridgeChannelFunction;
+import net.bobofraggins.mobfarmingsupplies.loot.SetSyringeLevelsFunction;
+import net.bobofraggins.mobfarmingsupplies.mobexclusionglass.MobExclusionGlassBlock;
 import net.bobofraggins.mobfarmingsupplies.mobharvester.HarvesterSword;
 import net.bobofraggins.mobfarmingsupplies.mobharvester.HarvesterUpgradeItem;
 import net.bobofraggins.mobfarmingsupplies.mobharvester.MobHarvesterBlock;
 import net.bobofraggins.mobfarmingsupplies.mobharvester.MobHarvesterBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.mobharvester.MobHarvesterMenu;
-import net.bobofraggins.mobfarmingsupplies.bridge.BridgeLinkRecipe;
-import net.bobofraggins.mobfarmingsupplies.bridge.BridgePairRecipe;
-import net.bobofraggins.mobfarmingsupplies.bridge.EinsteinRosenBridgeBlock;
-import net.bobofraggins.mobfarmingsupplies.bridge.EinsteinRosenBridgeBlockEntity;
-import net.bobofraggins.mobfarmingsupplies.bridge.EinsteinRosenBridgeBlockItem;
-import net.bobofraggins.mobfarmingsupplies.bridge.EinsteinRosenBridgeMenu;
-import net.bobofraggins.mobfarmingsupplies.loot.SetBridgeChannelFunction;
-import net.bobofraggins.mobfarmingsupplies.loot.SetSyringeLevelsFunction;
-import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
 import net.bobofraggins.mobfarmingsupplies.mobhead.MobHeadBlock;
 import net.bobofraggins.mobfarmingsupplies.mobhead.MobHeadBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.mobhead.MobHeadItem;
 import net.bobofraggins.mobfarmingsupplies.mobhead.MobHeads;
 import net.bobofraggins.mobfarmingsupplies.mobhead.MobWallHeadBlock;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.world.item.Rarity;
-import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.bobofraggins.mobfarmingsupplies.omnihopper.OmniHopperBlock;
 import net.bobofraggins.mobfarmingsupplies.omnihopper.OmniHopperBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.omnihopper.OmniHopperBlockItem;
@@ -80,20 +79,19 @@ import net.bobofraggins.mobfarmingsupplies.tank.TankContents;
 import net.bobofraggins.mobfarmingsupplies.tank.TankMenu;
 import net.bobofraggins.mobfarmingsupplies.tank.TankTier;
 import net.bobofraggins.mobfarmingsupplies.tank.TankUpgradeRecipe;
+import net.bobofraggins.mobfarmingsupplies.togglebutton.ToggleButtonBlock;
 import net.bobofraggins.mobfarmingsupplies.toilet.ToiletBlock;
 import net.bobofraggins.mobfarmingsupplies.toilet.ToiletBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.toilet.ToiletBlockItem;
 import net.bobofraggins.mobfarmingsupplies.toilet.ToiletSeatEntity;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.CreativeModeTab;
-import net.bobofraggins.mobfarmingsupplies.mobexclusionglass.MobExclusionGlassBlock;
-import net.bobofraggins.mobfarmingsupplies.togglebutton.ToggleButtonBlock;
 import net.bobofraggins.mobfarmingsupplies.vectorplate.VectorPlateBlock;
 import net.bobofraggins.mobfarmingsupplies.witherproofglass.WitherProofGlassBlock;
 import net.bobofraggins.mobfarmingsupplies.xpjuice.XpJuicePlatformHelper;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
@@ -106,24 +104,28 @@ import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.BucketItem;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.equipment.ArmorMaterials;
 import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.item.equipment.EquipmentAssets;
 import net.minecraft.world.item.equipment.Equippable;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LiquidBlock;
-import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
+import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
-import net.bobofraggins.mobfarmingsupplies.crushing.AnvilCrushingRecipe;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
 
 public final class Registration {
 
@@ -407,6 +409,12 @@ public final class Registration {
                     () -> new HarvesterUpgradeItem(new Item.Properties()
                             .setId(itemKey("harvester_upgrade_fire_aspect")),
                             HarvesterUpgradeItem.UpgradeType.FIRE_ASPECT));
+
+    public static final RegistrySupplier<HarvesterUpgradeItem> HARVESTER_UPGRADE_SMITE =
+            ITEMS.register("harvester_upgrade_smite",
+                    () -> new HarvesterUpgradeItem(new Item.Properties()
+                            .setId(itemKey("harvester_upgrade_smite")),
+                            HarvesterUpgradeItem.UpgradeType.SMITE));
 
     public static final RegistrySupplier<Item> HARVESTER_SWORD =
             ITEMS.register("harvester_sword",
@@ -1017,6 +1025,25 @@ public final class Registration {
             BLOCK_ENTITIES.register("toilet",
                     () -> BlockEntityTypePlatform.create(ToiletBlockEntity::new, TOILET.get()));
 
+    // ── Giant Skeleton Lawn Ornament ─────────────────────────────────────────────
+
+    public static final RegistrySupplier<GiantSkeletonOrnamentBlock> GIANT_SKELETON_ORNAMENT =
+            BLOCKS.register("giant_skeleton_lawn_ornament",
+                    () -> new GiantSkeletonOrnamentBlock(BlockBehaviour.Properties.of()
+                            .setId(blockKey("giant_skeleton_lawn_ornament"))
+                            .strength(1.5f)
+                            .sound(SoundType.BONE_BLOCK)
+                            .noOcclusion()));
+
+    public static final RegistrySupplier<BlockItem> GIANT_SKELETON_ORNAMENT_ITEM =
+            ITEMS.register("giant_skeleton_lawn_ornament",
+                    () -> new BlockItem(GIANT_SKELETON_ORNAMENT.get(), new Item.Properties()
+                            .setId(itemKey("giant_skeleton_lawn_ornament"))));
+
+    public static final RegistrySupplier<BlockEntityType<GiantSkeletonOrnamentBlockEntity>> GIANT_SKELETON_ORNAMENT_BE_TYPE =
+            BLOCK_ENTITIES.register("giant_skeleton_lawn_ornament",
+                    () -> BlockEntityTypePlatform.create(GiantSkeletonOrnamentBlockEntity::new, GIANT_SKELETON_ORNAMENT.get()));
+
     public static final RegistrySupplier<EntityType<ToiletSeatEntity>> TOILET_SEAT =
             ENTITY_TYPES.register("toilet_seat",
                     () -> EntityType.Builder.<ToiletSeatEntity>of(ToiletSeatEntity::new, MobCategory.MISC)
@@ -1096,6 +1123,7 @@ public final class Registration {
                         output.accept(VECTOR_PLATE_ITEM.get());
                         output.accept(HALTING_PLATE_ITEM.get());
                         output.accept(TOILET_ITEM.get());
+                        output.accept(GIANT_SKELETON_ORNAMENT_ITEM.get());
                         output.accept(FAN_ITEM.get());
                         output.accept(FAN_UPGRADE_WIDTH.get());
                         output.accept(FAN_UPGRADE_HEIGHT.get());
@@ -1105,6 +1133,7 @@ public final class Registration {
                         output.accept(HARVESTER_UPGRADE_LOOTING.get());
                         output.accept(HARVESTER_UPGRADE_BEHEADING.get());
                         output.accept(HARVESTER_UPGRADE_FIRE_ASPECT.get());
+                        output.accept(HARVESTER_UPGRADE_SMITE.get());
                         output.accept(CLONE_O_MATIC_ITEM.get());
                         output.accept(DNA_COLLECTOR.get());
                         output.accept(DNA_SAMPLE.get());

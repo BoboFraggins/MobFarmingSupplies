@@ -1,16 +1,17 @@
 package net.bobofraggins.mobfarmingsupplies;
 
-import net.bobofraggins.mobfarmingsupplies.tank.TankCapacities;
 import com.mojang.logging.LogUtils;
 import dev.architectury.event.events.common.LifecycleEvent;
 import net.bobofraggins.mobfarmingsupplies.bridge.BridgeNetworks;
-import net.bobofraggins.mobfarmingsupplies.mobhead.BeheadingDrops;
 import net.bobofraggins.mobfarmingsupplies.dna.DnaCollectorEvents;
 import net.bobofraggins.mobfarmingsupplies.enderinhibitor.EnderInhibitorEvents;
 import net.bobofraggins.mobfarmingsupplies.glamping.magichat.MagicHatCaptureEvents;
 import net.bobofraggins.mobfarmingsupplies.glamping.present.PresentWrapEvents;
+import net.bobofraggins.mobfarmingsupplies.lawnornament.VillageLawnOrnaments;
+import net.bobofraggins.mobfarmingsupplies.mobhead.BeheadingDrops;
 import net.bobofraggins.mobfarmingsupplies.network.MFSNetwork;
 import net.bobofraggins.mobfarmingsupplies.picnicbasket.PicnicBasketFeedHandler;
+import net.bobofraggins.mobfarmingsupplies.tank.TankCapacities;
 import org.slf4j.Logger;
 
 public final class MobFarmingSuppliesCommon {
@@ -36,6 +37,7 @@ public final class MobFarmingSuppliesCommon {
         MFSNetwork.register();
         TankCapacities.register();
         PicnicBasketFeedHandler.register();
+        VillageLawnOrnaments.register();
         net.bobofraggins.mobfarmingsupplies.magnet.MagnetPull.register();
         LOGGER.info("MobFarmingSupplies initialized");
     }

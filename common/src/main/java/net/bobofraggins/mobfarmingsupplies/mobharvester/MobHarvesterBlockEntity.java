@@ -33,7 +33,7 @@ import java.util.List;
 /**
  * Block entity for the Mob Harvester.
  *
- * <p>Holds four typed upgrade slots (Sharpness, Looting, Beheading, Fire Aspect).
+ * <p>Holds five typed upgrade slots (Sharpness, Looting, Beheading, Fire Aspect, Smite).
  * When powered, attacks all non-player {@link LivingEntity}s in its kill zone
  * every {@link #ATTACK_INTERVAL_TICKS} ticks using a platform-specific fake player
  * (NeoForge) or direct hurt (Fabric).
@@ -47,7 +47,7 @@ public class MobHarvesterBlockEntity extends BlockEntity implements MenuProvider
     // ── Constants ─────────────────────────────────────────────────────────────────
 
     /** Number of upgrade slots (one per {@link HarvesterUpgradeItem.UpgradeType}). */
-    public static final int UPGRADE_SLOTS = HarvesterUpgradeItem.UpgradeType.values().length; // 4
+    public static final int UPGRADE_SLOTS = HarvesterUpgradeItem.UpgradeType.values().length; // 5
 
     /** Ticks between attack attempts when continuously powered. */
     public static final int ATTACK_INTERVAL_TICKS = 10;
@@ -123,11 +123,14 @@ public class MobHarvesterBlockEntity extends BlockEntity implements MenuProvider
             int sharpness = getUpgradeCount(HarvesterUpgradeItem.UpgradeType.SHARPNESS);
             int looting   = getUpgradeCount(HarvesterUpgradeItem.UpgradeType.LOOTING);
             int beheading = getUpgradeCount(HarvesterUpgradeItem.UpgradeType.BEHEADING);
+            int smite     = getUpgradeCount(HarvesterUpgradeItem.UpgradeType.SMITE);
             var enchReg = serverLevel.registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
             if (sharpness > 0)
                 sword.enchant(enchReg.getOrThrow(Enchantments.SHARPNESS), sharpness * 10);
             if (looting > 0)
                 sword.enchant(enchReg.getOrThrow(Enchantments.LOOTING), looting);
+            if (smite > 0) // extra damage against undead only, as the enchantment does
+                sword.enchant(enchReg.getOrThrow(Enchantments.SMITE), smite);
             if (beheading > 0)
                 sword.set(beheadingLevelType, beheading);
             cachedSword = sword;

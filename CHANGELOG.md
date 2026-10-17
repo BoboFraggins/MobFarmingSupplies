@@ -1,5 +1,17 @@
 # Mob Farming Supplies
 
+## 26.3.0.6, 26.2.0.7, 26.1.2.9, 1.21.1.1
+
+* Happy Halloween
+
+* Added Smite upgrade
+* Added Giant Skeleton Lawn Ornament
+
+* Changed Wither Inhibitor to require Nether Star
+* Changed Mob Harvester to use Iron Spear instead of Copper Rod (except for 1.21.1)
+
+* Fixed inventory item rendering of mostly black items (glasses, tanks, inhibitors)
+
 ## 26.3.0.5, 26.2.0.6, 26.1.2.8, 1.21.1.0
 
 * Initial release for 1.21.1

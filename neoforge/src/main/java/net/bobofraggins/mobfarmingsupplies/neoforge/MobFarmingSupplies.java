@@ -2,26 +2,29 @@ package net.bobofraggins.mobfarmingsupplies.neoforge;
 
 import dev.architectury.platform.Platform;
 import dev.architectury.utils.Env;
-import net.bobofraggins.mobfarmingsupplies.neoforge.absorptionhopper.AbsorptionHopperClientEvents;
+import net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommon;
+import net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommonClient;
 import net.bobofraggins.mobfarmingsupplies.client.model.neoforge.ExtraBlockModelsClientEvents;
+import net.bobofraggins.mobfarmingsupplies.neoforge.absorptionhopper.AbsorptionHopperClientEvents;
 import net.bobofraggins.mobfarmingsupplies.neoforge.cloneomatic.CloneOMaticClientEvents;
 import net.bobofraggins.mobfarmingsupplies.neoforge.enderinhibitor.EnderInhibitorClientEvents;
-import net.bobofraggins.mobfarmingsupplies.neoforge.filterscribingterminal.FilterScribingTerminalClientEvents;
-import net.bobofraggins.mobfarmingsupplies.neoforge.logisticsorter.LogisticSorterClientEvents;
-import net.bobofraggins.mobfarmingsupplies.neoforge.omnihopper.OmniHopperClientEvents;
 import net.bobofraggins.mobfarmingsupplies.neoforge.enderinhibitor.NeoForgeEnderInhibitorEvents;
 import net.bobofraggins.mobfarmingsupplies.neoforge.fan.FanClientEvents;
+import net.bobofraggins.mobfarmingsupplies.neoforge.filterscribingterminal.FilterScribingTerminalClientEvents;
 import net.bobofraggins.mobfarmingsupplies.neoforge.glamping.magichat.MagicHatClientEvents;
 import net.bobofraggins.mobfarmingsupplies.neoforge.glamping.magichat.MagicHatCurioSetup;
 import net.bobofraggins.mobfarmingsupplies.neoforge.glamping.magichat.MagicHatSpawnEvents;
 import net.bobofraggins.mobfarmingsupplies.neoforge.glamping.present.PresentClientEvents;
 import net.bobofraggins.mobfarmingsupplies.neoforge.glamping.present.PresentSpawnEvents;
+import net.bobofraggins.mobfarmingsupplies.neoforge.lawnornament.LawnOrnamentClientEvents;
+import net.bobofraggins.mobfarmingsupplies.neoforge.logisticsorter.LogisticSorterClientEvents;
 import net.bobofraggins.mobfarmingsupplies.neoforge.mobharvester.MobHarvesterClientEvents;
+import net.bobofraggins.mobfarmingsupplies.neoforge.mobhead.MobHeadClientEvents;
+import net.bobofraggins.mobfarmingsupplies.neoforge.omnihopper.OmniHopperClientEvents;
 import net.bobofraggins.mobfarmingsupplies.neoforge.picnicbasket.PicnicBasketClientEvents;
 import net.bobofraggins.mobfarmingsupplies.neoforge.register.NeoForgeOnlyRegistration;
 import net.bobofraggins.mobfarmingsupplies.neoforge.tank.TankClientEvents;
 import net.bobofraggins.mobfarmingsupplies.neoforge.toilet.ToiletClientEvents;
-import net.bobofraggins.mobfarmingsupplies.neoforge.mobhead.MobHeadClientEvents;
 import net.bobofraggins.mobfarmingsupplies.neoforge.xpjuice.XpJuiceClientEvents;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
@@ -30,8 +33,6 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
-import net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommon;
-import net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommonClient;
 
 @Mod(MobFarmingSuppliesCommon.MODID)
 public class MobFarmingSupplies {
@@ -79,6 +80,7 @@ public class MobFarmingSupplies {
                 MagicHatCurioSetup.onClientSetup(modEventBus);
             }
             modEventBus.register(ToiletClientEvents.class);
+            modEventBus.register(LawnOrnamentClientEvents.class);
             modEventBus.register(MobHeadClientEvents.class);
         }
 
