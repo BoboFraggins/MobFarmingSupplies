@@ -90,6 +90,8 @@
   "block.mobfarmingsupplies.toilet": "Toilet",
   "block.mobfarmingsupplies.giant_skeleton_lawn_ornament": "Giant Skeleton Lawn Ornament",
   "block.mobfarmingsupplies.skull_light_hook": "Skull Light Hook",
+  "block.mobfarmingsupplies.head_pike": "Head Pike",
+  "container.mobfarmingsupplies.head_pike": "Head Pike",
   "item.mobfarmingsupplies.string_of_skull_lights": "String of Skull Lights",
   "item.mobfarmingsupplies.string_of_skull_lights.started": "String hooked on. Use it on another block to hang it, or sneak-use in the air to take it back.",
   "item.mobfarmingsupplies.string_of_skull_lights.too_far": "Too far: a string reaches %s blocks",

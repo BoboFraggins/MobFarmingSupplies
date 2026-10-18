@@ -7,6 +7,7 @@
 * Added Smite upgrade
 * Added Giant Skeleton Lawn Ornament
 * Added String of Skull Lights
+* Added Head Pike (add skulls to prevent natural spawns)
 
 * Changed mob heads to replace player heads when worn (Trick or Treat!)
 * Changed Wither Inhibitor recipe to require Nether Star

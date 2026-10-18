@@ -17,6 +17,7 @@ import net.bobofraggins.mobfarmingsupplies.fan.FanBlockEntityRenderer;
 import net.bobofraggins.mobfarmingsupplies.glamping.magichat.MagicHatHelmetLayer;
 import net.bobofraggins.mobfarmingsupplies.glamping.magichat.fabric.MagicHatTrinketClientSetup;
 import net.bobofraggins.mobfarmingsupplies.glamping.present.PresentRenderer;
+import net.bobofraggins.mobfarmingsupplies.headpike.HeadPikeRenderer;
 import net.bobofraggins.mobfarmingsupplies.lawnornament.GiantSkeletonOrnamentItemRenderer;
 import net.bobofraggins.mobfarmingsupplies.lawnornament.GiantSkeletonOrnamentRenderer;
 import net.bobofraggins.mobfarmingsupplies.logisticsorter.LogisticSorterItemRenderer;
@@ -71,6 +72,9 @@ public class MobFarmingSuppliesFabricClient implements ClientModInitializer {
         BlockEntityRendererRegistry.register(
                 Registration.SKULL_LIGHT_HOOK_BE_TYPE.get(),
                 SkullLightsRenderer::new);
+        BlockEntityRendererRegistry.register(
+                Registration.HEAD_PIKE_BE_TYPE.get(),
+                HeadPikeRenderer::new);
         BlockEntityRendererRegistry.register(
                 Registration.TANK_BE_TYPE.get(),
                 TankRenderer::new);

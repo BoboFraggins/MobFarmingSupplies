@@ -42,6 +42,9 @@ import net.bobofraggins.mobfarmingsupplies.glamping.present.PresentBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.glamping.present.PresentBlockItem;
 import net.bobofraggins.mobfarmingsupplies.guide.GuideBook;
 import net.bobofraggins.mobfarmingsupplies.haltingplate.HaltingPlateBlock;
+import net.bobofraggins.mobfarmingsupplies.headpike.HeadPikeBlock;
+import net.bobofraggins.mobfarmingsupplies.headpike.HeadPikeBlockEntity;
+import net.bobofraggins.mobfarmingsupplies.headpike.HeadPikeMenu;
 import net.bobofraggins.mobfarmingsupplies.itemfilter.ItemFilterData;
 import net.bobofraggins.mobfarmingsupplies.itemfilter.ItemFilterItem;
 import net.bobofraggins.mobfarmingsupplies.lawnornament.GiantSkeletonOrnamentBlock;
@@ -105,6 +108,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
@@ -1068,6 +1072,29 @@ public final class Registration {
             BLOCK_ENTITIES.register("giant_skeleton_lawn_ornament",
                     () -> BlockEntityTypePlatform.create(GiantSkeletonOrnamentBlockEntity::new, GIANT_SKELETON_ORNAMENT.get()));
 
+    // ── Head Pike ────────────────────────────────────────────────────────────────
+
+    public static final RegistrySupplier<HeadPikeBlock> HEAD_PIKE =
+            BLOCKS.register("head_pike",
+                    () -> new HeadPikeBlock(BlockBehaviour.Properties.of()
+                            .setId(blockKey("head_pike"))
+                            .strength(1.0f)
+                            .sound(SoundType.WOOD)
+                            .noOcclusion()
+                            .pushReaction(PushReaction.DESTROY)));
+
+    public static final RegistrySupplier<BlockItem> HEAD_PIKE_ITEM =
+            ITEMS.register("head_pike",
+                    () -> new BlockItem(HEAD_PIKE.get(), new Item.Properties()
+                            .setId(itemKey("head_pike"))));
+
+    public static final RegistrySupplier<BlockEntityType<HeadPikeBlockEntity>> HEAD_PIKE_BE_TYPE =
+            BLOCK_ENTITIES.register("head_pike",
+                    () -> BlockEntityTypePlatform.create(HeadPikeBlockEntity::new, HEAD_PIKE.get()));
+
+    public static final RegistrySupplier<MenuType<HeadPikeMenu>> HEAD_PIKE_MENU =
+            MENUS.register("head_pike", () -> new MenuType<>(HeadPikeMenu::new, FeatureFlags.VANILLA_SET));
+
     // ── String of Skull Lights ───────────────────────────────────────────────────
 
     public static final RegistrySupplier<SkullLightHookBlock> SKULL_LIGHT_HOOK =
@@ -1169,10 +1196,6 @@ public final class Registration {
                         output.accept(VECTOR_PLATE_ITEM.get());
                         output.accept(HALTING_PLATE_ITEM.get());
                         output.accept(TOILET_ITEM.get());
-                        output.accept(GIANT_SKELETON_ORNAMENT_ITEM.get());
-                        ItemStack skullLights = new ItemStack(STRING_OF_SKULL_LIGHTS.get());
-                        skullLights.set(SKULL_LIGHTS.get(), SkullLights.defaultLights());
-                        output.accept(skullLights);
                         output.accept(FAN_ITEM.get());
                         output.accept(FAN_UPGRADE_WIDTH.get());
                         output.accept(FAN_UPGRADE_HEIGHT.get());
@@ -1226,6 +1249,11 @@ public final class Registration {
                         output.accept(WILHELM_BUTTON_ITEM.get());
                         // A Mob Head for every mob without a vanilla head (the ones Beheading drops).
                         for (EntityType<?> type : MobHeads.MOD_HEADS) output.accept(MobHeads.modHead(type));
+                        output.accept(GIANT_SKELETON_ORNAMENT_ITEM.get());
+                        ItemStack skullLights = new ItemStack(STRING_OF_SKULL_LIGHTS.get());
+                        skullLights.set(SKULL_LIGHTS.get(), SkullLights.defaultLights());
+                        output.accept(skullLights);
+                        output.accept(HEAD_PIKE_ITEM.get());
                     })
                     .build());
 

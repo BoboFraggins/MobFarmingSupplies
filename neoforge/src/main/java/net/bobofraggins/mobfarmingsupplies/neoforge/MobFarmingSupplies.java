@@ -16,6 +16,8 @@ import net.bobofraggins.mobfarmingsupplies.neoforge.glamping.magichat.MagicHatCu
 import net.bobofraggins.mobfarmingsupplies.neoforge.glamping.magichat.MagicHatSpawnEvents;
 import net.bobofraggins.mobfarmingsupplies.neoforge.glamping.present.PresentClientEvents;
 import net.bobofraggins.mobfarmingsupplies.neoforge.glamping.present.PresentSpawnEvents;
+import net.bobofraggins.mobfarmingsupplies.neoforge.headpike.HeadPikeClientEvents;
+import net.bobofraggins.mobfarmingsupplies.neoforge.headpike.HeadPikeSpawnEvents;
 import net.bobofraggins.mobfarmingsupplies.neoforge.lawnornament.LawnOrnamentClientEvents;
 import net.bobofraggins.mobfarmingsupplies.neoforge.logisticsorter.LogisticSorterClientEvents;
 import net.bobofraggins.mobfarmingsupplies.neoforge.mobharvester.MobHarvesterClientEvents;
@@ -47,6 +49,7 @@ public class MobFarmingSupplies {
         NeoForge.EVENT_BUS.register(new MagicHatSpawnEvents());
         // Present enderman easter egg — same split as the Magic Hat.
         NeoForge.EVENT_BUS.register(new PresentSpawnEvents());
+        NeoForge.EVENT_BUS.register(new HeadPikeSpawnEvents());
         // Magic Hat Curios integration — soft dependency, registered only if Curios is present.
         // MUST check isLoaded() before ever calling into MagicHatCurioSetup: that class
         // references Curios API types, and simply loading it (even just to have this class's
@@ -81,6 +84,7 @@ public class MobFarmingSupplies {
             }
             modEventBus.register(ToiletClientEvents.class);
             modEventBus.register(LawnOrnamentClientEvents.class);
+            modEventBus.register(HeadPikeClientEvents.class);
             modEventBus.register(MobHeadClientEvents.class);
         }
 

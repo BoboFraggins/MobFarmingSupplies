@@ -7,6 +7,7 @@ import net.bobofraggins.mobfarmingsupplies.dna.DnaCollectorEvents;
 import net.bobofraggins.mobfarmingsupplies.enderinhibitor.EnderInhibitorEvents;
 import net.bobofraggins.mobfarmingsupplies.glamping.magichat.MagicHatCaptureEvents;
 import net.bobofraggins.mobfarmingsupplies.glamping.present.PresentWrapEvents;
+import net.bobofraggins.mobfarmingsupplies.headpike.HeadPikes;
 import net.bobofraggins.mobfarmingsupplies.lawnornament.VillageLawnOrnaments;
 import net.bobofraggins.mobfarmingsupplies.mobhead.BeheadingDrops;
 import net.bobofraggins.mobfarmingsupplies.network.MFSNetwork;
@@ -38,6 +39,7 @@ public final class MobFarmingSuppliesCommon {
         TankCapacities.register();
         PicnicBasketFeedHandler.register();
         VillageLawnOrnaments.register();
+        HeadPikes.register();
         net.bobofraggins.mobfarmingsupplies.magnet.MagnetPull.register();
         LOGGER.info("MobFarmingSupplies initialized");
     }

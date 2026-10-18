@@ -5,38 +5,24 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
-import net.bobofraggins.mobfarmingsupplies.mobhead.MobHeadModels;
+import net.bobofraggins.mobfarmingsupplies.mobhead.SkullStackDrawer;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.geom.EntityModelSet;
-import net.minecraft.client.model.object.skull.SkullModelBase;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.blockentity.SkullBlockRenderer;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
-import net.minecraft.util.Util;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.component.ResolvableProfile;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.AbstractSkullBlock;
-import net.minecraft.world.level.block.SkullBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -67,12 +53,10 @@ public class SkullLightsRenderer implements BlockEntityRenderer<SkullLightHookBl
 
     record Skull(ItemStack stack, Vec3 centre, float yaw, int light, int tint) {}
 
-    private final Function<SkullBlock.Type, SkullModelBase> skullModels;
-    private final ItemStackRenderState itemState = new ItemStackRenderState();
+    private final SkullStackDrawer skulls;
 
     public SkullLightsRenderer(BlockEntityRendererProvider.Context ctx) {
-        EntityModelSet models = ctx.entityModelSet();
-        this.skullModels = Util.memoize(type -> SkullBlockRenderer.createModel(models, type));
+        this.skulls = new SkullStackDrawer(ctx.entityModelSet());
     }
 
     @Override
@@ -133,44 +117,9 @@ public class SkullLightsRenderer implements BlockEntityRenderer<SkullLightHookBl
             poseStack.translate(skull.centre().x, skull.centre().y - 2 * SkullLightsCurve.SKULL_DROP, skull.centre().z);
             poseStack.mulPose(Axis.YP.rotationDegrees(-skull.yaw()));
             poseStack.scale(SKULL_SCALE, SKULL_SCALE, SKULL_SCALE);
-            submitSkull(skull, poseStack, collector);
+            skulls.submit(skull.stack(), poseStack, collector, skull.light(), skull.tint());
             poseStack.popPose();
         }
-    }
-
-    /** Draws one skull standing on the pose's origin, centred, facing +z. */
-    private void submitSkull(Skull skull, PoseStack poseStack, SubmitNodeCollector collector) {
-        ItemStack stack = skull.stack();
-        EntityType<?> mob = stack.get(Registration.MOB_HEAD_TYPE.get());
-        if (mob != null) {
-            poseStack.mulPose(Axis.XP.rotationDegrees(180f));
-            poseStack.mulPose(Axis.YP.rotationDegrees(180f));
-            MobHeadModels.submit(mob, poseStack, collector, skull.light(), skull.tint());
-            return;
-        }
-        if (stack.getItem() instanceof BlockItem item && item.getBlock() instanceof AbstractSkullBlock block) {
-            SkullModelBase model = skullModels.apply(block.getType());
-            if (model != null) {
-                poseStack.scale(-1f, -1f, 1f);
-                SkullModelBase.State modelState = new SkullModelBase.State();
-                collector.submitModel(model, modelState, poseStack, renderType(block.getType(), stack), skull.light(),
-                        OverlayTexture.NO_OVERLAY, skull.tint(), null, 0, null);
-                return;
-            }
-        }
-        // A skull from another mod with its own renderer: draw its item, untinted.
-        Minecraft mc = Minecraft.getInstance();
-        mc.getItemModelResolver().updateForTopItem(itemState, stack, ItemDisplayContext.NONE, mc.level, null, 0);
-        poseStack.translate(-0.5f, 0f, -0.5f);
-        itemState.submit(poseStack, collector, skull.light(), OverlayTexture.NO_OVERLAY, 0);
-    }
-
-    private static RenderType renderType(SkullBlock.Type type, ItemStack stack) {
-        ResolvableProfile profile = stack.get(DataComponents.PROFILE);
-        if (type == SkullBlock.Types.PLAYER && profile != null) {
-            return Minecraft.getInstance().playerSkinRenderCache().getOrDefault(profile).renderType();
-        }
-        return SkullBlockRenderer.getSkullRenderType(type, null);
     }
 
     /** The cord: a thin square tube along its points. */
