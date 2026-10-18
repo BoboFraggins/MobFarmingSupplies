@@ -1,0 +1,9 @@
+{
+  "model": {
+    "type": "minecraft:special",
+    "base": "mobfarmingsupplies:item/giant_skeleton_lawn_ornament",
+    "model": {
+      "type": "mobfarmingsupplies:giant_skeleton_lawn_ornament"
+    }
+  }
+}

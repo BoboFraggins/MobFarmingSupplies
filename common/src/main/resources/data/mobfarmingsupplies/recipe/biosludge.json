@@ -7,6 +7,7 @@
     "minecraft:rotten_flesh"
   ],
   "result": {
-    "id": "mobfarmingsupplies:biosludge"
+    "id": "mobfarmingsupplies:biosludge",
+    "count": 3
   }
 }

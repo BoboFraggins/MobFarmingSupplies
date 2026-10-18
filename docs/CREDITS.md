@@ -7,6 +7,8 @@ Mob Farming Supplies began as an homage to
 [Mob Grinding Utils](https://github.com/vadis365/Mob-Grinding-Utils) by vadis365, and several of
 its farming blocks follow that mod's design.
 
+String of Skull Lights based off of lights from [Fairy Lights](https://github.com/pau101/Fairy-Lights).
+
 ## Sounds
 
 The Dramatic Button plays the Dramatic Chipmunk, from

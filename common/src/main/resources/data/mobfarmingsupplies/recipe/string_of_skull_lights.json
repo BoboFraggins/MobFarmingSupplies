@@ -1,0 +1,19 @@
+{
+  "type": "mobfarmingsupplies:skull_lights",
+  "category": "misc",
+  "pattern": [
+    "HHH",
+    "CDC",
+    "SSS"
+  ],
+  "key": {
+    "H": "#minecraft:skulls",
+    "C": "#minecraft:candles",
+    "D": "#minecraft:dyes",
+    "S": "minecraft:string"
+  },
+  "result": {
+    "id": "mobfarmingsupplies:string_of_skull_lights",
+    "count": 1
+  }
+}

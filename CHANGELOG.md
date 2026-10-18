@@ -1,5 +1,21 @@
 # Mob Farming Supplies
 
+## 26.3.0.6, 26.2.0.7, 26.1.2.9, 1.21.1.1
+
+* Spooky Release (Happy Halloween!)
+
+* Added Smite upgrade
+* Added Giant Skeleton Lawn Ornament
+* Added String of Skull Lights
+* Added Head Pike (add skulls to prevent natural spawns)
+* Added Guillotine enchantment to obtain skulls outside of farms
+
+* Changed mob heads to replace player heads when worn (Trick or Treat!)
+* Changed Wither Inhibitor recipe to require Nether Star
+* Changed Mob Harvester to use Iron Spear instead of Copper Rod (except for 1.21.1)
+
+* Fixed inventory item rendering of mostly black items (glasses, tanks, inhibitors)
+
 ## 26.3.0.5, 26.2.0.6, 26.1.2.8, 1.21.1.0
 
 * Initial release for 1.21.1

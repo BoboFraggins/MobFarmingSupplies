@@ -1,0 +1,25 @@
+{
+  "gui_light": "front",
+  "textures": {
+    "particle": "mobfarmingsupplies:item/gui_backdrop"
+  },
+  "display": {
+    "gui": {
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "translation": [
+        0,
+        0,
+        -16
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    }
+  }
+}

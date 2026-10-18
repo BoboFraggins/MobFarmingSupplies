@@ -22,6 +22,7 @@ import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
@@ -40,8 +41,9 @@ import org.joml.Vector3f;
  *
  * <p>A few mobs need more than their base texture to look like themselves; {@link #build} adds
  * those layers by hand (Enderman eyes, Sheep wool, the Drowned's outer skin, the Slime's jelly,
- * the Mooshroom's mushroom), the way the mob's own render layers draw them. Mobs that are all head
- * (slimes, ghasts) are drawn whole, less a ghast's dangling tentacles.
+ * the Sulfur Cube's inner cube, the Mooshroom's mushroom), the way the mob's own render layers
+ * draw them. Mobs that are all head (slimes, sulfur cubes, ghasts) are drawn whole, less a ghast's
+ * dangling tentacles.
  */
 public final class MobHeadModels {
 
@@ -51,6 +53,7 @@ public final class MobHeadModels {
     private static final Identifier ENDERMAN_EYES = Identifier.withDefaultNamespace("textures/entity/enderman/enderman_eyes.png");
     private static final Identifier SHEEP_WOOL = Identifier.withDefaultNamespace("textures/entity/sheep/sheep_wool.png");
     private static final Identifier SLIME = Identifier.withDefaultNamespace("textures/entity/slime/slime.png");
+    private static final Identifier SULFUR_CUBE_INNER = Identifier.withDefaultNamespace("textures/entity/sulfur_cube/sulfur_cube_inner.png");
     private static final Identifier DROWNED_OUTER = Identifier.withDefaultNamespace("textures/entity/zombie/drowned_outer_layer.png");
 
     /** One pass of a head: a model part drawn with a render type and tint (-1 = none). */
@@ -95,6 +98,11 @@ public final class MobHeadModels {
      * space a vanilla skull model is drawn in after its block or item transform.
      */
     public static void submit(EntityType<?> type, PoseStack poseStack, SubmitNodeCollector collector, int light) {
+        submit(type, poseStack, collector, light, -1);
+    }
+
+    /** As {@link #submit(EntityType, PoseStack, SubmitNodeCollector, int)}, every layer tinted {@code tint} (-1 = none). */
+    public static void submit(EntityType<?> type, PoseStack poseStack, SubmitNodeCollector collector, int light, int tint) {
         Head head = get(type);
         if (head == null) return;
         poseStack.pushPose();
@@ -102,7 +110,7 @@ public final class MobHeadModels {
         poseStack.translate(-head.centreX(), -head.bottomY(), -head.centreZ());
         for (Layer layer : head.layers()) {
             collector.submitModelPart(layer.part(), poseStack, layer.renderType(), light, OverlayTexture.NO_OVERLAY,
-                    null, layer.tint(), null, 0);
+                    null, tint == -1 ? layer.tint() : layer.tint() == -1 ? tint : ARGB.multiply(layer.tint(), tint), null, 0);
         }
         if (head.mushroom() != null) {
             // Where MushroomCowMushroomLayer puts the mushroom on the head.
@@ -151,6 +159,11 @@ public final class MobHeadModels {
                 layers.add(new Layer(outer, RenderTypes.entityTranslucent(SLIME), -1));
                 sizedBy = outer; // the jelly, not the core inside it
             }
+            case "sulfur_cube" -> {
+                // Inside out from a slime: the model is the shell, with a cube floating in it.
+                ModelPart inner = bakeHead(ModelLayers.SULFUR_CUBE_INNER, null);
+                if (inner != null) layers.add(0, new Layer(inner, RenderTypes.entityTranslucent(SULFUR_CUBE_INNER), -1));
+            }
             case "mooshroom" -> {
                 if (state instanceof MushroomCowRenderState cow && !cow.mushroomModel.isEmpty()) mushroom = cow.mushroomModel;
             }
@@ -179,14 +192,14 @@ public final class MobHeadModels {
     }
 
     /**
-     * The model part that is the mob's head, or null for the whole model: slimes and ghasts are
-     * all head.
+     * The model part that is the mob's head, or null for the whole model: slimes, sulfur cubes
+     * and ghasts are all head.
      */
     @Nullable
     private static String headPartFor(Identifier id) {
         return switch (id.getPath()) {
             case "ghast", "happy_ghast" -> "body";
-            case "slime", "magma_cube" -> null;
+            case "slime", "magma_cube", "sulfur_cube" -> null;
             default -> "head";
         };
     }

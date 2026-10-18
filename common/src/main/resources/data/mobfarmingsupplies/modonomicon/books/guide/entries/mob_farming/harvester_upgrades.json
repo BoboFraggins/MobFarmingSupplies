@@ -31,6 +31,12 @@
       "type": "modonomicon:crafting_recipe",
       "recipe_id_1": "mobfarmingsupplies:harvester_upgrade_beheading",
       "recipe_id_2": "mobfarmingsupplies:harvester_upgrade_fire_aspect"
+    },
+    {
+      "id": "p3",
+      "sort_number": 3,
+      "type": "modonomicon:crafting_recipe",
+      "recipe_id_1": "mobfarmingsupplies:harvester_upgrade_smite"
     }
   ]
 }

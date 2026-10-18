@@ -2,15 +2,16 @@ package net.bobofraggins.mobfarmingsupplies;
 
 import dev.architectury.registry.client.gui.MenuScreenRegistry;
 import net.bobofraggins.mobfarmingsupplies.absorptionhopper.AbsorptionHopperScreen;
+import net.bobofraggins.mobfarmingsupplies.bridge.EinsteinRosenBridgeMenu;
 import net.bobofraggins.mobfarmingsupplies.cloneomatic.CloneOMaticScreen;
 import net.bobofraggins.mobfarmingsupplies.enderinhibitor.EnderInhibitorScreen;
 import net.bobofraggins.mobfarmingsupplies.fan.FanScreen;
 import net.bobofraggins.mobfarmingsupplies.filterscribingterminal.FilterScribingTerminalScreen;
+import net.bobofraggins.mobfarmingsupplies.headpike.HeadPikeScreen;
 import net.bobofraggins.mobfarmingsupplies.logisticsorter.LogisticSorterScreen;
-import net.bobofraggins.mobfarmingsupplies.bridge.EinsteinRosenBridgeMenu;
+import net.bobofraggins.mobfarmingsupplies.mobharvester.MobHarvesterScreen;
 import net.bobofraggins.mobfarmingsupplies.omnihopper.OmniHopperMenu;
 import net.bobofraggins.mobfarmingsupplies.omnihopper.OmniHopperScreen;
-import net.bobofraggins.mobfarmingsupplies.mobharvester.MobHarvesterScreen;
 import net.bobofraggins.mobfarmingsupplies.picnicbasket.PicnicBasketKeybinds;
 import net.bobofraggins.mobfarmingsupplies.picnicbasket.PicnicBasketScreen;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
@@ -48,6 +49,9 @@ public final class MobFarmingSuppliesCommonClient {
         MenuScreenRegistry.registerScreenFactory(
                 Registration.FAN_MENU.get(),
                 FanScreen::new);
+        MenuScreenRegistry.registerScreenFactory(
+                Registration.HEAD_PIKE_MENU.get(),
+                HeadPikeScreen::new);
         MenuScreenRegistry.registerScreenFactory(
                 Registration.MOB_HARVESTER_MENU.get(),
                 MobHarvesterScreen::new);

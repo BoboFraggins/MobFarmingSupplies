@@ -1,0 +1,20 @@
+{
+  "multipart": [
+    {
+      "when": {
+        "half": "lower"
+      },
+      "apply": {
+        "model": "mobfarmingsupplies:block/head_pike"
+      }
+    },
+    {
+      "when": {
+        "half": "upper"
+      },
+      "apply": {
+        "model": "mobfarmingsupplies:block/head_pike_top"
+      }
+    }
+  ]
+}

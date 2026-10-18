@@ -19,14 +19,16 @@
     "jade": [
       "net.bobofraggins.mobfarmingsupplies.tank.TankJadePlugin",
       "net.bobofraggins.mobfarmingsupplies.glamping.present.PresentJadePlugin",
-      "net.bobofraggins.mobfarmingsupplies.bridge.PickedNameJadePlugin"
+      "net.bobofraggins.mobfarmingsupplies.bridge.PickedNameJadePlugin",
+      "net.bobofraggins.mobfarmingsupplies.headpike.HeadPikeJadePlugin"
     ]
   },
   "mixins": [
     "mobfarmingsupplies.mixins.json",
     "mobfarmingsupplies-common.mixins.json",
     "mobfarmingsupplies-magichat.mixins.json",
-    "mobfarmingsupplies-present.mixins.json"
+    "mobfarmingsupplies-present.mixins.json",
+    "mobfarmingsupplies-headpike.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=${fabric_min_loader_version}",
