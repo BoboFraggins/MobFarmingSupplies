@@ -19,7 +19,8 @@
     "jade": [
       "net.bobofraggins.mobfarmingsupplies.tank.TankJadePlugin",
       "net.bobofraggins.mobfarmingsupplies.glamping.present.PresentJadePlugin",
-      "net.bobofraggins.mobfarmingsupplies.bridge.PickedNameJadePlugin"
+      "net.bobofraggins.mobfarmingsupplies.bridge.PickedNameJadePlugin",
+      "net.bobofraggins.mobfarmingsupplies.headpike.HeadPikeJadePlugin"
     ]
   },
   "mixins": [

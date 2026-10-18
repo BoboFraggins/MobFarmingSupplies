@@ -1,9 +1,61 @@
 {
   "model": {
-    "type": "minecraft:special",
-    "base": "mobfarmingsupplies:item/mob_head",
-    "model": {
-      "type": "mobfarmingsupplies:mob_head_renderer"
+    "type": "minecraft:select",
+    "property": "minecraft:display_context",
+    "cases": [
+      {
+        "when": "gui",
+        "model": {
+          "type": "minecraft:select",
+          "property": "minecraft:component",
+          "component": "mobfarmingsupplies:mob_head_type",
+          "cases": [
+            {
+              "when": [
+                "minecraft:cat",
+                "minecraft:enderman",
+                "minecraft:bat",
+                "minecraft:spider",
+                "minecraft:cave_spider",
+                "minecraft:magma_cube"
+              ],
+              "model": {
+                "type": "minecraft:composite",
+                "models": [
+                  {
+                    "type": "minecraft:special",
+                    "base": "mobfarmingsupplies:item/gui_backdrop",
+                    "model": {
+                      "type": "mobfarmingsupplies:gui_backdrop"
+                    }
+                  },
+                  {
+                    "type": "minecraft:special",
+                    "base": "mobfarmingsupplies:item/mob_head",
+                    "model": {
+                      "type": "mobfarmingsupplies:mob_head_renderer"
+                    }
+                  }
+                ]
+              }
+            }
+          ],
+          "fallback": {
+            "type": "minecraft:special",
+            "base": "mobfarmingsupplies:item/mob_head",
+            "model": {
+              "type": "mobfarmingsupplies:mob_head_renderer"
+            }
+          }
+        }
+      }
+    ],
+    "fallback": {
+      "type": "minecraft:special",
+      "base": "mobfarmingsupplies:item/mob_head",
+      "model": {
+        "type": "mobfarmingsupplies:mob_head_renderer"
+      }
     }
   }
 }

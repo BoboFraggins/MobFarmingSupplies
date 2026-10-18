@@ -2,7 +2,14 @@
   "parent": "mobfarmingsupplies:mob_farming/send_in_the_clones",
   "criteria": {
     "beheaded": {
-      "trigger": "mobfarmingsupplies:mob_beheaded"
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "#minecraft:skulls"
+          }
+        ]
+      }
     }
   },
   "display": {

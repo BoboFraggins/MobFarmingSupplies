@@ -30,9 +30,9 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * Draws a String of Skull Lights from its origin hook: a black cord sagging to the far hook (or,
- * while it's being hung, to the hand of whoever is carrying it), and
- * half-size skulls hanging from it, facing out to one side. Lit skulls are drawn full bright and
- * tinted towards the string's colour, as if lit from inside; unlit ones take the world's light.
+ * while it's being hung, to the hand of whoever is carrying it), and half-size skulls hanging
+ * from it, facing out from the walls it hangs on. Lit skulls are drawn full bright and tinted
+ * towards the string's colour, as if lit from inside; unlit ones take the world's light.
  */
 public class SkullLightsRenderer implements BlockEntityRenderer<SkullLightHookBlockEntity, SkullLightsRenderer.State> {
 
@@ -78,6 +78,7 @@ public class SkullLightsRenderer implements BlockEntityRenderer<SkullLightHookBl
 
         Vec3 origin = Vec3.atLowerCornerOf(hook.getBlockPos());
         Vec3 from = hook.attachPoint();
+        Vec3 away = awayFromWalls(hook, level);
         Vec3[] points = SkullLightsCurve.points(from, to);
         for (int i = 0; i < points.length; i++) points[i] = points[i].subtract(origin);
         state.cord = points;
@@ -85,11 +86,38 @@ public class SkullLightsRenderer implements BlockEntityRenderer<SkullLightHookBl
 
         int tint = lights.lit() ? ARGB.srgbLerp(TINT_STRENGTH, 0xFFFFFFFF, ARGB.opaque(lights.color().getTextureDiffuseColor())) : -1;
         for (SkullLightsCurve.Hang hang : SkullLightsCurve.hangs(from, to)) {
-            // Faces out to the right of the cord, looking from the origin hook.
-            float yaw = (float) Math.toDegrees(Math.atan2(hang.tangent().x, hang.tangent().z)) - 90f;
+            float yaw = facing(hang.tangent(), away);
             int light = lights.lit() ? FULL_BRIGHT : LevelRenderer.getLightCoords(level, BlockPos.containing(hang.skullCentre()));
             state.skulls.add(new Skull(lights.skullAt(hang.index()), hang.point().subtract(origin), yaw, light, tint));
         }
+    }
+
+    /**
+     * Which way is out from the walls the string hangs on: the way its hooks stick out, added up
+     * and made level. Zero when there's no such way: hooks on facing walls, or on a floor.
+     */
+    private static Vec3 awayFromWalls(SkullLightHookBlockEntity hook, Level level) {
+        Vec3 away = Vec3.atLowerCornerOf(hook.getBlockState().getValue(SkullLightHookBlock.FACING).getUnitVec3i());
+        BlockPos endPos = hook.end();
+        if (endPos != null) {
+            BlockState endState = level.getBlockState(endPos);
+            if (endState.is(Registration.SKULL_LIGHT_HOOK.get())) {
+                away = away.add(Vec3.atLowerCornerOf(endState.getValue(SkullLightHookBlock.FACING).getUnitVec3i()));
+            }
+        }
+        return new Vec3(away.x, 0, away.z);
+    }
+
+    /**
+     * The yaw, as a skull block's rotation in degrees, for a skull on a cord running along
+     * {@code tangent}: facing square off the cord, on the side away from the walls if there is one.
+     * A skull at rotation {@code d} faces ({@code sin d}, {@code -cos d}).
+     */
+    private static float facing(Vec3 tangent, Vec3 away) {
+        float yaw = (float) Math.toDegrees(Math.atan2(tangent.x, tangent.z)) + 90f;
+        double rad = Math.toRadians(yaw);
+        if (Math.sin(rad) * away.x - Math.cos(rad) * away.z < -1e-3) yaw += 180f;
+        return yaw;
     }
 
     /** Where the string's far end is: its other hook, or the hand of whoever is hanging it. Null if neither. */

@@ -44,6 +44,7 @@ import net.bobofraggins.mobfarmingsupplies.guide.GuideBook;
 import net.bobofraggins.mobfarmingsupplies.haltingplate.HaltingPlateBlock;
 import net.bobofraggins.mobfarmingsupplies.headpike.HeadPikeBlock;
 import net.bobofraggins.mobfarmingsupplies.headpike.HeadPikeBlockEntity;
+import net.bobofraggins.mobfarmingsupplies.headpike.HeadPikeBlockItem;
 import net.bobofraggins.mobfarmingsupplies.headpike.HeadPikeMenu;
 import net.bobofraggins.mobfarmingsupplies.itemfilter.ItemFilterData;
 import net.bobofraggins.mobfarmingsupplies.itemfilter.ItemFilterItem;
@@ -1083,9 +1084,9 @@ public final class Registration {
                             .noOcclusion()
                             .pushReaction(PushReaction.DESTROY)));
 
-    public static final RegistrySupplier<BlockItem> HEAD_PIKE_ITEM =
+    public static final RegistrySupplier<HeadPikeBlockItem> HEAD_PIKE_ITEM =
             ITEMS.register("head_pike",
-                    () -> new BlockItem(HEAD_PIKE.get(), new Item.Properties()
+                    () -> new HeadPikeBlockItem(HEAD_PIKE.get(), new Item.Properties()
                             .setId(itemKey("head_pike"))));
 
     public static final RegistrySupplier<BlockEntityType<HeadPikeBlockEntity>> HEAD_PIKE_BE_TYPE =
