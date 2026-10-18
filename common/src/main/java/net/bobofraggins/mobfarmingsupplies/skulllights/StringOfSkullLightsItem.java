@@ -6,11 +6,13 @@ import io.netty.buffer.ByteBuf;
 import java.util.function.Consumer;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.minecraft.ChatFormatting;
+import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -90,6 +92,8 @@ public class StringOfSkullLightsItem extends Item {
             endHook.attachTo(startPos);
         }
         playSound(level, hookPos, 0.9f);
+        // A finished string counts as placing a block, as hanging any decoration would.
+        if (player instanceof ServerPlayer serverPlayer) CriteriaTriggers.PLACED_BLOCK.trigger(serverPlayer, hookPos, stack);
         stack.remove(Registration.SKULL_LIGHTS_START.get());
         if (player == null || !player.getAbilities().instabuild) stack.shrink(1);
         return InteractionResult.SUCCESS;
