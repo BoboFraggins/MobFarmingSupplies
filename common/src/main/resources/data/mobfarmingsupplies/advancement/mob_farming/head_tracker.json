@@ -762,6 +762,19 @@
         ]
       }
     },
+    "sulfur_cube_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:mob_head",
+            "components": {
+              "mobfarmingsupplies:mob_head_type": "minecraft:sulfur_cube"
+            }
+          }
+        ]
+      }
+    },
     "trader_llama_head": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
@@ -1112,6 +1125,9 @@
     ],
     [
       "stray_head"
+    ],
+    [
+      "sulfur_cube_head"
     ],
     [
       "trader_llama_head"

@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "condition": {
+        "type": "minecraft:survives_explosion"
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "mobfarmingsupplies:head_pike",
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mobfarmingsupplies:head_pike",
+            "state": {
+              "half": "lower"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

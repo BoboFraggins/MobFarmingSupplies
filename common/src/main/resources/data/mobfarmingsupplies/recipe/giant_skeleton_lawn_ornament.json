@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SSS",
+    "SSS",
+    "IBI"
+  ],
+  "key": {
+    "S": "minecraft:skeleton_skull",
+    "I": "minecraft:iron_ingot",
+    "B": "minecraft:diamond_block"
+  },
+  "result": {
+    "id": "mobfarmingsupplies:giant_skeleton_lawn_ornament",
+    "count": 1
+  }
+}

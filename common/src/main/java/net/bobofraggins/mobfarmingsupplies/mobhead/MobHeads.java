@@ -46,7 +46,7 @@ public final class MobHeads {
             "iron_golem", "llama", "magma_cube", "mooshroom", "mule", "ocelot", "panda", "parched",
             "parrot", "phantom", "pig", "piglin_brute", "pillager", "polar_bear", "rabbit",
             "ravager", "sheep", "shulker", "skeleton_horse", "slime", "sniffer", "spider", "stray",
-            "trader_llama", "turtle", "vex", "villager", "vindicator", "wandering_trader", "warden",
+            "sulfur_cube", "trader_llama", "turtle", "vex", "villager", "vindicator", "wandering_trader", "warden",
             "witch", "wolf", "zoglin", "zombie_horse", "zombie_villager", "zombified_piglin");
 
     /** The entity types in {@link #MOD_HEAD_IDS} that exist in this version, in that order. */

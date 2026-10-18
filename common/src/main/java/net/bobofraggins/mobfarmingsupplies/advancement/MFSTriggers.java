@@ -32,7 +32,6 @@ public final class MFSTriggers {
     /** Variant {@code store} or {@code withdraw}. */
     public static final RegistrySupplier<EventTrigger> SYRINGE_USED = event("syringe_used");
     public static final RegistrySupplier<EventTrigger> CLONE_SPAWNED = event("clone_spawned");
-    public static final RegistrySupplier<EventTrigger> MOB_BEHEADED = event("mob_beheaded");
     public static final RegistrySupplier<HeadsCollectedTrigger> HEADS_COLLECTED =
             TRIGGERS.register("heads_collected", HeadsCollectedTrigger::new);
     // Fun Stuff

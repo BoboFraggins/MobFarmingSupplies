@@ -49,7 +49,7 @@ public final class MFSConfig {
 
     public static final List<String> DEFAULT_RARE_PASSIVE = List.of(
             "minecraft:goat", "minecraft:armadillo", "minecraft:donkey",
-            "minecraft:horse", "minecraft:turtle");
+            "minecraft:horse", "minecraft:turtle", "minecraft:sulfur_cube");
 
     public static final List<String> DEFAULT_BABY = List.of(
             // Animals

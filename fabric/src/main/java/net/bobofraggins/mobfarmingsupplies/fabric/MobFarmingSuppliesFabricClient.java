@@ -2,37 +2,45 @@ package net.bobofraggins.mobfarmingsupplies.fabric;
 
 import com.mojang.serialization.MapCodec;
 import dev.architectury.platform.Platform;
+import dev.architectury.registry.client.level.entity.EntityRendererRegistry;
 import dev.architectury.registry.client.rendering.BlockEntityRendererRegistry;
 import java.lang.reflect.Field;
 import net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommon;
 import net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommonClient;
 import net.bobofraggins.mobfarmingsupplies.absorptionhopper.AbsorptionHopperBlockEntityRenderer;
+import net.bobofraggins.mobfarmingsupplies.client.model.AnimatedItemModel;
+import net.bobofraggins.mobfarmingsupplies.client.model.GuiBackdropRenderer;
 import net.bobofraggins.mobfarmingsupplies.client.model.fabric.ExtraBlockModelsImpl;
 import net.bobofraggins.mobfarmingsupplies.cloneomatic.CloneOMaticBlockEntityRenderer;
-import net.bobofraggins.mobfarmingsupplies.client.model.AnimatedItemModel;
 import net.bobofraggins.mobfarmingsupplies.enderinhibitor.EnderInhibitorBlockEntityRenderer;
 import net.bobofraggins.mobfarmingsupplies.enderinhibitor.InhibitorItemRenderer;
-import net.minecraft.client.renderer.item.ItemModel;
-import net.minecraft.client.renderer.item.ItemModels;
 import net.bobofraggins.mobfarmingsupplies.fan.FanBlockEntityRenderer;
 import net.bobofraggins.mobfarmingsupplies.glamping.magichat.MagicHatHelmetLayer;
 import net.bobofraggins.mobfarmingsupplies.glamping.magichat.fabric.MagicHatTrinketClientSetup;
 import net.bobofraggins.mobfarmingsupplies.glamping.present.PresentRenderer;
-import net.bobofraggins.mobfarmingsupplies.mobharvester.MobHarvesterRenderer;
-import net.bobofraggins.mobfarmingsupplies.picnicbasket.PicnicBasketRenderer;
-import net.bobofraggins.mobfarmingsupplies.register.Registration;
-import net.bobofraggins.mobfarmingsupplies.tank.fabric.TankItemRenderer;
+import net.bobofraggins.mobfarmingsupplies.headpike.HeadPikeRenderer;
+import net.bobofraggins.mobfarmingsupplies.lawnornament.GiantSkeletonOrnamentItemRenderer;
+import net.bobofraggins.mobfarmingsupplies.lawnornament.GiantSkeletonOrnamentRenderer;
 import net.bobofraggins.mobfarmingsupplies.logisticsorter.LogisticSorterItemRenderer;
-import net.bobofraggins.mobfarmingsupplies.omnihopper.OmniHopperItemRenderer;
+import net.bobofraggins.mobfarmingsupplies.mobharvester.MobHarvesterRenderer;
 import net.bobofraggins.mobfarmingsupplies.mobhead.MobHeadBlockEntityRenderer;
 import net.bobofraggins.mobfarmingsupplies.mobhead.MobHeadItemRenderer;
+import net.bobofraggins.mobfarmingsupplies.omnihopper.OmniHopperItemRenderer;
+import net.bobofraggins.mobfarmingsupplies.picnicbasket.PicnicBasketRenderer;
+import net.bobofraggins.mobfarmingsupplies.register.Registration;
+import net.bobofraggins.mobfarmingsupplies.skulllights.SkullLightsRenderer;
+import net.bobofraggins.mobfarmingsupplies.tank.fabric.TankItemRenderer;
 import net.bobofraggins.mobfarmingsupplies.tank.fabric.TankRenderer;
+import net.bobofraggins.mobfarmingsupplies.toilet.ToiletBlockEntityRenderer;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityRenderLayerRegistrationCallback;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
+import net.minecraft.client.renderer.entity.NoopRenderer;
 import net.minecraft.client.renderer.entity.player.AvatarRenderer;
 import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
+import net.minecraft.client.renderer.item.ItemModel;
+import net.minecraft.client.renderer.item.ItemModels;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import net.minecraft.client.renderer.special.SpecialModelRenderers;
 import net.minecraft.resources.Identifier;
@@ -62,6 +70,15 @@ public class MobFarmingSuppliesFabricClient implements ClientModInitializer {
         BlockEntityRendererRegistry.register(
                 Registration.CLONE_O_MATIC_BE_TYPE.get(),
                 CloneOMaticBlockEntityRenderer::new);
+        BlockEntityRendererRegistry.register(
+                Registration.GIANT_SKELETON_ORNAMENT_BE_TYPE.get(),
+                GiantSkeletonOrnamentRenderer::new);
+        BlockEntityRendererRegistry.register(
+                Registration.SKULL_LIGHT_HOOK_BE_TYPE.get(),
+                SkullLightsRenderer::new);
+        BlockEntityRendererRegistry.register(
+                Registration.HEAD_PIKE_BE_TYPE.get(),
+                HeadPikeRenderer::new);
         BlockEntityRendererRegistry.register(
                 Registration.TANK_BE_TYPE.get(),
                 TankRenderer::new);
@@ -152,6 +169,12 @@ public class MobFarmingSuppliesFabricClient implements ClientModInitializer {
             idMapper.put(
                     Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "inhibitor_item"),
                     InhibitorItemRenderer.Unbaked.MAP_CODEC);
+            idMapper.put(
+                    Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "gui_backdrop"),
+                    GuiBackdropRenderer.Unbaked.MAP_CODEC);
+            idMapper.put(
+                    Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "giant_skeleton_lawn_ornament"),
+                    GiantSkeletonOrnamentItemRenderer.Unbaked.MAP_CODEC);
         } catch (ReflectiveOperationException e) {
             throw new RuntimeException("Failed to register mobfarmingsupplies special model renderers", e);
         }

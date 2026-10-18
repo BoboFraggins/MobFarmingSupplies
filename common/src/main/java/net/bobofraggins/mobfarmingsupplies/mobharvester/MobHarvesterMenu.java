@@ -19,8 +19,10 @@ import org.jetbrains.annotations.Nullable;
  *   <li>[0]   Sharpness upgrade slot — accepts only {@link HarvesterUpgradeItem} of type SHARPNESS</li>
  *   <li>[1]   Looting upgrade slot   — accepts only {@link HarvesterUpgradeItem} of type LOOTING</li>
  *   <li>[2]   Beheading upgrade slot — accepts only {@link HarvesterUpgradeItem} of type BEHEADING</li>
- *   <li>[3–29]  Player main inventory</li>
- *   <li>[30–38] Player hotbar</li>
+ *   <li>[3]   Fire Aspect upgrade slot — accepts only {@link HarvesterUpgradeItem} of type FIRE_ASPECT</li>
+ *   <li>[4]   Smite upgrade slot     — accepts only {@link HarvesterUpgradeItem} of type SMITE</li>
+ *   <li>[5–31]  Player main inventory</li>
+ *   <li>[32–40] Player hotbar</li>
  * </ul>
  *
  * <p>The three upgrade slots are centered horizontally in the dialog.
@@ -34,9 +36,9 @@ public class MobHarvesterMenu extends AbstractContainerMenu {
 
     /**
      * X position of the first upgrade slot (centered in the 176 px-wide dialog).
-     * (176 − 3 × 18) / 2 = 61
+     * (176 − 5 × 18) / 2 = 43
      */
-    public static final int UPGRADE_X_START = (176 - MobHarvesterBlockEntity.UPGRADE_SLOTS * 18) / 2; // 52
+    public static final int UPGRADE_X_START = (176 - MobHarvesterBlockEntity.UPGRADE_SLOTS * 18) / 2; // 43
 
     /** Y position of the upgrade slots within the dialog (title + gap + header + pane-pad). */
     public static final int UPGRADE_TOP = 41; // 17 title + 8 gap + 10 header + 6 pane-pad

@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "I",
+    "S",
+    "D"
+  ],
+  "key": {
+    "I": "minecraft:iron_ingot",
+    "S": "minecraft:stick",
+    "D": "minecraft:dirt"
+  },
+  "result": {
+    "id": "mobfarmingsupplies:head_pike",
+    "count": 1
+  }
+}
