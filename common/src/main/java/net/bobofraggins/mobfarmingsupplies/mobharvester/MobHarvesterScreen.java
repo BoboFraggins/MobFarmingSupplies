@@ -30,6 +30,7 @@ public class MobHarvesterScreen extends AbstractContainerScreen<MobHarvesterMenu
         ResourceLocation.fromNamespaceAndPath("mobfarmingsupplies", "textures/item/harvester_upgrade_looting_ghost.png"),
         ResourceLocation.fromNamespaceAndPath("mobfarmingsupplies", "textures/item/harvester_upgrade_beheading_ghost.png"),
         ResourceLocation.fromNamespaceAndPath("mobfarmingsupplies", "textures/item/harvester_upgrade_fire_aspect_ghost.png"),
+        ResourceLocation.fromNamespaceAndPath("mobfarmingsupplies", "textures/item/harvester_upgrade_smite_ghost.png"),
     };
 
     private final Dialog dialog;

@@ -2,10 +2,13 @@ package net.bobofraggins.mobfarmingsupplies.toilet;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ColorParticleOption;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
@@ -30,6 +33,11 @@ import org.jetbrains.annotations.Nullable;
  * the way it faces comes from the toilet's blockstate. Riders are placed by {@link ToiletSeatHeights}.
  */
 public class ToiletSeatEntity extends Entity {
+
+    /** The swirls a potion effect gives off, in blue. */
+    private static final ColorParticleOption BUBBLES = ColorParticleOption.create(ParticleTypes.ENTITY_EFFECT, 0xFF4A8FE7);
+    /** On average, one swirl every this many ticks while seated. */
+    private static final int BUBBLE_EVERY_TICKS = 3;
 
     /** Height of the seat point (a seated rider's hips) above the toilet's base: just above the 5-pixel rim. */
     private static final double SEAT_HEIGHT = 0.35;
@@ -85,7 +93,10 @@ public class ToiletSeatEntity extends Entity {
     @Override
     public void tick() {
         super.tick();
-        if (level().isClientSide()) return;
+        if (level().isClientSide()) {
+            if (isVehicle()) bubble();
+            return;
+        }
         BlockState toilet = level().getBlockState(toiletPos());
         if (!isVehicle() || !(toilet.getBlock() instanceof ToiletBlock)) {
             discard();
@@ -94,6 +105,18 @@ public class ToiletSeatEntity extends Entity {
             // loaded and close the lid under a seated mob - put it back up.
             ToiletBlock.setOpen(level(), toiletPos(), true);
         }
+    }
+
+    /** Blue swirls rising out of the bowl whenever anyone is sitting down, as from a potion effect. */
+    private void bubble() {
+        RandomSource random = level().getRandom();
+        if (random.nextInt(BUBBLE_EVERY_TICKS) != 0) return;
+        BlockPos toilet = toiletPos();
+        level().addParticle(BUBBLES,
+                toilet.getX() + 0.5 + (random.nextDouble() - 0.5) * 0.4,
+                toilet.getY() + 0.45,
+                toilet.getZ() + 0.5 + (random.nextDouble() - 0.5) * 0.4,
+                0.0, 0.0, 0.0);
     }
 
     @Override

@@ -10,11 +10,14 @@ import net.bobofraggins.mobfarmingsupplies.enderinhibitor.EnderInhibitorBlockEnt
 import net.bobofraggins.mobfarmingsupplies.fan.FanBlockEntityRenderer;
 import net.bobofraggins.mobfarmingsupplies.glamping.magichat.fabric.MagicHatTrinketClientSetup;
 import net.bobofraggins.mobfarmingsupplies.glamping.present.PresentRenderer;
+import net.bobofraggins.mobfarmingsupplies.headpike.HeadPikeRenderer;
+import net.bobofraggins.mobfarmingsupplies.lawnornament.GiantSkeletonOrnamentRenderer;
 import net.bobofraggins.mobfarmingsupplies.mobharvester.MobHarvesterRenderer;
 import net.bobofraggins.mobfarmingsupplies.mobhead.MobHeadBlockEntityRenderer;
 import net.bobofraggins.mobfarmingsupplies.picnicbasket.PicnicBasketRenderer;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.bobofraggins.mobfarmingsupplies.shared.render.SpecialItemRenderers;
+import net.bobofraggins.mobfarmingsupplies.skulllights.SkullLightsRenderer;
 import net.bobofraggins.mobfarmingsupplies.tank.TankTier;
 import net.bobofraggins.mobfarmingsupplies.tank.fabric.TankItemRenderer;
 import net.bobofraggins.mobfarmingsupplies.tank.fabric.TankRenderer;
@@ -44,6 +47,15 @@ public class MobFarmingSuppliesFabricClient implements ClientModInitializer {
         BlockEntityRendererRegistry.register(
                 Registration.CLONE_O_MATIC_BE_TYPE.get(),
                 CloneOMaticBlockEntityRenderer::new);
+        BlockEntityRendererRegistry.register(
+                Registration.GIANT_SKELETON_ORNAMENT_BE_TYPE.get(),
+                GiantSkeletonOrnamentRenderer::new);
+        BlockEntityRendererRegistry.register(
+                Registration.SKULL_LIGHT_HOOK_BE_TYPE.get(),
+                SkullLightsRenderer::new);
+        BlockEntityRendererRegistry.register(
+                Registration.HEAD_PIKE_BE_TYPE.get(),
+                HeadPikeRenderer::new);
         BlockEntityRendererRegistry.register(
                 Registration.TANK_BE_TYPE.get(),
                 TankRenderer::new);

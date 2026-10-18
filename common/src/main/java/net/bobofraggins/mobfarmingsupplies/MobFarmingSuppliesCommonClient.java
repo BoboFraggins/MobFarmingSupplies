@@ -10,6 +10,8 @@ import net.bobofraggins.mobfarmingsupplies.enderinhibitor.EnderInhibitorScreen;
 import net.bobofraggins.mobfarmingsupplies.enderinhibitor.InhibitorItemRenderer;
 import net.bobofraggins.mobfarmingsupplies.fan.FanScreen;
 import net.bobofraggins.mobfarmingsupplies.filterscribingterminal.FilterScribingTerminalScreen;
+import net.bobofraggins.mobfarmingsupplies.headpike.HeadPikeScreen;
+import net.bobofraggins.mobfarmingsupplies.lawnornament.GiantSkeletonOrnamentItemRenderer;
 import net.bobofraggins.mobfarmingsupplies.logisticsorter.LogisticSorterItemRenderer;
 import net.bobofraggins.mobfarmingsupplies.logisticsorter.LogisticSorterScreen;
 import net.bobofraggins.mobfarmingsupplies.mobharvester.MobHarvesterScreen;
@@ -59,6 +61,9 @@ public final class MobFarmingSuppliesCommonClient {
                 Registration.FAN_MENU.get(),
                 FanScreen::new);
         MenuRegistry.registerScreenFactory(
+                Registration.HEAD_PIKE_MENU.get(),
+                HeadPikeScreen::new);
+        MenuRegistry.registerScreenFactory(
                 Registration.MOB_HARVESTER_MENU.get(),
                 MobHarvesterScreen::new);
         MenuRegistry.registerScreenFactory(
@@ -105,6 +110,7 @@ public final class MobFarmingSuppliesCommonClient {
                 new OmniHopperItemRenderer(Registration.EINSTEIN_ROSEN_BRIDGE));
         SpecialItemRenderers.register(Registration.LOGISTIC_SORTER_ITEM.get(), new LogisticSorterItemRenderer());
         SpecialItemRenderers.register(Registration.MOB_HEAD_ITEM.get(), new MobHeadItemRenderer());
+        SpecialItemRenderers.register(Registration.GIANT_SKELETON_ORNAMENT_ITEM.get(), new GiantSkeletonOrnamentItemRenderer());
         SpecialItemRenderers.register(Registration.ENDER_INHIBITOR_ITEM.get(), new InhibitorItemRenderer(
                 Registration.ENDER_INHIBITOR, Items.ENDER_PEARL, InhibitorItemRenderer.Particles.PORTAL));
         SpecialItemRenderers.register(Registration.WITHER_INHIBITOR_ITEM.get(), new InhibitorItemRenderer(
@@ -126,7 +132,8 @@ public final class MobFarmingSuppliesCommonClient {
                 Registration.LOGISTIC_SORTER.get(), Registration.MOB_HARVESTER.get(), Registration.OMNI_HOPPER.get(),
                 Registration.PRESENT.get(), Registration.TOILET.get(), Registration.VECTOR_PLATE.get(),
                 Registration.DRAMATIC_BUTTON.get(), Registration.RED_ALERT_BUTTON.get(),
-                Registration.RIMSHOT_BUTTON.get(), Registration.WILHELM_BUTTON.get());
+                Registration.RIMSHOT_BUTTON.get(), Registration.WILHELM_BUTTON.get(), Registration.HEAD_PIKE.get(),
+                Registration.SKULL_LIGHT_HOOK.get());
         RenderTypeRegistry.register(RenderType.translucent(),
                 Registration.WITHER_PROOF_GLASS.get(), Registration.MOB_EXCLUSION_GLASS.get(),
                 Registration.EINSTEIN_ROSEN_BRIDGE.get());

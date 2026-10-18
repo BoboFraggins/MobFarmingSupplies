@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "net.bobofraggins.mobfarmingsupplies.headpike.fabric.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "MobRefuseSpawnMixin",
+    "ServerLevelRefuseSpawnMixin",
+    "WorldGenRegionRefuseSpawnMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

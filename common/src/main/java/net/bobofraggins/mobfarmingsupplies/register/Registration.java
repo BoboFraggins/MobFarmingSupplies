@@ -1,22 +1,25 @@
 package net.bobofraggins.mobfarmingsupplies.register;
 
-import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
-import net.minecraft.world.item.ItemStack;
-import net.bobofraggins.mobfarmingsupplies.biosludge.BiosludgeItem;
-import net.bobofraggins.mobfarmingsupplies.guide.GuideBook;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
 import dev.architectury.registry.menu.MenuRegistry;
 import dev.architectury.registry.registries.DeferredRegister;
 import dev.architectury.registry.registries.RegistrySupplier;
-import net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommon;
 import net.bobofraggins.mobfarmingsupplies.MFSConfig;
+import net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommon;
 import net.bobofraggins.mobfarmingsupplies.absorptionhopper.AbsorptionHopperBlock;
 import net.bobofraggins.mobfarmingsupplies.absorptionhopper.AbsorptionHopperBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.absorptionhopper.AbsorptionHopperMenu;
+import net.bobofraggins.mobfarmingsupplies.biosludge.BiosludgeItem;
+import net.bobofraggins.mobfarmingsupplies.bridge.BridgeLinkRecipe;
+import net.bobofraggins.mobfarmingsupplies.bridge.BridgePairRecipe;
+import net.bobofraggins.mobfarmingsupplies.bridge.EinsteinRosenBridgeBlock;
+import net.bobofraggins.mobfarmingsupplies.bridge.EinsteinRosenBridgeBlockEntity;
+import net.bobofraggins.mobfarmingsupplies.bridge.EinsteinRosenBridgeBlockItem;
+import net.bobofraggins.mobfarmingsupplies.bridge.EinsteinRosenBridgeMenu;
 import net.bobofraggins.mobfarmingsupplies.cloneomatic.CloneOMaticBlock;
 import net.bobofraggins.mobfarmingsupplies.cloneomatic.CloneOMaticBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.cloneomatic.CloneOMaticMenu;
+import net.bobofraggins.mobfarmingsupplies.crushing.AnvilCrushingRecipe;
 import net.bobofraggins.mobfarmingsupplies.dna.DnaCollectorItem;
 import net.bobofraggins.mobfarmingsupplies.dna.DnaSampleContents;
 import net.bobofraggins.mobfarmingsupplies.dna.DnaSampleItem;
@@ -24,47 +27,45 @@ import net.bobofraggins.mobfarmingsupplies.dna.DnaSamplePackItem;
 import net.bobofraggins.mobfarmingsupplies.enderinhibitor.EnderInhibitorBlock;
 import net.bobofraggins.mobfarmingsupplies.enderinhibitor.EnderInhibitorBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.enderinhibitor.EnderInhibitorMenu;
-import net.bobofraggins.mobfarmingsupplies.filterscribingterminal.FilterScribingTerminalBlock;
-import net.bobofraggins.mobfarmingsupplies.filterscribingterminal.FilterScribingTerminalBlockEntity;
-import net.bobofraggins.mobfarmingsupplies.filterscribingterminal.FilterScribingTerminalMenu;
-import net.bobofraggins.mobfarmingsupplies.itemfilter.ItemFilterData;
-import net.bobofraggins.mobfarmingsupplies.logisticsorter.LogisticSorterBlock;
-import net.bobofraggins.mobfarmingsupplies.logisticsorter.LogisticSorterBlockItem;
-import net.bobofraggins.mobfarmingsupplies.logisticsorter.LogisticSorterBlockEntity;
-import net.bobofraggins.mobfarmingsupplies.logisticsorter.LogisticSorterMenu;
-import net.bobofraggins.mobfarmingsupplies.itemfilter.ItemFilterItem;
 import net.bobofraggins.mobfarmingsupplies.experiencesyringe.ExperienceSyringeItem;
 import net.bobofraggins.mobfarmingsupplies.fan.FanBlock;
 import net.bobofraggins.mobfarmingsupplies.fan.FanBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.fan.FanMenu;
 import net.bobofraggins.mobfarmingsupplies.fan.FanUpgradeItem;
+import net.bobofraggins.mobfarmingsupplies.filterscribingterminal.FilterScribingTerminalBlock;
+import net.bobofraggins.mobfarmingsupplies.filterscribingterminal.FilterScribingTerminalBlockEntity;
+import net.bobofraggins.mobfarmingsupplies.filterscribingterminal.FilterScribingTerminalMenu;
 import net.bobofraggins.mobfarmingsupplies.glamping.magichat.MagicHatItem;
 import net.bobofraggins.mobfarmingsupplies.glamping.present.PresentBlock;
 import net.bobofraggins.mobfarmingsupplies.glamping.present.PresentBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.glamping.present.PresentBlockItem;
+import net.bobofraggins.mobfarmingsupplies.guide.GuideBook;
 import net.bobofraggins.mobfarmingsupplies.haltingplate.HaltingPlateBlock;
+import net.bobofraggins.mobfarmingsupplies.headpike.HeadPikeBlock;
+import net.bobofraggins.mobfarmingsupplies.headpike.HeadPikeBlockEntity;
+import net.bobofraggins.mobfarmingsupplies.headpike.HeadPikeBlockItem;
+import net.bobofraggins.mobfarmingsupplies.headpike.HeadPikeMenu;
+import net.bobofraggins.mobfarmingsupplies.itemfilter.ItemFilterData;
+import net.bobofraggins.mobfarmingsupplies.itemfilter.ItemFilterItem;
+import net.bobofraggins.mobfarmingsupplies.lawnornament.GiantSkeletonOrnamentBlock;
+import net.bobofraggins.mobfarmingsupplies.lawnornament.GiantSkeletonOrnamentBlockEntity;
+import net.bobofraggins.mobfarmingsupplies.logisticsorter.LogisticSorterBlock;
+import net.bobofraggins.mobfarmingsupplies.logisticsorter.LogisticSorterBlockEntity;
+import net.bobofraggins.mobfarmingsupplies.logisticsorter.LogisticSorterBlockItem;
+import net.bobofraggins.mobfarmingsupplies.logisticsorter.LogisticSorterMenu;
+import net.bobofraggins.mobfarmingsupplies.loot.SetBridgeChannelFunction;
+import net.bobofraggins.mobfarmingsupplies.loot.SetSyringeLevelsFunction;
+import net.bobofraggins.mobfarmingsupplies.mobexclusionglass.MobExclusionGlassBlock;
 import net.bobofraggins.mobfarmingsupplies.mobharvester.HarvesterSword;
 import net.bobofraggins.mobfarmingsupplies.mobharvester.HarvesterUpgradeItem;
 import net.bobofraggins.mobfarmingsupplies.mobharvester.MobHarvesterBlock;
 import net.bobofraggins.mobfarmingsupplies.mobharvester.MobHarvesterBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.mobharvester.MobHarvesterMenu;
-import net.bobofraggins.mobfarmingsupplies.bridge.BridgeLinkRecipe;
-import net.bobofraggins.mobfarmingsupplies.bridge.BridgePairRecipe;
-import net.bobofraggins.mobfarmingsupplies.bridge.EinsteinRosenBridgeBlock;
-import net.bobofraggins.mobfarmingsupplies.bridge.EinsteinRosenBridgeBlockEntity;
-import net.bobofraggins.mobfarmingsupplies.bridge.EinsteinRosenBridgeBlockItem;
-import net.bobofraggins.mobfarmingsupplies.bridge.EinsteinRosenBridgeMenu;
-import net.bobofraggins.mobfarmingsupplies.loot.SetBridgeChannelFunction;
-import net.bobofraggins.mobfarmingsupplies.loot.SetSyringeLevelsFunction;
-import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
 import net.bobofraggins.mobfarmingsupplies.mobhead.MobHeadBlock;
 import net.bobofraggins.mobfarmingsupplies.mobhead.MobHeadBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.mobhead.MobHeadItem;
 import net.bobofraggins.mobfarmingsupplies.mobhead.MobHeads;
 import net.bobofraggins.mobfarmingsupplies.mobhead.MobWallHeadBlock;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.world.item.Rarity;
-import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.bobofraggins.mobfarmingsupplies.omnihopper.OmniHopperBlock;
 import net.bobofraggins.mobfarmingsupplies.omnihopper.OmniHopperBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.omnihopper.OmniHopperBlockItem;
@@ -73,7 +74,13 @@ import net.bobofraggins.mobfarmingsupplies.picnicbasket.PicnicBasketBlock;
 import net.bobofraggins.mobfarmingsupplies.picnicbasket.PicnicBasketBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.picnicbasket.PicnicBasketItem;
 import net.bobofraggins.mobfarmingsupplies.picnicbasket.PicnicBasketMenu;
+import net.bobofraggins.mobfarmingsupplies.shared.recipe.SimpleRecipeSerializer;
 import net.bobofraggins.mobfarmingsupplies.shared.sides.OrientedBlockItem;
+import net.bobofraggins.mobfarmingsupplies.skulllights.SkullLightHookBlock;
+import net.bobofraggins.mobfarmingsupplies.skulllights.SkullLightHookBlockEntity;
+import net.bobofraggins.mobfarmingsupplies.skulllights.SkullLights;
+import net.bobofraggins.mobfarmingsupplies.skulllights.SkullLightsRecipe;
+import net.bobofraggins.mobfarmingsupplies.skulllights.StringOfSkullLightsItem;
 import net.bobofraggins.mobfarmingsupplies.tank.TankBlock;
 import net.bobofraggins.mobfarmingsupplies.tank.TankBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.tank.TankBlockItem;
@@ -81,48 +88,47 @@ import net.bobofraggins.mobfarmingsupplies.tank.TankContents;
 import net.bobofraggins.mobfarmingsupplies.tank.TankMenu;
 import net.bobofraggins.mobfarmingsupplies.tank.TankTier;
 import net.bobofraggins.mobfarmingsupplies.tank.TankUpgradeRecipe;
+import net.bobofraggins.mobfarmingsupplies.togglebutton.ToggleButtonBlock;
 import net.bobofraggins.mobfarmingsupplies.toilet.ToiletBlock;
 import net.bobofraggins.mobfarmingsupplies.toilet.ToiletBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.toilet.ToiletBlockItem;
 import net.bobofraggins.mobfarmingsupplies.toilet.ToiletSeatEntity;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.CreativeModeTab;
-import net.bobofraggins.mobfarmingsupplies.mobexclusionglass.MobExclusionGlassBlock;
-import net.bobofraggins.mobfarmingsupplies.togglebutton.ToggleButtonBlock;
 import net.bobofraggins.mobfarmingsupplies.vectorplate.VectorPlateBlock;
 import net.bobofraggins.mobfarmingsupplies.witherproofglass.WitherProofGlassBlock;
 import net.bobofraggins.mobfarmingsupplies.xpjuice.XpJuicePlatformHelper;
 import net.minecraft.core.component.DataComponentType;
-import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.BucketItem;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.ArmorMaterials;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LiquidBlock;
-import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
+import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
-import net.bobofraggins.mobfarmingsupplies.crushing.AnvilCrushingRecipe;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.bobofraggins.mobfarmingsupplies.shared.recipe.SimpleRecipeSerializer;
-import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 
 public final class Registration {
 
@@ -189,6 +195,10 @@ public final class Registration {
     public static final RegistrySupplier<RecipeSerializer<TankUpgradeRecipe>> TANK_UPGRADE_SERIALIZER =
             RECIPE_SERIALIZERS.register("tank_upgrade",
                     () -> new SimpleRecipeSerializer<>(TankUpgradeRecipe.MAP_CODEC, TankUpgradeRecipe.STREAM_CODEC));
+
+    public static final RegistrySupplier<RecipeSerializer<SkullLightsRecipe>> SKULL_LIGHTS_SERIALIZER =
+            RECIPE_SERIALIZERS.register("skull_lights",
+                    () -> new SimpleRecipeSerializer<>(SkullLightsRecipe.MAP_CODEC, SkullLightsRecipe.STREAM_CODEC));
 
     /** Shaped recipe for a linked pair of Einstein-Rosen Bridges on a new random channel. */
     public static final RegistrySupplier<RecipeSerializer<BridgePairRecipe>> BRIDGE_PAIR_SERIALIZER =
@@ -292,6 +302,21 @@ public final class Registration {
                             .networkSynchronized(TankContents.STREAM_CODEC)
                             .build());
 
+    public static final RegistrySupplier<DataComponentType<SkullLights>> SKULL_LIGHTS =
+            DATA_COMPONENTS.register("skull_lights",
+                    () -> DataComponentType.<SkullLights>builder()
+                            .persistent(SkullLights.CODEC)
+                            .networkSynchronized(SkullLights.STREAM_CODEC)
+                            .build());
+
+    /** Where a String of Skull Lights being hung was started. */
+    public static final RegistrySupplier<DataComponentType<StringOfSkullLightsItem.Start>> SKULL_LIGHTS_START =
+            DATA_COMPONENTS.register("skull_lights_start",
+                    () -> DataComponentType.<StringOfSkullLightsItem.Start>builder()
+                            .persistent(StringOfSkullLightsItem.Start.CODEC)
+                            .networkSynchronized(StringOfSkullLightsItem.Start.STREAM_CODEC)
+                            .build());
+
     public static final RegistrySupplier<DataComponentType<ItemFilterData>> ITEM_FILTER_DATA =
             DATA_COMPONENTS.register("item_filter",
                     () -> DataComponentType.<ItemFilterData>builder()
@@ -376,6 +401,11 @@ public final class Registration {
             ITEMS.register("harvester_upgrade_fire_aspect",
                     () -> new HarvesterUpgradeItem(new Item.Properties(),
                             HarvesterUpgradeItem.UpgradeType.FIRE_ASPECT));
+
+    public static final RegistrySupplier<HarvesterUpgradeItem> HARVESTER_UPGRADE_SMITE =
+            ITEMS.register("harvester_upgrade_smite",
+                    () -> new HarvesterUpgradeItem(new Item.Properties(),
+                            HarvesterUpgradeItem.UpgradeType.SMITE));
 
     public static final RegistrySupplier<Item> HARVESTER_SWORD =
             ITEMS.register("harvester_sword",
@@ -919,6 +949,64 @@ public final class Registration {
             BLOCK_ENTITIES.register("toilet",
                     () -> BlockEntityType.Builder.of(ToiletBlockEntity::new, TOILET.get()).build(null));
 
+    // ── Giant Skeleton Lawn Ornament ─────────────────────────────────────────────
+
+    public static final RegistrySupplier<GiantSkeletonOrnamentBlock> GIANT_SKELETON_ORNAMENT =
+            BLOCKS.register("giant_skeleton_lawn_ornament",
+                    () -> new GiantSkeletonOrnamentBlock(BlockBehaviour.Properties.of()
+                            .strength(1.5f)
+                            .sound(SoundType.BONE_BLOCK)
+                            .noOcclusion()));
+
+    public static final RegistrySupplier<BlockItem> GIANT_SKELETON_ORNAMENT_ITEM =
+            ITEMS.register("giant_skeleton_lawn_ornament",
+                    () -> new BlockItem(GIANT_SKELETON_ORNAMENT.get(), new Item.Properties()));
+
+    public static final RegistrySupplier<BlockEntityType<GiantSkeletonOrnamentBlockEntity>> GIANT_SKELETON_ORNAMENT_BE_TYPE =
+            BLOCK_ENTITIES.register("giant_skeleton_lawn_ornament",
+                    () -> BlockEntityType.Builder.of(GiantSkeletonOrnamentBlockEntity::new, GIANT_SKELETON_ORNAMENT.get()).build(null));
+
+    // ── Head Pike ────────────────────────────────────────────────────────────────
+
+    public static final RegistrySupplier<HeadPikeBlock> HEAD_PIKE =
+            BLOCKS.register("head_pike",
+                    () -> new HeadPikeBlock(BlockBehaviour.Properties.of()
+                            .strength(1.0f)
+                            .sound(SoundType.WOOD)
+                            .noOcclusion()
+                            .pushReaction(PushReaction.DESTROY)));
+
+    public static final RegistrySupplier<HeadPikeBlockItem> HEAD_PIKE_ITEM =
+            ITEMS.register("head_pike",
+                    () -> new HeadPikeBlockItem(HEAD_PIKE.get(), new Item.Properties()));
+
+    public static final RegistrySupplier<BlockEntityType<HeadPikeBlockEntity>> HEAD_PIKE_BE_TYPE =
+            BLOCK_ENTITIES.register("head_pike",
+                    () -> BlockEntityType.Builder.of(HeadPikeBlockEntity::new, HEAD_PIKE.get()).build(null));
+
+    public static final RegistrySupplier<MenuType<HeadPikeMenu>> HEAD_PIKE_MENU =
+            MENUS.register("head_pike", () -> new MenuType<>(HeadPikeMenu::new, FeatureFlags.VANILLA_SET));
+
+    // ── String of Skull Lights ───────────────────────────────────────────────────
+
+    public static final RegistrySupplier<SkullLightHookBlock> SKULL_LIGHT_HOOK =
+            BLOCKS.register("skull_light_hook",
+                    () -> new SkullLightHookBlock(BlockBehaviour.Properties.of()
+                            .strength(0.3f)
+                            .sound(SoundType.CHAIN)
+                            .noCollission()
+                            .noOcclusion()
+                            .pushReaction(PushReaction.DESTROY)));
+
+    public static final RegistrySupplier<BlockEntityType<SkullLightHookBlockEntity>> SKULL_LIGHT_HOOK_BE_TYPE =
+            BLOCK_ENTITIES.register("skull_light_hook",
+                    () -> BlockEntityType.Builder.of(SkullLightHookBlockEntity::new, SKULL_LIGHT_HOOK.get()).build(null));
+
+    public static final RegistrySupplier<StringOfSkullLightsItem> STRING_OF_SKULL_LIGHTS =
+            ITEMS.register("string_of_skull_lights",
+                    () -> new StringOfSkullLightsItem(new Item.Properties()
+                            .stacksTo(16)));
+
     public static final RegistrySupplier<EntityType<ToiletSeatEntity>> TOILET_SEAT =
             ENTITY_TYPES.register("toilet_seat",
                     () -> EntityType.Builder.<ToiletSeatEntity>of(ToiletSeatEntity::new, MobCategory.MISC)
@@ -998,6 +1086,7 @@ public final class Registration {
                         output.accept(HARVESTER_UPGRADE_LOOTING.get());
                         output.accept(HARVESTER_UPGRADE_BEHEADING.get());
                         output.accept(HARVESTER_UPGRADE_FIRE_ASPECT.get());
+                        output.accept(HARVESTER_UPGRADE_SMITE.get());
                         output.accept(CLONE_O_MATIC_ITEM.get());
                         output.accept(DNA_COLLECTOR.get());
                         output.accept(DNA_SAMPLE.get());
@@ -1041,6 +1130,11 @@ public final class Registration {
                         output.accept(WILHELM_BUTTON_ITEM.get());
                         // A Mob Head for every mob without a vanilla head (the ones Beheading drops).
                         for (EntityType<?> type : MobHeads.MOD_HEADS) output.accept(MobHeads.modHead(type));
+                        output.accept(GIANT_SKELETON_ORNAMENT_ITEM.get());
+                        ItemStack skullLights = new ItemStack(STRING_OF_SKULL_LIGHTS.get());
+                        skullLights.set(SKULL_LIGHTS.get(), SkullLights.defaultLights());
+                        output.accept(skullLights);
+                        output.accept(HEAD_PIKE_ITEM.get());
                     })
                     .build());
 

@@ -6,6 +6,7 @@
   "mixins": [
     "GoalSelectorAccessor",
     "MobFarmAccessor",
+    "StructureTemplatePoolAccessor",
     "AnvilBlockMixin",
     "EnderManPresentMixin",
     "InventoryChangeTriggerMixin",
@@ -13,6 +14,7 @@
     "WitherBossMixin"
   ],
   "client": [
+    "GuiGraphicsBackdropMixin",
     "HumanoidModelMixin"
   ],
   "injectors": {

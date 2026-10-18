@@ -12,7 +12,7 @@ import java.util.function.Consumer;
 /**
  * Upgrade item for the Mob Harvester.
  *
- * <p>Four typed variants correspond to the four upgrade slots:
+ * <p>Five typed variants correspond to the five upgrade slots:
  * <ul>
  *   <li>{@link UpgradeType#SHARPNESS} (slot 0) — increases attack damage
  *       via Sharpness × (count × 10)</li>
@@ -21,6 +21,8 @@ import java.util.function.Consumer;
  *   <li>{@link UpgradeType#BEHEADING} (slot 2) — adds a chance to drop mob heads</li>
  *   <li>{@link UpgradeType#FIRE_ASPECT} (slot 3) — cooks what killed mobs drop
  *       ({@link FireAspectCooking})</li>
+ *   <li>{@link UpgradeType#SMITE}     (slot 4) — more damage against undead mobs
+ *       via Smite × count (Smite X at ten)</li>
  * </ul>
  *
  * <p>Each slot accepts up to {@link net.bobofraggins.mobfarmingsupplies.MFSConfig#getHarvesterMaxUpgrade()} items of
@@ -32,7 +34,9 @@ public class HarvesterUpgradeItem extends Item {
         SHARPNESS(10),
         LOOTING(10),
         BEHEADING(5),
-        FIRE_ASPECT(1);
+        FIRE_ASPECT(1),
+        // Last, so existing Harvesters' saved upgrades keep their slots.
+        SMITE(10);
 
         /** Maximum items accepted by this upgrade slot. */
         public final int maxStack;

@@ -1,22 +1,22 @@
 package net.bobofraggins.mobfarmingsupplies.fabric;
 
 import dev.architectury.platform.Platform;
-import net.bobofraggins.mobfarmingsupplies.fabric.MFSConfigImpl;
 import net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommon;
 import net.bobofraggins.mobfarmingsupplies.absorptionhopper.AbsorptionHopperBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.absorptionhopper.FabricAbsorptionHopperFluidStorage;
 import net.bobofraggins.mobfarmingsupplies.absorptionhopper.FabricAbsorptionHopperItemStorage;
 import net.bobofraggins.mobfarmingsupplies.crafting.FabricFluidContainerIngredient;
 import net.bobofraggins.mobfarmingsupplies.experiencesyringe.FabricExperienceSyringeFluidStorage;
+import net.bobofraggins.mobfarmingsupplies.fabric.MFSConfigImpl;
 import net.bobofraggins.mobfarmingsupplies.glamping.magichat.fabric.MagicHatTrinketSetup;
-import net.bobofraggins.mobfarmingsupplies.loot.FabricLootModifiers;
 import net.bobofraggins.mobfarmingsupplies.logisticsorter.LogisticSorterBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.logisticsorter.SideMode;
 import net.bobofraggins.mobfarmingsupplies.logisticsorter.fabric.LogisticSorterItemStorage;
-import net.bobofraggins.mobfarmingsupplies.register.ModCompatRegistration;
-import net.bobofraggins.mobfarmingsupplies.omnihopper.HopperSide;
+import net.bobofraggins.mobfarmingsupplies.loot.FabricLootModifiers;
 import net.bobofraggins.mobfarmingsupplies.omnihopper.HopperNode;
+import net.bobofraggins.mobfarmingsupplies.omnihopper.HopperSide;
 import net.bobofraggins.mobfarmingsupplies.omnihopper.fabric.OmniHopperInsertStorage;
+import net.bobofraggins.mobfarmingsupplies.register.ModCompatRegistration;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.bobofraggins.mobfarmingsupplies.tank.FabricTankFluidStorage;
 import net.bobofraggins.mobfarmingsupplies.tank.FabricTankItemFluidStorage;
@@ -24,11 +24,11 @@ import net.bobofraggins.mobfarmingsupplies.tank.TankBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.toilet.fabric.ToiletItemStorage;
 import net.bobofraggins.mobfarmingsupplies.toilet.fabric.ToiletWaterStorage;
 import net.fabricmc.api.ModInitializer;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredientSerializer;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 
 @SuppressWarnings("UnstableApiUsage")
 public class MobFarmingSuppliesFabric implements ModInitializer {

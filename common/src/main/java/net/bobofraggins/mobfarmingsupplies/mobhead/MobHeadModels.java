@@ -17,6 +17,7 @@ import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FastColor;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -92,6 +93,11 @@ public final class MobHeadModels {
      * space a vanilla skull model is drawn in after its block or item transform.
      */
     public static void submit(EntityType<?> type, PoseStack poseStack, MultiBufferSource buffers, int light) {
+        submit(type, poseStack, buffers, light, -1);
+    }
+
+    /** As {@link #submit(EntityType, PoseStack, MultiBufferSource, int)}, every layer tinted {@code tint} (-1 = none). */
+    public static void submit(EntityType<?> type, PoseStack poseStack, MultiBufferSource buffers, int light, int tint) {
         Head head = get(type);
         if (head == null) return;
         poseStack.pushPose();
@@ -99,7 +105,7 @@ public final class MobHeadModels {
         poseStack.translate(-head.centreX(), -head.bottomY(), -head.centreZ());
         for (Layer layer : head.layers()) {
             layer.part().render(poseStack, buffers.getBuffer(layer.renderType()), light, OverlayTexture.NO_OVERLAY,
-                    layer.tint());
+                    tint == -1 ? layer.tint() : layer.tint() == -1 ? tint : FastColor.ARGB32.multiply(layer.tint(), tint));
         }
         if (head.mushroom() != null) {
             // Where MushroomCowMushroomLayer puts the mushroom on the head.

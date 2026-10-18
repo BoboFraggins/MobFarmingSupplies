@@ -9,7 +9,7 @@ import net.minecraft.client.gui.GuiGraphics;
  * Dialog pane that renders the "Upgrades" header and the four Mob Harvester upgrade slot backgrounds.
  *
  * <p>The slots are arranged in a single centred row:
- * Sharpness | Looting | Beheading | Fire Aspect
+ * Sharpness | Looting | Beheading | Fire Aspect | Smite
  *
  * <p>Pane height = 10 (header) + 6 (top pad) + 18 (one row) + 2 (bottom pad) = {@value #HEIGHT} px.
  */
