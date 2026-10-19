@@ -124,4 +124,11 @@
     "",
     "Send a &bdiamond&r (or a whole diamond block) in with a hopper while you're within 16 blocks, and wave goodbye.",
   ],
+  "quest.529ED28196C194BF.title": "The HOA Will Hear About This",
+  "quest.529ED28196C194BF.quest_subtitle": "Deck out your yard with all three spooky decorations.",
+  "quest.529ED28196C194BF.quest_desc": [
+    "Place a &eGiant Skeleton Lawn Ornament&r, hang a &eString of Skull Lights&r between two blocks, and put up a &eHead Pike&r.",
+    "",
+    "Put skulls on the pike and their mobs won't spawn naturally nearby. The neighbors may never visit again.",
+  ],
 }

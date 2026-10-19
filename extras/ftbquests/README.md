@@ -1,6 +1,6 @@
 # Mob Farming Supplies: sample FTB Quests chapter
 
-A ready-made FTB Quests chapter for modpack authors. It has 17 quests that mirror the mod's
+A ready-made FTB Quests chapter for modpack authors. It has 18 quests that mirror the mod's
 advancements: a starting quest, then three lines (Logistics, Mob Farming, Fun Stuff). Each quest
 is completed by its matching advancement, so it needs no extra setup, and each has a short how-to
 description.
