@@ -57,6 +57,7 @@ import net.bobofraggins.mobfarmingsupplies.logisticsorter.LogisticSorterMenu;
 import net.bobofraggins.mobfarmingsupplies.loot.SetBridgeChannelFunction;
 import net.bobofraggins.mobfarmingsupplies.loot.SetSyringeLevelsFunction;
 import net.bobofraggins.mobfarmingsupplies.mobexclusionglass.MobExclusionGlassBlock;
+import net.bobofraggins.mobfarmingsupplies.playerexclusionglass.PlayerExclusionGlassBlock;
 import net.bobofraggins.mobfarmingsupplies.mobharvester.HarvesterSword;
 import net.bobofraggins.mobfarmingsupplies.mobharvester.HarvesterUpgradeItem;
 import net.bobofraggins.mobfarmingsupplies.mobharvester.MobHarvesterBlock;
@@ -647,6 +648,24 @@ public final class Registration {
                     () -> new BlockItem(MOB_EXCLUSION_GLASS.get(), new Item.Properties()
                             .setId(itemKey("mob_exclusion_glass"))));
 
+    // ── Player Exclusion Glass ────────────────────────────────────────────────────
+
+    public static final RegistrySupplier<PlayerExclusionGlassBlock> PLAYER_EXCLUSION_GLASS =
+            BLOCKS.register("player_exclusion_glass",
+                    () -> new PlayerExclusionGlassBlock(BlockBehaviour.Properties.of()
+                            .setId(blockKey("player_exclusion_glass"))
+                            .strength(1.5f)
+                            .explosionResistance(Float.MAX_VALUE)
+                            .sound(SoundType.GLASS)
+                            .noOcclusion()
+                            .isSuffocating((s, r, p) -> false)
+                            .isViewBlocking((s, r, p) -> false)));
+
+    public static final RegistrySupplier<BlockItem> PLAYER_EXCLUSION_GLASS_ITEM =
+            ITEMS.register("player_exclusion_glass",
+                    () -> new BlockItem(PLAYER_EXCLUSION_GLASS.get(), new Item.Properties()
+                            .setId(itemKey("player_exclusion_glass"))));
+
     // ── Toggle Buttons ────────────────────────────────────────────────────────────
 
     public static final RegistrySupplier<ToggleButtonBlock> RED_ALERT_BUTTON =
@@ -1220,6 +1239,7 @@ public final class Registration {
                         output.accept(DNA_SAMPLE_WRONG.get());
                         output.accept(WITHER_PROOF_GLASS_ITEM.get());
                         output.accept(MOB_EXCLUSION_GLASS_ITEM.get());
+                        output.accept(PLAYER_EXCLUSION_GLASS_ITEM.get());
                         output.accept(TANK_ITEM.get());
                         output.accept(GOLD_TANK_ITEM.get());
                         output.accept(DIAMOND_TANK_ITEM.get());
@@ -1244,17 +1264,17 @@ public final class Registration {
                             output.accept(ModCompatRegistration.DNA_BOOSTER_AETHER_HOSTILE.get());
                         if (ModCompatRegistration.DNA_BOOSTER_EVILCRAFT != null)
                             output.accept(ModCompatRegistration.DNA_BOOSTER_EVILCRAFT.get());
-                        output.accept(RED_ALERT_BUTTON_ITEM.get());
-                        output.accept(DRAMATIC_BUTTON_ITEM.get());
-                        output.accept(RIMSHOT_BUTTON_ITEM.get());
-                        output.accept(WILHELM_BUTTON_ITEM.get());
-                        // A Mob Head for every mob without a vanilla head (the ones Beheading drops).
-                        for (EntityType<?> type : MobHeads.MOD_HEADS) output.accept(MobHeads.modHead(type));
                         output.accept(GIANT_SKELETON_ORNAMENT_ITEM.get());
                         ItemStack skullLights = new ItemStack(STRING_OF_SKULL_LIGHTS.get());
                         skullLights.set(SKULL_LIGHTS.get(), SkullLights.defaultLights());
                         output.accept(skullLights);
                         output.accept(HEAD_PIKE_ITEM.get());
+                        // A Mob Head for every mob without a vanilla head (the ones Beheading drops).
+                        for (EntityType<?> type : MobHeads.MOD_HEADS) output.accept(MobHeads.modHead(type));
+                        output.accept(RED_ALERT_BUTTON_ITEM.get());
+                        output.accept(DRAMATIC_BUTTON_ITEM.get());
+                        output.accept(RIMSHOT_BUTTON_ITEM.get());
+                        output.accept(WILHELM_BUTTON_ITEM.get());
                     })
                     .build());
 

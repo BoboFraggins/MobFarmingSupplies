@@ -1,5 +1,13 @@
 # Mob Farming Supplies
 
+## 26.3.0.7, 26.2.0.8, 26.1.2.10, 1.21.1.2
+
+* Added Player Exclusion Glass
+
+* Changed the Einstein-Rosen Bridge to transport redstone signal, too
+
+* Fixed more item rendering for very dark items
+
 ## 26.3.0.6, 26.2.0.7, 26.1.2.9, 1.21.1.1
 
 * Spooky Release (Happy Halloween!)
