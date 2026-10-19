@@ -566,12 +566,16 @@ public class MobHarvesterRenderer
 
     // ── Helpers — head look-around ────────────────────────────────────────────────
 
-    /** Returns how many degrees the block's facing is offset from SOUTH (0=south, 90=west, …). */
+    /**
+     * The Y rotation (degrees, as {@code rotationY} turns: positive goes from south towards east)
+     * that turns the south-facing head and blades the way the blockstate turns the body. A head
+     * angle relative to the block is then a world yaw plus this.
+     */
     private static float facingOffsetDeg(Direction facing) {
         return switch (facing) {
-            case WEST  ->  90f;
+            case WEST  -> -90f;
             case NORTH -> 180f;
-            case EAST  -> -90f;
+            case EAST  ->  90f;
             default    ->   0f; // SOUTH
         };
     }
@@ -612,7 +616,7 @@ public class MobHarvesterRenderer
             ls.lookingAtPlayer = (target instanceof Player);
         } else {
             int idx = (int)(Math.abs(h) % LOOK_TARGETS_DEG.length);
-            ls.targetYawDeg   = LOOK_TARGETS_DEG[idx] - facingOffsetDeg;
+            ls.targetYawDeg   = LOOK_TARGETS_DEG[idx] + facingOffsetDeg;
             ls.targetPitchDeg = HEAD_POWERED_PITCH_DEG;
             ls.lookingAtPlayer = false;
         }
@@ -633,7 +637,7 @@ public class MobHarvesterRenderer
         double hDist = Math.sqrt(dx * dx + dz * dz);
         float worldYaw = (float) Math.toDegrees(Math.atan2(-dx, dz));
         float pitch = Math.min(MAX_PITCH_DOWN_DEG, (float) -Math.toDegrees(Math.atan2(dy, Math.max(hDist, 0.01))));
-        return new float[] {worldYaw - facingOffsetDeg, pitch};
+        return new float[] {worldYaw + facingOffsetDeg, pitch};
     }
 
     /** The nearest player (not a spectator) within {@code range} blocks of the head, or null. */
