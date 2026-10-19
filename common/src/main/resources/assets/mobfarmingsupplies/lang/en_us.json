@@ -400,7 +400,7 @@
   "book.mobfarmingsupplies.guide.mob_farming.glass.name": "Protective Glass",
   "book.mobfarmingsupplies.guide.mob_farming.glass.description": "Glass that holds a farm together.",
   "book.mobfarmingsupplies.guide.mob_farming.glass.p0.title": "Wither-Proof Glass",
-  "book.mobfarmingsupplies.guide.mob_farming.glass.p0.text": "Wither-Proof Glass survives explosions and cannot be broken by the Wither.",
+  "book.mobfarmingsupplies.guide.mob_farming.glass.p0.text": "Wither-Proof Glass survives explosions and cannot be broken by the Wither. Even vexes, which fly through ordinary blocks, cannot pass it.",
   "book.mobfarmingsupplies.guide.mob_farming.glass.p2.title": "Mob Exclusion Glass",
   "book.mobfarmingsupplies.guide.mob_farming.glass.p2.text": "Mob Exclusion Glass is just as tough, but players can walk straight through it while every other entity is kept out.",
   "book.mobfarmingsupplies.guide.mob_farming.glass.p4.title": "Player Exclusion Glass",

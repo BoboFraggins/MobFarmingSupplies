@@ -28,6 +28,15 @@ public final class MFSTags {
         public static final TagKey<Block> RELOCATION_NOT_SUPPORTED = TagKey.create(
                 Registries.BLOCK, Identifier.fromNamespaceAndPath("c", "relocation_not_supported"));
 
+        /**
+         * Blocks a Vex can't fly through. Vexes ignore block collision entirely, so these are
+         * the only blocks that stop them ({@code EntityVexCollisionMixin}).
+         *
+         * <p>Defaults: Wither-Proof Glass and Mob Exclusion Glass.
+         */
+        public static final TagKey<Block> BLOCKS_VEXES = TagKey.create(
+                Registries.BLOCK, Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "blocks_vexes"));
+
         private Blocks() {}
     }
 
