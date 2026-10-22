@@ -12,6 +12,7 @@ import net.bobofraggins.mobfarmingsupplies.neoforge.loot.MagicHatChestLootModifi
 import net.bobofraggins.mobfarmingsupplies.neoforge.loot.SmoreChestLootModifier;
 import net.bobofraggins.mobfarmingsupplies.neoforge.loot.ToggleButtonChestLootModifier;
 import net.bobofraggins.mobfarmingsupplies.neoforge.tank.TankFluidHandler;
+import net.bobofraggins.mobfarmingsupplies.neoforge.tank.TankItemAccessFluidHandler;
 import net.bobofraggins.mobfarmingsupplies.neoforge.tank.TankItemFluidHandler;
 import net.bobofraggins.mobfarmingsupplies.neoforge.xpjuice.XpJuiceFluid;
 import net.minecraft.sounds.SoundEvents;
@@ -143,9 +144,14 @@ public final class NeoForgeOnlyRegistration {
                 Registration.TANK_BE_TYPE.get(),
                 (be, side) -> new TankFluidHandler(be));
 
+        event.registerBlockEntity(
+                Capabilities.Fluid.BLOCK,
+                Registration.EXPERIENCE_PYLON_BE_TYPE.get(),
+                (be, side) -> new TankFluidHandler(be));
+
         event.registerItem(
                 Capabilities.Fluid.ITEM,
-                (stack, ctx) -> new TankItemFluidHandler(stack),
+                (stack, ctx) -> ctx != null ? new TankItemAccessFluidHandler(ctx) : new TankItemFluidHandler(stack),
                 Registration.TANK_ITEM.get(), Registration.GOLD_TANK_ITEM.get(),
                 Registration.DIAMOND_TANK_ITEM.get(), Registration.EMERALD_TANK_ITEM.get());
 

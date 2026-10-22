@@ -44,7 +44,9 @@ public class MobFarmingSuppliesFabric implements ModInitializer {
         // Fabric only sends vanilla recipe types to clients; without this, JEI (which reads the
         // client's copy) never sees the Tank Upgrade or Einstein-Rosen Bridge recipes.
         RecipeSynchronization.synchronizeRecipeSerializer(Registration.TANK_UPGRADE_SERIALIZER.get());
+        RecipeSynchronization.synchronizeRecipeSerializer(Registration.EXPERIENCE_PYLON_SERIALIZER.get());
         RecipeSynchronization.synchronizeRecipeSerializer(Registration.SKULL_LIGHTS_SERIALIZER.get());
+        RecipeSynchronization.synchronizeRecipeSerializer(Registration.SKULL_LIGHTS_DYE_SERIALIZER.get());
         RecipeSynchronization.synchronizeRecipeSerializer(Registration.BRIDGE_PAIR_SERIALIZER.get());
         RecipeSynchronization.synchronizeRecipeSerializer(Registration.BRIDGE_LINK_SERIALIZER.get());
         RecipeSynchronization.synchronizeRecipeSerializer(Registration.ANVIL_CRUSHING_SERIALIZER.get());
@@ -65,7 +67,7 @@ public class MobFarmingSuppliesFabric implements ModInitializer {
         // Block-side fluid storage for TankBlockEntity.
         FluidStorage.SIDED.registerForBlockEntities(
                 (be, direction) -> new FabricTankFluidStorage((TankBlockEntity) be),
-                Registration.TANK_BE_TYPE.get());
+                Registration.TANK_BE_TYPE.get(), Registration.EXPERIENCE_PYLON_BE_TYPE.get());
 
         // Block-side fluid storage for AbsorptionHopperBlockEntity.
         FluidStorage.SIDED.registerForBlockEntities(

@@ -1,0 +1,6 @@
+{
+  "type": "mobfarmingsupplies:skull_lights_dye",
+  "category": "misc",
+  "lights": "mobfarmingsupplies:string_of_skull_lights",
+  "dye": "#minecraft:dyes"
+}

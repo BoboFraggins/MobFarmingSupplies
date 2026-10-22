@@ -3,6 +3,8 @@
 ## 26.3.0.7, 26.2.0.8, 26.1.2.10, 1.21.1.2
 
 * Added Player Exclusion Glass
+* Added Experience Pylon
+* Added recipe to recolor String of Skull Lights by re-dyeing them
 
 * Changed the Einstein-Rosen Bridge to transport redstone signal, too
 

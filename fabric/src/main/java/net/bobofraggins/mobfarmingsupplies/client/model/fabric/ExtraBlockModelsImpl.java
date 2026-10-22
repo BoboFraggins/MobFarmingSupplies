@@ -2,6 +2,7 @@ package net.bobofraggins.mobfarmingsupplies.client.model.fabric;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import net.bobofraggins.mobfarmingsupplies.experiencepylon.ExperiencePylonRenderer;
 import net.bobofraggins.mobfarmingsupplies.fan.FanBlockEntityRenderer;
 import net.bobofraggins.mobfarmingsupplies.glamping.present.PresentRenderer;
 import net.bobofraggins.mobfarmingsupplies.mobharvester.MobHarvesterRenderer;
@@ -42,6 +43,7 @@ public final class ExtraBlockModelsImpl {
         register(PicnicBasketRenderer.RIGHT_LID_MODEL_ID);
         register(PresentRenderer.MODEL_ID);
         register(ToiletBlockEntityRenderer.LID_MODEL_ID);
+        register(ExperiencePylonRenderer.PYLON_MODEL_ID);
     }
 
     private ExtraBlockModelsImpl() {}

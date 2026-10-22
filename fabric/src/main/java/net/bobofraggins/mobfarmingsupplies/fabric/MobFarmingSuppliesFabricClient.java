@@ -31,6 +31,7 @@ import net.bobofraggins.mobfarmingsupplies.skulllights.SkullLightsRenderer;
 import net.bobofraggins.mobfarmingsupplies.tank.fabric.TankItemRenderer;
 import net.bobofraggins.mobfarmingsupplies.tank.fabric.TankRenderer;
 import net.bobofraggins.mobfarmingsupplies.toilet.ToiletBlockEntityRenderer;
+import net.bobofraggins.mobfarmingsupplies.experiencepylon.ExperiencePylonRenderer;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityRenderLayerRegistrationCallback;
 import net.minecraft.client.model.HumanoidModel;
@@ -90,6 +91,9 @@ public class MobFarmingSuppliesFabricClient implements ClientModInitializer {
         BlockEntityRendererRegistry.register(
                 Registration.TOILET_BE_TYPE.get(),
                 ToiletBlockEntityRenderer::new);
+        BlockEntityRendererRegistry.register(
+                Registration.EXPERIENCE_PYLON_BE_TYPE.get(),
+                ExperiencePylonRenderer::new);
         // The toilet seat is invisible: only its rider is drawn.
         EntityRendererRegistry.register(Registration.TOILET_SEAT, NoopRenderer::new);
         ExtraBlockModelsImpl.registerModelLoadingPlugin();

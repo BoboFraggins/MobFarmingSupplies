@@ -15,6 +15,7 @@ import net.minecraft.world.item.ItemStack;
 /**
  * JEI guide for "how do I get an XP Juice Bucket": the Experience Syringe stores XP withdrawn
  * from a player, empties into a Tank, and a Tank full of XP Juice can be scooped with a bucket.
+ * A second page does the same with an Experience Pylon in place of the Tank.
  */
 public final class XpJuiceGuide {
 
@@ -27,6 +28,11 @@ public final class XpJuiceGuide {
         return new VerticalGuideCategory(RECIPE_TYPE,
                 Component.translatable("jei.mobfarmingsupplies.xp_juice_guide"),
                 helper.createDrawableItemLike(Registration.XP_JUICE_BUCKET.get()), 3);
+    }
+
+    /** The Tank page, then the Experience Pylon page. */
+    public static List<GuideRecipe> recipes() {
+        return List.of(recipe(), pylonRecipe());
     }
 
     public static GuideRecipe recipe() {
@@ -45,8 +51,24 @@ public final class XpJuiceGuide {
                         Component.translatable("jei.mobfarmingsupplies.xp_juice_guide.step.bucket")));
     }
 
+    private static GuideRecipe pylonRecipe() {
+        return GuideRecipe.column(
+                new GuideRecipe.Step(
+                        new ItemStack(Registration.EXPERIENCE_SYRINGE.get()),
+                        RecipeIngredientRole.INPUT,
+                        Component.translatable("jei.mobfarmingsupplies.xp_juice_guide.step.syringe")),
+                new GuideRecipe.Step(
+                        new ItemStack(Registration.EXPERIENCE_PYLON_ITEM.get()),
+                        RecipeIngredientRole.CRAFTING_STATION,
+                        Component.translatable("jei.mobfarmingsupplies.xp_juice_guide.step.pylon")),
+                new GuideRecipe.Step(
+                        new ItemStack(Registration.XP_JUICE_BUCKET.get()),
+                        RecipeIngredientRole.OUTPUT,
+                        Component.translatable("jei.mobfarmingsupplies.xp_juice_guide.step.pylon_bucket")));
+    }
+
     /** A Tank item stack shown full of XP Juice, matching the block form's own fluid rendering. */
-    private static ItemStack tankOfXpJuice() {
+    static ItemStack tankOfXpJuice() {
         ItemStack stack = new ItemStack(Registration.TANK_ITEM.get());
         FluidStack fluid = FluidStack.create(Registration.XP_JUICE_SOURCE.get(), 1);
         stack.set(Registration.TANK_CONTENTS.get(), new TankContents(fluid, TankTier.BASIC.capacity()));

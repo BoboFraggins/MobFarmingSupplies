@@ -80,6 +80,7 @@ import net.bobofraggins.mobfarmingsupplies.shared.sides.OrientedBlockItem;
 import net.bobofraggins.mobfarmingsupplies.skulllights.SkullLightHookBlock;
 import net.bobofraggins.mobfarmingsupplies.skulllights.SkullLightHookBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.skulllights.SkullLights;
+import net.bobofraggins.mobfarmingsupplies.skulllights.SkullLightsDyeRecipe;
 import net.bobofraggins.mobfarmingsupplies.skulllights.SkullLightsRecipe;
 import net.bobofraggins.mobfarmingsupplies.skulllights.StringOfSkullLightsItem;
 import net.bobofraggins.mobfarmingsupplies.tank.TankBlock;
@@ -89,6 +90,11 @@ import net.bobofraggins.mobfarmingsupplies.tank.TankContents;
 import net.bobofraggins.mobfarmingsupplies.tank.TankMenu;
 import net.bobofraggins.mobfarmingsupplies.tank.TankTier;
 import net.bobofraggins.mobfarmingsupplies.tank.TankUpgradeRecipe;
+import net.bobofraggins.mobfarmingsupplies.experiencepylon.ExperiencePylonBlock;
+import net.bobofraggins.mobfarmingsupplies.experiencepylon.ExperiencePylonBlockEntity;
+import net.bobofraggins.mobfarmingsupplies.experiencepylon.ExperiencePylonBlockItem;
+import net.bobofraggins.mobfarmingsupplies.experiencepylon.ExperiencePylonMenu;
+import net.bobofraggins.mobfarmingsupplies.experiencepylon.ExperiencePylonRecipe;
 import net.bobofraggins.mobfarmingsupplies.togglebutton.ToggleButtonBlock;
 import net.bobofraggins.mobfarmingsupplies.toilet.ToiletBlock;
 import net.bobofraggins.mobfarmingsupplies.toilet.ToiletBlockEntity;
@@ -215,9 +221,19 @@ public final class Registration {
             RECIPE_SERIALIZERS.register("tank_upgrade",
                     () -> new RecipeSerializer<>(TankUpgradeRecipe.MAP_CODEC, TankUpgradeRecipe.STREAM_CODEC));
 
+    /** Shaped recipe that makes an Experience Pylon from a tank, moving the tank's experience into it. */
+    public static final RegistrySupplier<RecipeSerializer<ExperiencePylonRecipe>> EXPERIENCE_PYLON_SERIALIZER =
+            RECIPE_SERIALIZERS.register("experience_pylon",
+                    () -> new RecipeSerializer<>(ExperiencePylonRecipe.MAP_CODEC, ExperiencePylonRecipe.STREAM_CODEC));
+
     public static final RegistrySupplier<RecipeSerializer<SkullLightsRecipe>> SKULL_LIGHTS_SERIALIZER =
             RECIPE_SERIALIZERS.register("skull_lights",
                     () -> new RecipeSerializer<>(SkullLightsRecipe.MAP_CODEC, SkullLightsRecipe.STREAM_CODEC));
+
+    /** Recolours a String of Skull Lights with a dye, keeping its skulls. */
+    public static final RegistrySupplier<RecipeSerializer<SkullLightsDyeRecipe>> SKULL_LIGHTS_DYE_SERIALIZER =
+            RECIPE_SERIALIZERS.register("skull_lights_dye",
+                    () -> new RecipeSerializer<>(SkullLightsDyeRecipe.MAP_CODEC, SkullLightsDyeRecipe.STREAM_CODEC));
 
     /** Shaped recipe for a linked pair of Einstein-Rosen Bridges on a new random channel. */
     public static final RegistrySupplier<RecipeSerializer<BridgePairRecipe>> BRIDGE_PAIR_SERIALIZER =
@@ -793,6 +809,29 @@ public final class Registration {
     public static final RegistrySupplier<MenuType<TankMenu>> TANK_MENU =
             MENUS.register("tank", () -> MenuRegistry.ofExtended(TankMenu::new));
 
+    // ── Experience Pylon ──────────────────────────────────────────────────────────
+
+    public static final RegistrySupplier<ExperiencePylonBlock> EXPERIENCE_PYLON =
+            BLOCKS.register("experience_pylon",
+                    () -> new ExperiencePylonBlock(BlockBehaviour.Properties.of()
+                            .setId(blockKey("experience_pylon"))
+                            .mapColor(MapColor.COLOR_BLACK)
+                            .strength(0.3f, 1200.0f) // a tank's mining time, more blast resistance
+                            .sound(SoundType.STONE)
+                            .noOcclusion()));
+
+    public static final RegistrySupplier<ExperiencePylonBlockItem> EXPERIENCE_PYLON_ITEM =
+            ITEMS.register("experience_pylon",
+                    () -> new ExperiencePylonBlockItem(EXPERIENCE_PYLON.get(), new Item.Properties()
+                            .setId(itemKey("experience_pylon"))));
+
+    public static final RegistrySupplier<BlockEntityType<ExperiencePylonBlockEntity>> EXPERIENCE_PYLON_BE_TYPE =
+            BLOCK_ENTITIES.register("experience_pylon",
+                    () -> BlockEntityTypePlatform.create(ExperiencePylonBlockEntity::new, EXPERIENCE_PYLON.get()));
+
+    public static final RegistrySupplier<MenuType<ExperiencePylonMenu>> EXPERIENCE_PYLON_MENU =
+            MENUS.register("experience_pylon", () -> MenuRegistry.ofExtended(ExperiencePylonMenu::new));
+
     // ── Experience Syringe ────────────────────────────────────────────────────────
 
     public static final RegistrySupplier<net.bobofraggins.mobfarmingsupplies.magnet.SuperconductingMagnetItem>
@@ -1244,6 +1283,7 @@ public final class Registration {
                         output.accept(GOLD_TANK_ITEM.get());
                         output.accept(DIAMOND_TANK_ITEM.get());
                         output.accept(EMERALD_TANK_ITEM.get());
+                        output.accept(EXPERIENCE_PYLON_ITEM.get());
                         output.accept(EXPERIENCE_SYRINGE.get());
                         output.accept(XP_JUICE_BUCKET.get());
                         output.accept(ENDER_INHIBITOR_ITEM.get());

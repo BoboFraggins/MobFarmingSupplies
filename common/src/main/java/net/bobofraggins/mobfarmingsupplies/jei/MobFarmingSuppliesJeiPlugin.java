@@ -23,7 +23,8 @@ import net.minecraft.world.item.ItemStack;
 
 /**
  * JEI plugin for MobFarmingSupplies — vertical guides for things that aren't crafted directly:
- * how an XP Juice Bucket is obtained (Experience Syringe → Tank → bucket, {@link XpJuiceGuide})
+ * how an XP Juice Bucket is obtained (Experience Syringe → Tank or Experience Pylon → bucket,
+ * {@link XpJuiceGuide}), how a Bottle o' Enchanting is filled ({@link BottlingGuide})
  * and anvil crushing (Anvil → Nether Quartz → Silicon Clump, {@link AnvilCrushingGuide}).
  * Plus the Filter Scribing Terminal: a recipe view of scribing Item Filters
  * ({@link FilterScribingCategory}) and the ghost-ingredient handler for its matcher slot.
@@ -48,14 +49,16 @@ public class MobFarmingSuppliesJeiPlugin implements IModPlugin {
     @Override
     public void registerCategories(IRecipeCategoryRegistration reg) {
         IGuiHelper guiHelper = reg.getJeiHelpers().getGuiHelper();
-        reg.addRecipeCategories(XpJuiceGuide.category(guiHelper), AnvilCrushingGuide.category(guiHelper),
+        reg.addRecipeCategories(XpJuiceGuide.category(guiHelper), BottlingGuide.category(guiHelper),
+                AnvilCrushingGuide.category(guiHelper),
                 new FilterScribingCategory(guiHelper), BeheadingGuide.category(guiHelper),
                 new DnaSamplingGuide(guiHelper), new CloningGuide(guiHelper));
     }
 
     @Override
     public void registerRecipes(IRecipeRegistration reg) {
-        reg.addRecipes(XpJuiceGuide.RECIPE_TYPE, List.of(XpJuiceGuide.recipe()));
+        reg.addRecipes(XpJuiceGuide.RECIPE_TYPE, XpJuiceGuide.recipes());
+        reg.addRecipes(BottlingGuide.RECIPE_TYPE, BottlingGuide.recipes());
         reg.addRecipes(AnvilCrushingGuide.RECIPE_TYPE, List.of(AnvilCrushingGuide.recipe()));
         reg.addRecipes(FilterScribingCategory.RECIPE_TYPE, List.of(FilterScribingExamples.create()));
         reg.addRecipes(BeheadingGuide.RECIPE_TYPE, List.of(BeheadingGuide.recipe()));
@@ -92,6 +95,12 @@ public class MobFarmingSuppliesJeiPlugin implements IModPlugin {
         reg.addRecipeCatalyst(Registration.TANK_ITEM.get().getDefaultInstance(), XpJuiceGuide.RECIPE_TYPE);
         reg.addRecipeCatalyst(
                 Registration.XP_JUICE_BUCKET.get().getDefaultInstance(), XpJuiceGuide.RECIPE_TYPE);
+        reg.addRecipeCatalyst(
+                Registration.EXPERIENCE_PYLON_ITEM.get().getDefaultInstance(), XpJuiceGuide.RECIPE_TYPE);
+        for (var station : List.of(Registration.EXPERIENCE_SYRINGE.get(), Registration.TANK_ITEM.get(),
+                Registration.EXPERIENCE_PYLON_ITEM.get())) {
+            reg.addRecipeCatalyst(station.getDefaultInstance(), BottlingGuide.RECIPE_TYPE);
+        }
         for (var anvil : List.of(Items.ANVIL, Items.CHIPPED_ANVIL, Items.DAMAGED_ANVIL)) {
             reg.addRecipeCatalyst(anvil.getDefaultInstance(), AnvilCrushingGuide.RECIPE_TYPE);
         }

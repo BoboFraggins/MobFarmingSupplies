@@ -105,7 +105,7 @@ public class ExperienceSyringeItem extends Item {
     }
 
     /** XP required to advance from {@code level} to {@code level + 1}, matching vanilla formula. */
-    private static int xpNeededForLevel(int level) {
+    public static int xpNeededForLevel(int level) {
         if (level >= 30) return 112 + (level - 30) * 9;
         if (level >= 16) return 37 + (level - 16) * 5;
         return 7 + level * 2;

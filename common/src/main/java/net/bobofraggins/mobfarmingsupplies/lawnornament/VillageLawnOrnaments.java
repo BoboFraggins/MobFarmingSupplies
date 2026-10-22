@@ -12,17 +12,19 @@ import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElement;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
 
 /**
- * Puts Giant Skeleton Lawn Ornaments in villages: a small patch with the ornament on it is added to
- * each vanilla village's houses pool, so a street can grow one where it would otherwise grow a
- * house. Added when the server starts, as the pools are loaded with the world.
+ * Puts Giant Skeleton Lawn Ornaments in villages: a Halloween yard with the ornament in it
+ * ({@code village/halloween_lawn}) is added to each vanilla village's houses pool, so a street can
+ * grow one where it would otherwise grow a house. Every village type gets the same yard. Added when
+ * the server starts, as the pools are loaded with the world.
  *
  * <p>The lawn goes in once, at weight 1, the least a pool element can have. Nothing else in the
  * pool is touched, so the houses already there (vanilla's, or ones other mods add) keep their
  * weights. A village tries a dozen or so houses, so the lawn turns up in about three villages in
  * five, often twice (measured by placing 64 villages).
  *
- * <p>The lawn's bottom layer is the skeleton and its plants: a village piece's bottom layer sits
- * one block above the street's ground, so the lawn stands on the village's own ground.
+ * <p>A village piece is placed level with its street jigsaw, one block above the street's ground.
+ * The yard's jigsaw is in its second layer, so its bottom layer of grass and paths lands at the
+ * street's ground level instead, replacing the village's ground there.
  */
 public final class VillageLawnOrnaments {
 
@@ -40,7 +42,7 @@ public final class VillageLawnOrnaments {
             StructureTemplatePool pool = pools.getValue(
                     Identifier.withDefaultNamespace("village/" + village + "/houses"));
             if (pool == null) continue; // removed by a datapack
-            String location = MobFarmingSuppliesCommon.MODID + ":village/" + village + "_giant_skeleton_lawn";
+            String location = MobFarmingSuppliesCommon.MODID + ":village/halloween_lawn";
             ObjectArrayList<StructurePoolElement> templates = ((StructureTemplatePoolAccessor) pool).getTemplates();
             if (templates.stream().anyMatch(element -> element.toString().contains(location))) continue;
             templates.add(StructurePoolElement.single(location).apply(StructureTemplatePool.Projection.RIGID));

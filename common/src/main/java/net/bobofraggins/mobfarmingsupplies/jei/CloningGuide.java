@@ -46,7 +46,6 @@ public final class CloningGuide implements IRecipeCategory<CloningGuide.Recipe> 
     private static final int MOB_TOP = MACHINE_TOP + SLOT_SIZE + 6;
     private static final int MOB_HEIGHT = 40;
     private static final int HEIGHT = MOB_TOP + MOB_HEIGHT;
-    private static final int ARROW_COLOR = 0xFF555555;
 
     private final Component title = Component.translatable("jei.mobfarmingsupplies.cloning");
     private final IDrawable icon;
@@ -145,11 +144,8 @@ public final class CloningGuide implements IRecipeCategory<CloningGuide.Recipe> 
                 .map(type -> mobs.get(type, false)).orElse(null);
     }
 
-    /** A small downward-pointing triangle (5×3 px), centred, its top row at {@code y}. */
+    /** A small downward-pointing triangle, centred under the slots' items, its top row at {@code y}. */
     private static void drawDownArrow(GuiGraphicsExtractor g, int y) {
-        int cx = WIDTH / 2;
-        g.fill(cx - 2, y, cx + 3, y + 1, ARROW_COLOR);
-        g.fill(cx - 1, y + 1, cx + 2, y + 2, ARROW_COLOR);
-        g.fill(cx, y + 2, cx + 1, y + 3, ARROW_COLOR);
+        VerticalGuideCategory.drawCentredDownArrow(g, (WIDTH - SLOT_SIZE) / 2 + 8, y);
     }
 }

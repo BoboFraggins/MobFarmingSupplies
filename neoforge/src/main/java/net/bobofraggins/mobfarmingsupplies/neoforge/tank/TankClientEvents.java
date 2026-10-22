@@ -8,6 +8,7 @@ import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.event.RegisterSpecialModelRendererEvent;
 import net.bobofraggins.mobfarmingsupplies.tank.TankScreen;
+import net.bobofraggins.mobfarmingsupplies.experiencepylon.ExperiencePylonScreen;
 
 public final class TankClientEvents {
 
@@ -16,11 +17,13 @@ public final class TankClientEvents {
     @SubscribeEvent
     public static void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerBlockEntityRenderer(Registration.TANK_BE_TYPE.get(), TankRenderer::new);
+        event.registerBlockEntityRenderer(Registration.EXPERIENCE_PYLON_BE_TYPE.get(), NeoExperiencePylonRenderer::new);
     }
 
     @SubscribeEvent
     public static void onRegisterMenuScreens(RegisterMenuScreensEvent event) {
         event.register(Registration.TANK_MENU.get(), TankScreen::new);
+        event.register(Registration.EXPERIENCE_PYLON_MENU.get(), ExperiencePylonScreen::new);
     }
 
     @SubscribeEvent
