@@ -3,6 +3,8 @@ package net.bobofraggins.mobfarmingsupplies.neoforge.register;
 import com.mojang.serialization.MapCodec;
 import net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommon;
 import net.bobofraggins.mobfarmingsupplies.absorptionhopper.AbsorptionHopperBlockEntity;
+import net.bobofraggins.mobfarmingsupplies.neoforge.incubator.IncubatorFluidHandler;
+import net.bobofraggins.mobfarmingsupplies.neoforge.incubator.IncubatorItemHandler;
 import net.bobofraggins.mobfarmingsupplies.neoforge.absorptionhopper.AbsorptionHopperFluidHandler;
 import net.bobofraggins.mobfarmingsupplies.neoforge.absorptionhopper.AbsorptionHopperItemHandler;
 import net.bobofraggins.mobfarmingsupplies.crafting.FluidContainerIngredient;
@@ -179,6 +181,18 @@ public final class NeoForgeOnlyRegistration {
 
         // Omnidirectional Hopper: insert-only items/fluids/energy/chemicals, only on INPUT sides.
         OmniHopperCapabilities.register(event);
+
+        // XP Powered Incubator: eggs and DNA in (eggs spread evenly), finished eggs out, on every side.
+        event.registerBlockEntity(
+                Capabilities.Item.BLOCK,
+                Registration.INCUBATOR_BE_TYPE.get(),
+                (be, side) -> new IncubatorItemHandler(be));
+
+        // Its experience tank: experience in only.
+        event.registerBlockEntity(
+                Capabilities.Fluid.BLOCK,
+                Registration.INCUBATOR_BE_TYPE.get(),
+                (be, side) -> new IncubatorFluidHandler(be));
 
         // Toilet: voids any item pushed in and supplies unlimited water, on every side.
         event.registerBlockEntity(

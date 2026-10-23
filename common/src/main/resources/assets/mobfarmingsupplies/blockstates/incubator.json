@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "mobfarmingsupplies:block/incubator_base"
+    },
+    "facing=east": {
+      "model": "mobfarmingsupplies:block/incubator_base",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "mobfarmingsupplies:block/incubator_base",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "mobfarmingsupplies:block/incubator_base",
+      "y": 270
+    }
+  }
+}

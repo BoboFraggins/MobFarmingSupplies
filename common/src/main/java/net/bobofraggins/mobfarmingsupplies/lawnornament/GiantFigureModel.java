@@ -7,12 +7,11 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
 /**
- * Vanilla's skeleton model, posed for the lawn ornament: standing, arms at its sides, head turned
- * by {@link Pose}. Posed when drawn, so every ornament keeps its own head.
+ * A vanilla humanoid model (a skeleton's, a player's, ...) posed for a giant lawn ornament:
+ * standing, arms at its sides, head turned by {@link Pose}. Posed when drawn, so every ornament
+ * keeps its own head.
  */
-public class GiantSkeletonModel extends Model<GiantSkeletonModel.Pose> {
-
-    public static final Identifier TEXTURE = Identifier.withDefaultNamespace("textures/entity/skeleton/skeleton.png");
+public class GiantFigureModel extends Model<GiantFigureModel.Pose> {
 
     /** Where the head looks, relative to the body, in degrees (positive pitch looks down). */
     public record Pose(float headYawDeg, float headPitchDeg) {
@@ -20,10 +19,16 @@ public class GiantSkeletonModel extends Model<GiantSkeletonModel.Pose> {
     }
 
     private final ModelPart head;
+    private final Identifier texture;
 
-    public GiantSkeletonModel(ModelPart root) {
+    public GiantFigureModel(ModelPart root, Identifier texture) {
         super(root, RenderTypes::entityCutout);
         this.head = root.getChild("head");
+        this.texture = texture;
+    }
+
+    public Identifier texture() {
+        return texture;
     }
 
     @Override

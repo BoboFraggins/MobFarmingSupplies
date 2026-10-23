@@ -1,10 +1,9 @@
-package net.bobofraggins.mobfarmingsupplies.experiencepylon;
+package net.bobofraggins.mobfarmingsupplies.tank;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.bobofraggins.mobfarmingsupplies.experiencepylon.ExperiencePylonBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
-import net.bobofraggins.mobfarmingsupplies.tank.TankContents;
-import net.bobofraggins.mobfarmingsupplies.tank.TankUpgradeRecipe;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
@@ -17,27 +16,28 @@ import net.minecraft.world.item.crafting.ShapedRecipePattern;
 import net.minecraft.world.level.Level;
 
 /**
- * Crafts an Experience Pylon from a tank, moving the tank's experience into it. Like
- * {@link TankUpgradeRecipe}, but the tank must be empty or hold an experience fluid (and no more
- * than the pylon holds). Type {@code mobfarmingsupplies:experience_pylon} in JSON, shaped.
+ * Crafts a block from a tank and moves the tank's experience into it (the Experience Pylon, the
+ * Incubator). Like {@link TankUpgradeRecipe}, but the tank must be empty or hold an experience
+ * fluid (and no more than a pylon holds). Type {@code mobfarmingsupplies:experience_tank} in JSON,
+ * shaped.
  */
-public class ExperiencePylonRecipe extends TankUpgradeRecipe {
+public class ExperienceTankRecipe extends TankUpgradeRecipe {
 
-    public static final MapCodec<ExperiencePylonRecipe> MAP_CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
+    public static final MapCodec<ExperienceTankRecipe> MAP_CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             Recipe.CommonInfo.MAP_CODEC.forGetter(r -> r.commonInfo),
             CraftingRecipe.CraftingBookInfo.MAP_CODEC.forGetter(r -> r.bookInfo),
             ShapedRecipePattern.MAP_CODEC.forGetter(r -> r.pattern),
             ItemStackTemplate.CODEC.fieldOf("result").forGetter(r -> r.result)
-    ).apply(i, ExperiencePylonRecipe::new));
+    ).apply(i, ExperienceTankRecipe::new));
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, ExperiencePylonRecipe> STREAM_CODEC = StreamCodec.composite(
+    public static final StreamCodec<RegistryFriendlyByteBuf, ExperienceTankRecipe> STREAM_CODEC = StreamCodec.composite(
             Recipe.CommonInfo.STREAM_CODEC, r -> r.commonInfo,
             CraftingRecipe.CraftingBookInfo.STREAM_CODEC, r -> r.bookInfo,
             ShapedRecipePattern.STREAM_CODEC, r -> r.pattern,
             ItemStackTemplate.STREAM_CODEC, r -> r.result,
-            ExperiencePylonRecipe::new);
+            ExperienceTankRecipe::new);
 
-    public ExperiencePylonRecipe(Recipe.CommonInfo commonInfo, CraftingRecipe.CraftingBookInfo bookInfo,
+    public ExperienceTankRecipe(Recipe.CommonInfo commonInfo, CraftingRecipe.CraftingBookInfo bookInfo,
                                  ShapedRecipePattern pattern, ItemStackTemplate result) {
         super(commonInfo, bookInfo, pattern, result);
     }
@@ -56,19 +56,19 @@ public class ExperiencePylonRecipe extends TankUpgradeRecipe {
 
     @Override
     public ItemStack assemble(CraftingInput input) {
-        ItemStack pylon = result.create();
+        ItemStack crafted = result.create();
         for (ItemStack ingredient : input.items()) {
             TankContents contents = ingredient.get(Registration.TANK_CONTENTS.get());
             if (contents != null && !contents.isEmpty()) {
-                pylon.set(Registration.TANK_CONTENTS.get(), new TankContents(contents.storedFluid(), contents.amount()));
+                crafted.set(Registration.TANK_CONTENTS.get(), new TankContents(contents.storedFluid(), contents.amount()));
                 break;
             }
         }
-        return pylon;
+        return crafted;
     }
 
     @Override
-    public RecipeSerializer<ExperiencePylonRecipe> getSerializer() {
-        return Registration.EXPERIENCE_PYLON_SERIALIZER.get();
+    public RecipeSerializer<ExperienceTankRecipe> getSerializer() {
+        return Registration.EXPERIENCE_TANK_SERIALIZER.get();
     }
 }

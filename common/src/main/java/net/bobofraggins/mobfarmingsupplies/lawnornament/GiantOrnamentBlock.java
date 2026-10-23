@@ -1,9 +1,14 @@
 package net.bobofraggins.mobfarmingsupplies.lawnornament;
 
 import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.ResolvableProfile;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -23,27 +28,36 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Giant Skeleton Lawn Ornament: a skeleton four blocks tall, its head turning to watch the
- * nearest player (see {@link GiantSkeletonOrnamentRenderer}). Only the bottom block is solid; the
- * rest of the skeleton is drawn above it.
+ * A giant lawn ornament: a figure four blocks tall ({@link GiantOrnament}), its head turning to
+ * watch the nearest player (see {@link GiantOrnamentRenderer}). Only the bottom block is solid;
+ * the rest of the figure is drawn above it.
  */
-public class GiantSkeletonOrnamentBlock extends Block implements EntityBlock {
+public class GiantOrnamentBlock extends Block implements EntityBlock {
 
-    public static final MapCodec<GiantSkeletonOrnamentBlock> CODEC = simpleCodec(GiantSkeletonOrnamentBlock::new);
+    public static final MapCodec<GiantOrnamentBlock> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
+            GiantOrnament.CODEC.fieldOf("ornament").forGetter(GiantOrnamentBlock::ornament),
+            propertiesCodec()).apply(i, GiantOrnamentBlock::new));
 
-    /** The way the skeleton faces: towards whoever placed it. */
+    /** The way the figure faces: towards whoever placed it. */
     public static final EnumProperty<Direction> FACING = BlockStateProperties.HORIZONTAL_FACING;
 
     /** Its feet and lower legs. */
     private static final VoxelShape SHAPE = Block.box(2, 0, 2, 14, 16, 14);
 
-    public GiantSkeletonOrnamentBlock(Properties props) {
+    private final GiantOrnament ornament;
+
+    public GiantOrnamentBlock(GiantOrnament ornament, Properties props) {
         super(props);
+        this.ornament = ornament;
         registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH));
     }
 
+    public GiantOrnament ornament() {
+        return ornament;
+    }
+
     @Override
-    public MapCodec<GiantSkeletonOrnamentBlock> codec() {
+    public MapCodec<GiantOrnamentBlock> codec() {
         return CODEC;
     }
 
@@ -67,6 +81,16 @@ public class GiantSkeletonOrnamentBlock extends Block implements EntityBlock {
         return state.rotate(mirror.getRotation(state.getValue(FACING)));
     }
 
+    /** A Giant Player Lawn Ornament placed without an owner becomes the placer's. */
+    @Override
+    public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
+        super.setPlacedBy(level, pos, state, placer, stack);
+        if (ornament == GiantOrnament.PLAYER && !level.isClientSide() && placer instanceof Player player
+                && level.getBlockEntity(pos) instanceof GiantOrnamentBlockEntity be) {
+            be.claim(ResolvableProfile.createResolved(player.getGameProfile()));
+        }
+    }
+
     @Override
     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         return SHAPE;
@@ -74,7 +98,7 @@ public class GiantSkeletonOrnamentBlock extends Block implements EntityBlock {
 
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new GiantSkeletonOrnamentBlockEntity(pos, state);
+        return new GiantOrnamentBlockEntity(pos, state);
     }
 
     @Override
@@ -82,8 +106,8 @@ public class GiantSkeletonOrnamentBlock extends Block implements EntityBlock {
     @SuppressWarnings("unchecked")
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(
             Level level, BlockState state, BlockEntityType<T> type) {
-        if (!level.isClientSide() || type != Registration.GIANT_SKELETON_ORNAMENT_BE_TYPE.get()) return null;
-        return (BlockEntityTicker<T>) (BlockEntityTicker<GiantSkeletonOrnamentBlockEntity>)
-                GiantSkeletonOrnamentBlockEntity::clientTick;
+        if (!level.isClientSide() || type != Registration.GIANT_ORNAMENT_BE_TYPE.get()) return null;
+        return (BlockEntityTicker<T>) (BlockEntityTicker<GiantOrnamentBlockEntity>)
+                GiantOrnamentBlockEntity::clientTick;
     }
 }

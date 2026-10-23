@@ -114,6 +114,22 @@ public class DnaSamplePackItem extends Item implements IDnaSampleItem {
         return null;
     }
 
+    @Override
+    public List<EntityType<?>> mobs(ItemStack stack, ServerLevel level, BlockPos pos) {
+        return mobPool(level, pos);
+    }
+
+    /** The configured mobs (not the biome's, which depend on where the pack is used). */
+    @Override
+    public List<EntityType<?>> displayMobs(ItemStack stack) {
+        Set<EntityType<?>> mobs = new LinkedHashSet<>();
+        for (String id : mobsConfig.get()) {
+            Identifier loc = Identifier.tryParse(id);
+            if (loc != null) BuiltInRegistries.ENTITY_TYPE.getOptional(loc).ifPresent(mobs::add);
+        }
+        return List.copyOf(mobs);
+    }
+
     /** Whether every mob this pack makes is a baby. */
     public boolean forcesBaby() {
         return forceBaby;

@@ -5,6 +5,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 
 /**
@@ -38,6 +39,23 @@ public final class MFSTags {
                 Registries.BLOCK, Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "blocks_vexes"));
 
         private Blocks() {}
+    }
+
+    public static final class Items {
+
+        /**
+         * What the XP Powered Incubator's sample slot takes: the DNA samples and packs, and the
+         * other samples its recipes use (a dragon head). Packs adding incubating recipes with new
+         * samples add them here.
+         */
+        public static final TagKey<Item> INCUBATOR_SAMPLES = TagKey.create(
+                Registries.ITEM, Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "incubator_samples"));
+
+        /** What the XP Powered Incubator's input slots take: the eggs, and any other recipe inputs. */
+        public static final TagKey<Item> INCUBATOR_INPUTS = TagKey.create(
+                Registries.ITEM, Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "incubator_inputs"));
+
+        private Items() {}
     }
 
     public static final class EntityTypes {

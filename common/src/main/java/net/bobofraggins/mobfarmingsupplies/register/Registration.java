@@ -48,8 +48,11 @@ import net.bobofraggins.mobfarmingsupplies.headpike.HeadPikeBlockItem;
 import net.bobofraggins.mobfarmingsupplies.headpike.HeadPikeMenu;
 import net.bobofraggins.mobfarmingsupplies.itemfilter.ItemFilterData;
 import net.bobofraggins.mobfarmingsupplies.itemfilter.ItemFilterItem;
-import net.bobofraggins.mobfarmingsupplies.lawnornament.GiantSkeletonOrnamentBlock;
-import net.bobofraggins.mobfarmingsupplies.lawnornament.GiantSkeletonOrnamentBlockEntity;
+import net.bobofraggins.mobfarmingsupplies.lawnornament.GiantOrnament;
+import net.bobofraggins.mobfarmingsupplies.lawnornament.GiantOrnamentBlock;
+import net.bobofraggins.mobfarmingsupplies.lawnornament.GiantOrnamentBlockEntity;
+import net.bobofraggins.mobfarmingsupplies.lawnornament.GiantPlayerOrnamentItem;
+import net.bobofraggins.mobfarmingsupplies.lawnornament.OrnamentSwapProcessor;
 import net.bobofraggins.mobfarmingsupplies.logisticsorter.LogisticSorterBlock;
 import net.bobofraggins.mobfarmingsupplies.logisticsorter.LogisticSorterBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.logisticsorter.LogisticSorterBlockItem;
@@ -89,12 +92,16 @@ import net.bobofraggins.mobfarmingsupplies.tank.TankBlockItem;
 import net.bobofraggins.mobfarmingsupplies.tank.TankContents;
 import net.bobofraggins.mobfarmingsupplies.tank.TankMenu;
 import net.bobofraggins.mobfarmingsupplies.tank.TankTier;
+import net.bobofraggins.mobfarmingsupplies.tank.ExperienceTankRecipe;
 import net.bobofraggins.mobfarmingsupplies.tank.TankUpgradeRecipe;
 import net.bobofraggins.mobfarmingsupplies.experiencepylon.ExperiencePylonBlock;
+import net.bobofraggins.mobfarmingsupplies.incubator.IncubatingRecipe;
+import net.bobofraggins.mobfarmingsupplies.incubator.IncubatorBlock;
+import net.bobofraggins.mobfarmingsupplies.incubator.IncubatorBlockEntity;
+import net.bobofraggins.mobfarmingsupplies.incubator.IncubatorMenu;
 import net.bobofraggins.mobfarmingsupplies.experiencepylon.ExperiencePylonBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.experiencepylon.ExperiencePylonBlockItem;
 import net.bobofraggins.mobfarmingsupplies.experiencepylon.ExperiencePylonMenu;
-import net.bobofraggins.mobfarmingsupplies.experiencepylon.ExperiencePylonRecipe;
 import net.bobofraggins.mobfarmingsupplies.togglebutton.ToggleButtonBlock;
 import net.bobofraggins.mobfarmingsupplies.toilet.ToiletBlock;
 import net.bobofraggins.mobfarmingsupplies.toilet.ToiletBlockEntity;
@@ -140,6 +147,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorType;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
@@ -202,6 +210,9 @@ public final class Registration {
     public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS =
             DeferredRegister.create(MobFarmingSuppliesCommon.MODID, Registries.RECIPE_SERIALIZER);
 
+    public static final DeferredRegister<StructureProcessorType<?>> STRUCTURE_PROCESSORS =
+            DeferredRegister.create(MobFarmingSuppliesCommon.MODID, Registries.STRUCTURE_PROCESSOR);
+
     // ── Recipes ──────────────────────────────────────────────────────────────────
 
     public static final RegistrySupplier<RecipeType<AnvilCrushingRecipe>> ANVIL_CRUSHING_TYPE =
@@ -212,6 +223,19 @@ public final class Registration {
                 }
             });
 
+    public static final RegistrySupplier<RecipeType<IncubatingRecipe>> INCUBATING_TYPE =
+            RECIPE_TYPES.register("incubating", () -> new RecipeType<IncubatingRecipe>() {
+                @Override
+                public String toString() {
+                    return MobFarmingSuppliesCommon.MODID + ":incubating";
+                }
+            });
+
+    /** What the XP Powered Incubator makes: see {@link IncubatingRecipe}. */
+    public static final RegistrySupplier<RecipeSerializer<IncubatingRecipe>> INCUBATING_SERIALIZER =
+            RECIPE_SERIALIZERS.register("incubating",
+                    () -> new RecipeSerializer<>(IncubatingRecipe.MAP_CODEC, IncubatingRecipe.STREAM_CODEC));
+
     public static final RegistrySupplier<RecipeSerializer<AnvilCrushingRecipe>> ANVIL_CRUSHING_SERIALIZER =
             RECIPE_SERIALIZERS.register("anvil_crushing",
                     () -> new RecipeSerializer<>(AnvilCrushingRecipe.MAP_CODEC, AnvilCrushingRecipe.STREAM_CODEC));
@@ -221,10 +245,10 @@ public final class Registration {
             RECIPE_SERIALIZERS.register("tank_upgrade",
                     () -> new RecipeSerializer<>(TankUpgradeRecipe.MAP_CODEC, TankUpgradeRecipe.STREAM_CODEC));
 
-    /** Shaped recipe that makes an Experience Pylon from a tank, moving the tank's experience into it. */
-    public static final RegistrySupplier<RecipeSerializer<ExperiencePylonRecipe>> EXPERIENCE_PYLON_SERIALIZER =
-            RECIPE_SERIALIZERS.register("experience_pylon",
-                    () -> new RecipeSerializer<>(ExperiencePylonRecipe.MAP_CODEC, ExperiencePylonRecipe.STREAM_CODEC));
+    /** Shaped recipe that makes a block from a tank (Experience Pylon, Incubator), moving the tank's experience into it. */
+    public static final RegistrySupplier<RecipeSerializer<ExperienceTankRecipe>> EXPERIENCE_TANK_SERIALIZER =
+            RECIPE_SERIALIZERS.register("experience_tank",
+                    () -> new RecipeSerializer<>(ExperienceTankRecipe.MAP_CODEC, ExperienceTankRecipe.STREAM_CODEC));
 
     public static final RegistrySupplier<RecipeSerializer<SkullLightsRecipe>> SKULL_LIGHTS_SERIALIZER =
             RECIPE_SERIALIZERS.register("skull_lights",
@@ -809,6 +833,29 @@ public final class Registration {
     public static final RegistrySupplier<MenuType<TankMenu>> TANK_MENU =
             MENUS.register("tank", () -> MenuRegistry.ofExtended(TankMenu::new));
 
+    // ── Incubator ─────────────────────────────────────────────────────────────────
+
+    public static final RegistrySupplier<IncubatorBlock> INCUBATOR =
+            BLOCKS.register("incubator",
+                    () -> new IncubatorBlock(BlockBehaviour.Properties.of()
+                            .setId(blockKey("incubator"))
+                            .mapColor(MapColor.QUARTZ)
+                            .strength(0.8f)
+                            .sound(SoundType.GLASS)
+                            .noOcclusion()
+                            .isViewBlocking((s, r, p) -> false)));
+
+    public static final RegistrySupplier<BlockItem> INCUBATOR_ITEM =
+            ITEMS.register("incubator",
+                    () -> new BlockItem(INCUBATOR.get(), new Item.Properties().setId(itemKey("incubator"))));
+
+    public static final RegistrySupplier<BlockEntityType<IncubatorBlockEntity>> INCUBATOR_BE_TYPE =
+            BLOCK_ENTITIES.register("incubator",
+                    () -> BlockEntityTypePlatform.create(IncubatorBlockEntity::new, INCUBATOR.get()));
+
+    public static final RegistrySupplier<MenuType<IncubatorMenu>> INCUBATOR_MENU =
+            MENUS.register("incubator", () -> MenuRegistry.ofExtended(IncubatorMenu::new));
+
     // ── Experience Pylon ──────────────────────────────────────────────────────────
 
     public static final RegistrySupplier<ExperiencePylonBlock> EXPERIENCE_PYLON =
@@ -817,6 +864,7 @@ public final class Registration {
                             .setId(blockKey("experience_pylon"))
                             .mapColor(MapColor.COLOR_BLACK)
                             .strength(0.3f, 1200.0f) // a tank's mining time, more blast resistance
+                            .lightLevel(state -> 15)
                             .sound(SoundType.STONE)
                             .noOcclusion()));
 
@@ -1112,24 +1160,52 @@ public final class Registration {
             BLOCK_ENTITIES.register("toilet",
                     () -> BlockEntityTypePlatform.create(ToiletBlockEntity::new, TOILET.get()));
 
-    // ── Giant Skeleton Lawn Ornament ─────────────────────────────────────────────
+    // ── Giant Lawn Ornaments ─────────────────────────────────────────────────────
 
-    public static final RegistrySupplier<GiantSkeletonOrnamentBlock> GIANT_SKELETON_ORNAMENT =
-            BLOCKS.register("giant_skeleton_lawn_ornament",
-                    () -> new GiantSkeletonOrnamentBlock(BlockBehaviour.Properties.of()
-                            .setId(blockKey("giant_skeleton_lawn_ornament"))
-                            .strength(1.5f)
-                            .sound(SoundType.BONE_BLOCK)
-                            .noOcclusion()));
+    public static final RegistrySupplier<GiantOrnamentBlock> GIANT_SKELETON_ORNAMENT =
+            registerGiantOrnament(GiantOrnament.SKELETON, SoundType.BONE_BLOCK);
+    public static final RegistrySupplier<GiantOrnamentBlock> GIANT_HEROBRINE_ORNAMENT =
+            registerGiantOrnament(GiantOrnament.HEROBRINE, SoundType.STONE);
+    public static final RegistrySupplier<GiantOrnamentBlock> GIANT_PLAYER_ORNAMENT =
+            registerGiantOrnament(GiantOrnament.PLAYER, SoundType.STONE);
 
     public static final RegistrySupplier<BlockItem> GIANT_SKELETON_ORNAMENT_ITEM =
-            ITEMS.register("giant_skeleton_lawn_ornament",
-                    () -> new BlockItem(GIANT_SKELETON_ORNAMENT.get(), new Item.Properties()
-                            .setId(itemKey("giant_skeleton_lawn_ornament"))));
+            registerGiantOrnamentItem(GiantOrnament.SKELETON, GIANT_SKELETON_ORNAMENT);
+    public static final RegistrySupplier<BlockItem> GIANT_HEROBRINE_ORNAMENT_ITEM =
+            registerGiantOrnamentItem(GiantOrnament.HEROBRINE, GIANT_HEROBRINE_ORNAMENT);
+    /** Named after, and wearing the skin of, its owner: whoever first places it. */
+    public static final RegistrySupplier<GiantPlayerOrnamentItem> GIANT_PLAYER_ORNAMENT_ITEM =
+            ITEMS.register(GiantOrnament.PLAYER.id(), () -> new GiantPlayerOrnamentItem(GIANT_PLAYER_ORNAMENT.get(),
+                    new Item.Properties().setId(itemKey(GiantOrnament.PLAYER.id()))));
 
-    public static final RegistrySupplier<BlockEntityType<GiantSkeletonOrnamentBlockEntity>> GIANT_SKELETON_ORNAMENT_BE_TYPE =
+    /**
+     * One block entity type for every giant ornament. It keeps the skeleton's id, which worlds and
+     * the village yard template have already saved.
+     */
+    public static final RegistrySupplier<BlockEntityType<GiantOrnamentBlockEntity>> GIANT_ORNAMENT_BE_TYPE =
             BLOCK_ENTITIES.register("giant_skeleton_lawn_ornament",
-                    () -> BlockEntityTypePlatform.create(GiantSkeletonOrnamentBlockEntity::new, GIANT_SKELETON_ORNAMENT.get()));
+                    () -> BlockEntityTypePlatform.create(GiantOrnamentBlockEntity::new,
+                            GIANT_SKELETON_ORNAMENT.get(), GIANT_HEROBRINE_ORNAMENT.get(),
+                            GIANT_PLAYER_ORNAMENT.get()));
+
+    private static RegistrySupplier<GiantOrnamentBlock> registerGiantOrnament(GiantOrnament ornament, SoundType sound) {
+        return BLOCKS.register(ornament.id(),
+                () -> new GiantOrnamentBlock(ornament, BlockBehaviour.Properties.of()
+                        .setId(blockKey(ornament.id()))
+                        .strength(1.5f)
+                        .sound(sound)
+                        .noOcclusion()));
+    }
+
+    private static RegistrySupplier<BlockItem> registerGiantOrnamentItem(
+            GiantOrnament ornament, RegistrySupplier<GiantOrnamentBlock> block) {
+        return ITEMS.register(ornament.id(),
+                () -> new BlockItem(block.get(), new Item.Properties().setId(itemKey(ornament.id()))));
+    }
+
+    /** Swaps one block of a structure for another as it's placed (the village yards' Herobrine). */
+    public static final RegistrySupplier<StructureProcessorType<OrnamentSwapProcessor>> ORNAMENT_SWAP_PROCESSOR =
+            STRUCTURE_PROCESSORS.register("ornament_swap", () -> () -> OrnamentSwapProcessor.CODEC);
 
     // ── Head Pike ────────────────────────────────────────────────────────────────
 
@@ -1284,6 +1360,7 @@ public final class Registration {
                         output.accept(DIAMOND_TANK_ITEM.get());
                         output.accept(EMERALD_TANK_ITEM.get());
                         output.accept(EXPERIENCE_PYLON_ITEM.get());
+                        output.accept(INCUBATOR_ITEM.get());
                         output.accept(EXPERIENCE_SYRINGE.get());
                         output.accept(XP_JUICE_BUCKET.get());
                         output.accept(ENDER_INHIBITOR_ITEM.get());
@@ -1305,6 +1382,8 @@ public final class Registration {
                         if (ModCompatRegistration.DNA_BOOSTER_EVILCRAFT != null)
                             output.accept(ModCompatRegistration.DNA_BOOSTER_EVILCRAFT.get());
                         output.accept(GIANT_SKELETON_ORNAMENT_ITEM.get());
+                        output.accept(GIANT_PLAYER_ORNAMENT_ITEM.get());
+                        output.accept(GIANT_HEROBRINE_ORNAMENT_ITEM.get());
                         ItemStack skullLights = new ItemStack(STRING_OF_SKULL_LIGHTS.get());
                         skullLights.set(SKULL_LIGHTS.get(), SkullLights.defaultLights());
                         output.accept(skullLights);
@@ -1339,6 +1418,7 @@ public final class Registration {
         RECIPE_TYPES.register();
         RECIPE_SERIALIZERS.register();
         LOOT_FUNCTIONS.register();
+        STRUCTURE_PROCESSORS.register();
         net.bobofraggins.mobfarmingsupplies.advancement.MFSTriggers.TRIGGERS.register();
     }
 }

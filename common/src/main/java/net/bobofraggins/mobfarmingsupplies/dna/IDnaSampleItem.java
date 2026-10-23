@@ -3,7 +3,9 @@ package net.bobofraggins.mobfarmingsupplies.dna;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
+import java.util.List;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
 
 import org.jetbrains.annotations.Nullable;
@@ -39,4 +41,14 @@ public interface IDnaSampleItem {
      * {@link #createSpawnEntity}, which runs before the spawn spot has been found or checked.
      */
     default void onSpawnPositioned(ItemStack stack, ServerLevel level, Entity entity) {}
+
+    /**
+     * The mobs this sample can make, here: one for a sample, the pool for a pack (with a biome
+     * category, the biome's spawns at {@code pos} too). The XP Powered Incubator picks among
+     * them.
+     */
+    List<EntityType<?>> mobs(ItemStack stack, ServerLevel level, BlockPos pos);
+
+    /** The mobs to show this sample making, where there's no level or place (JEI). */
+    List<EntityType<?>> displayMobs(ItemStack stack);
 }

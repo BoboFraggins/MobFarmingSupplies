@@ -15,6 +15,7 @@ import mezz.jei.api.registration.ISubtypeRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommon;
 import net.bobofraggins.mobfarmingsupplies.filterscribingterminal.FilterScribingTerminalScreen;
+import net.bobofraggins.mobfarmingsupplies.incubator.IncubatingRecipe;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Items;
@@ -52,7 +53,7 @@ public class MobFarmingSuppliesJeiPlugin implements IModPlugin {
         reg.addRecipeCategories(XpJuiceGuide.category(guiHelper), BottlingGuide.category(guiHelper),
                 AnvilCrushingGuide.category(guiHelper),
                 new FilterScribingCategory(guiHelper), BeheadingGuide.category(guiHelper),
-                new DnaSamplingGuide(guiHelper), new CloningGuide(guiHelper));
+                new DnaSamplingGuide(guiHelper), new CloningGuide(guiHelper), new IncubatingCategory(guiHelper));
     }
 
     @Override
@@ -64,6 +65,7 @@ public class MobFarmingSuppliesJeiPlugin implements IModPlugin {
         reg.addRecipes(BeheadingGuide.RECIPE_TYPE, List.of(BeheadingGuide.recipe()));
         reg.addRecipes(DnaSamplingGuide.RECIPE_TYPE, List.of(DnaSamplingGuide.recipe()));
         reg.addRecipes(CloningGuide.RECIPE_TYPE, List.of(CloningGuide.recipe()));
+        reg.addRecipes(IncubatingCategory.RECIPE_TYPE, IncubatingCategory.displays(incubatingRecipes()));
     }
 
     /** Each mob's Mob Head is its own JEI entry (one item, told apart by its mob type). */
@@ -110,6 +112,23 @@ public class MobFarmingSuppliesJeiPlugin implements IModPlugin {
         reg.addRecipeCatalyst(Registration.HARVESTER_UPGRADE_BEHEADING.get().getDefaultInstance(), BeheadingGuide.RECIPE_TYPE);
         reg.addRecipeCatalyst(Registration.DNA_COLLECTOR.get().getDefaultInstance(), DnaSamplingGuide.RECIPE_TYPE);
         reg.addRecipeCatalyst(Registration.CLONE_O_MATIC_ITEM.get().getDefaultInstance(), CloningGuide.RECIPE_TYPE);
+        reg.addRecipeCatalyst(Registration.INCUBATOR_ITEM.get().getDefaultInstance(), IncubatingCategory.RECIPE_TYPE);
+    }
+
+    /**
+     * The incubating recipes the server sent this client. JEI keeps the synced recipes (on Fabric,
+     * those whose serializers opt in to syncing, as ours does) in its common module, the same place
+     * its own vanilla plugin reads them; it's not public API, so a change there costs only this page.
+     */
+    private static List<IncubatingRecipe> incubatingRecipes() {
+        try {
+            return mezz.jei.common.Internal.getClientSyncedRecipes()
+                    .byType(Registration.INCUBATING_TYPE.get()).stream()
+                    .map(holder -> holder.value())
+                    .toList();
+        } catch (RuntimeException | LinkageError e) {
+            return List.of();
+        }
     }
 
     /** Lets the dev command runner open a recipe page ({@code RECIPES <item>}). */

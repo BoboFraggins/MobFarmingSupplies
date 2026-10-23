@@ -1,16 +1,13 @@
 package net.bobofraggins.mobfarmingsupplies.experiencepylon;
 
 import com.mojang.serialization.MapCodec;
-import dev.architectury.fluid.FluidStack;
-import net.bobofraggins.mobfarmingsupplies.experiencesyringe.ExperienceSyringeItem;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import dev.architectury.registry.menu.MenuRegistry;
 import net.bobofraggins.mobfarmingsupplies.tank.TankBlockEntity;
-import net.bobofraggins.mobfarmingsupplies.tank.TankBlockItem;
+import net.bobofraggins.mobfarmingsupplies.tank.ExperienceItemTransfer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.bobofraggins.mobfarmingsupplies.tank.TankContents;
 import net.bobofraggins.mobfarmingsupplies.tank.TankBlockPlatform;
 import net.bobofraggins.mobfarmingsupplies.tank.TankBottleTransfer;
 import net.minecraft.core.BlockPos;
@@ -33,7 +30,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * The Experience Pylon: a store for experience fluid. The block model is the base
@@ -45,7 +41,6 @@ public class ExperiencePylonBlock extends BaseEntityBlock {
 
     public static final MapCodec<ExperiencePylonBlock> CODEC = simpleCodec(ExperiencePylonBlock::new);
 
-    private static final long MB_PER_XP = PylonExperience.MB_PER_XP;
 
     // The base plate and rim, then the pylon (which reaches 27 pixels up, plus 1 when bobbing).
     private static final VoxelShape SHAPE = Shapes.or(
@@ -124,13 +119,11 @@ public class ExperiencePylonBlock extends BaseEntityBlock {
 
         // A tank in bucket mode or a syringe: one that holds experience empties into the pylon,
         // an empty one fills up from it. A tank in block mode is placed as usual.
-        if (stack.getItem() instanceof TankBlockItem || stack.getItem() instanceof ExperienceSyringeItem) {
+        if (ExperienceItemTransfer.handles(stack)) {
             if (!(level.getBlockEntity(pos) instanceof ExperiencePylonBlockEntity be))
                 return InteractionResult.TRY_WITH_EMPTY_HAND;
-            boolean storing = holdsExperience(stack);
-            ItemStack result = stack.getItem() instanceof TankBlockItem
-                    ? transferWithTank(be, stack)
-                    : transferWithSyringe(be, stack);
+            boolean storing = ExperienceItemTransfer.holdsExperience(stack);
+            ItemStack result = ExperienceItemTransfer.transfer(be, stack, true);
             if (result == null) return InteractionResult.TRY_WITH_EMPTY_HAND;
             player.setItemInHand(hand, ItemUtils.createFilledResult(stack, player, result));
             level.playSound(null, pos, storing ? SoundEvents.BUCKET_EMPTY : SoundEvents.BUCKET_FILL,
@@ -142,62 +135,5 @@ public class ExperiencePylonBlock extends BaseEntityBlock {
         boolean filling = stack.is(Items.BUCKET);
         boolean success = TankBlockPlatform.handleFluidItemInteraction(player, hand, level, pos, filling);
         return success ? InteractionResult.SUCCESS : InteractionResult.TRY_WITH_EMPTY_HAND;
-    }
-
-    private static boolean holdsExperience(ItemStack stack) {
-        if (stack.getItem() instanceof ExperienceSyringeItem) {
-            return stack.getOrDefault(Registration.EXPERIENCE_SYRINGE_STORED_XP.get(), 0) > 0;
-        }
-        return !stack.getOrDefault(Registration.TANK_CONTENTS.get(), TankContents.EMPTY).isEmpty();
-    }
-
-    /** A bucket-mode tank's contents after emptying into or filling from the pylon, or null if nothing moved. */
-    @Nullable
-    private static ItemStack transferWithTank(ExperiencePylonBlockEntity be, ItemStack stack) {
-        TankContents c = stack.getOrDefault(Registration.TANK_CONTENTS.get(), TankContents.EMPTY);
-        if (!c.bucketMode()) return null;
-        ItemStack result = stack.copyWithCount(1);
-        if (!c.isEmpty()) {
-            long stored = be.insert(c.storedFluid(), c.amount(), false); // refuses anything but experience
-            if (stored <= 0) return null;
-            long left = c.amount() - stored;
-            result.set(Registration.TANK_CONTENTS.get(), left > 0
-                    ? new TankContents(c.storedFluid(), left, true)
-                    : new TankContents(FluidStack.empty(), 0, true));
-        } else {
-            FluidStack taken = be.extract(TankBlockItem.capacityOf(stack), false);
-            if (taken.isEmpty()) return null;
-            result.set(Registration.TANK_CONTENTS.get(),
-                    new TankContents(taken.copyWithAmount(1), taken.getAmount(), true));
-        }
-        return result;
-    }
-
-    /**
-     * A syringe after emptying into or filling from the pylon, or null if nothing moved. The
-     * syringe counts whole experience points, so only whole points' worth of fluid moves.
-     */
-    @Nullable
-    private static ItemStack transferWithSyringe(ExperiencePylonBlockEntity be, ItemStack stack) {
-        int stored = stack.getOrDefault(Registration.EXPERIENCE_SYRINGE_STORED_XP.get(), 0);
-        ItemStack result = stack.copyWithCount(1);
-        if (stored > 0) {
-            FluidStack fluid = be.isLocked() ? be.getStoredFluid() : FluidStack.create(Registration.XP_JUICE_SOURCE.get(), 1);
-            long points = Math.min(stored, be.insert(fluid, (long) stored * MB_PER_XP, true) / MB_PER_XP);
-            if (points <= 0) return null;
-            be.insert(fluid, points * MB_PER_XP, false);
-            setSyringeXp(result, stored - (int) points);
-        } else {
-            long points = Math.min(ExperienceSyringeItem.CAPACITY, be.getAmount() / MB_PER_XP);
-            if (points <= 0) return null;
-            be.extract(points * MB_PER_XP, false);
-            setSyringeXp(result, (int) points);
-        }
-        return result;
-    }
-
-    private static void setSyringeXp(ItemStack syringe, int xp) {
-        if (xp > 0) syringe.set(Registration.EXPERIENCE_SYRINGE_STORED_XP.get(), xp);
-        else syringe.remove(Registration.EXPERIENCE_SYRINGE_STORED_XP.get());
     }
 }

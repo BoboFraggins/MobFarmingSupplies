@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "mobfarmingsupplies:block/giant_player_lawn_ornament"
+    },
+    "facing=east": {
+      "model": "mobfarmingsupplies:block/giant_player_lawn_ornament"
+    },
+    "facing=south": {
+      "model": "mobfarmingsupplies:block/giant_player_lawn_ornament"
+    },
+    "facing=west": {
+      "model": "mobfarmingsupplies:block/giant_player_lawn_ornament"
+    }
+  }
+}

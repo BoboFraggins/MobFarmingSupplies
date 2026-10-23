@@ -1,6 +1,8 @@
 package net.bobofraggins.mobfarmingsupplies.fabric;
 
 import dev.architectury.platform.Platform;
+import net.bobofraggins.mobfarmingsupplies.incubator.IncubatorBlockEntity;
+import net.bobofraggins.mobfarmingsupplies.incubator.fabric.IncubatorItemStorage;
 import net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommon;
 import net.bobofraggins.mobfarmingsupplies.absorptionhopper.AbsorptionHopperBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.absorptionhopper.FabricAbsorptionHopperFluidStorage;
@@ -28,6 +30,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.recipe.v1.ingredient.CustomIngredientSerializer;
 import net.fabricmc.fabric.api.recipe.v1.sync.RecipeSynchronization;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
+import net.fabricmc.fabric.api.transfer.v1.storage.base.FilteringStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
@@ -44,8 +47,9 @@ public class MobFarmingSuppliesFabric implements ModInitializer {
         // Fabric only sends vanilla recipe types to clients; without this, JEI (which reads the
         // client's copy) never sees the Tank Upgrade or Einstein-Rosen Bridge recipes.
         RecipeSynchronization.synchronizeRecipeSerializer(Registration.TANK_UPGRADE_SERIALIZER.get());
-        RecipeSynchronization.synchronizeRecipeSerializer(Registration.EXPERIENCE_PYLON_SERIALIZER.get());
+        RecipeSynchronization.synchronizeRecipeSerializer(Registration.EXPERIENCE_TANK_SERIALIZER.get());
         RecipeSynchronization.synchronizeRecipeSerializer(Registration.SKULL_LIGHTS_SERIALIZER.get());
+        RecipeSynchronization.synchronizeRecipeSerializer(Registration.INCUBATING_SERIALIZER.get());
         RecipeSynchronization.synchronizeRecipeSerializer(Registration.SKULL_LIGHTS_DYE_SERIALIZER.get());
         RecipeSynchronization.synchronizeRecipeSerializer(Registration.BRIDGE_PAIR_SERIALIZER.get());
         RecipeSynchronization.synchronizeRecipeSerializer(Registration.BRIDGE_LINK_SERIALIZER.get());
@@ -68,6 +72,11 @@ public class MobFarmingSuppliesFabric implements ModInitializer {
         FluidStorage.SIDED.registerForBlockEntities(
                 (be, direction) -> new FabricTankFluidStorage((TankBlockEntity) be),
                 Registration.TANK_BE_TYPE.get(), Registration.EXPERIENCE_PYLON_BE_TYPE.get());
+
+        // The XP Powered Incubator's experience tank: experience in only.
+        FluidStorage.SIDED.registerForBlockEntities(
+                (be, direction) -> FilteringStorage.insertOnlyOf(new FabricTankFluidStorage((TankBlockEntity) be)),
+                Registration.INCUBATOR_BE_TYPE.get());
 
         // Block-side fluid storage for AbsorptionHopperBlockEntity.
         FluidStorage.SIDED.registerForBlockEntities(
@@ -102,6 +111,11 @@ public class MobFarmingSuppliesFabric implements ModInitializer {
         // Omnidirectional Hopper and Einstein-Rosen Bridge: insert-only items and fluids, only on INPUT sides.
         registerHopperNodeStorages(Registration.OMNI_HOPPER_BE_TYPE.get());
         registerHopperNodeStorages(Registration.BRIDGE_BE_TYPE.get());
+
+        // XP Powered Incubator: eggs and DNA in (eggs spread evenly), finished eggs out, on every side.
+        ItemStorage.SIDED.registerForBlockEntities(
+                (be, direction) -> new IncubatorItemStorage((IncubatorBlockEntity) be),
+                Registration.INCUBATOR_BE_TYPE.get());
 
         // Toilet: voids any item pushed in and supplies unlimited water, on every side.
         ItemStorage.SIDED.registerForBlockEntities(

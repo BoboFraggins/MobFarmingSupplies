@@ -1,0 +1,195 @@
+{
+	"parent": "minecraft:block/block",
+	"texture_size": [
+		128,
+		128
+	],
+	"textures": {
+		"0": "mobfarmingsupplies:block/incubator_texture",
+		"particle": "mobfarmingsupplies:block/incubator_texture"
+	},
+	"elements": [
+		{
+			"name": "egg",
+			"from": [
+				4,
+				8,
+				4
+			],
+			"to": [
+				6,
+				11,
+				6
+			],
+			"rotation": {
+				"angle": 0,
+				"axis": "y",
+				"origin": [
+					4,
+					8,
+					4
+				]
+			},
+			"faces": {
+				"north": {
+					"uv": [
+						8.25,
+						1.875,
+						8.5,
+						2.25
+					],
+					"texture": "#0"
+				},
+				"east": {
+					"uv": [
+						2.75,
+						8.25,
+						3,
+						8.625
+					],
+					"texture": "#0"
+				},
+				"south": {
+					"uv": [
+						3,
+						8.25,
+						3.25,
+						8.625
+					],
+					"texture": "#0"
+				},
+				"west": {
+					"uv": [
+						3.25,
+						8.25,
+						3.5,
+						8.625
+					],
+					"texture": "#0"
+				},
+				"up": {
+					"uv": [
+						6.25,
+						8.25,
+						6.5,
+						8.5
+					],
+					"texture": "#0"
+				},
+				"down": {
+					"uv": [
+						8.25,
+						6.375,
+						8.5,
+						6.625
+					],
+					"texture": "#0"
+				}
+			}
+		}
+	],
+	"display": {
+		"gui": {
+			"rotation": [
+				30,
+				225,
+				0
+			],
+			"translation": [
+				0,
+				0,
+				0
+			],
+			"scale": [
+				0.625,
+				0.625,
+				0.625
+			]
+		},
+		"ground": {
+			"rotation": [
+				0,
+				0,
+				0
+			],
+			"translation": [
+				0,
+				3,
+				0
+			],
+			"scale": [
+				0.25,
+				0.25,
+				0.25
+			]
+		},
+		"fixed": {
+			"rotation": [
+				0,
+				0,
+				0
+			],
+			"translation": [
+				0,
+				0,
+				0
+			],
+			"scale": [
+				0.5,
+				0.5,
+				0.5
+			]
+		},
+		"thirdperson_righthand": {
+			"rotation": [
+				75,
+				45,
+				0
+			],
+			"translation": [
+				0,
+				2.5,
+				0
+			],
+			"scale": [
+				0.375,
+				0.375,
+				0.375
+			]
+		},
+		"firstperson_righthand": {
+			"rotation": [
+				0,
+				45,
+				0
+			],
+			"translation": [
+				0,
+				0,
+				0
+			],
+			"scale": [
+				0.4,
+				0.4,
+				0.4
+			]
+		},
+		"firstperson_lefthand": {
+			"rotation": [
+				0,
+				225,
+				0
+			],
+			"translation": [
+				0,
+				0,
+				0
+			],
+			"scale": [
+				0.4,
+				0.4,
+				0.4
+			]
+		}
+	}
+}

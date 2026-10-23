@@ -31,7 +31,8 @@ import org.slf4j.LoggerFactory;
  * client instead: "CAMERA first|back|front" sets the camera, "SCREENSHOT name" saves
  * {@code screenshots/name.png}, and "RECIPES item_id" opens JEI's recipes for an item.
  * "USEBLOCK x y z" clicks the top of that block with the held item, as a player does, and
- * "MENUBUTTON id" presses button {@code id} of the open menu.
+ * "MENUBUTTON id" presses button {@code id} of the open menu, and "QUICKMOVE slot" shift-clicks
+ * that slot of the open menu.
  */
 public final class DevCommands {
 
@@ -104,6 +105,16 @@ public final class DevCommands {
                 int id = Integer.parseInt(line.substring(11).strip());
                 mc.gameMode.handleInventoryButtonClick(mc.player.containerMenu.containerId, id);
                 LOGGER.info("MENUBUTTON {} in {}", id, mc.player.containerMenu.getClass().getSimpleName());
+            }
+            return;
+        }
+        if (line.startsWith("QUICKMOVE ")) {
+            // Shift-clicks a slot of the open menu, as the player does.
+            if (mc.player != null && mc.gameMode != null) {
+                int slot = Integer.parseInt(line.substring(10).strip());
+                mc.gameMode.handleContainerInput(mc.player.containerMenu.containerId, slot, 0,
+                        net.minecraft.world.inventory.ContainerInput.QUICK_MOVE, mc.player);
+                LOGGER.info("QUICKMOVE {} in {}", slot, mc.player.containerMenu.getClass().getSimpleName());
             }
             return;
         }

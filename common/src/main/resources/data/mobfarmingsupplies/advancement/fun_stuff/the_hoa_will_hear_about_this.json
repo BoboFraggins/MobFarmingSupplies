@@ -6,8 +6,12 @@
       "conditions": {
         "location": [
           {
-            "condition": "minecraft:block_state_property",
-            "block": "mobfarmingsupplies:giant_skeleton_lawn_ornament"
+            "condition": "minecraft:location_check",
+            "predicate": {
+              "block": {
+                "blocks": "#mobfarmingsupplies:giant_lawn_ornaments"
+              }
+            }
           }
         ]
       }
