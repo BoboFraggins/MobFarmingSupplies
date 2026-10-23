@@ -1,5 +1,5 @@
 {
-  "type": "minecraft:jigsaw",
+  "type": "mobfarmingsupplies:dry_land_jigsaw",
   "start_pool": "mobfarmingsupplies:cherry_outhouse/start",
   "biomes": "#mobfarmingsupplies:has_structure/cherry_outhouse",
   "step": "surface_structures",

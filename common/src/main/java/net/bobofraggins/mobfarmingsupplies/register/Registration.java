@@ -49,6 +49,7 @@ import net.bobofraggins.mobfarmingsupplies.headpike.HeadPikeMenu;
 import net.bobofraggins.mobfarmingsupplies.itemfilter.ItemFilterData;
 import net.bobofraggins.mobfarmingsupplies.itemfilter.ItemFilterItem;
 import net.bobofraggins.mobfarmingsupplies.lawnornament.GiantOrnament;
+import net.bobofraggins.mobfarmingsupplies.worldgen.DryLandJigsawStructure;
 import net.bobofraggins.mobfarmingsupplies.lawnornament.GiantOrnamentBlock;
 import net.bobofraggins.mobfarmingsupplies.lawnornament.GiantOrnamentBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.lawnornament.GiantPlayerOrnamentItem;
@@ -147,6 +148,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.levelgen.structure.StructureType;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorType;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
@@ -212,6 +214,13 @@ public final class Registration {
 
     public static final DeferredRegister<StructureProcessorType<?>> STRUCTURE_PROCESSORS =
             DeferredRegister.create(MobFarmingSuppliesCommon.MODID, Registries.STRUCTURE_PROCESSOR);
+
+    public static final DeferredRegister<StructureType<?>> STRUCTURE_TYPES =
+            DeferredRegister.create(MobFarmingSuppliesCommon.MODID, Registries.STRUCTURE_TYPE);
+
+    /** A jigsaw structure that won't start on water (the outhouses and the picnic). */
+    public static final RegistrySupplier<StructureType<DryLandJigsawStructure>> DRY_LAND_JIGSAW =
+            STRUCTURE_TYPES.register("dry_land_jigsaw", () -> () -> DryLandJigsawStructure.CODEC);
 
     // ── Recipes ──────────────────────────────────────────────────────────────────
 
@@ -1419,6 +1428,7 @@ public final class Registration {
         RECIPE_SERIALIZERS.register();
         LOOT_FUNCTIONS.register();
         STRUCTURE_PROCESSORS.register();
+        STRUCTURE_TYPES.register();
         net.bobofraggins.mobfarmingsupplies.advancement.MFSTriggers.TRIGGERS.register();
     }
 }

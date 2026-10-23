@@ -11,6 +11,7 @@
 * Changed the Einstein-Rosen Bridge to transport redstone signal, too
 
 * Fixed more item rendering for very dark items
+* Fixed structures spawning underwater
 
 ## 26.3.0.6, 26.2.0.7, 26.1.2.9, 1.21.1.1
 
