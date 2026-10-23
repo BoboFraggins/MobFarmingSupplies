@@ -27,9 +27,6 @@ JUICE = f"{ASSETS}/textures/block/xp_juice_flow.png"
 OUT_TEXTURE = f"{ASSETS}/textures/block/experience_pylon.png"
 TEXTURE_ID = "mobfarmingsupplies:block/experience_pylon"
 
-# The juice texture is blue; the game tints XP Juice neon green when it draws the fluid
-# (XpJuiceClientEvents / FabricXpJuiceFluid), so the same tint is applied here.
-JUICE_TINT = (0x39, 0xFF, 0x14)
 # Juice pixels are 75% opaque, so the crystal looks glassy.
 JUICE_ALPHA = 191
 
@@ -101,8 +98,7 @@ def write_texture():
         out.paste(source, (0, frame * height))
         for x, y in mask:
             r, g, b, _ = juice.getpixel((x % tile, frame * tile + y % tile))
-            tinted = tuple(c * t // 255 for c, t in zip((r, g, b), JUICE_TINT))
-            out.putpixel((x, frame * height + y), tinted + (JUICE_ALPHA,))
+            out.putpixel((x, frame * height + y), (r, g, b, JUICE_ALPHA))
     out.save(OUT_TEXTURE)
     with open(JUICE + ".mcmeta") as f:
         animation = json.load(f)

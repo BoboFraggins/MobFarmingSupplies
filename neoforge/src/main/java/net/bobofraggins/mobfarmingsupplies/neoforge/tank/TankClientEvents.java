@@ -10,6 +10,7 @@ import net.neoforged.neoforge.client.event.RegisterSpecialModelRendererEvent;
 import net.bobofraggins.mobfarmingsupplies.tank.TankScreen;
 import net.bobofraggins.mobfarmingsupplies.experiencepylon.ExperiencePylonScreen;
 import net.bobofraggins.mobfarmingsupplies.incubator.IncubatorScreen;
+import net.bobofraggins.mobfarmingsupplies.xpanvil.XpAnvilScreen;
 
 public final class TankClientEvents {
 
@@ -27,6 +28,7 @@ public final class TankClientEvents {
         event.register(Registration.TANK_MENU.get(), TankScreen::new);
         event.register(Registration.EXPERIENCE_PYLON_MENU.get(), ExperiencePylonScreen::new);
         event.register(Registration.INCUBATOR_MENU.get(), IncubatorScreen::new);
+        event.register(Registration.XP_ANVIL_MENU.get(), XpAnvilScreen::new);
     }
 
     @SubscribeEvent

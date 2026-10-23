@@ -50,6 +50,9 @@ import net.bobofraggins.mobfarmingsupplies.itemfilter.ItemFilterData;
 import net.bobofraggins.mobfarmingsupplies.itemfilter.ItemFilterItem;
 import net.bobofraggins.mobfarmingsupplies.lawnornament.GiantOrnament;
 import net.bobofraggins.mobfarmingsupplies.worldgen.DryLandJigsawStructure;
+import net.bobofraggins.mobfarmingsupplies.xpanvil.XpAnvilBlock;
+import net.bobofraggins.mobfarmingsupplies.xpanvil.XpAnvilBlockEntity;
+import net.bobofraggins.mobfarmingsupplies.xpanvil.XpAnvilMenu;
 import net.bobofraggins.mobfarmingsupplies.lawnornament.GiantOrnamentBlock;
 import net.bobofraggins.mobfarmingsupplies.lawnornament.GiantOrnamentBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.lawnornament.GiantPlayerOrnamentItem;
@@ -842,6 +845,28 @@ public final class Registration {
     public static final RegistrySupplier<MenuType<TankMenu>> TANK_MENU =
             MENUS.register("tank", () -> MenuRegistry.ofExtended(TankMenu::new));
 
+    // ── XP Powered Anvil ──────────────────────────────────────────────────────────
+
+    public static final RegistrySupplier<XpAnvilBlock> XP_ANVIL =
+            BLOCKS.register("anvil",
+                    () -> new XpAnvilBlock(BlockBehaviour.Properties.of()
+                            .setId(blockKey("anvil"))
+                            .mapColor(MapColor.METAL)
+                            .strength(5.0f, 1200.0f)
+                            .sound(SoundType.ANVIL)
+                            .noOcclusion()));
+
+    public static final RegistrySupplier<BlockItem> XP_ANVIL_ITEM =
+            ITEMS.register("anvil",
+                    () -> new BlockItem(XP_ANVIL.get(), new Item.Properties().setId(itemKey("anvil"))));
+
+    public static final RegistrySupplier<BlockEntityType<XpAnvilBlockEntity>> XP_ANVIL_BE_TYPE =
+            BLOCK_ENTITIES.register("anvil",
+                    () -> BlockEntityTypePlatform.create(XpAnvilBlockEntity::new, XP_ANVIL.get()));
+
+    public static final RegistrySupplier<MenuType<XpAnvilMenu>> XP_ANVIL_MENU =
+            MENUS.register("anvil", () -> MenuRegistry.ofExtended(XpAnvilMenu::new));
+
     // ── Incubator ─────────────────────────────────────────────────────────────────
 
     public static final RegistrySupplier<IncubatorBlock> INCUBATOR =
@@ -1364,14 +1389,15 @@ public final class Registration {
                         output.accept(WITHER_PROOF_GLASS_ITEM.get());
                         output.accept(MOB_EXCLUSION_GLASS_ITEM.get());
                         output.accept(PLAYER_EXCLUSION_GLASS_ITEM.get());
+                        output.accept(EXPERIENCE_SYRINGE.get());
+                        output.accept(XP_JUICE_BUCKET.get());
                         output.accept(TANK_ITEM.get());
                         output.accept(GOLD_TANK_ITEM.get());
                         output.accept(DIAMOND_TANK_ITEM.get());
                         output.accept(EMERALD_TANK_ITEM.get());
                         output.accept(EXPERIENCE_PYLON_ITEM.get());
                         output.accept(INCUBATOR_ITEM.get());
-                        output.accept(EXPERIENCE_SYRINGE.get());
-                        output.accept(XP_JUICE_BUCKET.get());
+                        output.accept(XP_ANVIL_ITEM.get());
                         output.accept(ENDER_INHIBITOR_ITEM.get());
                         output.accept(WITHER_INHIBITOR_ITEM.get());
                         output.accept(MAGIC_HAT_ITEM.get());

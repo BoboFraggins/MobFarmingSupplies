@@ -5,17 +5,11 @@ import dev.architectury.registry.menu.MenuRegistry;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.bobofraggins.mobfarmingsupplies.tank.ExperienceFill;
 import net.minecraft.server.level.ServerPlayer;
-import net.bobofraggins.mobfarmingsupplies.tank.ExperienceItemTransfer;
-import net.bobofraggins.mobfarmingsupplies.tank.TankBlockPlatform;
-import net.bobofraggins.mobfarmingsupplies.tank.TankBottleTransfer;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ItemUtils;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
@@ -112,39 +106,12 @@ public class IncubatorBlock extends BaseEntityBlock {
         return (BlockEntityTicker<T>) ticker;
     }
 
-    /**
-     * Filling the experience tank by hand: a bottle o' enchanting, a bucket (or other container) of
-     * experience, or a bucket-mode tank or syringe holding experience empties into it. Nothing takes
-     * experience out, so anything else (an empty bucket too) opens the window.
-     */
+    /** Experience goes in by hand ({@link ExperienceFill}); anything else opens the window. */
     @Override
     protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos,
                                           Player player, InteractionHand hand, BlockHitResult hit) {
         if (!(level.getBlockEntity(pos) instanceof IncubatorBlockEntity be)) return InteractionResult.TRY_WITH_EMPTY_HAND;
-        boolean fills = stack.is(Items.EXPERIENCE_BOTTLE)
-                || (ExperienceItemTransfer.handles(stack) && ExperienceItemTransfer.holdsExperience(stack))
-                || (!stack.is(Items.BUCKET) && !stack.is(Items.GLASS_BOTTLE) && !ExperienceItemTransfer.handles(stack));
-        if (!fills) return InteractionResult.TRY_WITH_EMPTY_HAND;
-        if (level.isClientSide()) return InteractionResult.SUCCESS;
-
-        if (stack.is(Items.EXPERIENCE_BOTTLE)) {
-            ItemStack result = TankBottleTransfer.tryTransfer(be, stack);
-            if (result == null) return InteractionResult.TRY_WITH_EMPTY_HAND;
-            player.setItemInHand(hand, ItemUtils.createFilledResult(stack, player, result));
-            level.playSound(null, pos, SoundEvents.BOTTLE_EMPTY, SoundSource.BLOCKS, 1.0f, 1.0f);
-            return InteractionResult.SUCCESS;
-        }
-        if (ExperienceItemTransfer.handles(stack)) {
-            ItemStack result = ExperienceItemTransfer.transfer(be, stack, false);
-            if (result == null) return InteractionResult.TRY_WITH_EMPTY_HAND;
-            player.setItemInHand(hand, ItemUtils.createFilledResult(stack, player, result));
-            level.playSound(null, pos, SoundEvents.BUCKET_EMPTY, SoundSource.BLOCKS, 1.0f, 1.0f);
-            return InteractionResult.SUCCESS;
-        }
-        // Buckets and other fluid containers. The tank only takes experience, and its handler never
-        // gives any back, so only a container of experience does anything here.
-        boolean success = TankBlockPlatform.handleFluidItemInteraction(player, hand, level, pos, false);
-        return success ? InteractionResult.SUCCESS : InteractionResult.TRY_WITH_EMPTY_HAND;
+        return ExperienceFill.useItemOn(be, stack, level, pos, player, hand);
     }
 
     /** Opens the window, and with it the lid. */

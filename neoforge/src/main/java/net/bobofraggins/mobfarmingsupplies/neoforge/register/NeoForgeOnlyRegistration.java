@@ -3,7 +3,6 @@ package net.bobofraggins.mobfarmingsupplies.neoforge.register;
 import com.mojang.serialization.MapCodec;
 import net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommon;
 import net.bobofraggins.mobfarmingsupplies.absorptionhopper.AbsorptionHopperBlockEntity;
-import net.bobofraggins.mobfarmingsupplies.neoforge.incubator.IncubatorFluidHandler;
 import net.bobofraggins.mobfarmingsupplies.neoforge.incubator.IncubatorItemHandler;
 import net.bobofraggins.mobfarmingsupplies.neoforge.absorptionhopper.AbsorptionHopperFluidHandler;
 import net.bobofraggins.mobfarmingsupplies.neoforge.absorptionhopper.AbsorptionHopperItemHandler;
@@ -13,6 +12,7 @@ import net.bobofraggins.mobfarmingsupplies.neoforge.loot.DnaSamplePackChestLootM
 import net.bobofraggins.mobfarmingsupplies.neoforge.loot.MagicHatChestLootModifier;
 import net.bobofraggins.mobfarmingsupplies.neoforge.loot.SmoreChestLootModifier;
 import net.bobofraggins.mobfarmingsupplies.neoforge.loot.ToggleButtonChestLootModifier;
+import net.bobofraggins.mobfarmingsupplies.neoforge.tank.InsertOnlyTankFluidHandler;
 import net.bobofraggins.mobfarmingsupplies.neoforge.tank.TankFluidHandler;
 import net.bobofraggins.mobfarmingsupplies.neoforge.tank.TankItemAccessFluidHandler;
 import net.bobofraggins.mobfarmingsupplies.neoforge.tank.TankItemFluidHandler;
@@ -192,7 +192,13 @@ public final class NeoForgeOnlyRegistration {
         event.registerBlockEntity(
                 Capabilities.Fluid.BLOCK,
                 Registration.INCUBATOR_BE_TYPE.get(),
-                (be, side) -> new IncubatorFluidHandler(be));
+                (be, side) -> new InsertOnlyTankFluidHandler(be));
+
+        // XP Powered Anvil: experience in only.
+        event.registerBlockEntity(
+                Capabilities.Fluid.BLOCK,
+                Registration.XP_ANVIL_BE_TYPE.get(),
+                (be, side) -> new InsertOnlyTankFluidHandler(be));
 
         // Toilet: voids any item pushed in and supplies unlimited water, on every side.
         event.registerBlockEntity(

@@ -76,7 +76,7 @@ public class MobFarmingSuppliesFabric implements ModInitializer {
         // The XP Powered Incubator's experience tank: experience in only.
         FluidStorage.SIDED.registerForBlockEntities(
                 (be, direction) -> FilteringStorage.insertOnlyOf(new FabricTankFluidStorage((TankBlockEntity) be)),
-                Registration.INCUBATOR_BE_TYPE.get());
+                Registration.INCUBATOR_BE_TYPE.get(), Registration.XP_ANVIL_BE_TYPE.get());
 
         // Block-side fluid storage for AbsorptionHopperBlockEntity.
         FluidStorage.SIDED.registerForBlockEntities(
