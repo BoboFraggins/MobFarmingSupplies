@@ -12,7 +12,10 @@ import net.bobofraggins.mobfarmingsupplies.neoforge.loot.DnaSamplePackChestLootM
 import net.bobofraggins.mobfarmingsupplies.neoforge.loot.MagicHatChestLootModifier;
 import net.bobofraggins.mobfarmingsupplies.neoforge.loot.SmoreChestLootModifier;
 import net.bobofraggins.mobfarmingsupplies.neoforge.loot.ToggleButtonChestLootModifier;
+import net.bobofraggins.mobfarmingsupplies.neoforge.tank.InOutSlotsItemHandler;
 import net.bobofraggins.mobfarmingsupplies.neoforge.tank.InsertOnlyTankFluidHandler;
+import net.bobofraggins.mobfarmingsupplies.xpanvil.XpAnvilBlockEntity;
+import net.bobofraggins.mobfarmingsupplies.xpanvil.XpAnvilMenu;
 import net.bobofraggins.mobfarmingsupplies.neoforge.tank.TankFluidHandler;
 import net.bobofraggins.mobfarmingsupplies.neoforge.tank.TankItemAccessFluidHandler;
 import net.bobofraggins.mobfarmingsupplies.neoforge.tank.TankItemFluidHandler;
@@ -193,6 +196,18 @@ public final class NeoForgeOnlyRegistration {
                 Capabilities.Fluid.BLOCK,
                 Registration.INCUBATOR_BE_TYPE.get(),
                 (be, side) -> new InsertOnlyTankFluidHandler(be));
+
+        // Tanks and the Experience Pylon: containers into the fill-and-empty slot, results out of the other.
+        for (var type : java.util.List.of(Registration.TANK_BE_TYPE.get(), Registration.EXPERIENCE_PYLON_BE_TYPE.get())) {
+            event.registerBlockEntity(Capabilities.Item.BLOCK, type, (be, side) -> new InOutSlotsItemHandler(
+                    ((net.bobofraggins.mobfarmingsupplies.tank.TankBlockEntity) be).transferContainer, 0, 1, 64,
+                    net.bobofraggins.mobfarmingsupplies.tank.TankMenu::canFillOrEmpty));
+        }
+
+        // XP Powered Anvil: damaged items in, one at a time; repaired ones out.
+        event.registerBlockEntity(Capabilities.Item.BLOCK, Registration.XP_ANVIL_BE_TYPE.get(),
+                (be, side) -> new InOutSlotsItemHandler(be.items(), XpAnvilBlockEntity.INPUT, XpAnvilBlockEntity.OUTPUT, 1,
+                        XpAnvilMenu::isRepairable));
 
         // XP Powered Anvil: experience in only.
         event.registerBlockEntity(

@@ -2,6 +2,9 @@ package net.bobofraggins.mobfarmingsupplies.fabric;
 
 import dev.architectury.platform.Platform;
 import net.bobofraggins.mobfarmingsupplies.incubator.IncubatorBlockEntity;
+import net.bobofraggins.mobfarmingsupplies.tank.fabric.InOutSlotsItemStorage;
+import net.bobofraggins.mobfarmingsupplies.xpanvil.XpAnvilBlockEntity;
+import net.bobofraggins.mobfarmingsupplies.xpanvil.XpAnvilMenu;
 import net.bobofraggins.mobfarmingsupplies.incubator.fabric.IncubatorItemStorage;
 import net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommon;
 import net.bobofraggins.mobfarmingsupplies.absorptionhopper.AbsorptionHopperBlockEntity;
@@ -111,6 +114,18 @@ public class MobFarmingSuppliesFabric implements ModInitializer {
         // Omnidirectional Hopper and Einstein-Rosen Bridge: insert-only items and fluids, only on INPUT sides.
         registerHopperNodeStorages(Registration.OMNI_HOPPER_BE_TYPE.get());
         registerHopperNodeStorages(Registration.BRIDGE_BE_TYPE.get());
+
+        // Tanks and the Experience Pylon: containers into the fill-and-empty slot, results out of the other.
+        ItemStorage.SIDED.registerForBlockEntities(
+                (be, direction) -> new InOutSlotsItemStorage(((TankBlockEntity) be).transferContainer, 0, 1, 64,
+                        net.bobofraggins.mobfarmingsupplies.tank.TankMenu::canFillOrEmpty),
+                Registration.TANK_BE_TYPE.get(), Registration.EXPERIENCE_PYLON_BE_TYPE.get());
+
+        // XP Powered Anvil: damaged items in, one at a time; repaired ones out.
+        ItemStorage.SIDED.registerForBlockEntities(
+                (be, direction) -> new InOutSlotsItemStorage(((XpAnvilBlockEntity) be).items(),
+                        XpAnvilBlockEntity.INPUT, XpAnvilBlockEntity.OUTPUT, 1, XpAnvilMenu::isRepairable),
+                Registration.XP_ANVIL_BE_TYPE.get());
 
         // XP Powered Incubator: eggs and DNA in (eggs spread evenly), finished eggs out, on every side.
         ItemStorage.SIDED.registerForBlockEntities(

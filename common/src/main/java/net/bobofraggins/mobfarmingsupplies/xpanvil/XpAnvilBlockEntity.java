@@ -118,6 +118,11 @@ public class XpAnvilBlockEntity extends TankBlockEntity {
         if (changed) setChanged(level, pos, state);
     }
 
+    /** The input and output slots, for the loaders' item handlers. */
+    public SimpleContainer items() {
+        return items;
+    }
+
     @Override
     public AbstractContainerMenu createMenu(int id, Inventory inv, Player player) {
         return new XpAnvilMenu(id, inv, this);
