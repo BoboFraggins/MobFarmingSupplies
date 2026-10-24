@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:block/enchanting_table",
+  "textures": {
+    "particle": "mobfarmingsupplies:block/disenchanter_bottom",
+    "bottom": "mobfarmingsupplies:block/disenchanter_bottom",
+    "top": "mobfarmingsupplies:block/disenchanter_top",
+    "side": "mobfarmingsupplies:block/disenchanter_side"
+  }
+}

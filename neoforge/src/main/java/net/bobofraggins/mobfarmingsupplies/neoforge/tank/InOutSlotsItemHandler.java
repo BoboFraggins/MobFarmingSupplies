@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.neoforge.tank;
 
+import java.util.List;
 import java.util.function.Predicate;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
@@ -9,29 +10,33 @@ import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 /**
- * A block's one input slot and one output slot, to hoppers and pipes (the tanks' and the
- * Experience Pylon's fill-and-empty slots, the XP Powered Anvil's): index 0 is the input, which
- * only takes what {@code accepts} allows and can't be pulled from; index 1 is the output, which
- * can only be pulled from.
+ * A block's input slots and one output slot, to hoppers and pipes (the tanks' and the Experience
+ * Pylon's fill-and-empty slots, the XP Powered Anvil's, the XP Powered Disenchanter's). The first
+ * indices are the inputs, each taking only what its {@link Input} allows and none of them pulled
+ * from; the last is the output, which can only be pulled from.
  */
 public class InOutSlotsItemHandler implements ResourceHandler<ItemResource> {
 
+    /** An input slot: which one, the most it holds, and what it takes. */
+    public record Input(int slot, int limit, Predicate<ItemStack> accepts) {}
+
     private final Container items;
-    private final int input;
+    private final List<Input> inputs;
     private final int output;
-    private final int inputLimit;
-    private final Predicate<ItemStack> accepts;
 
     private final SnapshotJournal<ItemStack[]> journal = new SnapshotJournal<>() {
         @Override
         protected ItemStack[] createSnapshot() {
-            return new ItemStack[] {items.getItem(input).copy(), items.getItem(output).copy()};
+            ItemStack[] copy = new ItemStack[inputs.size() + 1];
+            for (int i = 0; i < inputs.size(); i++) copy[i] = items.getItem(inputs.get(i).slot()).copy();
+            copy[inputs.size()] = items.getItem(output).copy();
+            return copy;
         }
 
         @Override
         protected void revertToSnapshot(ItemStack[] snapshot) {
-            items.setItem(input, snapshot[0]);
-            items.setItem(output, snapshot[1]);
+            for (int i = 0; i < inputs.size(); i++) items.setItem(inputs.get(i).slot(), snapshot[i]);
+            items.setItem(output, snapshot[inputs.size()]);
         }
 
         @Override
@@ -40,22 +45,28 @@ public class InOutSlotsItemHandler implements ResourceHandler<ItemResource> {
         }
     };
 
-    /** @param inputLimit the most the input slot holds (1 for the anvil, a stack for a tank) */
+    /** One input slot, holding up to {@code inputLimit} of what {@code accepts} allows. */
     public InOutSlotsItemHandler(Container items, int input, int output, int inputLimit, Predicate<ItemStack> accepts) {
+        this(items, List.of(new Input(input, inputLimit, accepts)), output);
+    }
+
+    public InOutSlotsItemHandler(Container items, List<Input> inputs, int output) {
         this.items = items;
-        this.input = input;
+        this.inputs = List.copyOf(inputs);
         this.output = output;
-        this.inputLimit = inputLimit;
-        this.accepts = accepts;
+    }
+
+    private boolean isInput(int index) {
+        return index < inputs.size();
     }
 
     private int slot(int index) {
-        return index == 0 ? input : output;
+        return isInput(index) ? inputs.get(index).slot() : output;
     }
 
     @Override
     public int size() {
-        return 2;
+        return inputs.size() + 1;
     }
 
     @Override
@@ -71,25 +82,26 @@ public class InOutSlotsItemHandler implements ResourceHandler<ItemResource> {
 
     @Override
     public long getCapacityAsLong(int index, ItemResource resource) {
-        if (index != 0) return resource.isEmpty() ? 64 : resource.toStack(1).getMaxStackSize();
-        return resource.isEmpty() ? inputLimit : Math.min(inputLimit, resource.toStack(1).getMaxStackSize());
+        int stackSize = resource.isEmpty() ? 64 : resource.toStack(1).getMaxStackSize();
+        return isInput(index) ? Math.min(inputs.get(index).limit(), stackSize) : stackSize;
     }
 
     @Override
     public boolean isValid(int index, ItemResource resource) {
-        return index == 0 && !resource.isEmpty() && accepts.test(resource.toStack(1));
+        return isInput(index) && !resource.isEmpty() && inputs.get(index).accepts().test(resource.toStack(1));
     }
 
     @Override
     public int insert(int index, ItemResource resource, int amount, TransactionContext tx) {
-        if (index != 0 || resource.isEmpty() || amount <= 0 || !accepts.test(resource.toStack(1))) return 0;
-        ItemStack held = items.getItem(input);
-        int limit = Math.min(inputLimit, resource.toStack(1).getMaxStackSize());
+        if (!isValid(index, resource) || amount <= 0) return 0;
+        Input in = inputs.get(index);
+        ItemStack held = items.getItem(in.slot());
         if (!held.isEmpty() && !resource.matches(held)) return 0;
+        int limit = Math.min(in.limit(), resource.toStack(1).getMaxStackSize());
         int toInsert = Math.min(amount, limit - held.getCount());
         if (toInsert <= 0) return 0;
         if (tx != null) journal.updateSnapshots(tx);
-        if (held.isEmpty()) items.setItem(input, resource.toStack(toInsert));
+        if (held.isEmpty()) items.setItem(in.slot(), resource.toStack(toInsert));
         else held.grow(toInsert);
         if (tx == null) items.setChanged();
         return toInsert;
@@ -97,7 +109,7 @@ public class InOutSlotsItemHandler implements ResourceHandler<ItemResource> {
 
     @Override
     public int extract(int index, ItemResource resource, int amount, TransactionContext tx) {
-        if (index != 1 || resource.isEmpty() || amount <= 0) return 0;
+        if (isInput(index) || resource.isEmpty() || amount <= 0) return 0;
         ItemStack held = items.getItem(output);
         if (held.isEmpty() || !resource.matches(held)) return 0;
         int taken = Math.min(amount, held.getCount());

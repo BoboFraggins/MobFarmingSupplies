@@ -49,6 +49,9 @@ import net.bobofraggins.mobfarmingsupplies.headpike.HeadPikeMenu;
 import net.bobofraggins.mobfarmingsupplies.itemfilter.ItemFilterData;
 import net.bobofraggins.mobfarmingsupplies.itemfilter.ItemFilterItem;
 import net.bobofraggins.mobfarmingsupplies.lawnornament.GiantOrnament;
+import net.bobofraggins.mobfarmingsupplies.disenchanter.DisenchanterBlock;
+import net.bobofraggins.mobfarmingsupplies.disenchanter.DisenchanterBlockEntity;
+import net.bobofraggins.mobfarmingsupplies.disenchanter.DisenchanterMenu;
 import net.bobofraggins.mobfarmingsupplies.worldgen.DryLandJigsawStructure;
 import net.bobofraggins.mobfarmingsupplies.xpanvil.XpAnvilBlock;
 import net.bobofraggins.mobfarmingsupplies.xpanvil.XpAnvilBlockEntity;
@@ -151,6 +154,8 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.core.particles.ParticleType;
+import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.world.level.levelgen.structure.StructureType;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorType;
 import net.minecraft.world.level.material.MapColor;
@@ -217,6 +222,13 @@ public final class Registration {
 
     public static final DeferredRegister<StructureProcessorType<?>> STRUCTURE_PROCESSORS =
             DeferredRegister.create(MobFarmingSuppliesCommon.MODID, Registries.STRUCTURE_PROCESSOR);
+
+    public static final DeferredRegister<ParticleType<?>> PARTICLE_TYPES =
+            DeferredRegister.create(MobFarmingSuppliesCommon.MODID, Registries.PARTICLE_TYPE);
+
+    /** The XP Powered Disenchanter's runes: vanilla's enchanting table runes in XP Juice green. */
+    public static final RegistrySupplier<SimpleParticleType> XP_RUNE =
+            PARTICLE_TYPES.register("xp_rune", () -> new SimpleParticleType(false) {});
 
     public static final DeferredRegister<StructureType<?>> STRUCTURE_TYPES =
             DeferredRegister.create(MobFarmingSuppliesCommon.MODID, Registries.STRUCTURE_TYPE);
@@ -845,6 +857,28 @@ public final class Registration {
     public static final RegistrySupplier<MenuType<TankMenu>> TANK_MENU =
             MENUS.register("tank", () -> MenuRegistry.ofExtended(TankMenu::new));
 
+    // ── XP Powered Disenchanter ───────────────────────────────────────────────────
+
+    public static final RegistrySupplier<DisenchanterBlock> DISENCHANTER =
+            BLOCKS.register("disenchanter",
+                    () -> new DisenchanterBlock(BlockBehaviour.Properties.of()
+                            .setId(blockKey("disenchanter"))
+                            .mapColor(MapColor.COLOR_RED)
+                            .requiresCorrectToolForDrops()
+                            .lightLevel(state -> 7)
+                            .strength(5.0f, 1200.0f)));
+
+    public static final RegistrySupplier<BlockItem> DISENCHANTER_ITEM =
+            ITEMS.register("disenchanter",
+                    () -> new BlockItem(DISENCHANTER.get(), new Item.Properties().setId(itemKey("disenchanter"))));
+
+    public static final RegistrySupplier<BlockEntityType<DisenchanterBlockEntity>> DISENCHANTER_BE_TYPE =
+            BLOCK_ENTITIES.register("disenchanter",
+                    () -> BlockEntityTypePlatform.create(DisenchanterBlockEntity::new, DISENCHANTER.get()));
+
+    public static final RegistrySupplier<MenuType<DisenchanterMenu>> DISENCHANTER_MENU =
+            MENUS.register("disenchanter", () -> MenuRegistry.ofExtended(DisenchanterMenu::new));
+
     // ── XP Powered Anvil ──────────────────────────────────────────────────────────
 
     public static final RegistrySupplier<XpAnvilBlock> XP_ANVIL =
@@ -1398,6 +1432,7 @@ public final class Registration {
                         output.accept(EXPERIENCE_PYLON_ITEM.get());
                         output.accept(INCUBATOR_ITEM.get());
                         output.accept(XP_ANVIL_ITEM.get());
+                        output.accept(DISENCHANTER_ITEM.get());
                         output.accept(ENDER_INHIBITOR_ITEM.get());
                         output.accept(WITHER_INHIBITOR_ITEM.get());
                         output.accept(MAGIC_HAT_ITEM.get());
@@ -1455,6 +1490,7 @@ public final class Registration {
         LOOT_FUNCTIONS.register();
         STRUCTURE_PROCESSORS.register();
         STRUCTURE_TYPES.register();
+        PARTICLE_TYPES.register();
         net.bobofraggins.mobfarmingsupplies.advancement.MFSTriggers.TRIGGERS.register();
     }
 }

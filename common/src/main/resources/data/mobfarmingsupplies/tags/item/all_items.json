@@ -70,6 +70,7 @@
     "mobfarmingsupplies:experience_pylon",
     "mobfarmingsupplies:incubator",
     "mobfarmingsupplies:anvil",
+    "mobfarmingsupplies:disenchanter",
     "mobfarmingsupplies:superconducting_magnet"
   ]
 }

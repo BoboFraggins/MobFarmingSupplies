@@ -15,6 +15,7 @@ import net.bobofraggins.mobfarmingsupplies.neoforge.loot.ToggleButtonChestLootMo
 import net.bobofraggins.mobfarmingsupplies.neoforge.tank.InOutSlotsItemHandler;
 import net.bobofraggins.mobfarmingsupplies.neoforge.tank.InsertOnlyTankFluidHandler;
 import net.bobofraggins.mobfarmingsupplies.xpanvil.XpAnvilBlockEntity;
+import net.bobofraggins.mobfarmingsupplies.disenchanter.DisenchanterBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.xpanvil.XpAnvilMenu;
 import net.bobofraggins.mobfarmingsupplies.neoforge.tank.TankFluidHandler;
 import net.bobofraggins.mobfarmingsupplies.neoforge.tank.TankItemAccessFluidHandler;
@@ -208,6 +209,15 @@ public final class NeoForgeOnlyRegistration {
         event.registerBlockEntity(Capabilities.Item.BLOCK, Registration.XP_ANVIL_BE_TYPE.get(),
                 (be, side) -> new InOutSlotsItemHandler(be.items(), XpAnvilBlockEntity.INPUT, XpAnvilBlockEntity.OUTPUT, 1,
                         XpAnvilMenu::isRepairable));
+
+        // XP Powered Disenchanter: enchanted items and books in, enchanted books (and finished items) out.
+        event.registerBlockEntity(Capabilities.Item.BLOCK, Registration.DISENCHANTER_BE_TYPE.get(),
+                (be, side) -> new InOutSlotsItemHandler(be.items(), java.util.List.of(
+                        new InOutSlotsItemHandler.Input(DisenchanterBlockEntity.ITEM, 1, DisenchanterBlockEntity::isDisenchantable),
+                        new InOutSlotsItemHandler.Input(DisenchanterBlockEntity.BOOK, 64, DisenchanterBlockEntity::isBook)),
+                        DisenchanterBlockEntity.OUTPUT));
+        event.registerBlockEntity(Capabilities.Fluid.BLOCK, Registration.DISENCHANTER_BE_TYPE.get(),
+                (be, side) -> new InsertOnlyTankFluidHandler(be));
 
         // XP Powered Anvil: experience in only.
         event.registerBlockEntity(

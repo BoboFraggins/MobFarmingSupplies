@@ -4,6 +4,7 @@ import dev.architectury.platform.Platform;
 import net.bobofraggins.mobfarmingsupplies.incubator.IncubatorBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.tank.fabric.InOutSlotsItemStorage;
 import net.bobofraggins.mobfarmingsupplies.xpanvil.XpAnvilBlockEntity;
+import net.bobofraggins.mobfarmingsupplies.disenchanter.DisenchanterBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.xpanvil.XpAnvilMenu;
 import net.bobofraggins.mobfarmingsupplies.incubator.fabric.IncubatorItemStorage;
 import net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommon;
@@ -79,7 +80,8 @@ public class MobFarmingSuppliesFabric implements ModInitializer {
         // The XP Powered Incubator's experience tank: experience in only.
         FluidStorage.SIDED.registerForBlockEntities(
                 (be, direction) -> FilteringStorage.insertOnlyOf(new FabricTankFluidStorage((TankBlockEntity) be)),
-                Registration.INCUBATOR_BE_TYPE.get(), Registration.XP_ANVIL_BE_TYPE.get());
+                Registration.INCUBATOR_BE_TYPE.get(), Registration.XP_ANVIL_BE_TYPE.get(),
+                Registration.DISENCHANTER_BE_TYPE.get());
 
         // Block-side fluid storage for AbsorptionHopperBlockEntity.
         FluidStorage.SIDED.registerForBlockEntities(
@@ -126,6 +128,14 @@ public class MobFarmingSuppliesFabric implements ModInitializer {
                 (be, direction) -> new InOutSlotsItemStorage(((XpAnvilBlockEntity) be).items(),
                         XpAnvilBlockEntity.INPUT, XpAnvilBlockEntity.OUTPUT, 1, XpAnvilMenu::isRepairable),
                 Registration.XP_ANVIL_BE_TYPE.get());
+
+        // XP Powered Disenchanter: enchanted items and books in, enchanted books (and finished items) out.
+        ItemStorage.SIDED.registerForBlockEntities(
+                (be, direction) -> new InOutSlotsItemStorage(((DisenchanterBlockEntity) be).items(), java.util.List.of(
+                        new InOutSlotsItemStorage.Input(DisenchanterBlockEntity.ITEM, 1, DisenchanterBlockEntity::isDisenchantable),
+                        new InOutSlotsItemStorage.Input(DisenchanterBlockEntity.BOOK, 64, DisenchanterBlockEntity::isBook)),
+                        DisenchanterBlockEntity.OUTPUT),
+                Registration.DISENCHANTER_BE_TYPE.get());
 
         // XP Powered Incubator: eggs and DNA in (eggs spread evenly), finished eggs out, on every side.
         ItemStorage.SIDED.registerForBlockEntities(

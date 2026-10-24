@@ -19,6 +19,7 @@ import net.bobofraggins.mobfarmingsupplies.tank.TankScreen;
 import net.bobofraggins.mobfarmingsupplies.experiencepylon.ExperiencePylonScreen;
 import net.bobofraggins.mobfarmingsupplies.incubator.IncubatorScreen;
 import net.bobofraggins.mobfarmingsupplies.xpanvil.XpAnvilScreen;
+import net.bobofraggins.mobfarmingsupplies.disenchanter.DisenchanterScreen;
 
 /**
  * Client-side initialisation shared by both loaders.
@@ -70,6 +71,9 @@ public final class MobFarmingSuppliesCommonClient {
         MenuScreenRegistry.registerScreenFactory(
                 Registration.XP_ANVIL_MENU.get(),
                 XpAnvilScreen::new);
+        MenuScreenRegistry.registerScreenFactory(
+                Registration.DISENCHANTER_MENU.get(),
+                DisenchanterScreen::new);
         MenuScreenRegistry.registerScreenFactory(
                 Registration.ABSORPTION_HOPPER_MENU.get(),
                 AbsorptionHopperScreen::new);

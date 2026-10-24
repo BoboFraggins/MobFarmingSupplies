@@ -6,8 +6,9 @@
 * Added Experience Pylon
 * Added recipe to recolor String of Skull Lights by re-dyeing them
 * Added Giant Player Lawn Ornament
-* Added XP Powered Incubator (Combine eggs and DNA back into eggs)
-* Added XP Powered Anvil (Repair items with fluid experience)
+* Added XP Powered Incubator (Combines eggs and DNA back into eggs)
+* Added XP Powered Anvil (Repairs items with fluid experience)
+* Added XP Powered Disenchanter (Pulls enchantments off of items) 
 
 * Changed the Einstein-Rosen Bridge to transport redstone signal, too
 

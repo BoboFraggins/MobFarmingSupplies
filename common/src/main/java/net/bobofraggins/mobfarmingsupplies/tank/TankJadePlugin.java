@@ -50,6 +50,8 @@ public class TankJadePlugin implements IWailaPlugin {
                 net.bobofraggins.mobfarmingsupplies.incubator.IncubatorBlock.class);
         registration.registerBlockComponent(TankClientProvider.INSTANCE,
                 net.bobofraggins.mobfarmingsupplies.xpanvil.XpAnvilBlock.class);
+        registration.registerBlockComponent(TankClientProvider.INSTANCE,
+                net.bobofraggins.mobfarmingsupplies.disenchanter.DisenchanterBlock.class);
     }
 
     // ── Server-side data provider ─────────────────────────────────────────────

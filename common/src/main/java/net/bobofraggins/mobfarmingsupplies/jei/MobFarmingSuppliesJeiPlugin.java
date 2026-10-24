@@ -53,7 +53,8 @@ public class MobFarmingSuppliesJeiPlugin implements IModPlugin {
         reg.addRecipeCategories(XpJuiceGuide.category(guiHelper), BottlingGuide.category(guiHelper),
                 AnvilCrushingGuide.category(guiHelper),
                 new FilterScribingCategory(guiHelper), BeheadingGuide.category(guiHelper),
-                new DnaSamplingGuide(guiHelper), new CloningGuide(guiHelper), new IncubatingCategory(guiHelper));
+                new DnaSamplingGuide(guiHelper), new CloningGuide(guiHelper), new IncubatingCategory(guiHelper),
+                new DisenchantingCategory(guiHelper));
     }
 
     @Override
@@ -66,6 +67,7 @@ public class MobFarmingSuppliesJeiPlugin implements IModPlugin {
         reg.addRecipes(DnaSamplingGuide.RECIPE_TYPE, List.of(DnaSamplingGuide.recipe()));
         reg.addRecipes(CloningGuide.RECIPE_TYPE, List.of(CloningGuide.recipe()));
         reg.addRecipes(IncubatingCategory.RECIPE_TYPE, IncubatingCategory.displays(incubatingRecipes()));
+        reg.addRecipes(DisenchantingCategory.RECIPE_TYPE, DisenchantingCategory.displays());
     }
 
     /** Each mob's Mob Head is its own JEI entry (one item, told apart by its mob type). */
@@ -113,6 +115,7 @@ public class MobFarmingSuppliesJeiPlugin implements IModPlugin {
         reg.addRecipeCatalyst(Registration.DNA_COLLECTOR.get().getDefaultInstance(), DnaSamplingGuide.RECIPE_TYPE);
         reg.addRecipeCatalyst(Registration.CLONE_O_MATIC_ITEM.get().getDefaultInstance(), CloningGuide.RECIPE_TYPE);
         reg.addRecipeCatalyst(Registration.INCUBATOR_ITEM.get().getDefaultInstance(), IncubatingCategory.RECIPE_TYPE);
+        reg.addRecipeCatalyst(Registration.DISENCHANTER_ITEM.get().getDefaultInstance(), DisenchantingCategory.RECIPE_TYPE);
     }
 
     /**
