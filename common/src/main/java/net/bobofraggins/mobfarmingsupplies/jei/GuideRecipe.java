@@ -5,13 +5,24 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Data carrier for a vertical "how do I get this" guide shown in JEI by a
- * {@link VerticalGuideCategory}: rows top-to-bottom with arrows between them, each row one item or
- * a few side by side with plus signs between them.
+ * {@link VerticalGuideCategory} (rows top-to-bottom with arrows between them) or a
+ * {@link DialogGuideCategory} (rows left to right), each row one item or a few side by side with
+ * plus signs between them.
  */
-public record GuideRecipe(List<Row> rows) {
+public record GuideRecipe(List<Row> rows, @Nullable Component title) {
+
+    public GuideRecipe(List<Row> rows) {
+        this(rows, null);
+    }
+
+    /** This guide titled {@code title} (a dialog guide's title bar, usually the machine's name). */
+    public GuideRecipe titled(Component title) {
+        return new GuideRecipe(rows, title);
+    }
 
     /** A guide with one item per row. */
     public static GuideRecipe column(Step... steps) {

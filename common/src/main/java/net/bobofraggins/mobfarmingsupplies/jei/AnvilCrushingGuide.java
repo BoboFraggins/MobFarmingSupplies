@@ -25,10 +25,10 @@ public final class AnvilCrushingGuide {
 
     private AnvilCrushingGuide() {}
 
-    public static VerticalGuideCategory category(IGuiHelper helper) {
-        return new VerticalGuideCategory(RECIPE_TYPE,
+    public static DialogGuideCategory category(IGuiHelper helper) {
+        return new DialogGuideCategory(RECIPE_TYPE,
                 Component.translatable("jei.mobfarmingsupplies.anvil_crushing"),
-                helper.createDrawableItemLike(Items.ANVIL), 3);
+                helper.createDrawableItemLike(Items.ANVIL), helper);
     }
 
     public static GuideRecipe recipe() {
@@ -45,6 +45,7 @@ public final class AnvilCrushingGuide {
                 new GuideRecipe.Step(
                         new ItemStack(Registration.SILICON_CLUMP.get()),
                         RecipeIngredientRole.OUTPUT,
-                        Component.translatable("jei.mobfarmingsupplies.anvil_crushing.step.clump")));
+                        Component.translatable("jei.mobfarmingsupplies.anvil_crushing.step.clump")))
+                .titled(new ItemStack(Items.ANVIL).getHoverName());
     }
 }

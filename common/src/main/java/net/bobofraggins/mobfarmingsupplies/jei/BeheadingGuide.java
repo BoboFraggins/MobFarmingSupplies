@@ -23,10 +23,10 @@ public final class BeheadingGuide {
 
     private BeheadingGuide() {}
 
-    public static VerticalGuideCategory category(IGuiHelper helper) {
-        return new VerticalGuideCategory(RECIPE_TYPE,
+    public static DialogGuideCategory category(IGuiHelper helper) {
+        return new DialogGuideCategory(RECIPE_TYPE,
                 Component.translatable("jei.mobfarmingsupplies.beheading"),
-                helper.createDrawableItemLike(Items.CREEPER_HEAD), 3, 2);
+                helper.createDrawableItemLike(Items.CREEPER_HEAD), helper);
     }
 
     public static GuideRecipe recipe() {
@@ -44,6 +44,7 @@ public final class BeheadingGuide {
                         new GuideRecipe.Step(
                                 MobHeads.allHeads(),
                                 RecipeIngredientRole.OUTPUT,
-                                Component.translatable("jei.mobfarmingsupplies.beheading.step.head"))))));
+                                Component.translatable("jei.mobfarmingsupplies.beheading.step.head"))))))
+                .titled(new ItemStack(Registration.MOB_HARVESTER_ITEM.get()).getHoverName());
     }
 }

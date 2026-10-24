@@ -22,10 +22,10 @@ public final class BottlingGuide {
 
     private BottlingGuide() {}
 
-    public static VerticalGuideCategory category(IGuiHelper helper) {
-        return new VerticalGuideCategory(RECIPE_TYPE,
+    public static DialogGuideCategory category(IGuiHelper helper) {
+        return new DialogGuideCategory(RECIPE_TYPE,
                 Component.translatable("jei.mobfarmingsupplies.bottling_guide"),
-                helper.createDrawableItemLike(Items.EXPERIENCE_BOTTLE), 3);
+                helper.createDrawableItemLike(Items.EXPERIENCE_BOTTLE), helper);
     }
 
     /** The Tank page, then the Experience Pylon page. */
@@ -48,6 +48,7 @@ public final class BottlingGuide {
                 new GuideRecipe.Step(
                         new ItemStack(Items.EXPERIENCE_BOTTLE),
                         RecipeIngredientRole.OUTPUT,
-                        Component.translatable(bottleHint)));
+                        Component.translatable(bottleHint)))
+                .titled(store.getHoverName());
     }
 }

@@ -24,10 +24,10 @@ public final class XpJuiceGuide {
 
     private XpJuiceGuide() {}
 
-    public static VerticalGuideCategory category(IGuiHelper helper) {
-        return new VerticalGuideCategory(RECIPE_TYPE,
+    public static DialogGuideCategory category(IGuiHelper helper) {
+        return new DialogGuideCategory(RECIPE_TYPE,
                 Component.translatable("jei.mobfarmingsupplies.xp_juice_guide"),
-                helper.createDrawableItemLike(Registration.XP_JUICE_BUCKET.get()), 3);
+                helper.createDrawableItemLike(Registration.XP_JUICE_BUCKET.get()), helper);
     }
 
     /** The Tank page, then the Experience Pylon page. */
@@ -48,7 +48,8 @@ public final class XpJuiceGuide {
                 new GuideRecipe.Step(
                         new ItemStack(Registration.XP_JUICE_BUCKET.get()),
                         RecipeIngredientRole.OUTPUT,
-                        Component.translatable("jei.mobfarmingsupplies.xp_juice_guide.step.bucket")));
+                        Component.translatable("jei.mobfarmingsupplies.xp_juice_guide.step.bucket")))
+                .titled(new ItemStack(Registration.TANK_ITEM.get()).getHoverName());
     }
 
     private static GuideRecipe pylonRecipe() {
@@ -64,7 +65,8 @@ public final class XpJuiceGuide {
                 new GuideRecipe.Step(
                         new ItemStack(Registration.XP_JUICE_BUCKET.get()),
                         RecipeIngredientRole.OUTPUT,
-                        Component.translatable("jei.mobfarmingsupplies.xp_juice_guide.step.pylon_bucket")));
+                        Component.translatable("jei.mobfarmingsupplies.xp_juice_guide.step.pylon_bucket")))
+                .titled(new ItemStack(Registration.EXPERIENCE_PYLON_ITEM.get()).getHoverName());
     }
 
     /** A Tank item stack shown full of XP Juice, matching the block form's own fluid rendering. */
