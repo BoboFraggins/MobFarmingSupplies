@@ -1,0 +1,32 @@
+{
+  "parent": "mobfarmingsupplies:mob_farming/liquid_assets",
+  "criteria": {
+    "placed": {
+      "trigger": "minecraft:placed_block",
+      "conditions": {
+        "location": [
+          {
+            "condition": "minecraft:block_state_property",
+            "block": "mobfarmingsupplies:experience_pylon"
+          }
+        ]
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "mobfarmingsupplies:experience_pylon"
+    },
+    "title": {
+      "translate": "advancements.mobfarmingsupplies.savings_account.title"
+    },
+    "description": {
+      "translate": "advancements.mobfarmingsupplies.savings_account.description"
+    }
+  },
+  "requirements": [
+    [
+      "placed"
+    ]
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "type": "mobfarmingsupplies:experience_tank",
+  "pattern": [
+    " N ",
+    "CTC",
+    "OOO"
+  ],
+  "key": {
+    "N": "minecraft:quartz",
+    "C": "minecraft:copper_ingot",
+    "T": "#mobfarmingsupplies:tanks",
+    "O": "minecraft:obsidian"
+  },
+  "result": {
+    "id": "mobfarmingsupplies:experience_pylon",
+    "count": 1
+  },
+  "category": "misc"
+}

@@ -32,7 +32,7 @@ public final class XpJuiceClientEvents {
                 new Material(STILL),
                 new Material(FLOW),
                 null,
-                FluidTintSources.constant(0xFF39FF14));
+                FluidTintSources.constant(0xFFFFFFFF)); // the textures are green themselves
         event.register(unbaked, Registration.XP_JUICE_SOURCE.get(), Registration.XP_JUICE_FLOWING.get());
     }
 }

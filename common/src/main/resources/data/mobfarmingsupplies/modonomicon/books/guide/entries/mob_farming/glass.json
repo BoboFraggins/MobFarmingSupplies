@@ -36,6 +36,19 @@
       "sort_number": 3,
       "type": "modonomicon:crafting_recipe",
       "recipe_id_1": "mobfarmingsupplies:mob_exclusion_glass"
+    },
+    {
+      "id": "p4",
+      "sort_number": 4,
+      "type": "modonomicon:text",
+      "title": "book.mobfarmingsupplies.guide.mob_farming.glass.p4.title",
+      "text": "book.mobfarmingsupplies.guide.mob_farming.glass.p4.text"
+    },
+    {
+      "id": "p5",
+      "sort_number": 5,
+      "type": "modonomicon:crafting_recipe",
+      "recipe_id_1": "mobfarmingsupplies:player_exclusion_glass"
     }
   ]
 }

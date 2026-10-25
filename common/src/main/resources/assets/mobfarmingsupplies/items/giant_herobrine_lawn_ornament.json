@@ -1,0 +1,10 @@
+{
+  "model": {
+    "type": "minecraft:special",
+    "base": "mobfarmingsupplies:item/giant_herobrine_lawn_ornament",
+    "model": {
+      "type": "mobfarmingsupplies:giant_lawn_ornament",
+      "ornament": "herobrine"
+    }
+  }
+}

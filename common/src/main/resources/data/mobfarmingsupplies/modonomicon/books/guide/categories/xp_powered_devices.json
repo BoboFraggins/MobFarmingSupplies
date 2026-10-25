@@ -1,0 +1,8 @@
+{
+  "name": "book.mobfarmingsupplies.guide.xp_powered_devices.name",
+  "icon": {
+    "id": "mobfarmingsupplies:incubator"
+  },
+  "display_mode": "index",
+  "sort_number": 3
+}

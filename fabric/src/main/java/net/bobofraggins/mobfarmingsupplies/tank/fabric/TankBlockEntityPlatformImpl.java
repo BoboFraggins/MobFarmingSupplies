@@ -52,6 +52,7 @@ public final class TankBlockEntityPlatformImpl {
 
                 FluidVariant variant = view.getResource();
                 FluidStack incoming = FabricTankFluidStorage.fromFabric(variant, 1);
+                if (!be.canHold(incoming)) continue;
 
                 // Check tank fluid compatibility
                 if (!be.storedFluid.isEmpty()

@@ -1,5 +1,7 @@
 package net.bobofraggins.mobfarmingsupplies.tank;
 
+import net.bobofraggins.mobfarmingsupplies.experiencepylon.ExperiencePylonBlock;
+import net.bobofraggins.mobfarmingsupplies.experiencepylon.PylonExperience;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.chat.Component;
@@ -43,6 +45,13 @@ public class TankJadePlugin implements IWailaPlugin {
     @Override
     public void registerClient(IWailaClientRegistration registration) {
         registration.registerBlockComponent(TankClientProvider.INSTANCE, TankBlock.class);
+        registration.registerBlockComponent(TankClientProvider.INSTANCE, ExperiencePylonBlock.class);
+        registration.registerBlockComponent(TankClientProvider.INSTANCE,
+                net.bobofraggins.mobfarmingsupplies.incubator.IncubatorBlock.class);
+        registration.registerBlockComponent(TankClientProvider.INSTANCE,
+                net.bobofraggins.mobfarmingsupplies.xpanvil.XpAnvilBlock.class);
+        registration.registerBlockComponent(TankClientProvider.INSTANCE,
+                net.bobofraggins.mobfarmingsupplies.disenchanter.DisenchanterBlock.class);
     }
 
     // ── Server-side data provider ─────────────────────────────────────────────
@@ -82,6 +91,12 @@ public class TankJadePlugin implements IWailaPlugin {
         @Override
         public void appendTooltip(ITooltip tooltip, BlockAccessor accessor, IPluginConfig config) {
             CompoundTag data = accessor.getServerData();
+
+            // The pylon shows its experience in levels; Jade's own fluid bar shows the amount.
+            if (accessor.getBlock() instanceof ExperiencePylonBlock) {
+                tooltip.add(PylonExperience.storedLine(data.getLongOr(KEY_AMOUNT, 0L)));
+                return;
+            }
 
             if (!data.contains(KEY_FLUID)) {
                 tooltip.add(Component.translatable("jade.mobfarmingsupplies.tank.empty"));

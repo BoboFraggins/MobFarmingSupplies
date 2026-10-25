@@ -1,0 +1,20 @@
+{
+  "type": "mobfarmingsupplies:experience_tank",
+  "pattern": [
+    "OTO",
+    "SHS",
+    "QQQ"
+  ],
+  "key": {
+    "O": "minecraft:orange_dye",
+    "T": "#mobfarmingsupplies:tanks",
+    "S": "mobfarmingsupplies:silicon_wafer",
+    "H": "minecraft:hay_block",
+    "Q": "minecraft:quartz_block"
+  },
+  "result": {
+    "id": "mobfarmingsupplies:incubator",
+    "count": 1
+  },
+  "category": "misc"
+}

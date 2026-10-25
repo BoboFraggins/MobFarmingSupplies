@@ -7,7 +7,13 @@ import java.nio.file.Path;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.function.Consumer;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
@@ -24,6 +30,9 @@ import org.slf4j.LoggerFactory;
  * ticks), then closes the game. For testing things that need a real player. Two lines act on the
  * client instead: "CAMERA first|back|front" sets the camera, "SCREENSHOT name" saves
  * {@code screenshots/name.png}, and "RECIPES item_id" opens JEI's recipes for an item.
+ * "USEBLOCK x y z" clicks the top of that block with the held item, as a player does, and
+ * "MENUBUTTON id" presses button {@code id} of the open menu, and "QUICKMOVE slot" shift-clicks
+ * that slot of the open menu.
  */
 public final class DevCommands {
 
@@ -88,6 +97,38 @@ public final class DevCommands {
         if (line.startsWith("SCREENSHOT ")) {
             Screenshot.grab(mc.gameDirectory, line.substring(11).strip() + ".png", mc.gameRenderer.mainRenderTarget(), 1,
                     message -> LOGGER.info("{}", message.getString()));
+            return;
+        }
+        if (line.startsWith("MENUBUTTON ")) {
+            // Presses a button in the open menu, as clicking it in the screen does.
+            if (mc.player != null && mc.gameMode != null) {
+                int id = Integer.parseInt(line.substring(11).strip());
+                mc.gameMode.handleInventoryButtonClick(mc.player.containerMenu.containerId, id);
+                LOGGER.info("MENUBUTTON {} in {}", id, mc.player.containerMenu.getClass().getSimpleName());
+            }
+            return;
+        }
+        if (line.startsWith("QUICKMOVE ")) {
+            // Shift-clicks a slot of the open menu, as the player does.
+            if (mc.player != null && mc.gameMode != null) {
+                int slot = Integer.parseInt(line.substring(10).strip());
+                mc.gameMode.handleContainerInput(mc.player.containerMenu.containerId, slot, 0,
+                        net.minecraft.world.inventory.ContainerInput.QUICK_MOVE, mc.player);
+                LOGGER.info("QUICKMOVE {} in {}", slot, mc.player.containerMenu.getClass().getSimpleName());
+            }
+            return;
+        }
+        if (line.startsWith("USEBLOCK ")) {
+            // Clicks the top face of the block at x y z with the main-hand item, as a player does.
+            String[] p = line.substring(9).strip().split("\\s+");
+            BlockPos target = new BlockPos(Integer.parseInt(p[0]), Integer.parseInt(p[1]), Integer.parseInt(p[2]));
+            server.execute(() -> {
+                var player = server.getPlayerList().getPlayers().getFirst();
+                BlockHitResult hit = new BlockHitResult(Vec3.atCenterOf(target).add(0, 0.5, 0), Direction.UP, target, false);
+                InteractionResult result = player.gameMode.useItemOn(
+                        player, player.level(), player.getMainHandItem(), InteractionHand.MAIN_HAND, hit);
+                LOGGER.info("USEBLOCK {} -> {}", target, result);
+            });
             return;
         }
         String command = line;

@@ -16,6 +16,10 @@ import net.bobofraggins.mobfarmingsupplies.picnicbasket.PicnicBasketKeybinds;
 import net.bobofraggins.mobfarmingsupplies.picnicbasket.PicnicBasketScreen;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.bobofraggins.mobfarmingsupplies.tank.TankScreen;
+import net.bobofraggins.mobfarmingsupplies.experiencepylon.ExperiencePylonScreen;
+import net.bobofraggins.mobfarmingsupplies.incubator.IncubatorScreen;
+import net.bobofraggins.mobfarmingsupplies.xpanvil.XpAnvilScreen;
+import net.bobofraggins.mobfarmingsupplies.disenchanter.DisenchanterScreen;
 
 /**
  * Client-side initialisation shared by both loaders.
@@ -58,6 +62,18 @@ public final class MobFarmingSuppliesCommonClient {
         MenuScreenRegistry.registerScreenFactory(
                 Registration.TANK_MENU.get(),
                 TankScreen::new);
+        MenuScreenRegistry.registerScreenFactory(
+                Registration.EXPERIENCE_PYLON_MENU.get(),
+                ExperiencePylonScreen::new);
+        MenuScreenRegistry.registerScreenFactory(
+                Registration.INCUBATOR_MENU.get(),
+                IncubatorScreen::new);
+        MenuScreenRegistry.registerScreenFactory(
+                Registration.XP_ANVIL_MENU.get(),
+                XpAnvilScreen::new);
+        MenuScreenRegistry.registerScreenFactory(
+                Registration.DISENCHANTER_MENU.get(),
+                DisenchanterScreen::new);
         MenuScreenRegistry.registerScreenFactory(
                 Registration.ABSORPTION_HOPPER_MENU.get(),
                 AbsorptionHopperScreen::new);

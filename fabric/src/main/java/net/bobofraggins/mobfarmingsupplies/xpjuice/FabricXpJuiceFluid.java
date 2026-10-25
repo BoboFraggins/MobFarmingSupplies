@@ -25,7 +25,7 @@ public final class FabricXpJuiceFluid {
             .of(() -> Registration.XP_JUICE_FLOWING.get(), () -> Registration.XP_JUICE_SOURCE.get())
             .sourceTexture(Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "block/xp_juice_still"))
             .flowingTexture(Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "block/xp_juice_flow"))
-            .color(0xFF39FF14) // neon green, matches NeoForge XpJuiceClientEvents
+            .color(0xFFFFFFFF) // no tint: the textures are green themselves, as on NeoForge
             .block(Registration.XP_JUICE_BLOCK)
             .bucketItem(Registration.XP_JUICE_BUCKET::toOptional)
             .slopeFindDistance(2)

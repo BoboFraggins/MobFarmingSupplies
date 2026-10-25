@@ -1,0 +1,196 @@
+{
+  "variants": {
+    "down=false,east=false,north=false,south=false,up=false,west=false": {
+      "model": "mobfarmingsupplies:block/peg_00"
+    },
+    "down=false,east=false,north=false,south=false,up=false,west=true": {
+      "model": "mobfarmingsupplies:block/peg_01"
+    },
+    "down=false,east=true,north=false,south=false,up=false,west=false": {
+      "model": "mobfarmingsupplies:block/peg_02"
+    },
+    "down=false,east=true,north=false,south=false,up=false,west=true": {
+      "model": "mobfarmingsupplies:block/peg_03"
+    },
+    "down=false,east=false,north=false,south=true,up=false,west=false": {
+      "model": "mobfarmingsupplies:block/peg_04"
+    },
+    "down=false,east=false,north=false,south=true,up=false,west=true": {
+      "model": "mobfarmingsupplies:block/peg_05"
+    },
+    "down=false,east=true,north=false,south=true,up=false,west=false": {
+      "model": "mobfarmingsupplies:block/peg_06"
+    },
+    "down=false,east=true,north=false,south=true,up=false,west=true": {
+      "model": "mobfarmingsupplies:block/peg_07"
+    },
+    "down=false,east=false,north=true,south=false,up=false,west=false": {
+      "model": "mobfarmingsupplies:block/peg_08"
+    },
+    "down=false,east=false,north=true,south=false,up=false,west=true": {
+      "model": "mobfarmingsupplies:block/peg_09"
+    },
+    "down=false,east=true,north=true,south=false,up=false,west=false": {
+      "model": "mobfarmingsupplies:block/peg_10"
+    },
+    "down=false,east=true,north=true,south=false,up=false,west=true": {
+      "model": "mobfarmingsupplies:block/peg_11"
+    },
+    "down=false,east=false,north=true,south=true,up=false,west=false": {
+      "model": "mobfarmingsupplies:block/peg_12"
+    },
+    "down=false,east=false,north=true,south=true,up=false,west=true": {
+      "model": "mobfarmingsupplies:block/peg_13"
+    },
+    "down=false,east=true,north=true,south=true,up=false,west=false": {
+      "model": "mobfarmingsupplies:block/peg_14"
+    },
+    "down=false,east=true,north=true,south=true,up=false,west=true": {
+      "model": "mobfarmingsupplies:block/peg_15"
+    },
+    "down=true,east=false,north=false,south=false,up=false,west=false": {
+      "model": "mobfarmingsupplies:block/peg_16"
+    },
+    "down=true,east=false,north=false,south=false,up=false,west=true": {
+      "model": "mobfarmingsupplies:block/peg_17"
+    },
+    "down=true,east=true,north=false,south=false,up=false,west=false": {
+      "model": "mobfarmingsupplies:block/peg_18"
+    },
+    "down=true,east=true,north=false,south=false,up=false,west=true": {
+      "model": "mobfarmingsupplies:block/peg_19"
+    },
+    "down=true,east=false,north=false,south=true,up=false,west=false": {
+      "model": "mobfarmingsupplies:block/peg_20"
+    },
+    "down=true,east=false,north=false,south=true,up=false,west=true": {
+      "model": "mobfarmingsupplies:block/peg_21"
+    },
+    "down=true,east=true,north=false,south=true,up=false,west=false": {
+      "model": "mobfarmingsupplies:block/peg_22"
+    },
+    "down=true,east=true,north=false,south=true,up=false,west=true": {
+      "model": "mobfarmingsupplies:block/peg_23"
+    },
+    "down=true,east=false,north=true,south=false,up=false,west=false": {
+      "model": "mobfarmingsupplies:block/peg_24"
+    },
+    "down=true,east=false,north=true,south=false,up=false,west=true": {
+      "model": "mobfarmingsupplies:block/peg_25"
+    },
+    "down=true,east=true,north=true,south=false,up=false,west=false": {
+      "model": "mobfarmingsupplies:block/peg_26"
+    },
+    "down=true,east=true,north=true,south=false,up=false,west=true": {
+      "model": "mobfarmingsupplies:block/peg_27"
+    },
+    "down=true,east=false,north=true,south=true,up=false,west=false": {
+      "model": "mobfarmingsupplies:block/peg_28"
+    },
+    "down=true,east=false,north=true,south=true,up=false,west=true": {
+      "model": "mobfarmingsupplies:block/peg_29"
+    },
+    "down=true,east=true,north=true,south=true,up=false,west=false": {
+      "model": "mobfarmingsupplies:block/peg_30"
+    },
+    "down=true,east=true,north=true,south=true,up=false,west=true": {
+      "model": "mobfarmingsupplies:block/peg_31"
+    },
+    "down=false,east=false,north=false,south=false,up=true,west=false": {
+      "model": "mobfarmingsupplies:block/peg_32"
+    },
+    "down=false,east=false,north=false,south=false,up=true,west=true": {
+      "model": "mobfarmingsupplies:block/peg_33"
+    },
+    "down=false,east=true,north=false,south=false,up=true,west=false": {
+      "model": "mobfarmingsupplies:block/peg_34"
+    },
+    "down=false,east=true,north=false,south=false,up=true,west=true": {
+      "model": "mobfarmingsupplies:block/peg_35"
+    },
+    "down=false,east=false,north=false,south=true,up=true,west=false": {
+      "model": "mobfarmingsupplies:block/peg_36"
+    },
+    "down=false,east=false,north=false,south=true,up=true,west=true": {
+      "model": "mobfarmingsupplies:block/peg_37"
+    },
+    "down=false,east=true,north=false,south=true,up=true,west=false": {
+      "model": "mobfarmingsupplies:block/peg_38"
+    },
+    "down=false,east=true,north=false,south=true,up=true,west=true": {
+      "model": "mobfarmingsupplies:block/peg_39"
+    },
+    "down=false,east=false,north=true,south=false,up=true,west=false": {
+      "model": "mobfarmingsupplies:block/peg_40"
+    },
+    "down=false,east=false,north=true,south=false,up=true,west=true": {
+      "model": "mobfarmingsupplies:block/peg_41"
+    },
+    "down=false,east=true,north=true,south=false,up=true,west=false": {
+      "model": "mobfarmingsupplies:block/peg_42"
+    },
+    "down=false,east=true,north=true,south=false,up=true,west=true": {
+      "model": "mobfarmingsupplies:block/peg_43"
+    },
+    "down=false,east=false,north=true,south=true,up=true,west=false": {
+      "model": "mobfarmingsupplies:block/peg_44"
+    },
+    "down=false,east=false,north=true,south=true,up=true,west=true": {
+      "model": "mobfarmingsupplies:block/peg_45"
+    },
+    "down=false,east=true,north=true,south=true,up=true,west=false": {
+      "model": "mobfarmingsupplies:block/peg_46"
+    },
+    "down=false,east=true,north=true,south=true,up=true,west=true": {
+      "model": "mobfarmingsupplies:block/peg_47"
+    },
+    "down=true,east=false,north=false,south=false,up=true,west=false": {
+      "model": "mobfarmingsupplies:block/peg_48"
+    },
+    "down=true,east=false,north=false,south=false,up=true,west=true": {
+      "model": "mobfarmingsupplies:block/peg_49"
+    },
+    "down=true,east=true,north=false,south=false,up=true,west=false": {
+      "model": "mobfarmingsupplies:block/peg_50"
+    },
+    "down=true,east=true,north=false,south=false,up=true,west=true": {
+      "model": "mobfarmingsupplies:block/peg_51"
+    },
+    "down=true,east=false,north=false,south=true,up=true,west=false": {
+      "model": "mobfarmingsupplies:block/peg_52"
+    },
+    "down=true,east=false,north=false,south=true,up=true,west=true": {
+      "model": "mobfarmingsupplies:block/peg_53"
+    },
+    "down=true,east=true,north=false,south=true,up=true,west=false": {
+      "model": "mobfarmingsupplies:block/peg_54"
+    },
+    "down=true,east=true,north=false,south=true,up=true,west=true": {
+      "model": "mobfarmingsupplies:block/peg_55"
+    },
+    "down=true,east=false,north=true,south=false,up=true,west=false": {
+      "model": "mobfarmingsupplies:block/peg_56"
+    },
+    "down=true,east=false,north=true,south=false,up=true,west=true": {
+      "model": "mobfarmingsupplies:block/peg_57"
+    },
+    "down=true,east=true,north=true,south=false,up=true,west=false": {
+      "model": "mobfarmingsupplies:block/peg_58"
+    },
+    "down=true,east=true,north=true,south=false,up=true,west=true": {
+      "model": "mobfarmingsupplies:block/peg_59"
+    },
+    "down=true,east=false,north=true,south=true,up=true,west=false": {
+      "model": "mobfarmingsupplies:block/peg_60"
+    },
+    "down=true,east=false,north=true,south=true,up=true,west=true": {
+      "model": "mobfarmingsupplies:block/peg_61"
+    },
+    "down=true,east=true,north=true,south=true,up=true,west=false": {
+      "model": "mobfarmingsupplies:block/peg_62"
+    },
+    "down=true,east=true,north=true,south=true,up=true,west=true": {
+      "model": "mobfarmingsupplies:block/peg_63"
+    }
+  }
+}

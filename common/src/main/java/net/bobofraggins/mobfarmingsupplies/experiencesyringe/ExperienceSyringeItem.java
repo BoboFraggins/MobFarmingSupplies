@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.experiencesyringe;
 
+import net.bobofraggins.mobfarmingsupplies.experiencepylon.PylonExperience;
 import net.minecraft.server.level.ServerPlayer;
 import net.bobofraggins.mobfarmingsupplies.advancement.MFSTriggers;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
@@ -65,13 +66,8 @@ public class ExperienceSyringeItem extends Item {
         int stored = stack.getOrDefault(Registration.EXPERIENCE_SYRINGE_STORED_XP.get(), 0);
 
         if (player.isShiftKeyDown()) {
-            // Deposit: extract current-level progress into the syringe.
-            int progressXp = Math.round(player.experienceProgress * player.getXpNeededForNextLevel());
-            if (progressXp == 0 && player.experienceLevel > 0) {
-                // At an exact level boundary — deposit the full previous level's worth.
-                progressXp = xpNeededForLevel(player.experienceLevel - 1);
-            }
-            int toStore = Math.min(progressXp, CAPACITY - stored);
+            // Deposit one level: the current level's progress, or at an exact level the level below.
+            int toStore = Math.min(PylonExperience.pointsBelow(player, 1), CAPACITY - stored);
             if (toStore > 0) {
                 player.giveExperiencePoints(-toStore);
                 stack.set(Registration.EXPERIENCE_SYRINGE_STORED_XP.get(), stored + toStore);
@@ -79,10 +75,8 @@ public class ExperienceSyringeItem extends Item {
                 if (player instanceof ServerPlayer serverPlayer) MFSTriggers.SYRINGE_USED.get().trigger(serverPlayer, "store");
             }
         } else {
-            // Withdraw: give the player exactly enough XP to reach their next whole level.
-            int progressXp = Math.round(player.experienceProgress * player.getXpNeededForNextLevel());
-            int neededForNext = player.getXpNeededForNextLevel() - progressXp;
-            int toGive = Math.min(neededForNext, stored);
+            // Withdraw one level: exactly enough XP to reach the player's next whole level.
+            int toGive = (int) Math.min(PylonExperience.pointsAbove(player, 1), stored);
             if (toGive > 0) {
                 player.giveExperiencePoints(toGive);
                 stack.set(Registration.EXPERIENCE_SYRINGE_STORED_XP.get(), stored - toGive);
@@ -105,9 +99,9 @@ public class ExperienceSyringeItem extends Item {
     }
 
     /** XP required to advance from {@code level} to {@code level + 1}, matching vanilla formula. */
-    private static int xpNeededForLevel(int level) {
+    public static int xpNeededForLevel(int level) {
         if (level >= 30) return 112 + (level - 30) * 9;
-        if (level >= 16) return 37 + (level - 16) * 5;
+        if (level >= 15) return 37 + (level - 15) * 5;
         return 7 + level * 2;
     }
 

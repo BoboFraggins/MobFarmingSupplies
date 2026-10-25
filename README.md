@@ -1,7 +1,7 @@
 # Mob Farming Supplies
 
 Mob Farming Supplies is a toolkit for building automated mob farms in Minecraft: machines that
-move, hold and kill mobs, a cloning system, item and fluid logistics with real filtering, and
+move, hold and kill mobs, a cloning system, item and fluid logistics with filtering, and
 a handful of things that are simply fun to have.
 
 It runs on NeoForge and Fabric, built with [Architectury](https://docs.architectury.dev/).

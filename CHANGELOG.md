@@ -1,5 +1,22 @@
 # Mob Farming Supplies
 
+## 26.3.0.7, 26.2.0.8, 26.1.2.10, 1.21.1.2
+
+* Added Player Exclusion Glass
+* Added Experience Pylon
+* Added recipe to recolor String of Skull Lights by re-dyeing them
+* Added Giant Player Lawn Ornament
+* Added XP Powered Incubator (Combines eggs and DNA back into eggs)
+* Added XP Powered Anvil (Repairs items with fluid experience)
+* Added XP Powered Disenchanter (Pulls enchantments off of items) 
+
+* Changed the Einstein-Rosen Bridge to transport redstone signal, too
+
+* Fixed more item rendering for very dark items
+* Fixed structures spawning underwater
+* Improved JEI custom recipe pages to not be fugly
+* Fixed math error with Syringe/Pylon for certain player levels
+
 ## 26.3.0.6, 26.2.0.7, 26.1.2.9, 1.21.1.1
 
 * Spooky Release (Happy Halloween!)

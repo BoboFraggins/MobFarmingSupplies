@@ -1,6 +1,31 @@
 {
   "model": {
-    "type": "minecraft:model",
-    "model": "mobfarmingsupplies:item/absorption_hopper"
+    "type": "minecraft:select",
+    "property": "minecraft:display_context",
+    "cases": [
+      {
+        "when": "gui",
+        "model": {
+          "type": "minecraft:composite",
+          "models": [
+            {
+              "type": "minecraft:special",
+              "base": "mobfarmingsupplies:item/gui_backdrop",
+              "model": {
+                "type": "mobfarmingsupplies:gui_backdrop"
+              }
+            },
+            {
+              "type": "minecraft:model",
+              "model": "mobfarmingsupplies:item/absorption_hopper"
+            }
+          ]
+        }
+      }
+    ],
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "mobfarmingsupplies:item/absorption_hopper"
+    }
   }
 }

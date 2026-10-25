@@ -1,6 +1,12 @@
 package net.bobofraggins.mobfarmingsupplies.fabric;
 
 import dev.architectury.platform.Platform;
+import net.bobofraggins.mobfarmingsupplies.incubator.IncubatorBlockEntity;
+import net.bobofraggins.mobfarmingsupplies.tank.fabric.InOutSlotsItemStorage;
+import net.bobofraggins.mobfarmingsupplies.xpanvil.XpAnvilBlockEntity;
+import net.bobofraggins.mobfarmingsupplies.disenchanter.DisenchanterBlockEntity;
+import net.bobofraggins.mobfarmingsupplies.xpanvil.XpAnvilMenu;
+import net.bobofraggins.mobfarmingsupplies.incubator.fabric.IncubatorItemStorage;
 import net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommon;
 import net.bobofraggins.mobfarmingsupplies.absorptionhopper.AbsorptionHopperBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.absorptionhopper.FabricAbsorptionHopperFluidStorage;
@@ -31,6 +37,7 @@ import net.fabricmc.fabric.api.recipe.v1.sync.RecipeSynchronization;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.fluid.base.FullItemFluidStorage;
+import net.fabricmc.fabric.api.transfer.v1.storage.base.FilteringStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -48,7 +55,10 @@ public class MobFarmingSuppliesFabric implements ModInitializer {
         // Fabric only sends vanilla recipe types to clients; without this, JEI (which reads the
         // client's copy) never sees the Tank Upgrade or Einstein-Rosen Bridge recipes.
         RecipeSynchronization.synchronizeRecipeSerializer(Registration.TANK_UPGRADE_SERIALIZER.get());
+        RecipeSynchronization.synchronizeRecipeSerializer(Registration.EXPERIENCE_TANK_SERIALIZER.get());
         RecipeSynchronization.synchronizeRecipeSerializer(Registration.SKULL_LIGHTS_SERIALIZER.get());
+        RecipeSynchronization.synchronizeRecipeSerializer(Registration.INCUBATING_SERIALIZER.get());
+        RecipeSynchronization.synchronizeRecipeSerializer(Registration.SKULL_LIGHTS_DYE_SERIALIZER.get());
         RecipeSynchronization.synchronizeRecipeSerializer(Registration.BRIDGE_PAIR_SERIALIZER.get());
         RecipeSynchronization.synchronizeRecipeSerializer(Registration.BRIDGE_LINK_SERIALIZER.get());
         RecipeSynchronization.synchronizeRecipeSerializer(Registration.ANVIL_CRUSHING_SERIALIZER.get());
@@ -69,7 +79,13 @@ public class MobFarmingSuppliesFabric implements ModInitializer {
         // Block-side fluid storage for TankBlockEntity.
         FluidStorage.SIDED.registerForBlockEntities(
                 (be, direction) -> new FabricTankFluidStorage((TankBlockEntity) be),
-                Registration.TANK_BE_TYPE.get());
+                Registration.TANK_BE_TYPE.get(), Registration.EXPERIENCE_PYLON_BE_TYPE.get());
+
+        // The XP Powered Incubator's experience tank: experience in only.
+        FluidStorage.SIDED.registerForBlockEntities(
+                (be, direction) -> FilteringStorage.insertOnlyOf(new FabricTankFluidStorage((TankBlockEntity) be)),
+                Registration.INCUBATOR_BE_TYPE.get(), Registration.XP_ANVIL_BE_TYPE.get(),
+                Registration.DISENCHANTER_BE_TYPE.get());
 
         // Block-side fluid storage for AbsorptionHopperBlockEntity.
         FluidStorage.SIDED.registerForBlockEntities(
@@ -113,6 +129,31 @@ public class MobFarmingSuppliesFabric implements ModInitializer {
         // Omnidirectional Hopper and Einstein-Rosen Bridge: insert-only items and fluids, only on INPUT sides.
         registerHopperNodeStorages(Registration.OMNI_HOPPER_BE_TYPE.get());
         registerHopperNodeStorages(Registration.BRIDGE_BE_TYPE.get());
+
+        // Tanks and the Experience Pylon: containers into the fill-and-empty slot, results out of the other.
+        ItemStorage.SIDED.registerForBlockEntities(
+                (be, direction) -> new InOutSlotsItemStorage(((TankBlockEntity) be).transferContainer, 0, 1, 64,
+                        net.bobofraggins.mobfarmingsupplies.tank.TankMenu::canFillOrEmpty),
+                Registration.TANK_BE_TYPE.get(), Registration.EXPERIENCE_PYLON_BE_TYPE.get());
+
+        // XP Powered Anvil: damaged items in, one at a time; repaired ones out.
+        ItemStorage.SIDED.registerForBlockEntities(
+                (be, direction) -> new InOutSlotsItemStorage(((XpAnvilBlockEntity) be).items(),
+                        XpAnvilBlockEntity.INPUT, XpAnvilBlockEntity.OUTPUT, 1, XpAnvilMenu::isRepairable),
+                Registration.XP_ANVIL_BE_TYPE.get());
+
+        // XP Powered Disenchanter: enchanted items and books in, enchanted books (and finished items) out.
+        ItemStorage.SIDED.registerForBlockEntities(
+                (be, direction) -> new InOutSlotsItemStorage(((DisenchanterBlockEntity) be).items(), java.util.List.of(
+                        new InOutSlotsItemStorage.Input(DisenchanterBlockEntity.ITEM, 1, DisenchanterBlockEntity::isDisenchantable),
+                        new InOutSlotsItemStorage.Input(DisenchanterBlockEntity.BOOK, 64, DisenchanterBlockEntity::isBook)),
+                        DisenchanterBlockEntity.OUTPUT),
+                Registration.DISENCHANTER_BE_TYPE.get());
+
+        // XP Powered Incubator: eggs and DNA in (eggs spread evenly), finished eggs out, on every side.
+        ItemStorage.SIDED.registerForBlockEntities(
+                (be, direction) -> new IncubatorItemStorage((IncubatorBlockEntity) be),
+                Registration.INCUBATOR_BE_TYPE.get());
 
         // Toilet: voids any item pushed in and supplies unlimited water, on every side.
         ItemStorage.SIDED.registerForBlockEntities(
