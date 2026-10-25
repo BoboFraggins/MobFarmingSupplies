@@ -69,7 +69,7 @@ public class ExperienceSyringeItem extends Item {
             // Deposit one level: the current level's progress, or at an exact level the level below.
             int toStore = Math.min(PylonExperience.pointsBelow(player, 1), CAPACITY - stored);
             if (toStore > 0) {
-                player.giveExperiencePoints(-toStore);
+                if (player instanceof ServerPlayer server) PylonExperience.addPoints(server, -toStore);
                 stack.set(Registration.EXPERIENCE_SYRINGE_STORED_XP.get(), stored + toStore);
                 playXpSound(level, player);
                 if (player instanceof ServerPlayer serverPlayer) MFSTriggers.SYRINGE_USED.get().trigger(serverPlayer, "store");
@@ -78,10 +78,12 @@ public class ExperienceSyringeItem extends Item {
             // Withdraw one level: exactly enough XP to reach the player's next whole level.
             int toGive = (int) Math.min(PylonExperience.pointsAbove(player, 1), stored);
             if (toGive > 0) {
-                player.giveExperiencePoints(toGive);
+                if (player instanceof ServerPlayer server) PylonExperience.addPoints(server, toGive);
                 stack.set(Registration.EXPERIENCE_SYRINGE_STORED_XP.get(), stored - toGive);
                 playXpSound(level, player);
                 if (player instanceof ServerPlayer serverPlayer) MFSTriggers.SYRINGE_USED.get().trigger(serverPlayer, "withdraw");
+            } else if (player instanceof ServerPlayer server) {
+                PylonExperience.addPoints(server, 0); // a bar a hair short of full becomes the level
             }
         }
 

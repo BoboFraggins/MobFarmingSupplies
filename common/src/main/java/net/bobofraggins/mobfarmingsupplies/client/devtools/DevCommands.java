@@ -118,6 +118,12 @@ public final class DevCommands {
             }
             return;
         }
+        if (line.startsWith("XPBAR ")) {
+            // Sets the player's experience bar fraction directly (to recreate float drift).
+            float bar = Float.parseFloat(line.substring(6).strip());
+            server.execute(() -> server.getPlayerList().getPlayers().getFirst().experienceProgress = bar);
+            return;
+        }
         if (line.startsWith("USEBLOCK ")) {
             // Clicks the top face of the block at x y z with the main-hand item, as a player does.
             String[] p = line.substring(9).strip().split("\\s+");
