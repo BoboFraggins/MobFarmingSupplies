@@ -84,6 +84,9 @@ public class MobFarmingSuppliesFabricClient implements ClientModInitializer {
         BlockEntityRendererRegistry.register(
                 Registration.DISENCHANTER_BE_TYPE.get(),
                 DisenchanterRenderer::new);
+        BlockEntityRendererRegistry.register(
+                Registration.BLOCK_BREAKER_BE_TYPE.get(),
+                net.bobofraggins.mobfarmingsupplies.blockbreaker.BlockBreakerRenderer::new);
         net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry.getInstance()
                 .register(Registration.XP_RUNE.get(), XpRuneProvider::new);
         // The toilet seat is invisible: only its rider is drawn.

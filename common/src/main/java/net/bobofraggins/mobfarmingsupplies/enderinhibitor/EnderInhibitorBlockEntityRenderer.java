@@ -117,7 +117,7 @@ public class EnderInhibitorBlockEntityRenderer<T extends EnderInhibitorBlockEnti
      * client's game clock runs ahead between server time updates and is pulled back by each one,
      * which turned the item backwards in jerks.
      */
-    static float spinDegrees() {
+    public static float spinDegrees() {
         return (Util.getMillis() % MILLIS_PER_REV) * 360f / MILLIS_PER_REV;
     }
 

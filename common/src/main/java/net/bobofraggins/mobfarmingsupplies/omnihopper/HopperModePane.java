@@ -17,7 +17,7 @@ import net.bobofraggins.mobfarmingsupplies.shared.ui.ToggleSwitch;
  * Item Filter installed the hopper moves everything, so the toggle is hidden and "Everything" is
  * shown in its place.
  */
-class HopperModePane implements IDialogPane {
+public class HopperModePane implements IDialogPane {
 
     public static final int HEIGHT = 20;
 
@@ -30,7 +30,7 @@ class HopperModePane implements IDialogPane {
     private final Container filters;
 
     /** @param filters the menu's (synced) filter slots */
-    HopperModePane(HopperConfigView config, Container filters) {
+    public HopperModePane(HopperConfigView config, Container filters) {
         this.config = config;
         this.filters = filters;
     }

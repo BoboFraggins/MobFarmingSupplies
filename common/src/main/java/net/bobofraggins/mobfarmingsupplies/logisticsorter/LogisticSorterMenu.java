@@ -88,6 +88,9 @@ public class LogisticSorterMenu extends AbstractContainerMenu {
 
     public BlockPos getPos() { return pos; }
 
+    /** The filter slots' container (on the client, kept in sync through the slots). */
+    public Container getFilters() { return filters; }
+
     @Override
     public boolean stillValid(Player player) {
         return player.distanceToSqr(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5) <= 64

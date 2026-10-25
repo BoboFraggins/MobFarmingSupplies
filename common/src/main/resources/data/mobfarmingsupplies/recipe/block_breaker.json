@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "mobfarmingsupplies:omnidirectional_hopper"
+    },
+    {
+      "item": "minecraft:iron_pickaxe"
+    },
+    {
+      "item": "mobfarmingsupplies:blank_filter"
+    }
+  ],
+  "result": {
+    "id": "mobfarmingsupplies:block_breaker",
+    "count": 1
+  }
+}

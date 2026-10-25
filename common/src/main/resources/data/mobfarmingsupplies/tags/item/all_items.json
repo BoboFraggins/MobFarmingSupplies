@@ -71,6 +71,7 @@
     "mobfarmingsupplies:incubator",
     "mobfarmingsupplies:anvil",
     "mobfarmingsupplies:disenchanter",
-    "mobfarmingsupplies:superconducting_magnet"
+    "mobfarmingsupplies:superconducting_magnet",
+    "mobfarmingsupplies:block_breaker"
   ]
 }

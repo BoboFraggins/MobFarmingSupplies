@@ -23,6 +23,8 @@ public final class TankClientEvents {
         event.registerBlockEntityRenderer(Registration.EXPERIENCE_PYLON_BE_TYPE.get(), NeoExperiencePylonRenderer::new);
         event.registerBlockEntityRenderer(Registration.INCUBATOR_BE_TYPE.get(), NeoIncubatorRenderer::new);
         event.registerBlockEntityRenderer(Registration.DISENCHANTER_BE_TYPE.get(), DisenchanterRenderer::new);
+        event.registerBlockEntityRenderer(Registration.BLOCK_BREAKER_BE_TYPE.get(),
+                net.bobofraggins.mobfarmingsupplies.blockbreaker.BlockBreakerRenderer::new);
     }
 
     @SubscribeEvent

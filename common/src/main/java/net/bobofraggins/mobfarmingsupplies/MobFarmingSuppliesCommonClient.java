@@ -19,6 +19,7 @@ import net.bobofraggins.mobfarmingsupplies.mobharvester.MobHarvesterScreen;
 import net.bobofraggins.mobfarmingsupplies.mobhead.MobHeadItemRenderer;
 import net.bobofraggins.mobfarmingsupplies.omnihopper.OmniHopperItemRenderer;
 import net.bobofraggins.mobfarmingsupplies.omnihopper.OmniHopperMenu;
+import net.bobofraggins.mobfarmingsupplies.blockbreaker.BlockBreakerScreen;
 import net.bobofraggins.mobfarmingsupplies.omnihopper.OmniHopperScreen;
 import net.bobofraggins.mobfarmingsupplies.picnicbasket.PicnicBasketKeybinds;
 import net.bobofraggins.mobfarmingsupplies.picnicbasket.PicnicBasketScreen;
@@ -105,6 +106,9 @@ public final class MobFarmingSuppliesCommonClient {
                 Registration.LOGISTIC_SORTER_MENU.get(),
                 LogisticSorterScreen::new);
         MenuRegistry.registerScreenFactory(
+                Registration.BLOCK_BREAKER_MENU.get(),
+                BlockBreakerScreen::new);
+        MenuRegistry.registerScreenFactory(
                 Registration.OMNI_HOPPER_MENU.get(),
                 OmniHopperScreen<OmniHopperMenu>::new);
         MenuRegistry.registerScreenFactory(
@@ -161,6 +165,6 @@ public final class MobFarmingSuppliesCommonClient {
         RenderTypeRegistry.register(RenderType.translucent(),
                 Registration.WITHER_PROOF_GLASS.get(), Registration.MOB_EXCLUSION_GLASS.get(),
                 Registration.EINSTEIN_ROSEN_BRIDGE.get(), Registration.PLAYER_EXCLUSION_GLASS.get(),
-                Registration.EXPERIENCE_PYLON.get());
+                Registration.EXPERIENCE_PYLON.get(), Registration.BLOCK_BREAKER.get());
     }
 }

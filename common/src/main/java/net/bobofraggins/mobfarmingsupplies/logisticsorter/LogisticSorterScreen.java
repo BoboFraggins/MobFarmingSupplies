@@ -2,12 +2,14 @@ package net.bobofraggins.mobfarmingsupplies.logisticsorter;
 
 import net.bobofraggins.mobfarmingsupplies.shared.ui.SideGridPane;
 import net.bobofraggins.mobfarmingsupplies.shared.ui.Dialog;
+import net.bobofraggins.mobfarmingsupplies.shared.ui.FilterGhost;
 import net.bobofraggins.mobfarmingsupplies.shared.ui.IDialogPane;
 import net.bobofraggins.mobfarmingsupplies.shared.ui.PlayerInventoryPane;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 
 /**
@@ -41,7 +43,7 @@ public class LogisticSorterScreen extends AbstractContainerScreen<LogisticSorter
                 Dialog.blankPane(w, 4),
                 new SorterModePane(config),
                 Dialog.blankPane(w, 4),
-                new FilterSlotsPane(),
+                new FilterSlotsPane(menu.getFilters()),
                 Dialog.blankPane(w, 6),
                 new PlayerInventoryPane(LogisticSorterMenu.PLAYER_SLOT_LEFT));
         dialog = d;
@@ -86,8 +88,14 @@ public class LogisticSorterScreen extends AbstractContainerScreen<LogisticSorter
 
     // ── Panes ────────────────────────────────────────────────────────────────────
 
-    /** Backgrounds for the nine Item Filter slots. */
+    /** Backgrounds for the nine Item Filter slots, with a ghost filter in each empty one. */
     private static final class FilterSlotsPane implements IDialogPane {
+        private final Container filters;
+
+        FilterSlotsPane(Container filters) {
+            this.filters = filters;
+        }
+
         @Override public int preferredWidth()  { return PlayerInventoryPane.WIDTH; }
         @Override public int preferredHeight() { return 18; }
 
@@ -95,6 +103,7 @@ public class LogisticSorterScreen extends AbstractContainerScreen<LogisticSorter
         public void render(GuiGraphics g, Font font, int width, int mouseX, int mouseY, float pt) {
             for (int i = 0; i < LogisticSorterBlockEntity.FILTER_SLOTS; i++) {
                 PlayerInventoryPane.drawSlotBg(g, LogisticSorterMenu.FILTER_LEFT + i * 18, 0);
+                FilterGhost.drawIfEmpty(g, filters, i, LogisticSorterMenu.FILTER_LEFT + i * 18, 0);
             }
         }
     }

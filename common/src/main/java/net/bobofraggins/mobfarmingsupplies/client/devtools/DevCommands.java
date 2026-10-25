@@ -46,6 +46,8 @@ public final class DevCommands {
     @Nullable public static Consumer<ItemStack> showUses;
     /** Sets JEI's ingredient list search ({@code JEIFILTER <text>}); set by the JEI plugin. */
     @Nullable public static Consumer<String> setJeiFilter;
+    /** Opens one JEI category's pages ({@code CATEGORY <id>}); set by the JEI plugin. */
+    @Nullable public static Consumer<ResourceLocation> showCategory;
 
     private static Deque<String> commands;
     private static int ticks, waiting;
@@ -108,6 +110,11 @@ public final class DevCommands {
             if (showUses != null && id != null) {
                 showUses.accept(new ItemStack(BuiltInRegistries.ITEM.get(id)));
             }
+            return;
+        }
+        if (line.startsWith("CATEGORY ")) {
+            ResourceLocation id = ResourceLocation.tryParse(line.substring(9).strip());
+            if (showCategory != null && id != null) showCategory.accept(id);
             return;
         }
         if (line.startsWith("SCREENSHOT ")) {
