@@ -22,6 +22,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.storage.ValueInput;
@@ -59,7 +60,12 @@ public class TankBlockEntity extends BlockEntity implements MenuProvider {
     private int transferTick = 0;
 
     public TankBlockEntity(BlockPos pos, BlockState state) {
-        super(MFSRegistryHelper.getBEType("tank"), pos, state);
+        this(MFSRegistryHelper.getBEType("tank"), pos, state);
+    }
+
+    /** For blocks that store fluid the way a tank does (the Experience Pylon). */
+    protected TankBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+        super(type, pos, state);
     }
 
     // ── Server tick ────────────────────────────────────────────────────────────
@@ -124,6 +130,11 @@ public class TankBlockEntity extends BlockEntity implements MenuProvider {
         return getBlockState().getBlock() instanceof TankBlock tank ? tank.tier().capacity() : TankTier.BASIC.capacity();
     }
 
+    /** Whether this kind of fluid may go in at all. A tank takes anything. */
+    public boolean canHold(FluidStack fluid) {
+        return true;
+    }
+
     // ── Mutation ───────────────────────────────────────────────────────────────
 
     /**
@@ -133,7 +144,7 @@ public class TankBlockEntity extends BlockEntity implements MenuProvider {
      * @return mB actually (or hypothetically) inserted
      */
     public long insert(FluidStack fluid, long requested, boolean simulate) {
-        if (fluid.isEmpty() || requested <= 0) return 0;
+        if (fluid.isEmpty() || requested <= 0 || !canHold(fluid)) return 0;
         if (!storedFluid.isEmpty()
                 && (!storedFluid.isFluidEqual(fluid) || !storedFluid.isComponentEqual(fluid))) return 0;
 

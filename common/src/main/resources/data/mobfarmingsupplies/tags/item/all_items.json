@@ -23,6 +23,7 @@
     "mobfarmingsupplies:halting_plate",
     "mobfarmingsupplies:wither_proof_glass",
     "mobfarmingsupplies:mob_exclusion_glass",
+    "mobfarmingsupplies:player_exclusion_glass",
     "mobfarmingsupplies:red_alert_button",
     "mobfarmingsupplies:dramatic_button",
     "mobfarmingsupplies:rimshot_button",
@@ -50,6 +51,8 @@
     "mobfarmingsupplies:mob_head",
     "mobfarmingsupplies:toilet",
     "mobfarmingsupplies:giant_skeleton_lawn_ornament",
+    "mobfarmingsupplies:giant_herobrine_lawn_ornament",
+    "mobfarmingsupplies:giant_player_lawn_ornament",
     "mobfarmingsupplies:string_of_skull_lights",
     "mobfarmingsupplies:head_pike",
     "mobfarmingsupplies:silicon",
@@ -64,6 +67,10 @@
     "mobfarmingsupplies:gold_tank",
     "mobfarmingsupplies:diamond_tank",
     "mobfarmingsupplies:emerald_tank",
+    "mobfarmingsupplies:experience_pylon",
+    "mobfarmingsupplies:incubator",
+    "mobfarmingsupplies:anvil",
+    "mobfarmingsupplies:disenchanter",
     "mobfarmingsupplies:superconducting_magnet"
   ]
 }

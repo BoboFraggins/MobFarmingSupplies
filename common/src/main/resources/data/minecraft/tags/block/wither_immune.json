@@ -3,6 +3,7 @@
   "values": [
     "mobfarmingsupplies:wither_proof_glass",
     "mobfarmingsupplies:mob_exclusion_glass",
+    "mobfarmingsupplies:player_exclusion_glass",
     "mobfarmingsupplies:vector_plate",
     "mobfarmingsupplies:halting_plate",
     "mobfarmingsupplies:mob_harvester",

@@ -34,6 +34,7 @@ public final class TankBlockEntityPlatformImpl {
         if (!containedRes.isEmpty() && containedAmt > 0) {
             // Item has fluid → drain into tank
             FluidStack archFluid = FluidStackHooksForge.fromForge(containedRes.toStack(1));
+            if (!be.canHold(archFluid)) return null;
             if (!be.storedFluid.isEmpty()
                     && (!be.storedFluid.isFluidEqual(archFluid) || !be.storedFluid.isComponentEqual(archFluid))) {
                 return null;

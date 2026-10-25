@@ -1,9 +1,37 @@
 {
   "model": {
-    "type": "minecraft:special",
-    "base": "mobfarmingsupplies:item/einstein_rosen_bridge",
-    "model": {
-      "type": "mobfarmingsupplies:einstein_rosen_bridge_renderer"
+    "type": "minecraft:select",
+    "property": "minecraft:display_context",
+    "cases": [
+      {
+        "when": "gui",
+        "model": {
+          "type": "minecraft:composite",
+          "models": [
+            {
+              "type": "minecraft:special",
+              "base": "mobfarmingsupplies:item/gui_backdrop",
+              "model": {
+                "type": "mobfarmingsupplies:gui_backdrop"
+              }
+            },
+            {
+              "type": "minecraft:special",
+              "base": "mobfarmingsupplies:item/einstein_rosen_bridge",
+              "model": {
+                "type": "mobfarmingsupplies:einstein_rosen_bridge_renderer"
+              }
+            }
+          ]
+        }
+      }
+    ],
+    "fallback": {
+      "type": "minecraft:special",
+      "base": "mobfarmingsupplies:item/einstein_rosen_bridge",
+      "model": {
+        "type": "mobfarmingsupplies:einstein_rosen_bridge_renderer"
+      }
     }
   }
 }

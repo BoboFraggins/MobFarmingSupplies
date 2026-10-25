@@ -1,0 +1,15 @@
+{
+  "model": {
+    "type": "minecraft:composite",
+    "models": [
+      {
+        "type": "minecraft:model",
+        "model": "mobfarmingsupplies:block/incubator_base"
+      },
+      {
+        "type": "minecraft:model",
+        "model": "mobfarmingsupplies:block/incubator_lid"
+      }
+    ]
+  }
+}

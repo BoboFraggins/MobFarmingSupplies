@@ -131,4 +131,11 @@
     "",
     "Put skulls on the pike and their mobs won't spawn naturally nearby. The neighbors may never visit again.",
   ],
+  "quest.7C92B3DE6E7A7642.title": "Savings Account",
+  "quest.7C92B3DE6E7A7642.quest_subtitle": "Put your experience somewhere safe. Place an Experience Pylon.",
+  "quest.7C92B3DE6E7A7642.quest_desc": [
+    "An &eExperience Pylon&r banks XP Juice by the billion millibuckets.",
+    "",
+    "Right-click it with an empty hand to store or retrieve your own levels, or pour in XP Juice with buckets, bottles, a Syringe or pipes. Craft one from a tank that already holds XP Juice and it keeps it.",
+  ],
 }

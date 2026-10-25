@@ -5,6 +5,9 @@
     "mobfarmingsupplies:mob_harvester",
     "mobfarmingsupplies:fan",
     "mobfarmingsupplies:wither_proof_glass",
+    "mobfarmingsupplies:incubator",
+    "mobfarmingsupplies:anvil",
+    "mobfarmingsupplies:disenchanter",
     "mobfarmingsupplies:ender_inhibitor",
     "mobfarmingsupplies:vector_plate",
     "mobfarmingsupplies:halting_plate",
@@ -18,6 +21,8 @@
     "mobfarmingsupplies:wilhelm_button",
     "mobfarmingsupplies:toilet",
     "mobfarmingsupplies:giant_skeleton_lawn_ornament",
+    "mobfarmingsupplies:giant_herobrine_lawn_ornament",
+    "mobfarmingsupplies:giant_player_lawn_ornament",
     "mobfarmingsupplies:wither_inhibitor"
   ]
 }

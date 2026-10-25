@@ -48,8 +48,18 @@ import net.bobofraggins.mobfarmingsupplies.headpike.HeadPikeBlockItem;
 import net.bobofraggins.mobfarmingsupplies.headpike.HeadPikeMenu;
 import net.bobofraggins.mobfarmingsupplies.itemfilter.ItemFilterData;
 import net.bobofraggins.mobfarmingsupplies.itemfilter.ItemFilterItem;
-import net.bobofraggins.mobfarmingsupplies.lawnornament.GiantSkeletonOrnamentBlock;
-import net.bobofraggins.mobfarmingsupplies.lawnornament.GiantSkeletonOrnamentBlockEntity;
+import net.bobofraggins.mobfarmingsupplies.lawnornament.GiantOrnament;
+import net.bobofraggins.mobfarmingsupplies.disenchanter.DisenchanterBlock;
+import net.bobofraggins.mobfarmingsupplies.disenchanter.DisenchanterBlockEntity;
+import net.bobofraggins.mobfarmingsupplies.disenchanter.DisenchanterMenu;
+import net.bobofraggins.mobfarmingsupplies.worldgen.DryLandJigsawStructure;
+import net.bobofraggins.mobfarmingsupplies.xpanvil.XpAnvilBlock;
+import net.bobofraggins.mobfarmingsupplies.xpanvil.XpAnvilBlockEntity;
+import net.bobofraggins.mobfarmingsupplies.xpanvil.XpAnvilMenu;
+import net.bobofraggins.mobfarmingsupplies.lawnornament.GiantOrnamentBlock;
+import net.bobofraggins.mobfarmingsupplies.lawnornament.GiantOrnamentBlockEntity;
+import net.bobofraggins.mobfarmingsupplies.lawnornament.GiantPlayerOrnamentItem;
+import net.bobofraggins.mobfarmingsupplies.lawnornament.OrnamentSwapProcessor;
 import net.bobofraggins.mobfarmingsupplies.logisticsorter.LogisticSorterBlock;
 import net.bobofraggins.mobfarmingsupplies.logisticsorter.LogisticSorterBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.logisticsorter.LogisticSorterBlockItem;
@@ -57,6 +67,7 @@ import net.bobofraggins.mobfarmingsupplies.logisticsorter.LogisticSorterMenu;
 import net.bobofraggins.mobfarmingsupplies.loot.SetBridgeChannelFunction;
 import net.bobofraggins.mobfarmingsupplies.loot.SetSyringeLevelsFunction;
 import net.bobofraggins.mobfarmingsupplies.mobexclusionglass.MobExclusionGlassBlock;
+import net.bobofraggins.mobfarmingsupplies.playerexclusionglass.PlayerExclusionGlassBlock;
 import net.bobofraggins.mobfarmingsupplies.mobharvester.HarvesterSword;
 import net.bobofraggins.mobfarmingsupplies.mobharvester.HarvesterUpgradeItem;
 import net.bobofraggins.mobfarmingsupplies.mobharvester.MobHarvesterBlock;
@@ -79,6 +90,7 @@ import net.bobofraggins.mobfarmingsupplies.shared.sides.OrientedBlockItem;
 import net.bobofraggins.mobfarmingsupplies.skulllights.SkullLightHookBlock;
 import net.bobofraggins.mobfarmingsupplies.skulllights.SkullLightHookBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.skulllights.SkullLights;
+import net.bobofraggins.mobfarmingsupplies.skulllights.SkullLightsDyeRecipe;
 import net.bobofraggins.mobfarmingsupplies.skulllights.SkullLightsRecipe;
 import net.bobofraggins.mobfarmingsupplies.skulllights.StringOfSkullLightsItem;
 import net.bobofraggins.mobfarmingsupplies.tank.TankBlock;
@@ -87,7 +99,16 @@ import net.bobofraggins.mobfarmingsupplies.tank.TankBlockItem;
 import net.bobofraggins.mobfarmingsupplies.tank.TankContents;
 import net.bobofraggins.mobfarmingsupplies.tank.TankMenu;
 import net.bobofraggins.mobfarmingsupplies.tank.TankTier;
+import net.bobofraggins.mobfarmingsupplies.tank.ExperienceTankRecipe;
 import net.bobofraggins.mobfarmingsupplies.tank.TankUpgradeRecipe;
+import net.bobofraggins.mobfarmingsupplies.experiencepylon.ExperiencePylonBlock;
+import net.bobofraggins.mobfarmingsupplies.incubator.IncubatingRecipe;
+import net.bobofraggins.mobfarmingsupplies.incubator.IncubatorBlock;
+import net.bobofraggins.mobfarmingsupplies.incubator.IncubatorBlockEntity;
+import net.bobofraggins.mobfarmingsupplies.incubator.IncubatorMenu;
+import net.bobofraggins.mobfarmingsupplies.experiencepylon.ExperiencePylonBlockEntity;
+import net.bobofraggins.mobfarmingsupplies.experiencepylon.ExperiencePylonBlockItem;
+import net.bobofraggins.mobfarmingsupplies.experiencepylon.ExperiencePylonMenu;
 import net.bobofraggins.mobfarmingsupplies.togglebutton.ToggleButtonBlock;
 import net.bobofraggins.mobfarmingsupplies.toilet.ToiletBlock;
 import net.bobofraggins.mobfarmingsupplies.toilet.ToiletBlockEntity;
@@ -133,6 +154,10 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.core.particles.ParticleType;
+import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.world.level.levelgen.structure.StructureType;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessor;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.core.BlockPos;
@@ -209,6 +234,23 @@ public final class Registration {
     public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS =
             DeferredRegister.create(MobFarmingSuppliesCommon.MODID, Registries.RECIPE_SERIALIZER);
 
+    public static final DeferredRegister<MapCodec<? extends StructureProcessor>> STRUCTURE_PROCESSORS =
+            DeferredRegister.create(MobFarmingSuppliesCommon.MODID, Registries.STRUCTURE_PROCESSOR);
+
+    public static final DeferredRegister<ParticleType<?>> PARTICLE_TYPES =
+            DeferredRegister.create(MobFarmingSuppliesCommon.MODID, Registries.PARTICLE_TYPE);
+
+    /** The XP Powered Disenchanter's runes: vanilla's enchanting table runes in XP Juice green. */
+    public static final RegistrySupplier<SimpleParticleType> XP_RUNE =
+            PARTICLE_TYPES.register("xp_rune", () -> new SimpleParticleType(false) {});
+
+    public static final DeferredRegister<StructureType<?>> STRUCTURE_TYPES =
+            DeferredRegister.create(MobFarmingSuppliesCommon.MODID, Registries.STRUCTURE_TYPE);
+
+    /** A jigsaw structure that won't start on water (the outhouses and the picnic). */
+    public static final RegistrySupplier<StructureType<DryLandJigsawStructure>> DRY_LAND_JIGSAW =
+            STRUCTURE_TYPES.register("dry_land_jigsaw", () -> () -> DryLandJigsawStructure.CODEC);
+
     // ── Recipes ──────────────────────────────────────────────────────────────────
 
     public static final RegistrySupplier<RecipeType<AnvilCrushingRecipe>> ANVIL_CRUSHING_TYPE =
@@ -219,6 +261,19 @@ public final class Registration {
                 }
             });
 
+    public static final RegistrySupplier<RecipeType<IncubatingRecipe>> INCUBATING_TYPE =
+            RECIPE_TYPES.register("incubating", () -> new RecipeType<IncubatingRecipe>() {
+                @Override
+                public String toString() {
+                    return MobFarmingSuppliesCommon.MODID + ":incubating";
+                }
+            });
+
+    /** What the XP Powered Incubator makes: see {@link IncubatingRecipe}. */
+    public static final RegistrySupplier<RecipeSerializer<IncubatingRecipe>> INCUBATING_SERIALIZER =
+            RECIPE_SERIALIZERS.register("incubating",
+                    () -> new RecipeSerializer<>(IncubatingRecipe.MAP_CODEC, IncubatingRecipe.STREAM_CODEC));
+
     public static final RegistrySupplier<RecipeSerializer<AnvilCrushingRecipe>> ANVIL_CRUSHING_SERIALIZER =
             RECIPE_SERIALIZERS.register("anvil_crushing",
                     () -> new RecipeSerializer<>(AnvilCrushingRecipe.MAP_CODEC, AnvilCrushingRecipe.STREAM_CODEC));
@@ -228,9 +283,19 @@ public final class Registration {
             RECIPE_SERIALIZERS.register("tank_upgrade",
                     () -> new RecipeSerializer<>(TankUpgradeRecipe.MAP_CODEC, TankUpgradeRecipe.STREAM_CODEC));
 
+    /** Shaped recipe that makes a block from a tank (Experience Pylon, Incubator), moving the tank's experience into it. */
+    public static final RegistrySupplier<RecipeSerializer<ExperienceTankRecipe>> EXPERIENCE_TANK_SERIALIZER =
+            RECIPE_SERIALIZERS.register("experience_tank",
+                    () -> new RecipeSerializer<>(ExperienceTankRecipe.MAP_CODEC, ExperienceTankRecipe.STREAM_CODEC));
+
     public static final RegistrySupplier<RecipeSerializer<SkullLightsRecipe>> SKULL_LIGHTS_SERIALIZER =
             RECIPE_SERIALIZERS.register("skull_lights",
                     () -> new RecipeSerializer<>(SkullLightsRecipe.MAP_CODEC, SkullLightsRecipe.STREAM_CODEC));
+
+    /** Recolours a String of Skull Lights with a dye, keeping its skulls. */
+    public static final RegistrySupplier<RecipeSerializer<SkullLightsDyeRecipe>> SKULL_LIGHTS_DYE_SERIALIZER =
+            RECIPE_SERIALIZERS.register("skull_lights_dye",
+                    () -> new RecipeSerializer<>(SkullLightsDyeRecipe.MAP_CODEC, SkullLightsDyeRecipe.STREAM_CODEC));
 
     /** Shaped recipe for a linked pair of Einstein-Rosen Bridges on a new random channel. */
     public static final RegistrySupplier<RecipeSerializer<BridgePairRecipe>> BRIDGE_PAIR_SERIALIZER =
@@ -661,6 +726,24 @@ public final class Registration {
                     () -> new BlockItem(MOB_EXCLUSION_GLASS.get(), new Item.Properties()
                             .setId(itemKey("mob_exclusion_glass"))));
 
+    // ── Player Exclusion Glass ────────────────────────────────────────────────────
+
+    public static final RegistrySupplier<PlayerExclusionGlassBlock> PLAYER_EXCLUSION_GLASS =
+            BLOCKS.register("player_exclusion_glass",
+                    () -> new PlayerExclusionGlassBlock(BlockBehaviour.Properties.of()
+                            .setId(blockKey("player_exclusion_glass"))
+                            .strength(1.5f)
+                            .explosionResistance(Float.MAX_VALUE)
+                            .sound(SoundType.GLASS)
+                            .noOcclusion()
+                            .isSuffocating((s, r, p) -> false)
+                            .isViewBlocking((s, r, p, aabb) -> false)));
+
+    public static final RegistrySupplier<BlockItem> PLAYER_EXCLUSION_GLASS_ITEM =
+            ITEMS.register("player_exclusion_glass",
+                    () -> new BlockItem(PLAYER_EXCLUSION_GLASS.get(), new Item.Properties()
+                            .setId(itemKey("player_exclusion_glass"))));
+
     // ── Toggle Buttons ────────────────────────────────────────────────────────────
 
     public static final RegistrySupplier<ToggleButtonBlock> RED_ALERT_BUTTON =
@@ -787,6 +870,97 @@ public final class Registration {
 
     public static final RegistrySupplier<MenuType<TankMenu>> TANK_MENU =
             MENUS.register("tank", () -> MenuRegistry.ofExtended(TankMenu::new, BlockPos.STREAM_CODEC));
+
+    // ── XP Powered Disenchanter ───────────────────────────────────────────────────
+
+    public static final RegistrySupplier<DisenchanterBlock> DISENCHANTER =
+            BLOCKS.register("disenchanter",
+                    () -> new DisenchanterBlock(BlockBehaviour.Properties.of()
+                            .setId(blockKey("disenchanter"))
+                            .mapColor(MapColor.COLOR_RED)
+                            .requiresCorrectToolForDrops()
+                            .lightLevel(state -> 7)
+                            .strength(5.0f, 1200.0f)));
+
+    public static final RegistrySupplier<BlockItem> DISENCHANTER_ITEM =
+            ITEMS.register("disenchanter",
+                    () -> new BlockItem(DISENCHANTER.get(), new Item.Properties().setId(itemKey("disenchanter"))));
+
+    public static final RegistrySupplier<BlockEntityType<DisenchanterBlockEntity>> DISENCHANTER_BE_TYPE =
+            BLOCK_ENTITIES.register("disenchanter",
+                    () -> BlockEntityTypePlatform.create(DisenchanterBlockEntity::new, DISENCHANTER.get()));
+
+    public static final RegistrySupplier<MenuType<DisenchanterMenu>> DISENCHANTER_MENU =
+            MENUS.register("disenchanter", () -> MenuRegistry.ofExtended(DisenchanterMenu::new));
+
+    // ── XP Powered Anvil ──────────────────────────────────────────────────────────
+
+    public static final RegistrySupplier<XpAnvilBlock> XP_ANVIL =
+            BLOCKS.register("anvil",
+                    () -> new XpAnvilBlock(BlockBehaviour.Properties.of()
+                            .setId(blockKey("anvil"))
+                            .mapColor(MapColor.METAL)
+                            .strength(5.0f, 1200.0f)
+                            .sound(SoundType.ANVIL)
+                            .noOcclusion()));
+
+    public static final RegistrySupplier<BlockItem> XP_ANVIL_ITEM =
+            ITEMS.register("anvil",
+                    () -> new BlockItem(XP_ANVIL.get(), new Item.Properties().setId(itemKey("anvil"))));
+
+    public static final RegistrySupplier<BlockEntityType<XpAnvilBlockEntity>> XP_ANVIL_BE_TYPE =
+            BLOCK_ENTITIES.register("anvil",
+                    () -> BlockEntityTypePlatform.create(XpAnvilBlockEntity::new, XP_ANVIL.get()));
+
+    public static final RegistrySupplier<MenuType<XpAnvilMenu>> XP_ANVIL_MENU =
+            MENUS.register("anvil", () -> MenuRegistry.ofExtended(XpAnvilMenu::new));
+
+    // ── Incubator ─────────────────────────────────────────────────────────────────
+
+    public static final RegistrySupplier<IncubatorBlock> INCUBATOR =
+            BLOCKS.register("incubator",
+                    () -> new IncubatorBlock(BlockBehaviour.Properties.of()
+                            .setId(blockKey("incubator"))
+                            .mapColor(MapColor.QUARTZ)
+                            .strength(0.8f)
+                            .sound(SoundType.GLASS)
+                            .noOcclusion()
+                            .isViewBlocking((s, r, p, aabb) -> false)));
+
+    public static final RegistrySupplier<BlockItem> INCUBATOR_ITEM =
+            ITEMS.register("incubator",
+                    () -> new BlockItem(INCUBATOR.get(), new Item.Properties().setId(itemKey("incubator"))));
+
+    public static final RegistrySupplier<BlockEntityType<IncubatorBlockEntity>> INCUBATOR_BE_TYPE =
+            BLOCK_ENTITIES.register("incubator",
+                    () -> BlockEntityTypePlatform.create(IncubatorBlockEntity::new, INCUBATOR.get()));
+
+    public static final RegistrySupplier<MenuType<IncubatorMenu>> INCUBATOR_MENU =
+            MENUS.register("incubator", () -> MenuRegistry.ofExtended(IncubatorMenu::new));
+
+    // ── Experience Pylon ──────────────────────────────────────────────────────────
+
+    public static final RegistrySupplier<ExperiencePylonBlock> EXPERIENCE_PYLON =
+            BLOCKS.register("experience_pylon",
+                    () -> new ExperiencePylonBlock(BlockBehaviour.Properties.of()
+                            .setId(blockKey("experience_pylon"))
+                            .mapColor(MapColor.COLOR_BLACK)
+                            .strength(0.3f, 1200.0f) // a tank's mining time, more blast resistance
+                            .lightLevel(state -> 15)
+                            .sound(SoundType.STONE)
+                            .noOcclusion()));
+
+    public static final RegistrySupplier<ExperiencePylonBlockItem> EXPERIENCE_PYLON_ITEM =
+            ITEMS.register("experience_pylon",
+                    () -> new ExperiencePylonBlockItem(EXPERIENCE_PYLON.get(), new Item.Properties()
+                            .setId(itemKey("experience_pylon"))));
+
+    public static final RegistrySupplier<BlockEntityType<ExperiencePylonBlockEntity>> EXPERIENCE_PYLON_BE_TYPE =
+            BLOCK_ENTITIES.register("experience_pylon",
+                    () -> BlockEntityTypePlatform.create(ExperiencePylonBlockEntity::new, EXPERIENCE_PYLON.get()));
+
+    public static final RegistrySupplier<MenuType<ExperiencePylonMenu>> EXPERIENCE_PYLON_MENU =
+            MENUS.register("experience_pylon", () -> MenuRegistry.ofExtended(ExperiencePylonMenu::new));
 
     // ── Experience Syringe ────────────────────────────────────────────────────────
 
@@ -1068,24 +1242,52 @@ public final class Registration {
             BLOCK_ENTITIES.register("toilet",
                     () -> BlockEntityTypePlatform.create(ToiletBlockEntity::new, TOILET.get()));
 
-    // ── Giant Skeleton Lawn Ornament ─────────────────────────────────────────────
+    // ── Giant Lawn Ornaments ─────────────────────────────────────────────────────
 
-    public static final RegistrySupplier<GiantSkeletonOrnamentBlock> GIANT_SKELETON_ORNAMENT =
-            BLOCKS.register("giant_skeleton_lawn_ornament",
-                    () -> new GiantSkeletonOrnamentBlock(BlockBehaviour.Properties.of()
-                            .setId(blockKey("giant_skeleton_lawn_ornament"))
-                            .strength(1.5f)
-                            .sound(SoundType.BONE_BLOCK)
-                            .noOcclusion()));
+    public static final RegistrySupplier<GiantOrnamentBlock> GIANT_SKELETON_ORNAMENT =
+            registerGiantOrnament(GiantOrnament.SKELETON, SoundType.BONE_BLOCK);
+    public static final RegistrySupplier<GiantOrnamentBlock> GIANT_HEROBRINE_ORNAMENT =
+            registerGiantOrnament(GiantOrnament.HEROBRINE, SoundType.STONE);
+    public static final RegistrySupplier<GiantOrnamentBlock> GIANT_PLAYER_ORNAMENT =
+            registerGiantOrnament(GiantOrnament.PLAYER, SoundType.STONE);
 
     public static final RegistrySupplier<BlockItem> GIANT_SKELETON_ORNAMENT_ITEM =
-            ITEMS.register("giant_skeleton_lawn_ornament",
-                    () -> new BlockItem(GIANT_SKELETON_ORNAMENT.get(), new Item.Properties()
-                            .setId(itemKey("giant_skeleton_lawn_ornament"))));
+            registerGiantOrnamentItem(GiantOrnament.SKELETON, GIANT_SKELETON_ORNAMENT);
+    public static final RegistrySupplier<BlockItem> GIANT_HEROBRINE_ORNAMENT_ITEM =
+            registerGiantOrnamentItem(GiantOrnament.HEROBRINE, GIANT_HEROBRINE_ORNAMENT);
+    /** Named after, and wearing the skin of, its owner: whoever first places it. */
+    public static final RegistrySupplier<GiantPlayerOrnamentItem> GIANT_PLAYER_ORNAMENT_ITEM =
+            ITEMS.register(GiantOrnament.PLAYER.id(), () -> new GiantPlayerOrnamentItem(GIANT_PLAYER_ORNAMENT.get(),
+                    new Item.Properties().setId(itemKey(GiantOrnament.PLAYER.id()))));
 
-    public static final RegistrySupplier<BlockEntityType<GiantSkeletonOrnamentBlockEntity>> GIANT_SKELETON_ORNAMENT_BE_TYPE =
+    /**
+     * One block entity type for every giant ornament. It keeps the skeleton's id, which worlds and
+     * the village yard template have already saved.
+     */
+    public static final RegistrySupplier<BlockEntityType<GiantOrnamentBlockEntity>> GIANT_ORNAMENT_BE_TYPE =
             BLOCK_ENTITIES.register("giant_skeleton_lawn_ornament",
-                    () -> BlockEntityTypePlatform.create(GiantSkeletonOrnamentBlockEntity::new, GIANT_SKELETON_ORNAMENT.get()));
+                    () -> BlockEntityTypePlatform.create(GiantOrnamentBlockEntity::new,
+                            GIANT_SKELETON_ORNAMENT.get(), GIANT_HEROBRINE_ORNAMENT.get(),
+                            GIANT_PLAYER_ORNAMENT.get()));
+
+    private static RegistrySupplier<GiantOrnamentBlock> registerGiantOrnament(GiantOrnament ornament, SoundType sound) {
+        return BLOCKS.register(ornament.id(),
+                () -> new GiantOrnamentBlock(ornament, BlockBehaviour.Properties.of()
+                        .setId(blockKey(ornament.id()))
+                        .strength(1.5f)
+                        .sound(sound)
+                        .noOcclusion()));
+    }
+
+    private static RegistrySupplier<BlockItem> registerGiantOrnamentItem(
+            GiantOrnament ornament, RegistrySupplier<GiantOrnamentBlock> block) {
+        return ITEMS.register(ornament.id(),
+                () -> new BlockItem(block.get(), new Item.Properties().setId(itemKey(ornament.id()))));
+    }
+
+    /** Swaps one block of a structure for another as it's placed (the village yards' Herobrine). */
+    public static final RegistrySupplier<MapCodec<OrnamentSwapProcessor>> ORNAMENT_SWAP_PROCESSOR =
+            STRUCTURE_PROCESSORS.register("ornament_swap", () -> OrnamentSwapProcessor.CODEC);
 
     // ── Head Pike ────────────────────────────────────────────────────────────────
 
@@ -1234,12 +1436,17 @@ public final class Registration {
                         output.accept(DNA_SAMPLE_WRONG.get());
                         output.accept(WITHER_PROOF_GLASS_ITEM.get());
                         output.accept(MOB_EXCLUSION_GLASS_ITEM.get());
+                        output.accept(PLAYER_EXCLUSION_GLASS_ITEM.get());
+                        output.accept(EXPERIENCE_SYRINGE.get());
+                        output.accept(XP_JUICE_BUCKET.get());
                         output.accept(TANK_ITEM.get());
                         output.accept(GOLD_TANK_ITEM.get());
                         output.accept(DIAMOND_TANK_ITEM.get());
                         output.accept(EMERALD_TANK_ITEM.get());
-                        output.accept(EXPERIENCE_SYRINGE.get());
-                        output.accept(XP_JUICE_BUCKET.get());
+                        output.accept(EXPERIENCE_PYLON_ITEM.get());
+                        output.accept(INCUBATOR_ITEM.get());
+                        output.accept(XP_ANVIL_ITEM.get());
+                        output.accept(DISENCHANTER_ITEM.get());
                         output.accept(ENDER_INHIBITOR_ITEM.get());
                         output.accept(WITHER_INHIBITOR_ITEM.get());
                         output.accept(MAGIC_HAT_ITEM.get());
@@ -1258,17 +1465,19 @@ public final class Registration {
                             output.accept(ModCompatRegistration.DNA_BOOSTER_AETHER_HOSTILE.get());
                         if (ModCompatRegistration.DNA_BOOSTER_EVILCRAFT != null)
                             output.accept(ModCompatRegistration.DNA_BOOSTER_EVILCRAFT.get());
-                        output.accept(RED_ALERT_BUTTON_ITEM.get());
-                        output.accept(DRAMATIC_BUTTON_ITEM.get());
-                        output.accept(RIMSHOT_BUTTON_ITEM.get());
-                        output.accept(WILHELM_BUTTON_ITEM.get());
-                        // A Mob Head for every mob without a vanilla head (the ones Beheading drops).
-                        for (EntityType<?> type : MobHeads.MOD_HEADS) output.accept(MobHeads.modHead(type));
                         output.accept(GIANT_SKELETON_ORNAMENT_ITEM.get());
+                        output.accept(GIANT_PLAYER_ORNAMENT_ITEM.get());
+                        output.accept(GIANT_HEROBRINE_ORNAMENT_ITEM.get());
                         ItemStack skullLights = new ItemStack(STRING_OF_SKULL_LIGHTS.get());
                         skullLights.set(SKULL_LIGHTS.get(), SkullLights.defaultLights());
                         output.accept(skullLights);
                         output.accept(HEAD_PIKE_ITEM.get());
+                        // A Mob Head for every mob without a vanilla head (the ones Beheading drops).
+                        for (EntityType<?> type : MobHeads.MOD_HEADS) output.accept(MobHeads.modHead(type));
+                        output.accept(RED_ALERT_BUTTON_ITEM.get());
+                        output.accept(DRAMATIC_BUTTON_ITEM.get());
+                        output.accept(RIMSHOT_BUTTON_ITEM.get());
+                        output.accept(WILHELM_BUTTON_ITEM.get());
                     })
                     .build());
 
@@ -1293,6 +1502,9 @@ public final class Registration {
         RECIPE_TYPES.register();
         RECIPE_SERIALIZERS.register();
         LOOT_FUNCTIONS.register();
+        STRUCTURE_PROCESSORS.register();
+        STRUCTURE_TYPES.register();
+        PARTICLE_TYPES.register();
         net.bobofraggins.mobfarmingsupplies.advancement.MFSTriggers.TRIGGERS.register();
     }
 }

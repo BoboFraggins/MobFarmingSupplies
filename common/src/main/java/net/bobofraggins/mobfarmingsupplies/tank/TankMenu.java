@@ -48,7 +48,7 @@ public class TankMenu extends AbstractContainerMenu {
         addSlot(new Slot(transferContainer, 0, FLUID_IN_X, FLUID_IN_Y) {
             @Override
             public boolean mayPlace(ItemStack stack) {
-                return TankBlockEntityPlatform.isFluidContainer(stack) || TankBottleTransfer.isBottle(stack);
+                return canFillOrEmpty(stack);
             }
         });
 
@@ -78,6 +78,11 @@ public class TankMenu extends AbstractContainerMenu {
     }
 
     public BlockPos getPos() { return pos; }
+
+    /** What the fill-and-empty input slot takes, from the window or a hopper: fluid containers and bottles. */
+    public static boolean canFillOrEmpty(ItemStack stack) {
+        return TankBlockEntityPlatform.isFluidContainer(stack) || TankBottleTransfer.isBottle(stack);
+    }
 
     @Override
     public boolean stillValid(Player player) { return true; }

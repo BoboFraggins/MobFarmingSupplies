@@ -49,8 +49,8 @@ public class TankUpgradeRecipe extends NormalCraftingRecipe {
             ItemStackTemplate.STREAM_CODEC, r -> r.result,
             TankUpgradeRecipe::new);
 
-    private final ShapedRecipePattern pattern;
-    private final ItemStackTemplate result;
+    protected final ShapedRecipePattern pattern;
+    protected final ItemStackTemplate result;
 
     public TankUpgradeRecipe(Recipe.CommonInfo commonInfo, CraftingRecipe.CraftingBookInfo bookInfo,
                              ShapedRecipePattern pattern, ItemStackTemplate result) {
@@ -78,7 +78,7 @@ public class TankUpgradeRecipe extends NormalCraftingRecipe {
     }
 
     @Override
-    public RecipeSerializer<TankUpgradeRecipe> getSerializer() {
+    public RecipeSerializer<? extends TankUpgradeRecipe> getSerializer() {
         return Registration.TANK_UPGRADE_SERIALIZER.get();
     }
 

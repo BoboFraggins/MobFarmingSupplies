@@ -6,7 +6,7 @@
       "conditions": {
         "location": {
           "type": "minecraft:match_block",
-          "blocks": "mobfarmingsupplies:giant_skeleton_lawn_ornament"
+          "blocks": "#mobfarmingsupplies:giant_lawn_ornaments"
         }
       }
     },

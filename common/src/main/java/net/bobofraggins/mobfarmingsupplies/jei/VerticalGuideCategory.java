@@ -116,14 +116,19 @@ public class VerticalGuideCategory implements IRecipeCategory<GuideRecipe> {
     }
 
     /**
-     * Draws a small downward-pointing triangle (5×3 px) centred horizontally in the background,
-     * with its top row at {@code y}.
+     * Draws a small downward-pointing triangle (6×3 px) with its top row at {@code y}, centred under
+     * a lone slot's item. JEI places a slot's 16 px item at the slot's x, so the item's centre is
+     * 8 px in; an even-width arrow can sit exactly on it.
      */
     private void drawDownArrow(GuiGraphicsExtractor g, int y) {
-        int cx = width / 2;
-        g.fill(cx - 2, y, cx + 3, y + 1, ARROW_COLOR);
-        g.fill(cx - 1, y + 1, cx + 2, y + 2, ARROW_COLOR);
-        g.fill(cx, y + 2, cx + 1, y + 3, ARROW_COLOR);
+        drawCentredDownArrow(g, slotX(0, 1) + 8, y);
+    }
+
+    /** A 6×3 px downward triangle whose middle is the line between pixels {@code mid - 1} and {@code mid}. */
+    static void drawCentredDownArrow(GuiGraphicsExtractor g, int mid, int y) {
+        g.fill(mid - 3, y, mid + 3, y + 1, ARROW_COLOR);
+        g.fill(mid - 2, y + 1, mid + 2, y + 2, ARROW_COLOR);
+        g.fill(mid - 1, y + 2, mid + 1, y + 3, ARROW_COLOR);
     }
 
     /** Draws a small plus sign (5×5 px) centred on ({@code cx}, {@code cy}). */

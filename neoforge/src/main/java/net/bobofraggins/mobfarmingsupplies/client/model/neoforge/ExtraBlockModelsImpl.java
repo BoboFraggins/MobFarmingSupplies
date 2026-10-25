@@ -2,7 +2,9 @@ package net.bobofraggins.mobfarmingsupplies.client.model.neoforge;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import net.bobofraggins.mobfarmingsupplies.experiencepylon.ExperiencePylonRenderer;
 import net.bobofraggins.mobfarmingsupplies.fan.FanBlockEntityRenderer;
+import net.bobofraggins.mobfarmingsupplies.incubator.IncubatorRenderer;
 import net.bobofraggins.mobfarmingsupplies.glamping.present.PresentRenderer;
 import net.bobofraggins.mobfarmingsupplies.mobharvester.MobHarvesterRenderer;
 import net.bobofraggins.mobfarmingsupplies.picnicbasket.PicnicBasketRenderer;
@@ -37,6 +39,10 @@ public final class ExtraBlockModelsImpl {
         register(PicnicBasketRenderer.RIGHT_LID_MODEL_ID);
         register(PresentRenderer.MODEL_ID);
         register(ToiletBlockEntityRenderer.LID_MODEL_ID);
+        register(ExperiencePylonRenderer.PYLON_MODEL_ID);
+        register(IncubatorRenderer.LID_MODEL_ID);
+        register(IncubatorRenderer.TEST_TUBE_MODEL_ID);
+        IncubatorRenderer.EGG_MODEL_IDS.forEach(ExtraBlockModelsImpl::register);
     }
 
     private ExtraBlockModelsImpl() {}

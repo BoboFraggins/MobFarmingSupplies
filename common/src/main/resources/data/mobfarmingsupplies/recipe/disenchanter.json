@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " B ",
+    "X#X",
+    "###"
+  ],
+  "key": {
+    "B": "minecraft:book",
+    "X": "mobfarmingsupplies:xp_juice_bucket",
+    "#": "minecraft:obsidian"
+  },
+  "result": {
+    "id": "mobfarmingsupplies:disenchanter",
+    "count": 1
+  }
+}

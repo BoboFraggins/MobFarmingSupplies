@@ -71,8 +71,9 @@ public class TankFluidHandler implements ResourceHandler<FluidResource> {
     @Override
     public boolean isValid(int index, FluidResource resource) {
         if (resource.isEmpty()) return false;
-        if (be.storedFluid.isEmpty()) return true;
         FluidStack incoming = FluidStackHooksForge.fromForge(resource.toStack(1));
+        if (!be.canHold(incoming)) return false;
+        if (be.storedFluid.isEmpty()) return true;
         return be.storedFluid.isFluidEqual(incoming) && be.storedFluid.isComponentEqual(incoming);
     }
 
@@ -80,6 +81,7 @@ public class TankFluidHandler implements ResourceHandler<FluidResource> {
     public int insert(int index, FluidResource resource, int amount, TransactionContext tx) {
         if (resource.isEmpty() || amount <= 0) return 0;
         FluidStack incoming = FluidStackHooksForge.fromForge(resource.toStack(1));
+        if (!be.canHold(incoming)) return 0;
         if (!be.storedFluid.isEmpty()
                 && (!be.storedFluid.isFluidEqual(incoming) || !be.storedFluid.isComponentEqual(incoming))) return 0;
         long space = Math.max(0, be.getCapacity() - be.amount);

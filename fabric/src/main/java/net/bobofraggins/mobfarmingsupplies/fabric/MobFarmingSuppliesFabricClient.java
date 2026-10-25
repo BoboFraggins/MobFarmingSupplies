@@ -19,8 +19,8 @@ import net.bobofraggins.mobfarmingsupplies.glamping.magichat.MagicHatHelmetLayer
 import net.bobofraggins.mobfarmingsupplies.glamping.magichat.fabric.MagicHatTrinketClientSetup;
 import net.bobofraggins.mobfarmingsupplies.glamping.present.PresentRenderer;
 import net.bobofraggins.mobfarmingsupplies.headpike.HeadPikeRenderer;
-import net.bobofraggins.mobfarmingsupplies.lawnornament.GiantSkeletonOrnamentItemRenderer;
-import net.bobofraggins.mobfarmingsupplies.lawnornament.GiantSkeletonOrnamentRenderer;
+import net.bobofraggins.mobfarmingsupplies.lawnornament.GiantOrnamentItemRenderer;
+import net.bobofraggins.mobfarmingsupplies.lawnornament.GiantOrnamentRenderer;
 import net.bobofraggins.mobfarmingsupplies.logisticsorter.LogisticSorterItemRenderer;
 import net.bobofraggins.mobfarmingsupplies.mobharvester.MobHarvesterRenderer;
 import net.bobofraggins.mobfarmingsupplies.mobhead.MobHeadBlockEntityRenderer;
@@ -32,6 +32,10 @@ import net.bobofraggins.mobfarmingsupplies.skulllights.SkullLightsRenderer;
 import net.bobofraggins.mobfarmingsupplies.tank.fabric.TankItemRenderer;
 import net.bobofraggins.mobfarmingsupplies.tank.fabric.TankRenderer;
 import net.bobofraggins.mobfarmingsupplies.toilet.ToiletBlockEntityRenderer;
+import net.bobofraggins.mobfarmingsupplies.experiencepylon.ExperiencePylonRenderer;
+import net.bobofraggins.mobfarmingsupplies.incubator.IncubatorRenderer;
+import net.bobofraggins.mobfarmingsupplies.disenchanter.DisenchanterRenderer;
+import net.bobofraggins.mobfarmingsupplies.disenchanter.XpRuneProvider;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityRenderLayerRegistrationCallback;
 import net.minecraft.client.model.HumanoidModel;
@@ -71,8 +75,8 @@ public class MobFarmingSuppliesFabricClient implements ClientModInitializer {
                 Registration.CLONE_O_MATIC_BE_TYPE.get(),
                 CloneOMaticBlockEntityRenderer::new);
         BlockEntityRendererRegistry.register(
-                Registration.GIANT_SKELETON_ORNAMENT_BE_TYPE.get(),
-                GiantSkeletonOrnamentRenderer::new);
+                Registration.GIANT_ORNAMENT_BE_TYPE.get(),
+                GiantOrnamentRenderer::new);
         BlockEntityRendererRegistry.register(
                 Registration.SKULL_LIGHT_HOOK_BE_TYPE.get(),
                 SkullLightsRenderer::new);
@@ -97,6 +101,17 @@ public class MobFarmingSuppliesFabricClient implements ClientModInitializer {
         BlockEntityRendererRegistry.register(
                 Registration.TOILET_BE_TYPE.get(),
                 ToiletBlockEntityRenderer::new);
+        BlockEntityRendererRegistry.register(
+                Registration.EXPERIENCE_PYLON_BE_TYPE.get(),
+                ExperiencePylonRenderer::new);
+        BlockEntityRendererRegistry.register(
+                Registration.INCUBATOR_BE_TYPE.get(),
+                IncubatorRenderer::new);
+        BlockEntityRendererRegistry.register(
+                Registration.DISENCHANTER_BE_TYPE.get(),
+                DisenchanterRenderer::new);
+        net.fabricmc.fabric.api.client.particle.v1.ParticleProviderRegistry.getInstance()
+                .register(Registration.XP_RUNE.get(), XpRuneProvider::new);
         // The toilet seat is invisible: only its rider is drawn.
         EntityRendererRegistry.register(Registration.TOILET_SEAT, NoopRenderer::new);
         ExtraBlockModelsImpl.registerModelLoadingPlugin();
@@ -173,8 +188,8 @@ public class MobFarmingSuppliesFabricClient implements ClientModInitializer {
                     Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "gui_backdrop"),
                     GuiBackdropRenderer.Unbaked.MAP_CODEC);
             idMapper.put(
-                    Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "giant_skeleton_lawn_ornament"),
-                    GiantSkeletonOrnamentItemRenderer.Unbaked.MAP_CODEC);
+                    Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "giant_lawn_ornament"),
+                    GiantOrnamentItemRenderer.Unbaked.MAP_CODEC);
         } catch (ReflectiveOperationException e) {
             throw new RuntimeException("Failed to register mobfarmingsupplies special model renderers", e);
         }

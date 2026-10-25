@@ -15,6 +15,7 @@ import mezz.jei.api.registration.ISubtypeRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommon;
 import net.bobofraggins.mobfarmingsupplies.filterscribingterminal.FilterScribingTerminalScreen;
+import net.bobofraggins.mobfarmingsupplies.incubator.IncubatingRecipe;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Items;
@@ -23,7 +24,8 @@ import net.minecraft.world.item.ItemStack;
 
 /**
  * JEI plugin for MobFarmingSupplies — vertical guides for things that aren't crafted directly:
- * how XP Juice is obtained (Experience Syringe → Tank → bucket or bottle, {@link XpJuiceGuide})
+ * how an XP Juice Bucket is obtained (Experience Syringe → Tank or Experience Pylon → bucket,
+ * {@link XpJuiceGuide}), how a Bottle o' Enchanting is filled ({@link BottlingGuide})
  * and anvil crushing (Anvil → Nether Quartz → Silicon Clump, {@link AnvilCrushingGuide}).
  * Plus the Filter Scribing Terminal: a recipe view of scribing Item Filters
  * ({@link FilterScribingCategory}) and the ghost-ingredient handler for its matcher slot.
@@ -50,19 +52,24 @@ public class MobFarmingSuppliesJeiPlugin implements IModPlugin {
     @Override
     public void registerCategories(IRecipeCategoryRegistration reg) {
         IGuiHelper guiHelper = reg.getJeiHelpers().getGuiHelper();
-        reg.addRecipeCategories(XpJuiceGuide.category(guiHelper), AnvilCrushingGuide.category(guiHelper),
+        reg.addRecipeCategories(XpJuiceGuide.category(guiHelper), BottlingGuide.category(guiHelper),
+                AnvilCrushingGuide.category(guiHelper),
                 new FilterScribingCategory(guiHelper), BeheadingGuide.category(guiHelper),
-                new DnaSamplingGuide(guiHelper), new CloningGuide(guiHelper));
+                new DnaSamplingGuide(guiHelper), new CloningGuide(guiHelper), new IncubatingCategory(guiHelper),
+                new DisenchantingCategory(guiHelper));
     }
 
     @Override
     public void registerRecipes(IRecipeRegistration reg) {
-        reg.addRecipes(XpJuiceGuide.RECIPE_TYPE, List.of(XpJuiceGuide.bucket(), XpJuiceGuide.bottle()));
+        reg.addRecipes(XpJuiceGuide.RECIPE_TYPE, XpJuiceGuide.recipes());
+        reg.addRecipes(BottlingGuide.RECIPE_TYPE, BottlingGuide.recipes());
         reg.addRecipes(AnvilCrushingGuide.RECIPE_TYPE, List.of(AnvilCrushingGuide.recipe()));
         reg.addRecipes(FilterScribingCategory.RECIPE_TYPE, List.of(FilterScribingExamples.create()));
         reg.addRecipes(BeheadingGuide.RECIPE_TYPE, List.of(BeheadingGuide.recipe()));
         reg.addRecipes(DnaSamplingGuide.RECIPE_TYPE, List.of(DnaSamplingGuide.recipe()));
         reg.addRecipes(CloningGuide.RECIPE_TYPE, List.of(CloningGuide.recipe()));
+        reg.addRecipes(IncubatingCategory.RECIPE_TYPE, IncubatingCategory.displays(incubatingRecipes()));
+        reg.addRecipes(DisenchantingCategory.RECIPE_TYPE, DisenchantingCategory.displays());
     }
 
     /** Each mob's Mob Head is its own JEI entry (one item, told apart by its mob type). */
@@ -93,13 +100,35 @@ public class MobFarmingSuppliesJeiPlugin implements IModPlugin {
                 Registration.EXPERIENCE_SYRINGE.get(),
                 Registration.TANK_ITEM.get(),
                 Registration.XP_JUICE_BUCKET.get(),
-                Items.EXPERIENCE_BOTTLE);
+                Registration.EXPERIENCE_PYLON_ITEM.get());
+        reg.addCraftingStation(BottlingGuide.RECIPE_TYPE,
+                Registration.EXPERIENCE_SYRINGE.get(),
+                Registration.TANK_ITEM.get(),
+                Registration.EXPERIENCE_PYLON_ITEM.get());
         reg.addCraftingStation(AnvilCrushingGuide.RECIPE_TYPE, Items.ANVIL, Items.CHIPPED_ANVIL, Items.DAMAGED_ANVIL);
         reg.addCraftingStation(FilterScribingCategory.RECIPE_TYPE, Registration.FILTER_SCRIBING_TERMINAL_ITEM.get());
         reg.addCraftingStation(BeheadingGuide.RECIPE_TYPE,
                 Registration.MOB_HARVESTER_ITEM.get(), Registration.HARVESTER_UPGRADE_BEHEADING.get());
         reg.addCraftingStation(DnaSamplingGuide.RECIPE_TYPE, Registration.DNA_COLLECTOR.get());
         reg.addCraftingStation(CloningGuide.RECIPE_TYPE, Registration.CLONE_O_MATIC_ITEM.get());
+        reg.addCraftingStation(IncubatingCategory.RECIPE_TYPE, Registration.INCUBATOR_ITEM.get());
+        reg.addCraftingStation(DisenchantingCategory.RECIPE_TYPE, Registration.DISENCHANTER_ITEM.get());
+    }
+
+    /**
+     * The incubating recipes the server sent this client. JEI keeps the synced recipes (on Fabric,
+     * those whose serializers opt in to syncing, as ours does) in its common module, the same place
+     * its own vanilla plugin reads them; it's not public API, so a change there costs only this page.
+     */
+    private static List<IncubatingRecipe> incubatingRecipes() {
+        try {
+            return mezz.jei.common.Internal.getClientSyncedRecipes()
+                    .byType(Registration.INCUBATING_TYPE.get()).stream()
+                    .map(holder -> holder.value())
+                    .toList();
+        } catch (RuntimeException | LinkageError e) {
+            return List.of();
+        }
     }
 
     /** Lets the dev command runner open a recipe page ({@code RECIPES <item>}). */

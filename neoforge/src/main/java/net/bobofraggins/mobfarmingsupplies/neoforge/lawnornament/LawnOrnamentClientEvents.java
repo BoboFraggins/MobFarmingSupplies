@@ -1,7 +1,7 @@
 package net.bobofraggins.mobfarmingsupplies.neoforge.lawnornament;
 
 import net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommon;
-import net.bobofraggins.mobfarmingsupplies.lawnornament.GiantSkeletonOrnamentItemRenderer;
+import net.bobofraggins.mobfarmingsupplies.lawnornament.GiantOrnamentItemRenderer;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.minecraft.resources.Identifier;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -14,14 +14,13 @@ public final class LawnOrnamentClientEvents {
 
     @SubscribeEvent
     public static void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event) {
-        event.registerBlockEntityRenderer(Registration.GIANT_SKELETON_ORNAMENT_BE_TYPE.get(),
-                NeoGiantSkeletonOrnamentRenderer::new);
+        event.registerBlockEntityRenderer(Registration.GIANT_ORNAMENT_BE_TYPE.get(), NeoGiantOrnamentRenderer::new);
         event.registerBlockEntityRenderer(Registration.SKULL_LIGHT_HOOK_BE_TYPE.get(), NeoSkullLightsRenderer::new);
     }
 
     @SubscribeEvent
     public static void onRegisterSpecialModelRenderers(RegisterSpecialModelRendererEvent event) {
-        event.register(Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "giant_skeleton_lawn_ornament"),
-                GiantSkeletonOrnamentItemRenderer.Unbaked.MAP_CODEC);
+        event.register(Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "giant_lawn_ornament"),
+                GiantOrnamentItemRenderer.Unbaked.MAP_CODEC);
     }
 }

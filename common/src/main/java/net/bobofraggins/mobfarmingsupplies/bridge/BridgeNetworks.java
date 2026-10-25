@@ -49,6 +49,15 @@ public final class BridgeNetworks {
         return network == null ? List.of() : List.copyOf(network.bridges);
     }
 
+    /** The strongest redstone signal any loaded bridge on the channel is receiving at an INPUT side. */
+    static int redstone(int channel) {
+        Network network = NETWORKS.get(channel);
+        if (network == null) return 0;
+        int strongest = 0;
+        for (EinsteinRosenBridgeBlockEntity bridge : network.bridges) strongest = Math.max(strongest, bridge.redstoneIn());
+        return strongest;
+    }
+
     /** Has an INPUT side and an OUTPUT side somewhere among its loaded bridges. */
     static boolean isActive(int channel) {
         Network network = NETWORKS.get(channel);
