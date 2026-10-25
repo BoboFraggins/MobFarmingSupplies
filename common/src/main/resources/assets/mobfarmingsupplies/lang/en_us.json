@@ -160,6 +160,7 @@
   "container.mobfarmingsupplies.logistic_sorter.mode.no_match": "Does Not Match",
 
   "block.mobfarmingsupplies.block_breaker": "Block Breaker",
+  "item.mobfarmingsupplies.block_breaker": "Block Breaker",
   "item.mobfarmingsupplies.block_breaker.tooltip": "Breaks the blocks at its inputs and sends the drops to its outputs.",
   "block.mobfarmingsupplies.omnidirectional_hopper": "Omnidirectional Hopper",
   "item.mobfarmingsupplies.omnidirectional_hopper": "Omnidirectional Hopper",
