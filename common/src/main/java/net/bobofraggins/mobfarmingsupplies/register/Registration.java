@@ -1411,9 +1411,9 @@ public final class Registration {
                         if (!guide.isEmpty()) output.accept(guide);
                         output.accept(ABSORPTION_HOPPER_ITEM.get());
                         output.accept(OMNI_HOPPER_ITEM.get());
-                        output.accept(BLOCK_BREAKER_ITEM.get());
                         output.accept(EINSTEIN_ROSEN_BRIDGE_ITEM.get());
                         output.accept(LOGISTIC_SORTER_ITEM.get());
+                        output.accept(BLOCK_BREAKER_ITEM.get());
                         output.accept(SUPERCONDUCTING_MAGNET.get());
                         output.accept(SILICON_CLUMP.get());
                         output.accept(SILICON.get());

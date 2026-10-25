@@ -21,7 +21,11 @@ public final class FilterGhost {
 
     /** Draws the ghost at the slot's item position ({@code x}, {@code y}) if slot {@code index} is empty. */
     public static void drawIfEmpty(GuiGraphicsExtractor g, Container filters, int index, int x, int y) {
-        if (!filters.getItem(index).isEmpty()) return;
+        if (filters.getItem(index).isEmpty()) draw(g, x, y);
+    }
+
+    /** Draws the ghost at a slot's item position ({@code x}, {@code y}). */
+    public static void draw(GuiGraphicsExtractor g, int x, int y) {
         g.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y, 0, 0, 16, 16, TEXTURE_SIZE, TEXTURE_SIZE,
                 TEXTURE_SIZE, TEXTURE_SIZE);
     }
