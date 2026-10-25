@@ -131,6 +131,7 @@
   "entity.mobfarmingsupplies.toilet_seat": "Toilet Seat",
   "container.mobfarmingsupplies.logistic_sorter.connections": "Connections:",
   "gui.mobfarmingsupplies.absorption_hopper.void_excess": "Void Excess:",
+  "gui.mobfarmingsupplies.block_breaker.silk_touch": "Silk Touch",
   "gui.mobfarmingsupplies.toggle.on": "On",
   "gui.mobfarmingsupplies.toggle.off": "Off",
   "gui.mobfarmingsupplies.toggle.is": "Is",
@@ -158,6 +159,8 @@
   "container.mobfarmingsupplies.logistic_sorter.mode.match": "Matches",
   "container.mobfarmingsupplies.logistic_sorter.mode.no_match": "Does Not Match",
 
+  "block.mobfarmingsupplies.block_breaker": "Block Breaker",
+  "item.mobfarmingsupplies.block_breaker.tooltip": "Breaks the blocks at its inputs and sends the drops to its outputs.",
   "block.mobfarmingsupplies.omnidirectional_hopper": "Omnidirectional Hopper",
   "item.mobfarmingsupplies.omnidirectional_hopper": "Omnidirectional Hopper",
   "item.mobfarmingsupplies.omnidirectional_hopper.tooltip": "Moves items, fluids, energy and whatnot from its inputs to its outputs",

@@ -8,7 +8,8 @@
 * Added Giant Player Lawn Ornament
 * Added XP Powered Incubator (Combines eggs and DNA back into eggs)
 * Added XP Powered Anvil (Repairs items with fluid experience)
-* Added XP Powered Disenchanter (Pulls enchantments off of items) 
+* Added XP Powered Disenchanter (Pulls enchantments off of items)
+* Added Block Breaker (Accepts Item Filters)
 
 * Changed the Einstein-Rosen Bridge to transport redstone signal, too
 

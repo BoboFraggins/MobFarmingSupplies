@@ -13,7 +13,7 @@ import net.minecraft.network.chat.Component;
  * panes. Changes apply immediately (optimistically) and are sent to the server; otherwise the
  * view follows the synced client block entity.
  */
-final class HopperConfigView implements SideGridPane.Model {
+public final class HopperConfigView implements SideGridPane.Model {
 
     /** How long a local change wins over (possibly stale) block entity data. */
     private static final long LOCAL_GRACE_MS = 500;
@@ -23,7 +23,7 @@ final class HopperConfigView implements SideGridPane.Model {
     private boolean andMode = true;
     private long lastLocalChange;
 
-    HopperConfigView(BlockPos pos) {
+    public HopperConfigView(BlockPos pos) {
         this.pos = pos;
         refresh();
     }

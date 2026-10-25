@@ -37,6 +37,11 @@ public final class MFSNetwork {
                 SetVoidExcessPacket::handle);
         NetworkManager.registerReceiver(
                 NetworkManager.c2s(),
+                SetBlockBreakerSilkTouchPacket.TYPE,
+                SetBlockBreakerSilkTouchPacket.STREAM_CODEC,
+                SetBlockBreakerSilkTouchPacket::handle);
+        NetworkManager.registerReceiver(
+                NetworkManager.c2s(),
                 SetInhibitorOffsetPacket.TYPE,
                 SetInhibitorOffsetPacket.STREAM_CODEC,
                 SetInhibitorOffsetPacket::handle);

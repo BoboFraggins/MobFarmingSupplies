@@ -11,6 +11,7 @@ import net.bobofraggins.mobfarmingsupplies.headpike.HeadPikeScreen;
 import net.bobofraggins.mobfarmingsupplies.logisticsorter.LogisticSorterScreen;
 import net.bobofraggins.mobfarmingsupplies.mobharvester.MobHarvesterScreen;
 import net.bobofraggins.mobfarmingsupplies.omnihopper.OmniHopperMenu;
+import net.bobofraggins.mobfarmingsupplies.blockbreaker.BlockBreakerScreen;
 import net.bobofraggins.mobfarmingsupplies.omnihopper.OmniHopperScreen;
 import net.bobofraggins.mobfarmingsupplies.picnicbasket.PicnicBasketKeybinds;
 import net.bobofraggins.mobfarmingsupplies.picnicbasket.PicnicBasketScreen;
@@ -91,6 +92,9 @@ public final class MobFarmingSuppliesCommonClient {
         MenuScreenRegistry.registerScreenFactory(
                 Registration.LOGISTIC_SORTER_MENU.get(),
                 LogisticSorterScreen::new);
+        MenuScreenRegistry.registerScreenFactory(
+                Registration.BLOCK_BREAKER_MENU.get(),
+                BlockBreakerScreen::new);
         MenuScreenRegistry.registerScreenFactory(
                 Registration.OMNI_HOPPER_MENU.get(),
                 OmniHopperScreen<OmniHopperMenu>::new);
