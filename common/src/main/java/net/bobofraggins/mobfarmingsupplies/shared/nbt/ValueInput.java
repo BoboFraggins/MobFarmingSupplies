@@ -48,6 +48,10 @@ public final class ValueInput {
         return tag.contains(key, Tag.TAG_STRING) ? tag.getString(key) : fallback;
     }
 
+    public Optional<int[]> getIntArray(String key) {
+        return tag.contains(key, Tag.TAG_INT_ARRAY) ? Optional.of(tag.getIntArray(key)) : Optional.empty();
+    }
+
     /** The value under {@code key} read with {@code codec}, or empty if it's missing or doesn't parse. */
     public <T> Optional<T> read(String key, Codec<T> codec) {
         Tag value = tag.get(key);

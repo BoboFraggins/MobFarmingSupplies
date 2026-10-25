@@ -493,6 +493,63 @@
         },
       ],
     },
+    {
+      icon: {
+        id: "mobfarmingsupplies:head_pike",
+        count: 1,
+      },
+      x: 1.5,
+      y: 4.0,
+      shape: "hexagon",
+      dependencies: [
+        "3F6935A10C0D7088",
+      ],
+      size: 1.25,
+      id: "529ED28196C194BF",
+      tasks: [
+        {
+          id: "1ECB363FF3FE8045",
+          type: "advancement",
+          advancement: "mobfarmingsupplies:fun_stuff/the_hoa_will_hear_about_this",
+          criterion: "",
+        },
+      ],
+      rewards: [
+        {
+          id: "7856CB89364210A0",
+          type: "xp",
+          xp: 50,
+        },
+      ],
+    },
+    {
+      icon: {
+        id: "mobfarmingsupplies:experience_pylon",
+        count: 1,
+      },
+      x: 3.0,
+      y: -1.25,
+      dependencies: [
+        "10DC489C1ACFF826",
+      ],
+      size: 1.0,
+      id: "7C92B3DE6E7A7642",
+      tasks: [
+        {
+          id: "4E949E513E7F7B21",
+          type: "advancement",
+          advancement: "mobfarmingsupplies:mob_farming/savings_account",
+          criterion: "",
+        },
+      ],
+      rewards: [
+        {
+          id: "26EE33C7BEE28A00",
+          type: "xp",
+          xp: 25,
+        },
+      ],
+    },
   ],
   quest_links: [
   ],

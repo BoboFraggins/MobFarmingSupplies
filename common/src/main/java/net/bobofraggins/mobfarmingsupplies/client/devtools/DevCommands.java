@@ -31,8 +31,10 @@ import org.slf4j.LoggerFactory;
  * ticks), then closes the game. For testing things that need a real player. Two lines act on the
  * client instead: "CAMERA first|back|front" sets the camera, "SCREENSHOT name" saves
  * {@code screenshots/name.png}, "RECIPES item_id" opens JEI's recipes for an item, "USES item_id"
- * its uses, "USEON x y z" uses the held item on the top of that block, as a click does, and
- * "CLIENTDATA x y z" logs the client's copy of the block entity there.
+ * its uses, "USEON x y z" uses the held item on the top of that block, "USEBLOCK x y z" clicks that block
+ * with it as a player does, and
+ * "CLIENTDATA x y z" logs the client's copy of the block entity there. "MENUBUTTON id" presses
+ * button {@code id} of the open menu, and "QUICKMOVE slot" shift-clicks that slot of it.
  */
 public final class DevCommands {
 
@@ -42,6 +44,8 @@ public final class DevCommands {
     /** Opens JEI's recipes for an item; set by the JEI plugin when JEI is installed. */
     @Nullable public static Consumer<ItemStack> showRecipes;
     @Nullable public static Consumer<ItemStack> showUses;
+    /** Sets JEI's ingredient list search ({@code JEIFILTER <text>}); set by the JEI plugin. */
+    @Nullable public static Consumer<String> setJeiFilter;
 
     private static Deque<String> commands;
     private static int ticks, waiting;
@@ -95,6 +99,10 @@ public final class DevCommands {
             }
             return;
         }
+        if (line.startsWith("JEIFILTER ")) {
+            if (setJeiFilter != null) setJeiFilter.accept(line.substring(10).strip());
+            return;
+        }
         if (line.startsWith("USES ")) {
             ResourceLocation id = ResourceLocation.tryParse(line.substring(5).strip());
             if (showUses != null && id != null) {
@@ -105,6 +113,25 @@ public final class DevCommands {
         if (line.startsWith("SCREENSHOT ")) {
             Screenshot.grab(mc.gameDirectory, line.substring(11).strip() + ".png", mc.getMainRenderTarget(),
                     message -> LOGGER.info("{}", message.getString()));
+            return;
+        }
+        if (line.startsWith("MENUBUTTON ")) {
+            // Presses a button in the open menu, as clicking it in the screen does.
+            if (mc.player != null && mc.gameMode != null) {
+                int id = Integer.parseInt(line.substring(11).strip());
+                mc.gameMode.handleInventoryButtonClick(mc.player.containerMenu.containerId, id);
+                LOGGER.info("MENUBUTTON {} in {}", id, mc.player.containerMenu.getClass().getSimpleName());
+            }
+            return;
+        }
+        if (line.startsWith("QUICKMOVE ")) {
+            // Shift-clicks a slot of the open menu, as the player does.
+            if (mc.player != null && mc.gameMode != null) {
+                int slot = Integer.parseInt(line.substring(10).strip());
+                mc.gameMode.handleInventoryMouseClick(mc.player.containerMenu.containerId, slot, 0,
+                        net.minecraft.world.inventory.ClickType.QUICK_MOVE, mc.player);
+                LOGGER.info("QUICKMOVE {} in {}", slot, mc.player.containerMenu.getClass().getSimpleName());
+            }
             return;
         }
         if (line.startsWith("CLIENTDATA ")) {
@@ -125,6 +152,43 @@ public final class DevCommands {
                 InteractionResult result = player.getMainHandItem().useOn(new UseOnContext(player, InteractionHand.MAIN_HAND, hit));
                 LOGGER.info("USEON {} -> {}", target, result);
             });
+            return;
+        }
+        if (line.startsWith("CLICK ")) {
+            // Left-clicks a slot of the open menu, as the player does (picks up or puts down).
+            if (mc.player != null && mc.gameMode != null) {
+                int slot = Integer.parseInt(line.substring(6).strip());
+                mc.gameMode.handleInventoryMouseClick(mc.player.containerMenu.containerId, slot, 0,
+                        net.minecraft.world.inventory.ClickType.PICKUP, mc.player);
+            }
+            return;
+        }
+        if (line.equals("CRAFTTEST")) {
+            // Matches the first inventory row's... the 3x3 of inventory slots 9-11, 18-20, 27-29 against the recipes.
+            server.execute(() -> {
+                var player = server.getPlayerList().getPlayers().getFirst();
+                java.util.List<ItemStack> grid = new java.util.ArrayList<>();
+                for (int row = 0; row < 3; row++) for (int col = 0; col < 3; col++) {
+                    grid.add(player.getInventory().getItem(9 + row * 9 + col));
+                }
+                var input = net.minecraft.world.item.crafting.CraftingInput.of(3, 3, grid);
+                var match = server.getRecipeManager().getRecipeFor(
+                        net.minecraft.world.item.crafting.RecipeType.CRAFTING, input, player.level());
+                LOGGER.info("CRAFTTEST {} -> {}", grid, match.map(h -> h.id() + " = "
+                        + h.value().assemble(input, server.registryAccess()) + " "
+                        + h.value().assemble(input, server.registryAccess()).getComponents()).orElse("no match"));
+            });
+            return;
+        }
+        if (line.startsWith("USEBLOCK ")) {
+            // Clicks the top face of the block at x y z with the main-hand item, as a player does.
+            String[] p = line.substring(9).strip().split("\\s+");
+            BlockPos target = new BlockPos(Integer.parseInt(p[0]), Integer.parseInt(p[1]), Integer.parseInt(p[2]));
+            if (mc.player != null && mc.gameMode != null) {
+                BlockHitResult hit = new BlockHitResult(Vec3.atCenterOf(target).add(0, 0.5, 0), Direction.UP, target, false);
+                InteractionResult result = mc.gameMode.useItemOn(mc.player, InteractionHand.MAIN_HAND, hit);
+                LOGGER.info("USEBLOCK {} -> {}", target, result);
+            }
             return;
         }
         String command = line;

@@ -61,6 +61,7 @@ public final class FabricTankFluidStorage
     public long insert(FluidVariant resource, long maxAmount, TransactionContext transaction) {
         if (resource.isBlank() || maxAmount <= 0) return 0;
         FluidStack incoming = fromFabric(resource, 1);
+        if (!be.canHold(incoming)) return 0;
         if (!be.storedFluid.isEmpty()
                 && (!be.storedFluid.isFluidEqual(incoming) || !be.storedFluid.isComponentEqual(incoming))) {
             return 0;

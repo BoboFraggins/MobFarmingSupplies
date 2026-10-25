@@ -5,6 +5,8 @@ import net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommon;
 import net.bobofraggins.mobfarmingsupplies.crafting.FluidContainerIngredient;
 import net.bobofraggins.mobfarmingsupplies.logisticsorter.SideMode;
 import net.bobofraggins.mobfarmingsupplies.logisticsorter.neoforge.LogisticSorterItemHandler;
+import net.bobofraggins.mobfarmingsupplies.absorptionhopper.AbsorptionHopperBlockEntity;
+import net.bobofraggins.mobfarmingsupplies.neoforge.incubator.IncubatorItemHandler;
 import net.bobofraggins.mobfarmingsupplies.neoforge.absorptionhopper.AbsorptionHopperFluidHandler;
 import net.bobofraggins.mobfarmingsupplies.neoforge.absorptionhopper.AbsorptionHopperItemHandler;
 import net.bobofraggins.mobfarmingsupplies.neoforge.experiencesyringe.ExperienceSyringeFluidHandler;
@@ -12,6 +14,11 @@ import net.bobofraggins.mobfarmingsupplies.neoforge.loot.DnaSamplePackChestLootM
 import net.bobofraggins.mobfarmingsupplies.neoforge.loot.MagicHatChestLootModifier;
 import net.bobofraggins.mobfarmingsupplies.neoforge.loot.SmoreChestLootModifier;
 import net.bobofraggins.mobfarmingsupplies.neoforge.loot.ToggleButtonChestLootModifier;
+import net.bobofraggins.mobfarmingsupplies.neoforge.tank.InOutSlotsItemHandler;
+import net.bobofraggins.mobfarmingsupplies.neoforge.tank.InsertOnlyTankFluidHandler;
+import net.bobofraggins.mobfarmingsupplies.xpanvil.XpAnvilBlockEntity;
+import net.bobofraggins.mobfarmingsupplies.disenchanter.DisenchanterBlockEntity;
+import net.bobofraggins.mobfarmingsupplies.xpanvil.XpAnvilMenu;
 import net.bobofraggins.mobfarmingsupplies.neoforge.tank.TankFluidHandler;
 import net.bobofraggins.mobfarmingsupplies.neoforge.tank.TankItemFluidHandler;
 import net.bobofraggins.mobfarmingsupplies.neoforge.toilet.ToiletFluidHandler;
@@ -142,6 +149,9 @@ public final class NeoForgeOnlyRegistration {
                 Registration.TANK_BE_TYPE.get(),
                 (be, side) -> new TankFluidHandler(be));
 
+        Capabilities.Fluid.BLOCK.registerBlockEntity(event, Registration.EXPERIENCE_PYLON_BE_TYPE.get(),
+                (be, side) -> new TankFluidHandler(be));
+
         event.registerItem(
                 net.neoforged.neoforge.capabilities.Capabilities.FluidHandler.ITEM,
                 (stack, ctx) -> new TankItemFluidHandler(stack),
@@ -172,6 +182,39 @@ public final class NeoForgeOnlyRegistration {
 
         // Omnidirectional Hopper: insert-only items/fluids/energy/chemicals, only on INPUT sides.
         OmniHopperCapabilities.register(event);
+
+        // XP Powered Incubator: eggs and DNA in (eggs spread evenly), finished eggs out, on every side.
+        Capabilities.Item.BLOCK.registerBlockEntity(event, Registration.INCUBATOR_BE_TYPE.get(),
+                (be, side) -> new IncubatorItemHandler(be));
+
+        // Its experience tank: experience in only.
+        Capabilities.Fluid.BLOCK.registerBlockEntity(event, Registration.INCUBATOR_BE_TYPE.get(),
+                (be, side) -> new InsertOnlyTankFluidHandler(be));
+
+        // Tanks and the Experience Pylon: containers into the fill-and-empty slot, results out of the other.
+        for (var type : java.util.List.of(Registration.TANK_BE_TYPE.get(), Registration.EXPERIENCE_PYLON_BE_TYPE.get())) {
+            Capabilities.Item.BLOCK.registerBlockEntity(event, type, (be, side) -> new InOutSlotsItemHandler(
+                    ((net.bobofraggins.mobfarmingsupplies.tank.TankBlockEntity) be).transferContainer, 0, 1, 64,
+                    net.bobofraggins.mobfarmingsupplies.tank.TankMenu::canFillOrEmpty));
+        }
+
+        // XP Powered Anvil: damaged items in, one at a time; repaired ones out.
+        Capabilities.Item.BLOCK.registerBlockEntity(event, Registration.XP_ANVIL_BE_TYPE.get(),
+                (be, side) -> new InOutSlotsItemHandler(be.items(), XpAnvilBlockEntity.INPUT, XpAnvilBlockEntity.OUTPUT, 1,
+                        XpAnvilMenu::isRepairable));
+
+        // XP Powered Disenchanter: enchanted items and books in, enchanted books (and finished items) out.
+        Capabilities.Item.BLOCK.registerBlockEntity(event, Registration.DISENCHANTER_BE_TYPE.get(),
+                (be, side) -> new InOutSlotsItemHandler(be.items(), java.util.List.of(
+                        new InOutSlotsItemHandler.Input(DisenchanterBlockEntity.ITEM, 1, DisenchanterBlockEntity::isDisenchantable),
+                        new InOutSlotsItemHandler.Input(DisenchanterBlockEntity.BOOK, 64, DisenchanterBlockEntity::isBook)),
+                        DisenchanterBlockEntity.OUTPUT));
+        Capabilities.Fluid.BLOCK.registerBlockEntity(event, Registration.DISENCHANTER_BE_TYPE.get(),
+                (be, side) -> new InsertOnlyTankFluidHandler(be));
+
+        // XP Powered Anvil: experience in only.
+        Capabilities.Fluid.BLOCK.registerBlockEntity(event, Registration.XP_ANVIL_BE_TYPE.get(),
+                (be, side) -> new InsertOnlyTankFluidHandler(be));
 
         // Toilet: voids any item pushed in and supplies unlimited water, on every side.
         Capabilities.Item.BLOCK.registerBlockEntity(

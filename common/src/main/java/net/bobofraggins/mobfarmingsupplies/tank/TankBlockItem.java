@@ -1,6 +1,7 @@
 package net.bobofraggins.mobfarmingsupplies.tank;
 
 import java.util.List;
+import net.bobofraggins.mobfarmingsupplies.experiencepylon.ExperiencePylonBlock;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -154,7 +155,9 @@ public class TankBlockItem extends BlockItem {
         }
 
         Level level = context.getLevel();
-        if (!level.isClientSide()) {
+        // On an Experience Pylon, a tank in block mode is placed; bucket mode is how it trades experience.
+        boolean onPylon = level.getBlockState(context.getClickedPos()).getBlock() instanceof ExperiencePylonBlock;
+        if (!level.isClientSide() && !onPylon) {
             Player player = context.getPlayer();
             if (player != null) {
                 boolean success = TankBlockItemPlatform.interactWithFluidBlock(

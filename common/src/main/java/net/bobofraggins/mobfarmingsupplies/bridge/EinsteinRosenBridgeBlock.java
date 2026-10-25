@@ -18,6 +18,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.BaseEntityBlock;
@@ -129,6 +130,19 @@ public class EinsteinRosenBridgeBlock extends BaseEntityBlock {
                                    BlockPos neighborPos, boolean movedByPiston) {
         super.neighborChanged(state, level, pos, block, neighborPos, movedByPiston);
         TransferSchedule.resetAt(level, pos);
+    }
+
+    /** Its OUTPUT sides give off the redstone its channel's INPUT sides receive. */
+    @Override
+    protected boolean isSignalSource(BlockState state) {
+        return true;
+    }
+
+    @Override
+    protected int getSignal(BlockState state, BlockGetter level, BlockPos pos, Direction direction) {
+        // direction points from the bridge to the block asking, so the bridge's side is its opposite.
+        return level.getBlockEntity(pos) instanceof EinsteinRosenBridgeBlockEntity bridge
+                ? bridge.redstoneOut(direction.getOpposite()) : 0;
     }
 
     @Override

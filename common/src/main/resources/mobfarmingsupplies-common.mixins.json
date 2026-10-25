@@ -11,10 +11,12 @@
     "EnderManPresentMixin",
     "InventoryChangeTriggerMixin",
     "LivingEntityLootMixin",
+    "EntityVexCollisionMixin",
     "WitherBossMixin"
   ],
   "client": [
     "GuiGraphicsBackdropMixin",
+    "JeiBatchBackdropMixin",
     "HumanoidModelMixin"
   ],
   "injectors": {

@@ -3,7 +3,10 @@ package net.bobofraggins.mobfarmingsupplies.client.model;
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import java.util.List;
+import net.bobofraggins.mobfarmingsupplies.experiencepylon.ExperiencePylonRenderer;
 import net.bobofraggins.mobfarmingsupplies.fan.FanBlockEntityRenderer;
+import net.bobofraggins.mobfarmingsupplies.incubator.IncubatorItemRenderer;
+import net.bobofraggins.mobfarmingsupplies.incubator.IncubatorRenderer;
 import net.bobofraggins.mobfarmingsupplies.glamping.present.PresentRenderer;
 import net.bobofraggins.mobfarmingsupplies.mobharvester.MobHarvesterRenderer;
 import net.bobofraggins.mobfarmingsupplies.picnicbasket.PicnicBasketRenderer;
@@ -40,7 +43,15 @@ public final class ExtraBlockModels {
             PicnicBasketRenderer.LEFT_LID_MODEL_ID,
             PicnicBasketRenderer.RIGHT_LID_MODEL_ID,
             PresentRenderer.MODEL_ID,
-            ToiletBlockEntityRenderer.LID_MODEL_ID);
+            ToiletBlockEntityRenderer.LID_MODEL_ID,
+            ExperiencePylonRenderer.PYLON_MODEL_ID,
+            IncubatorItemRenderer.BASE_MODEL_ID,
+            IncubatorRenderer.LID_MODEL_ID,
+            IncubatorRenderer.TEST_TUBE_MODEL_ID,
+            IncubatorRenderer.EGG_MODEL_IDS.get(0),
+            IncubatorRenderer.EGG_MODEL_IDS.get(1),
+            IncubatorRenderer.EGG_MODEL_IDS.get(2),
+            IncubatorRenderer.EGG_MODEL_IDS.get(3));
 
     private ExtraBlockModels() {}
 

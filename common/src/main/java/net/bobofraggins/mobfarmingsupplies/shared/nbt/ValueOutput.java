@@ -50,6 +50,10 @@ public final class ValueOutput {
         tag.putDouble(key, value);
     }
 
+    public void putIntArray(String key, int[] value) {
+        tag.putIntArray(key, value);
+    }
+
     /** Writes {@code value} under {@code key} with {@code codec}; nothing is written if it fails to encode. */
     public <T> void store(String key, Codec<T> codec, T value) {
         codec.encodeStart(registries.createSerializationContext(NbtOps.INSTANCE), value)

@@ -27,8 +27,8 @@ public class TankUpgradeRecipe extends ShapedRecipe implements ShapedRecipeCodec
     public static final StreamCodec<RegistryFriendlyByteBuf, TankUpgradeRecipe> STREAM_CODEC =
             ShapedRecipeCodecs.streamCodec(TankUpgradeRecipe::new);
 
-    private final ShapedRecipePattern pattern;
-    private final ItemStack result;
+    protected final ShapedRecipePattern pattern;
+    protected final ItemStack result;
 
     public TankUpgradeRecipe(String group, CraftingBookCategory category, ShapedRecipePattern pattern,
                              ItemStack result, boolean showNotification) {

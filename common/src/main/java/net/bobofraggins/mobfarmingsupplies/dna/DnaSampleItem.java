@@ -101,6 +101,23 @@ public class DnaSampleItem extends Item implements IDnaSampleItem {
         return stack.get(Registration.DNA_SAMPLE_CONTENTS.get());
     }
 
+    /** The sampled mob, or none for an empty sample (or one of a mob that can't be sampled any more). */
+    @Override
+    @SuppressWarnings("deprecation") // builtInRegistryHolder(): no direct EntityType.is(TagKey) in 26.1.2
+    public List<EntityType<?>> mobs(ItemStack stack, ServerLevel level, BlockPos pos) {
+        return displayMobs(stack).stream()
+                .filter(type -> !type.builtInRegistryHolder().is(MFSTags.EntityTypes.NO_DNA_SAMPLING))
+                .toList();
+    }
+
+    @Override
+    public List<EntityType<?>> displayMobs(ItemStack stack) {
+        DnaSampleContents contents = getContents(stack);
+        if (contents == null) return List.of();
+        return EntityType.byString(contents.entityNbt().getString("id"))
+                .<List<EntityType<?>>>map(List::of).orElse(List.of());
+    }
+
     @Override
     @Nullable
     @SuppressWarnings("deprecation") // builtInRegistryHolder(): no direct EntityType.is(TagKey) in 26.1.2

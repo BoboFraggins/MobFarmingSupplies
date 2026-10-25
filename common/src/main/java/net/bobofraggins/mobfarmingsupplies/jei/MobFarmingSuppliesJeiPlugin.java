@@ -19,15 +19,19 @@ import mezz.jei.api.registration.ISubtypeRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommon;
 import net.bobofraggins.mobfarmingsupplies.filterscribingterminal.FilterScribingTerminalScreen;
+import net.bobofraggins.mobfarmingsupplies.incubator.IncubatingRecipe;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
 import mezz.jei.api.registration.IExtraIngredientRegistration;
+import mezz.jei.api.registration.IVanillaCategoryExtensionRegistration;
+import net.bobofraggins.mobfarmingsupplies.skulllights.SkullLightsRecipe;
 import net.minecraft.world.item.ItemStack;
 
 /**
  * JEI plugin for MobFarmingSupplies — vertical guides for things that aren't crafted directly:
- * how an XP Juice Bucket is obtained (Experience Syringe → Tank → bucket, {@link XpJuiceGuide})
+ * how an XP Juice Bucket is obtained (Experience Syringe → Tank or Experience Pylon → bucket,
+ * {@link XpJuiceGuide}), how a Bottle o' Enchanting is filled ({@link BottlingGuide})
  * and anvil crushing (Anvil → Nether Quartz → Silicon Clump, {@link AnvilCrushingGuide}).
  * Plus the Filter Scribing Terminal: a recipe view of scribing Item Filters
  * ({@link FilterScribingCategory}) and the ghost-ingredient handler for its matcher slot.
@@ -52,19 +56,24 @@ public class MobFarmingSuppliesJeiPlugin implements IModPlugin {
     @Override
     public void registerCategories(IRecipeCategoryRegistration reg) {
         IGuiHelper guiHelper = reg.getJeiHelpers().getGuiHelper();
-        reg.addRecipeCategories(XpJuiceGuide.category(guiHelper), AnvilCrushingGuide.category(guiHelper),
+        reg.addRecipeCategories(XpJuiceGuide.category(guiHelper), BottlingGuide.category(guiHelper),
+                AnvilCrushingGuide.category(guiHelper),
                 new FilterScribingCategory(guiHelper), BeheadingGuide.category(guiHelper),
-                new DnaSamplingGuide(guiHelper), new CloningGuide(guiHelper));
+                new DnaSamplingGuide(guiHelper), new CloningGuide(guiHelper), new IncubatingCategory(guiHelper),
+                new DisenchantingCategory(guiHelper));
     }
 
     @Override
     public void registerRecipes(IRecipeRegistration reg) {
-        reg.addRecipes(XpJuiceGuide.RECIPE_TYPE, List.of(XpJuiceGuide.recipe()));
+        reg.addRecipes(XpJuiceGuide.RECIPE_TYPE, XpJuiceGuide.recipes());
+        reg.addRecipes(BottlingGuide.RECIPE_TYPE, BottlingGuide.recipes());
         reg.addRecipes(AnvilCrushingGuide.RECIPE_TYPE, List.of(AnvilCrushingGuide.recipe()));
         reg.addRecipes(FilterScribingCategory.RECIPE_TYPE, List.of(FilterScribingExamples.create()));
         reg.addRecipes(BeheadingGuide.RECIPE_TYPE, List.of(BeheadingGuide.recipe()));
         reg.addRecipes(DnaSamplingGuide.RECIPE_TYPE, List.of(DnaSamplingGuide.recipe()));
         reg.addRecipes(CloningGuide.RECIPE_TYPE, List.of(CloningGuide.recipe()));
+        reg.addRecipes(IncubatingCategory.RECIPE_TYPE, IncubatingCategory.displays(incubatingRecipes()));
+        reg.addRecipes(DisenchantingCategory.RECIPE_TYPE, DisenchantingCategory.displays());
     }
 
     /** Each mob's Mob Head is its own JEI entry (one item, told apart by its mob type). */
@@ -100,6 +109,12 @@ public class MobFarmingSuppliesJeiPlugin implements IModPlugin {
         reg.addGhostIngredientHandler(FilterScribingTerminalScreen.class, new FilterScribingTerminalGhostHandler());
     }
 
+    /** Our own crafting recipes that JEI's crafting page needs help showing. */
+    @Override
+    public void registerVanillaCategoryExtensions(IVanillaCategoryExtensionRegistration reg) {
+        reg.getCraftingCategory().addExtension(SkullLightsRecipe.class, new SkullLightsCraftingExtension());
+    }
+
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration reg) {
         reg.addRecipeCatalyst(
@@ -107,6 +122,12 @@ public class MobFarmingSuppliesJeiPlugin implements IModPlugin {
         reg.addRecipeCatalyst(Registration.TANK_ITEM.get().getDefaultInstance(), XpJuiceGuide.RECIPE_TYPE);
         reg.addRecipeCatalyst(
                 Registration.XP_JUICE_BUCKET.get().getDefaultInstance(), XpJuiceGuide.RECIPE_TYPE);
+        reg.addRecipeCatalyst(
+                Registration.EXPERIENCE_PYLON_ITEM.get().getDefaultInstance(), XpJuiceGuide.RECIPE_TYPE);
+        for (var station : List.of(Registration.EXPERIENCE_SYRINGE.get(), Registration.TANK_ITEM.get(),
+                Registration.EXPERIENCE_PYLON_ITEM.get())) {
+            reg.addRecipeCatalyst(station.getDefaultInstance(), BottlingGuide.RECIPE_TYPE);
+        }
         for (var anvil : List.of(Items.ANVIL, Items.CHIPPED_ANVIL, Items.DAMAGED_ANVIL)) {
             reg.addRecipeCatalyst(anvil.getDefaultInstance(), AnvilCrushingGuide.RECIPE_TYPE);
         }
@@ -116,6 +137,17 @@ public class MobFarmingSuppliesJeiPlugin implements IModPlugin {
         reg.addRecipeCatalyst(Registration.HARVESTER_UPGRADE_BEHEADING.get().getDefaultInstance(), BeheadingGuide.RECIPE_TYPE);
         reg.addRecipeCatalyst(Registration.DNA_COLLECTOR.get().getDefaultInstance(), DnaSamplingGuide.RECIPE_TYPE);
         reg.addRecipeCatalyst(Registration.CLONE_O_MATIC_ITEM.get().getDefaultInstance(), CloningGuide.RECIPE_TYPE);
+        reg.addRecipeCatalyst(Registration.INCUBATOR_ITEM.get().getDefaultInstance(), IncubatingCategory.RECIPE_TYPE);
+        reg.addRecipeCatalyst(Registration.DISENCHANTER_ITEM.get().getDefaultInstance(), DisenchantingCategory.RECIPE_TYPE);
+    }
+
+    /** The incubating recipes the server sent this client (1.21.1 sends every recipe). */
+    private static List<IncubatingRecipe> incubatingRecipes() {
+        var level = net.minecraft.client.Minecraft.getInstance().level;
+        if (level == null) return List.of();
+        return level.getRecipeManager().getAllRecipesFor(Registration.INCUBATING_TYPE.get()).stream()
+                .map(holder -> holder.value())
+                .toList();
     }
 
     /** Lets the dev command runner open a recipe or uses page ({@code RECIPES <item>}, {@code USES <item>}). */
@@ -127,5 +159,6 @@ public class MobFarmingSuppliesJeiPlugin implements IModPlugin {
         DevCommands.showUses = stack -> runtime.getRecipesGui().show(
                 runtime.getJeiHelpers().getFocusFactory().createFocus(RecipeIngredientRole.INPUT,
                         VanillaTypes.ITEM_STACK, stack));
+        DevCommands.setJeiFilter = text -> runtime.getIngredientFilter().setFilterText(text);
     }
 }

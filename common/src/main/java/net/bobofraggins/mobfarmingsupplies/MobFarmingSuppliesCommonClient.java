@@ -11,7 +11,8 @@ import net.bobofraggins.mobfarmingsupplies.enderinhibitor.InhibitorItemRenderer;
 import net.bobofraggins.mobfarmingsupplies.fan.FanScreen;
 import net.bobofraggins.mobfarmingsupplies.filterscribingterminal.FilterScribingTerminalScreen;
 import net.bobofraggins.mobfarmingsupplies.headpike.HeadPikeScreen;
-import net.bobofraggins.mobfarmingsupplies.lawnornament.GiantSkeletonOrnamentItemRenderer;
+import net.bobofraggins.mobfarmingsupplies.lawnornament.GiantOrnament;
+import net.bobofraggins.mobfarmingsupplies.lawnornament.GiantOrnamentItemRenderer;
 import net.bobofraggins.mobfarmingsupplies.logisticsorter.LogisticSorterItemRenderer;
 import net.bobofraggins.mobfarmingsupplies.logisticsorter.LogisticSorterScreen;
 import net.bobofraggins.mobfarmingsupplies.mobharvester.MobHarvesterScreen;
@@ -27,6 +28,11 @@ import net.bobofraggins.mobfarmingsupplies.tank.TankScreen;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
+import net.bobofraggins.mobfarmingsupplies.experiencepylon.ExperiencePylonScreen;
+import net.bobofraggins.mobfarmingsupplies.incubator.IncubatorItemRenderer;
+import net.bobofraggins.mobfarmingsupplies.incubator.IncubatorScreen;
+import net.bobofraggins.mobfarmingsupplies.xpanvil.XpAnvilScreen;
+import net.bobofraggins.mobfarmingsupplies.disenchanter.DisenchanterScreen;
 
 /**
  * Client-side initialisation shared by both loaders.
@@ -70,6 +76,18 @@ public final class MobFarmingSuppliesCommonClient {
                 Registration.TANK_MENU.get(),
                 TankScreen::new);
         MenuRegistry.registerScreenFactory(
+                Registration.EXPERIENCE_PYLON_MENU.get(),
+                ExperiencePylonScreen::new);
+        MenuRegistry.registerScreenFactory(
+                Registration.INCUBATOR_MENU.get(),
+                IncubatorScreen::new);
+        MenuRegistry.registerScreenFactory(
+                Registration.XP_ANVIL_MENU.get(),
+                XpAnvilScreen::new);
+        MenuRegistry.registerScreenFactory(
+                Registration.DISENCHANTER_MENU.get(),
+                DisenchanterScreen::new);
+        MenuRegistry.registerScreenFactory(
                 Registration.ABSORPTION_HOPPER_MENU.get(),
                 AbsorptionHopperScreen::new);
         MenuRegistry.registerScreenFactory(
@@ -110,7 +128,13 @@ public final class MobFarmingSuppliesCommonClient {
                 new OmniHopperItemRenderer(Registration.EINSTEIN_ROSEN_BRIDGE));
         SpecialItemRenderers.register(Registration.LOGISTIC_SORTER_ITEM.get(), new LogisticSorterItemRenderer());
         SpecialItemRenderers.register(Registration.MOB_HEAD_ITEM.get(), new MobHeadItemRenderer());
-        SpecialItemRenderers.register(Registration.GIANT_SKELETON_ORNAMENT_ITEM.get(), new GiantSkeletonOrnamentItemRenderer());
+        SpecialItemRenderers.register(Registration.INCUBATOR_ITEM.get(), new IncubatorItemRenderer());
+        SpecialItemRenderers.register(Registration.GIANT_SKELETON_ORNAMENT_ITEM.get(),
+                new GiantOrnamentItemRenderer(GiantOrnament.SKELETON));
+        SpecialItemRenderers.register(Registration.GIANT_HEROBRINE_ORNAMENT_ITEM.get(),
+                new GiantOrnamentItemRenderer(GiantOrnament.HEROBRINE));
+        SpecialItemRenderers.register(Registration.GIANT_PLAYER_ORNAMENT_ITEM.get(),
+                new GiantOrnamentItemRenderer(GiantOrnament.PLAYER));
         SpecialItemRenderers.register(Registration.ENDER_INHIBITOR_ITEM.get(), new InhibitorItemRenderer(
                 Registration.ENDER_INHIBITOR, Items.ENDER_PEARL, InhibitorItemRenderer.Particles.PORTAL));
         SpecialItemRenderers.register(Registration.WITHER_INHIBITOR_ITEM.get(), new InhibitorItemRenderer(
@@ -133,9 +157,10 @@ public final class MobFarmingSuppliesCommonClient {
                 Registration.PRESENT.get(), Registration.TOILET.get(), Registration.VECTOR_PLATE.get(),
                 Registration.DRAMATIC_BUTTON.get(), Registration.RED_ALERT_BUTTON.get(),
                 Registration.RIMSHOT_BUTTON.get(), Registration.WILHELM_BUTTON.get(), Registration.HEAD_PIKE.get(),
-                Registration.SKULL_LIGHT_HOOK.get());
+                Registration.SKULL_LIGHT_HOOK.get(), Registration.XP_ANVIL.get(), Registration.INCUBATOR.get());
         RenderTypeRegistry.register(RenderType.translucent(),
                 Registration.WITHER_PROOF_GLASS.get(), Registration.MOB_EXCLUSION_GLASS.get(),
-                Registration.EINSTEIN_ROSEN_BRIDGE.get());
+                Registration.EINSTEIN_ROSEN_BRIDGE.get(), Registration.PLAYER_EXCLUSION_GLASS.get(),
+                Registration.EXPERIENCE_PYLON.get());
     }
 }

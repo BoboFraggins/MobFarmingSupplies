@@ -10,8 +10,7 @@ public final class LawnOrnamentClientEvents {
 
     @SubscribeEvent
     public static void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event) {
-        event.registerBlockEntityRenderer(Registration.GIANT_SKELETON_ORNAMENT_BE_TYPE.get(),
-                NeoGiantSkeletonOrnamentRenderer::new);
+        event.registerBlockEntityRenderer(Registration.GIANT_ORNAMENT_BE_TYPE.get(), NeoGiantOrnamentRenderer::new);
         event.registerBlockEntityRenderer(Registration.SKULL_LIGHT_HOOK_BE_TYPE.get(), NeoSkullLightsRenderer::new);
     }
 }

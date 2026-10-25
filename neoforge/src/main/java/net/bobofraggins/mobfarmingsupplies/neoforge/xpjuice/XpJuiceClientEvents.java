@@ -31,7 +31,7 @@ public final class XpJuiceClientEvents {
 
             @Override
             public int getTintColor() {
-                return 0xFF39FF14;
+                return 0xFFFFFFFF; // no tint: the textures are green themselves
             }
         }, NeoForgeOnlyRegistration.XP_JUICE_TYPE.get());
     }

@@ -75,6 +75,10 @@ public class EinsteinRosenBridgeBlockEntity extends BlockEntity implements SideO
     private boolean clientAndMode = true;                // client copy of the channel's AND / OR
 
     private final TransferSchedule transferSchedule = new TransferSchedule();
+    /** The strongest redstone signal reaching this bridge's INPUT sides, as of its last tick. */
+    private int redstoneIn;
+    /** The signal its OUTPUT sides give off: the channel's strongest input. */
+    private int redstoneOut;
     private boolean stateDirty = true;
 
     public EinsteinRosenBridgeBlockEntity(BlockPos pos, BlockState state) {
@@ -88,12 +92,41 @@ public class EinsteinRosenBridgeBlockEntity extends BlockEntity implements SideO
         if (be.channel == 0) be.setChannel(randomChannel(level.getRandom()));
         be.joinNetwork();
         if (be.stateDirty) be.syncBlockState();
+        be.carryRedstone(level, pos);
         if (!be.isActive()) return;
         if (be.transferSchedule.due(pos)) OmniHopperPlatform.transfer(be);
     }
 
     @Override
     public TransferSchedule transferSchedule() { return transferSchedule; }
+
+    // ── Redstone ──────────────────────────────────────────────────────────────────
+
+    /**
+     * Carries redstone across the channel, like the items: each tick a bridge reads the strongest
+     * signal reaching its INPUT sides, and its OUTPUT sides give off the strongest such signal on
+     * the whole channel, level for level (weak power, as a lever's side gives). A change shows up
+     * on the far side within a tick.
+     */
+    private void carryRedstone(Level level, BlockPos pos) {
+        int in = 0;
+        for (Direction d : Direction.values()) {
+            if (getSide(d) == HopperSide.INPUT) in = Math.max(in, level.getSignal(pos.relative(d), d));
+        }
+        redstoneIn = in;
+        int out = channel == 0 ? 0 : BridgeNetworks.redstone(channel);
+        if (out != redstoneOut) {
+            redstoneOut = out;
+            level.updateNeighborsAt(pos, getBlockState().getBlock());
+        }
+    }
+
+    int redstoneIn() { return redstoneIn; }
+
+    /** The signal this bridge gives off towards {@code side}: the channel's, if that side is an OUTPUT. */
+    public int redstoneOut(Direction side) {
+        return getSide(side) == HopperSide.OUTPUT ? redstoneOut : 0;
+    }
 
     /** A random non-zero channel (0 means "not assigned yet"). */
     public static int randomChannel(RandomSource random) {
@@ -179,6 +212,7 @@ public class EinsteinRosenBridgeBlockEntity extends BlockEntity implements SideO
         syncBlockState();
         if (level == null || level.isClientSide()) return;
         OmniHopperPlatform.invalidateCapabilities(level, worldPosition);
+        level.updateNeighborsAt(worldPosition, getBlockState().getBlock()); // sides that give off redstone may have changed
         if (settings().andMode() != andMode) {
             settings().setAndMode(andMode);
             // Every bridge on the channel shows the shared setting in its screen.

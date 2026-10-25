@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "mobfarmingsupplies:wither_proof_glass"
+    },
+    {
+      "item": "minecraft:cake"
+    }
+  ],
+  "result": {
+    "id": "mobfarmingsupplies:player_exclusion_glass",
+    "count": 1
+  },
+  "category": "building"
+}

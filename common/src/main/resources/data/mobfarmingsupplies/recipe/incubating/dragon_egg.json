@@ -1,0 +1,14 @@
+{
+  "type": "mobfarmingsupplies:incubating",
+  "sample": {
+    "item": "minecraft:dragon_head"
+  },
+  "input": {
+    "tag": "mobfarmingsupplies:incubator_inputs"
+  },
+  "experience": 1000,
+  "time": 600,
+  "result": {
+    "id": "minecraft:dragon_egg"
+  }
+}

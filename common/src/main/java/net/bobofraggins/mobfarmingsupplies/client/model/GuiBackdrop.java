@@ -27,17 +27,26 @@ public final class GuiBackdrop {
     /** Whether {@code stack} is drawn on a backdrop in GUIs. */
     public static boolean wants(ItemStack stack) {
         Item item = stack.getItem();
-        if (item == Registration.MOB_HEAD_ITEM.get()) return DARK_HEADS.contains(stack.get(Registration.MOB_HEAD_TYPE.get()));
+        if (item == Registration.MOB_HEAD_ITEM.get()) {
+            // A head with no mob (as JEI shows the skull tag) has nothing to look dark against.
+            var type = stack.get(Registration.MOB_HEAD_TYPE.get());
+            return type != null && DARK_HEADS.contains(type);
+        }
         return item == Registration.WITHER_PROOF_GLASS_ITEM.get() || item == Registration.MOB_EXCLUSION_GLASS_ITEM.get()
                 || item == Registration.TANK_ITEM.get() || item == Registration.ENDER_INHIBITOR_ITEM.get()
                 || item == Registration.WITHER_INHIBITOR_ITEM.get() || item == Registration.CLONE_O_MATIC_ITEM.get()
                 || item == Registration.MAGIC_HAT_ITEM.get() || item == Registration.MOB_HARVESTER_ITEM.get()
-                || item == Registration.EXPERIENCE_SYRINGE.get();
+                || item == Registration.EXPERIENCE_SYRINGE.get() || item == Registration.ABSORPTION_HOPPER_ITEM.get()
+                || item == Registration.EINSTEIN_ROSEN_BRIDGE_ITEM.get() || item == Registration.LOGISTIC_SORTER_ITEM.get()
+                || item == Registration.OMNI_HOPPER_ITEM.get() || item == Registration.EXPERIENCE_PYLON_ITEM.get()
+                || item == Registration.PLAYER_EXCLUSION_GLASS_ITEM.get();
     }
 
     /** Whether {@code stack}'s GUI icon is drawn bigger than its slot and has to be clipped to it. */
     public static boolean clipped(ItemStack stack) {
-        return stack.getItem() == Registration.GIANT_SKELETON_ORNAMENT_ITEM.get();
+        Item item = stack.getItem();
+        return item == Registration.GIANT_SKELETON_ORNAMENT_ITEM.get() || item == Registration.GIANT_HEROBRINE_ORNAMENT_ITEM.get()
+                || item == Registration.GIANT_PLAYER_ORNAMENT_ITEM.get();
     }
 
     /** Draws the backdrop over the 16x16 slot at ({@code x}, {@code y}), behind where the item goes. */
