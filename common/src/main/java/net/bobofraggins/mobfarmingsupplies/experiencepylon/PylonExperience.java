@@ -8,12 +8,14 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.player.Player;
 
 /**
  * Moves experience between a player and an Experience Pylon, by levels as the Experience Syringe
  * does: one level stored is what's above the player's last whole level (or the whole level below,
  * when they're exactly on one), and one level retrieved is what takes them to their next whole
- * level. Points convert to fluid at the syringe's rate.
+ * level. Points convert to fluid at the syringe's rate. The syringe moves one level at a time with
+ * the same {@link #pointsBelow} and {@link #pointsAbove}.
  */
 public final class PylonExperience {
 
@@ -72,7 +74,7 @@ public final class PylonExperience {
     }
 
     /** All of a player's experience, in points. */
-    static int totalPoints(ServerPlayer player) {
+    static int totalPoints(Player player) {
         long points = progressPoints(player);
         for (int level = 0; level < player.experienceLevel; level++) {
             points += ExperienceSyringeItem.xpNeededForLevel(level);
@@ -81,7 +83,7 @@ public final class PylonExperience {
     }
 
     /** Points that come off the player going down {@code levels} whole levels. */
-    private static int pointsBelow(ServerPlayer player, int levels) {
+    public static int pointsBelow(Player player, int levels) {
         long points = 0;
         int level = player.experienceLevel;
         int progress = progressPoints(player);
@@ -100,7 +102,7 @@ public final class PylonExperience {
     }
 
     /** Points that take the player up {@code levels} whole levels. */
-    private static long pointsAbove(ServerPlayer player, int levels) {
+    public static long pointsAbove(Player player, int levels) {
         long points = 0;
         int level = player.experienceLevel;
         int progress = progressPoints(player);
@@ -112,7 +114,7 @@ public final class PylonExperience {
         return points;
     }
 
-    private static int progressPoints(ServerPlayer player) {
+    private static int progressPoints(Player player) {
         return Mth.floor(player.experienceProgress * player.getXpNeededForNextLevel() + 0.5f);
     }
 

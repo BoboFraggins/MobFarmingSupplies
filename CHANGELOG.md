@@ -15,6 +15,7 @@
 * Fixed more item rendering for very dark items
 * Fixed structures spawning underwater
 * Improved JEI custom recipe pages to not be fugly
+* Fixed math error with Syringe/Pylon for certain player levels
 
 ## 26.3.0.6, 26.2.0.7, 26.1.2.9, 1.21.1.1
 
