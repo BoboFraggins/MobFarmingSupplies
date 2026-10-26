@@ -54,7 +54,7 @@ public class MobFarmingSuppliesJeiPlugin implements IModPlugin {
         IGuiHelper guiHelper = reg.getJeiHelpers().getGuiHelper();
         reg.addRecipeCategories(XpJuiceGuide.category(guiHelper), BottlingGuide.category(guiHelper),
                 AnvilCrushingGuide.category(guiHelper),
-                new FilterScribingCategory(guiHelper), BeheadingGuide.category(guiHelper),
+                new FilterScribingCategory(guiHelper), new FilteringCategory(guiHelper), new XpRepairingCategory(guiHelper), new HeadPikeGuide(guiHelper), BeheadingGuide.category(guiHelper),
                 new DnaSamplingGuide(guiHelper), new CloningGuide(guiHelper), new IncubatingCategory(guiHelper),
                 new DisenchantingCategory(guiHelper));
     }
@@ -65,6 +65,9 @@ public class MobFarmingSuppliesJeiPlugin implements IModPlugin {
         reg.addRecipes(BottlingGuide.RECIPE_TYPE, BottlingGuide.recipes());
         reg.addRecipes(AnvilCrushingGuide.RECIPE_TYPE, List.of(AnvilCrushingGuide.recipe()));
         reg.addRecipes(FilterScribingCategory.RECIPE_TYPE, List.of(FilterScribingExamples.create()));
+        reg.addRecipes(FilteringCategory.RECIPE_TYPE, FilteringCategory.displays());
+        reg.addRecipes(XpRepairingCategory.RECIPE_TYPE, List.of(XpRepairingCategory.display()));
+        reg.addRecipes(HeadPikeGuide.RECIPE_TYPE, List.of(HeadPikeGuide.recipe()));
         reg.addRecipes(BeheadingGuide.RECIPE_TYPE, List.of(BeheadingGuide.recipe()));
         reg.addRecipes(DnaSamplingGuide.RECIPE_TYPE, List.of(DnaSamplingGuide.recipe()));
         reg.addRecipes(CloningGuide.RECIPE_TYPE, List.of(CloningGuide.recipe()));
@@ -113,6 +116,11 @@ public class MobFarmingSuppliesJeiPlugin implements IModPlugin {
         reg.addCraftingStation(CloningGuide.RECIPE_TYPE, Registration.CLONE_O_MATIC_ITEM.get());
         reg.addCraftingStation(IncubatingCategory.RECIPE_TYPE, Registration.INCUBATOR_ITEM.get());
         reg.addCraftingStation(DisenchantingCategory.RECIPE_TYPE, Registration.DISENCHANTER_ITEM.get());
+        reg.addCraftingStation(FilteringCategory.RECIPE_TYPE, Registration.OMNI_HOPPER_ITEM.get(),
+                Registration.EINSTEIN_ROSEN_BRIDGE_ITEM.get(), Registration.LOGISTIC_SORTER_ITEM.get(),
+                Registration.BLOCK_BREAKER_ITEM.get());
+        reg.addCraftingStation(XpRepairingCategory.RECIPE_TYPE, Registration.XP_ANVIL_ITEM.get());
+        reg.addCraftingStation(HeadPikeGuide.RECIPE_TYPE, Registration.HEAD_PIKE_ITEM.get());
     }
 
     /**
@@ -137,5 +145,13 @@ public class MobFarmingSuppliesJeiPlugin implements IModPlugin {
         DevCommands.showRecipes = stack -> runtime.getRecipesGui().show(
                 runtime.getJeiHelpers().getFocusFactory().createFocus(RecipeIngredientRole.OUTPUT,
                         VanillaTypes.ITEM_STACK, stack));
+        DevCommands.showCategory = id -> runtime.getJeiHelpers().getRecipeType(id)
+                .ifPresent(type -> runtime.getRecipesGui().showTypes(List.of(type)));
+        // As JEI's own "uses" key: the item as an ingredient, and as a crafting station.
+        DevCommands.showUses = stack -> runtime.getRecipesGui().show(List.of(
+                runtime.getJeiHelpers().getFocusFactory().createFocus(RecipeIngredientRole.INPUT,
+                        VanillaTypes.ITEM_STACK, stack),
+                runtime.getJeiHelpers().getFocusFactory().createFocus(RecipeIngredientRole.CRAFTING_STATION,
+                        VanillaTypes.ITEM_STACK, stack)));
     }
 }

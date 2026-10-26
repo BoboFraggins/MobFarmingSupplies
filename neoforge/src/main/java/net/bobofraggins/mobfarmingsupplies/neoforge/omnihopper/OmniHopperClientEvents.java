@@ -20,6 +20,8 @@ public final class OmniHopperClientEvents {
     @SubscribeEvent
     public static void onRegisterMenuScreens(RegisterMenuScreensEvent event) {
         event.register(Registration.OMNI_HOPPER_MENU.get(), OmniHopperScreen<OmniHopperMenu>::new);
+        event.register(Registration.BLOCK_BREAKER_MENU.get(),
+                net.bobofraggins.mobfarmingsupplies.blockbreaker.BlockBreakerScreen::new);
         event.register(Registration.BRIDGE_MENU.get(), OmniHopperScreen<EinsteinRosenBridgeMenu>::new);
     }
 

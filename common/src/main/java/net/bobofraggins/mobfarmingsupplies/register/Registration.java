@@ -78,6 +78,10 @@ import net.bobofraggins.mobfarmingsupplies.mobhead.MobHeadBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.mobhead.MobHeadItem;
 import net.bobofraggins.mobfarmingsupplies.mobhead.MobHeads;
 import net.bobofraggins.mobfarmingsupplies.mobhead.MobWallHeadBlock;
+import net.bobofraggins.mobfarmingsupplies.blockbreaker.BlockBreakerBlock;
+import net.bobofraggins.mobfarmingsupplies.blockbreaker.BlockBreakerBlockEntity;
+import net.bobofraggins.mobfarmingsupplies.blockbreaker.BlockBreakerBlockItem;
+import net.bobofraggins.mobfarmingsupplies.blockbreaker.BlockBreakerMenu;
 import net.bobofraggins.mobfarmingsupplies.omnihopper.OmniHopperBlock;
 import net.bobofraggins.mobfarmingsupplies.omnihopper.OmniHopperBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.omnihopper.OmniHopperBlockItem;
@@ -1129,6 +1133,26 @@ public final class Registration {
     public static final RegistrySupplier<MenuType<LogisticSorterMenu>> LOGISTIC_SORTER_MENU =
             MENUS.register("logistic_sorter", () -> MenuRegistry.ofExtended(LogisticSorterMenu::new));
 
+    // ── Block Breaker ────────────────────────────────────────────────────────────
+
+    public static final RegistrySupplier<BlockBreakerBlock> BLOCK_BREAKER =
+            BLOCKS.register("block_breaker",
+                    () -> new BlockBreakerBlock(BlockBehaviour.Properties.of()
+                            .setId(blockKey("block_breaker"))
+                            .strength(3.5f)
+                            .sound(SoundType.METAL)
+                            .noOcclusion()));
+
+    /** Remembers how it was placed, for its side grid. */
+    public static final RegistrySupplier<BlockItem> BLOCK_BREAKER_ITEM =
+            ITEMS.register("block_breaker",
+                    () -> new BlockBreakerBlockItem(BLOCK_BREAKER.get(), new Item.Properties()
+                            .setId(itemKey("block_breaker"))));
+
+    public static final RegistrySupplier<BlockEntityType<BlockBreakerBlockEntity>> BLOCK_BREAKER_BE_TYPE =
+            BLOCK_ENTITIES.register("block_breaker",
+                    () -> BlockEntityTypePlatform.create(BlockBreakerBlockEntity::new, BLOCK_BREAKER.get()));
+
     // ── Omnidirectional Hopper ───────────────────────────────────────────────────
 
     public static final RegistrySupplier<OmniHopperBlock> OMNI_HOPPER =
@@ -1147,6 +1171,9 @@ public final class Registration {
     public static final RegistrySupplier<BlockEntityType<OmniHopperBlockEntity>> OMNI_HOPPER_BE_TYPE =
             BLOCK_ENTITIES.register("omnidirectional_hopper",
                     () -> BlockEntityTypePlatform.create(OmniHopperBlockEntity::new, OMNI_HOPPER.get()));
+
+    public static final RegistrySupplier<MenuType<BlockBreakerMenu>> BLOCK_BREAKER_MENU =
+            MENUS.register("block_breaker", () -> MenuRegistry.ofExtended(BlockBreakerMenu::new));
 
     public static final RegistrySupplier<MenuType<OmniHopperMenu>> OMNI_HOPPER_MENU =
             MENUS.register("omnidirectional_hopper", () -> MenuRegistry.ofExtended(OmniHopperMenu::new));
@@ -1386,6 +1413,7 @@ public final class Registration {
                         output.accept(OMNI_HOPPER_ITEM.get());
                         output.accept(EINSTEIN_ROSEN_BRIDGE_ITEM.get());
                         output.accept(LOGISTIC_SORTER_ITEM.get());
+                        output.accept(BLOCK_BREAKER_ITEM.get());
                         output.accept(SUPERCONDUCTING_MAGNET.get());
                         output.accept(SILICON_CLUMP.get());
                         output.accept(SILICON.get());

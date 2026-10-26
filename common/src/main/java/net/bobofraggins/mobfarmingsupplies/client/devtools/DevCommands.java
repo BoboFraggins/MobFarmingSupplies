@@ -41,6 +41,10 @@ public final class DevCommands {
 
     /** Opens JEI's recipes for an item; set by the JEI plugin when JEI is installed. */
     @Nullable public static Consumer<ItemStack> showRecipes;
+    /** Opens JEI's uses of an item ({@code USES <item>}); set by the JEI plugin. */
+    @Nullable public static Consumer<ItemStack> showUses;
+    /** Opens one JEI category's pages ({@code CATEGORY <id>}); set by the JEI plugin. */
+    @Nullable public static Consumer<Identifier> showCategory;
 
     private static Deque<String> commands;
     private static int ticks, waiting;
@@ -91,6 +95,18 @@ public final class DevCommands {
             Identifier id = Identifier.tryParse(line.substring(8).strip());
             if (showRecipes != null && id != null) {
                 showRecipes.accept(new ItemStack(BuiltInRegistries.ITEM.getValue(id)));
+            }
+            return;
+        }
+        if (line.startsWith("CATEGORY ")) {
+            Identifier id = Identifier.tryParse(line.substring(9).strip());
+            if (showCategory != null && id != null) showCategory.accept(id);
+            return;
+        }
+        if (line.startsWith("USES ")) {
+            Identifier id = Identifier.tryParse(line.substring(5).strip());
+            if (showUses != null && id != null) {
+                showUses.accept(new ItemStack(BuiltInRegistries.ITEM.getValue(id)));
             }
             return;
         }
