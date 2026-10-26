@@ -8,6 +8,7 @@
     "MobFarmAccessor",
     "StructureTemplatePoolAccessor",
     "AnvilBlockMixin",
+    "BlockItemSilkSpawnerMixin",
     "EnderManPresentMixin",
     "InventoryChangeTriggerMixin",
     "LivingEntityLootMixin",
