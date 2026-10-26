@@ -137,6 +137,8 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.util.Unit;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -346,6 +348,17 @@ public final class Registration {
                     () -> DataComponentType.<Integer>builder()
                             .persistent(Codec.intRange(0, ExperienceSyringeItem.CAPACITY))
                             .networkSynchronized(ByteBufCodecs.VAR_INT)
+                            .build());
+
+    /**
+     * Marks a spawner the Block Breaker took with Silk Touch: placing it keeps its mob, though
+     * vanilla only lets operators place spawners with their data (see BlockItemSilkSpawnerMixin).
+     */
+    public static final RegistrySupplier<DataComponentType<Unit>> SILK_TOUCHED_SPAWNER =
+            DATA_COMPONENTS.register("silk_touched_spawner",
+                    () -> DataComponentType.<Unit>builder()
+                            .persistent(Unit.CODEC)
+                            .networkSynchronized(StreamCodec.unit(Unit.INSTANCE))
                             .build());
 
     /** Which mob a Mob Head is the head of. */
