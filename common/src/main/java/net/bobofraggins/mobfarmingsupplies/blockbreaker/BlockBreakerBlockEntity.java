@@ -31,6 +31,9 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.util.ProblemReporter;
+import net.minecraft.util.Unit;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.Tool;
@@ -40,6 +43,8 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.SpawnerBlockEntity;
+import net.minecraft.world.level.storage.TagValueOutput;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -47,7 +52,8 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * Block Breaker: breaks the block in front of each INPUT side, whatever its tier and whichever tool
- * it needs (see {@link #tool}; with Silk Touch when that's on), and pushes what it drops out of its
+ * it needs (see {@link #tool}; with Silk Touch when that's on, which also takes spawners with their
+ * mob), and pushes what it drops out of its
  * OUTPUT sides, split across them in turn. It only breaks a block when every drop has somewhere to
  * go, so nothing is ever spilled or lost; a block that would drop nothing is left alone, as are
  * containers (breaking one would spill its contents), liquids and unbreakable blocks.
@@ -112,7 +118,9 @@ public class BlockBreakerBlockEntity extends BlockEntity implements SideOriented
         if (!allowsBlock(state, level, target)) return;
         ItemStack tool = tool(level);
         if (state.requiresCorrectToolForDrops() && !tool.isCorrectToolForDrops(state)) return;
-        List<ItemStack> drops = Block.getDrops(state, level, target, targetBe, null, tool);
+        List<ItemStack> drops = silkTouch && targetBe instanceof SpawnerBlockEntity spawner
+                ? new ArrayList<>(List.of(silkTouchedSpawner(level, spawner)))
+                : Block.getDrops(state, level, target, targetBe, null, tool);
         drops.removeIf(ItemStack::isEmpty);
         if (drops.isEmpty()) return;
         if (!BlockBreakerPlatform.deliverAll(level, worldPosition, outputs, drops)) return;
@@ -139,6 +147,19 @@ public class BlockBreakerBlockEntity extends BlockEntity implements SideOriented
             tool.enchant(level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.SILK_TOUCH), 1);
         }
         return tool;
+    }
+
+    /**
+     * A spawner taken with Silk Touch: vanilla's drops nothing, so this is the spawner item carrying
+     * its mob (and the rest of its settings), marked so that placing it keeps them.
+     */
+    private static ItemStack silkTouchedSpawner(Level level, SpawnerBlockEntity spawner) {
+        ItemStack item = new ItemStack(Items.SPAWNER);
+        TagValueOutput data = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, level.registryAccess());
+        spawner.saveCustomOnly(data);
+        BlockItem.setBlockEntityData(item, spawner.getType(), data);
+        item.set(net.bobofraggins.mobfarmingsupplies.register.Registration.SILK_TOUCHED_SPAWNER.get(), Unit.INSTANCE);
+        return item;
     }
 
     /** Whether the filters let it break this block (always, with none installed). */

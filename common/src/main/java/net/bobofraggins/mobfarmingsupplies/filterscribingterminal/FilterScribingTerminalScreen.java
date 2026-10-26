@@ -5,6 +5,7 @@ import net.bobofraggins.mobfarmingsupplies.itemfilter.ItemMatcher;
 import net.bobofraggins.mobfarmingsupplies.itemfilter.ItemMatchers;
 import net.bobofraggins.mobfarmingsupplies.network.SetScribingStatePacket;
 import net.bobofraggins.mobfarmingsupplies.shared.ui.Dialog;
+import net.bobofraggins.mobfarmingsupplies.shared.ui.FilterGhost;
 import net.bobofraggins.mobfarmingsupplies.shared.ui.PlayerInventoryPane;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -80,8 +81,14 @@ public class FilterScribingTerminalScreen extends AbstractContainerScreen<Filter
     @Override
     public void extractContents(GuiGraphicsExtractor g, int mouseX, int mouseY, float partialTick) {
         dialog.render(g, font, title, mouseX, mouseY, partialTick);
-        drawSlot(g, leftPos + FilterScribingTerminalMenu.INPUT_X,  topPos + FilterScribingTerminalMenu.SLOT_Y);
-        drawSlot(g, leftPos + FilterScribingTerminalMenu.OUTPUT_X, topPos + FilterScribingTerminalMenu.SLOT_Y);
+        int inputX = leftPos + FilterScribingTerminalMenu.INPUT_X;
+        int outputX = leftPos + FilterScribingTerminalMenu.OUTPUT_X;
+        int slotY = topPos + FilterScribingTerminalMenu.SLOT_Y;
+        drawSlot(g, inputX, slotY);
+        drawSlot(g, outputX, slotY);
+        // Ghosts while empty: a Blank Filter goes in, an Item Filter comes out.
+        if (!menu.getSlot(FilterScribingTerminalMenu.INPUT_SLOT).hasItem()) FilterGhost.drawBlank(g, inputX, slotY);
+        if (!menu.getSlot(FilterScribingTerminalMenu.OUTPUT_SLOT).hasItem()) FilterGhost.draw(g, outputX, slotY);
         super.extractContents(g, mouseX, mouseY, partialTick);
 
         ItemStack ghost = controls.getGhostItem();
