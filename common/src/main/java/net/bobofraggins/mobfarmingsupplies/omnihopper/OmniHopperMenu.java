@@ -64,13 +64,22 @@ public class OmniHopperMenu extends AbstractContainerMenu {
      * @param block the block this menu belongs to (closes when it's gone)
      */
     protected OmniHopperMenu(MenuType<?> type, Block block, int syncId, Inventory inv, BlockPos pos, Container filters) {
+        this(type, block, syncId, inv, pos, filters, 0);
+    }
+
+    /**
+     * As above, with the filter slots and the player's inventory {@code extraTop} pixels lower, for
+     * a screen with more settings above them (the Block Breaker's Silk Touch row).
+     */
+    protected OmniHopperMenu(MenuType<?> type, Block block, int syncId, Inventory inv, BlockPos pos, Container filters,
+                             int extraTop) {
         super(type, syncId);
         this.pos = pos;
         this.filters = filters;
         this.block = block;
 
         for (int i = 0; i < FILTERS; i++) {
-            addSlot(new Slot(filters, i, FILTER_LEFT + i * 18, FILTER_TOP) {
+            addSlot(new Slot(filters, i, FILTER_LEFT + i * 18, FILTER_TOP + extraTop) {
                 @Override
                 public boolean mayPlace(ItemStack stack) {
                     return SorterFilters.isFilter(stack);
@@ -84,11 +93,11 @@ public class OmniHopperMenu extends AbstractContainerMenu {
         }
         for (int row = 0; row < 3; row++) {
             for (int col = 0; col < 9; col++) {
-                addSlot(new Slot(inv, col + row * 9 + 9, PLAYER_SLOT_LEFT + col * 18, INV_TOP + row * 18));
+                addSlot(new Slot(inv, col + row * 9 + 9, PLAYER_SLOT_LEFT + col * 18, INV_TOP + extraTop + row * 18));
             }
         }
         for (int col = 0; col < 9; col++) {
-            addSlot(new Slot(inv, col, PLAYER_SLOT_LEFT + col * 18, HOTBAR_TOP));
+            addSlot(new Slot(inv, col, PLAYER_SLOT_LEFT + col * 18, HOTBAR_TOP + extraTop));
         }
     }
 
