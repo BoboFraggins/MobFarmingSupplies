@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "mobfarmingsupplies:head_pike"
+    "mobfarmingsupplies:head_pike",
+    "mobfarmingsupplies:upgrade_station"
   ]
 }

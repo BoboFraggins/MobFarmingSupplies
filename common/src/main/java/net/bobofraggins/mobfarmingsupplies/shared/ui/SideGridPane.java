@@ -13,8 +13,10 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -78,14 +80,32 @@ public class SideGridPane implements IDialogPane {
 
     private void refresh() {
         model.refresh();
-        var level = Minecraft.getInstance().level;
+        var mc = Minecraft.getInstance();
+        var level = mc.level;
         if (level == null) return;
         layout = SideLayout.ofNullable(level.getBlockEntity(pos) instanceof SideOriented o ? o.getSideOrientation() : null);
         for (int cell = 0; cell < SideLayout.CELLS; cell++) {
-            var state = level.getBlockState(pos.relative(layout[cell]));
-            var item = state.getBlock().asItem();
-            adjacent[cell] = state.isAir() || item == Items.AIR ? ItemStack.EMPTY : new ItemStack(item);
+            adjacent[cell] = neighbourIcon(level, pos.relative(layout[cell]), mc.player);
         }
+    }
+
+    /**
+     * The pick-block item of the block at {@code at}, falling back to its own item: many modded pipes,
+     * cables and multipart blocks have no item of their own and only supply one through pick-block.
+     */
+    private static ItemStack neighbourIcon(Level level, BlockPos at, @Nullable Player player) {
+        var state = level.getBlockState(at);
+        if (state.isAir()) return ItemStack.EMPTY;
+        if (player != null) {
+            try {
+                var picked = SideGridPlatform.pickBlock(level, at, state, player);
+                if (!picked.isEmpty()) return picked.copyWithCount(1);
+            } catch (RuntimeException ignored) {
+                // Another mod's pick-block threw; fall back to the block's item
+            }
+        }
+        var item = state.getBlock().asItem();
+        return item == Items.AIR ? ItemStack.EMPTY : new ItemStack(item);
     }
 
     @Override

@@ -9,6 +9,7 @@ import net.bobofraggins.mobfarmingsupplies.glamping.present.PresentRenderer;
 import net.bobofraggins.mobfarmingsupplies.mobharvester.MobHarvesterRenderer;
 import net.bobofraggins.mobfarmingsupplies.picnicbasket.PicnicBasketRenderer;
 import net.bobofraggins.mobfarmingsupplies.toilet.ToiletBlockEntityRenderer;
+import net.bobofraggins.mobfarmingsupplies.upgradestation.UpgradeStationRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.resources.Identifier;
@@ -40,6 +41,7 @@ public final class ExtraBlockModelsImpl {
         register(PresentRenderer.MODEL_ID);
         register(ToiletBlockEntityRenderer.LID_MODEL_ID);
         register(ExperiencePylonRenderer.PYLON_MODEL_ID);
+        register(UpgradeStationRenderer.LID_MODEL_ID);
         register(IncubatorRenderer.LID_MODEL_ID);
         register(IncubatorRenderer.TEST_TUBE_MODEL_ID);
         IncubatorRenderer.EGG_MODEL_IDS.forEach(ExtraBlockModelsImpl::register);

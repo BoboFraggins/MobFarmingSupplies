@@ -1,5 +1,7 @@
 package net.bobofraggins.mobfarmingsupplies.register;
 
+import java.util.EnumMap;
+import java.util.Map;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import dev.architectury.registry.menu.MenuRegistry;
@@ -106,6 +108,12 @@ import net.bobofraggins.mobfarmingsupplies.tank.TankTier;
 import net.bobofraggins.mobfarmingsupplies.tank.ExperienceTankRecipe;
 import net.bobofraggins.mobfarmingsupplies.tank.TankUpgradeRecipe;
 import net.bobofraggins.mobfarmingsupplies.experiencepylon.ExperiencePylonBlock;
+import net.bobofraggins.mobfarmingsupplies.essencehopper.Essence;
+import net.bobofraggins.mobfarmingsupplies.essencehopper.EssenceFilterItem;
+import net.bobofraggins.mobfarmingsupplies.essencehopper.EssenceFluidPlatform;
+import net.bobofraggins.mobfarmingsupplies.essencehopper.EssenceHopperBlock;
+import net.bobofraggins.mobfarmingsupplies.essencehopper.EssenceHopperBlockEntity;
+import net.bobofraggins.mobfarmingsupplies.essencehopper.EssenceHopperMenu;
 import net.bobofraggins.mobfarmingsupplies.incubator.IncubatingRecipe;
 import net.bobofraggins.mobfarmingsupplies.incubator.IncubatorBlock;
 import net.bobofraggins.mobfarmingsupplies.incubator.IncubatorBlockEntity;
@@ -118,6 +126,10 @@ import net.bobofraggins.mobfarmingsupplies.toilet.ToiletBlock;
 import net.bobofraggins.mobfarmingsupplies.toilet.ToiletBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.toilet.ToiletBlockItem;
 import net.bobofraggins.mobfarmingsupplies.toilet.ToiletSeatEntity;
+import net.bobofraggins.mobfarmingsupplies.upgradestation.UpgradeStationBlock;
+import net.bobofraggins.mobfarmingsupplies.upgradestation.UpgradeStationBlockEntity;
+import net.bobofraggins.mobfarmingsupplies.upgradestation.UpgradeStationMenu;
+import net.bobofraggins.mobfarmingsupplies.upgradestation.UpgradingRecipe;
 import net.bobofraggins.mobfarmingsupplies.vectorplate.VectorPlateBlock;
 import net.bobofraggins.mobfarmingsupplies.witherproofglass.WitherProofGlassBlock;
 import net.bobofraggins.mobfarmingsupplies.xpjuice.XpJuicePlatformHelper;
@@ -278,6 +290,19 @@ public final class Registration {
     public static final RegistrySupplier<RecipeSerializer<IncubatingRecipe>> INCUBATING_SERIALIZER =
             RECIPE_SERIALIZERS.register("incubating",
                     () -> new RecipeSerializer<>(IncubatingRecipe.MAP_CODEC, IncubatingRecipe.STREAM_CODEC));
+
+    public static final RegistrySupplier<RecipeType<UpgradingRecipe>> UPGRADING_TYPE =
+            RECIPE_TYPES.register("upgrading", () -> new RecipeType<UpgradingRecipe>() {
+                @Override
+                public String toString() {
+                    return MobFarmingSuppliesCommon.MODID + ":upgrading";
+                }
+            });
+
+    /** What the Upgrade Station makes: see {@link UpgradingRecipe}. */
+    public static final RegistrySupplier<RecipeSerializer<UpgradingRecipe>> UPGRADING_SERIALIZER =
+            RECIPE_SERIALIZERS.register("upgrading",
+                    () -> new RecipeSerializer<>(UpgradingRecipe.MAP_CODEC, UpgradingRecipe.STREAM_CODEC));
 
     public static final RegistrySupplier<RecipeSerializer<AnvilCrushingRecipe>> ANVIL_CRUSHING_SERIALIZER =
             RECIPE_SERIALIZERS.register("anvil_crushing",
@@ -591,6 +616,29 @@ public final class Registration {
             BLOCK_ENTITIES.register("absorption_hopper",
                     () -> BlockEntityTypePlatform.create(AbsorptionHopperBlockEntity::new, ABSORPTION_HOPPER.get()));
 
+    // ── Essence Hopper ───────────────────────────────────────────────────
+
+    public static final RegistrySupplier<EssenceHopperBlock> ESSENCE_HOPPER =
+            BLOCKS.register("essence_hopper",
+                    () -> new EssenceHopperBlock(BlockBehaviour.Properties.of()
+                            .setId(blockKey("essence_hopper"))
+                            .strength(3.5f)
+                            .explosionResistance(Float.MAX_VALUE)
+                            .sound(SoundType.METAL)
+                            .noOcclusion()));
+
+    public static final RegistrySupplier<BlockItem> ESSENCE_HOPPER_ITEM =
+            ITEMS.register("essence_hopper",
+                    () -> new OrientedBlockItem(ESSENCE_HOPPER.get(), new Item.Properties()
+                            .setId(itemKey("essence_hopper"))));
+
+    public static final RegistrySupplier<MenuType<EssenceHopperMenu>> ESSENCE_HOPPER_MENU =
+            MENUS.register("essence_hopper", () -> MenuRegistry.ofExtended(EssenceHopperMenu::new));
+
+    public static final RegistrySupplier<BlockEntityType<EssenceHopperBlockEntity>> ESSENCE_HOPPER_BE_TYPE =
+            BLOCK_ENTITIES.register("essence_hopper",
+                    () -> BlockEntityTypePlatform.create(EssenceHopperBlockEntity::new, ESSENCE_HOPPER.get()));
+
     // ── Ender Inhibitor ───────────────────────────────────────────────────────────
 
     public static final RegistrySupplier<EnderInhibitorBlock> ENDER_INHIBITOR =
@@ -634,6 +682,26 @@ public final class Registration {
             BLOCK_ENTITIES.register("wither_inhibitor",
                     () -> BlockEntityTypePlatform.create(net.bobofraggins.mobfarmingsupplies.witherinhibitor.WitherInhibitorBlockEntity::new,
                             WITHER_INHIBITOR.get()));
+
+    // ── Warden Inhibitor ──────────────────────────────────────────────────────────
+
+    public static final RegistrySupplier<net.bobofraggins.mobfarmingsupplies.wardeninhibitor.WardenInhibitorBlock> WARDEN_INHIBITOR =
+            BLOCKS.register("warden_inhibitor",
+                    () -> new net.bobofraggins.mobfarmingsupplies.wardeninhibitor.WardenInhibitorBlock(BlockBehaviour.Properties.of()
+                            .setId(blockKey("warden_inhibitor"))
+                            .strength(3.0f)
+                            .sound(SoundType.METAL)
+                            .noOcclusion()));
+
+    public static final RegistrySupplier<BlockItem> WARDEN_INHIBITOR_ITEM =
+            ITEMS.register("warden_inhibitor",
+                    () -> new BlockItem(WARDEN_INHIBITOR.get(), new Item.Properties()
+                            .setId(itemKey("warden_inhibitor"))));
+
+    public static final RegistrySupplier<BlockEntityType<net.bobofraggins.mobfarmingsupplies.wardeninhibitor.WardenInhibitorBlockEntity>> WARDEN_INHIBITOR_BE_TYPE =
+            BLOCK_ENTITIES.register("warden_inhibitor",
+                    () -> BlockEntityTypePlatform.create(net.bobofraggins.mobfarmingsupplies.wardeninhibitor.WardenInhibitorBlockEntity::new,
+                            WARDEN_INHIBITOR.get()));
 
     // ── Fan ───────────────────────────────────────────────────────────────────────
 
@@ -846,6 +914,41 @@ public final class Registration {
                                     .setId(itemKey("xp_juice_bucket"))
                                     .stacksTo(1)
                                     .craftRemainder(Items.BUCKET)));
+
+    // ── Essences ──────────────────────────────────────────────────────────────────
+
+    public static final Map<Essence, RegistrySupplier<FlowingFluid>> ESSENCE_SOURCES = new EnumMap<>(Essence.class);
+    public static final Map<Essence, RegistrySupplier<FlowingFluid>> ESSENCE_FLOWING = new EnumMap<>(Essence.class);
+    public static final Map<Essence, RegistrySupplier<LiquidBlock>> ESSENCE_BLOCKS = new EnumMap<>(Essence.class);
+    public static final Map<Essence, RegistrySupplier<BucketItem>> ESSENCE_BUCKETS = new EnumMap<>(Essence.class);
+    public static final Map<Essence, RegistrySupplier<EssenceFilterItem>> ESSENCE_FILTERS = new EnumMap<>(Essence.class);
+
+    static {
+        for (Essence essence : Essence.values()) {
+            String fluid = essence.fluidId();
+            ESSENCE_SOURCES.put(essence, FLUIDS.register(fluid, () -> EssenceFluidPlatform.createSource(essence)));
+            ESSENCE_FLOWING.put(essence, FLUIDS.register(fluid + "_flowing", () -> EssenceFluidPlatform.createFlowing(essence)));
+            ESSENCE_BLOCKS.put(essence, BLOCKS.register(fluid,
+                    () -> new LiquidBlock(ESSENCE_SOURCES.get(essence).get(),
+                            BlockBehaviour.Properties.of()
+                                    .setId(blockKey(fluid))
+                                    .noCollision()
+                                    .strength(100f)
+                                    .lightLevel(state -> 15)
+                                    .noLootTable()
+                                    .liquid()
+                                    .replaceable()
+                                    .pushReaction(PushReaction.POPPED))));
+            ESSENCE_BUCKETS.put(essence, ITEMS.register(essence.bucketId(),
+                    () -> new BucketItem(ESSENCE_SOURCES.get(essence).get(),
+                            new Item.Properties()
+                                    .setId(itemKey(essence.bucketId()))
+                                    .stacksTo(1)
+                                    .craftRemainder(Items.BUCKET))));
+            ESSENCE_FILTERS.put(essence, ITEMS.register(essence.filterId(),
+                    () -> new EssenceFilterItem(essence, new Item.Properties().setId(itemKey(essence.filterId())))));
+        }
+    }
 
     // ── Tank ──────────────────────────────────────────────────────────────────────
 
@@ -1262,6 +1365,29 @@ public final class Registration {
             BLOCK_ENTITIES.register("mob_head",
                     () -> BlockEntityTypePlatform.create(MobHeadBlockEntity::new, MOB_HEAD.get(), MOB_WALL_HEAD.get()));
 
+    // ── Upgrade Station ───────────────────────────────────────────────────────────
+
+    public static final RegistrySupplier<UpgradeStationBlock> UPGRADE_STATION =
+            BLOCKS.register("upgrade_station",
+                    () -> new UpgradeStationBlock(BlockBehaviour.Properties.of()
+                            .setId(blockKey("upgrade_station"))
+                            .mapColor(MapColor.WOOD)
+                            .strength(2.5f)
+                            .sound(SoundType.WOOD)
+                            .noOcclusion()
+                            .isViewBlocking((s, r, p, aabb) -> false)));
+
+    public static final RegistrySupplier<BlockItem> UPGRADE_STATION_ITEM =
+            ITEMS.register("upgrade_station",
+                    () -> new BlockItem(UPGRADE_STATION.get(), new Item.Properties().setId(itemKey("upgrade_station"))));
+
+    public static final RegistrySupplier<BlockEntityType<UpgradeStationBlockEntity>> UPGRADE_STATION_BE_TYPE =
+            BLOCK_ENTITIES.register("upgrade_station",
+                    () -> BlockEntityTypePlatform.create(UpgradeStationBlockEntity::new, UPGRADE_STATION.get()));
+
+    public static final RegistrySupplier<MenuType<UpgradeStationMenu>> UPGRADE_STATION_MENU =
+            MENUS.register("upgrade_station", () -> MenuRegistry.ofExtended(UpgradeStationMenu::new));
+
     // ── Toilet ────────────────────────────────────────────────────────────────────
 
     public static final RegistrySupplier<ToiletBlock> TOILET =
@@ -1436,6 +1562,7 @@ public final class Registration {
                         ItemStack guide = GuideBook.stack(params.holders());
                         if (!guide.isEmpty()) output.accept(guide);
                         output.accept(ABSORPTION_HOPPER_ITEM.get());
+                        output.accept(ESSENCE_HOPPER_ITEM.get());
                         output.accept(OMNI_HOPPER_ITEM.get());
                         output.accept(EINSTEIN_ROSEN_BRIDGE_ITEM.get());
                         output.accept(LOGISTIC_SORTER_ITEM.get());
@@ -1447,6 +1574,7 @@ public final class Registration {
                         output.accept(BIOSLUDGE.get());
                         output.accept(BIOPLASTIC.get());
                         output.accept(BLANK_UPGRADE.get());
+                        output.accept(UPGRADE_STATION_ITEM.get());
                         output.accept(FILTER_SCRIBING_TERMINAL_ITEM.get());
                         output.accept(BLANK_FILTER.get());
                         output.accept(ITEM_FILTER.get());
@@ -1489,6 +1617,7 @@ public final class Registration {
                         output.accept(DISENCHANTER_ITEM.get());
                         output.accept(ENDER_INHIBITOR_ITEM.get());
                         output.accept(WITHER_INHIBITOR_ITEM.get());
+                        output.accept(WARDEN_INHIBITOR_ITEM.get());
                         output.accept(MAGIC_HAT_ITEM.get());
                         output.accept(PRESENT_ITEM.get());
                         output.accept(PICNIC_BASKET_ITEM.get());
@@ -1514,6 +1643,10 @@ public final class Registration {
                         output.accept(HEAD_PIKE_ITEM.get());
                         // A Mob Head for every mob without a vanilla head (the ones Beheading drops).
                         for (EntityType<?> type : MobHeads.MOD_HEADS) output.accept(MobHeads.modHead(type));
+                        for (Essence essence : Essence.values()) {
+                            output.accept(ESSENCE_FILTERS.get(essence).get());
+                            output.accept(ESSENCE_BUCKETS.get(essence).get());
+                        }
                         output.accept(RED_ALERT_BUTTON_ITEM.get());
                         output.accept(DRAMATIC_BUTTON_ITEM.get());
                         output.accept(RIMSHOT_BUTTON_ITEM.get());

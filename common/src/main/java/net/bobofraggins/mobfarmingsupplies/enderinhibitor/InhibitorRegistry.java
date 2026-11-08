@@ -8,7 +8,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 
 /**
- * Where one kind of inhibitor (Ender or Wither) is active: each loaded inhibitor's block position,
+ * Where one kind of inhibitor (Ender, Wither or Warden) is active: each loaded inhibitor's block position,
  * mapped to the centre of the area it protects (its position plus its offset), per dimension. Lets
  * a mob check in a few comparisons, rather than a block scan, whether an inhibitor covers it.
  */
@@ -19,6 +19,7 @@ public final class InhibitorRegistry {
 
     public static final InhibitorRegistry ENDER = new InhibitorRegistry();
     public static final InhibitorRegistry WITHER = new InhibitorRegistry();
+    public static final InhibitorRegistry WARDEN = new InhibitorRegistry();
 
     private final Map<ResourceKey<Level>, Map<BlockPos, BlockPos>> inhibitors = new HashMap<>();
 

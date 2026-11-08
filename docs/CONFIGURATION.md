@@ -115,6 +115,7 @@ Logistic Sorter moves only items, and the Absorption Hopper pushes items and XP 
 | `hoppers.itemsPerTransfer` | `64` | 1 to 4096 | Items moved per side in each item transfer. |
 | `hoppers.itemTransferIntervalTicks` | `8` | 1 to 200 | Ticks between transfers. Items, fluids, energy and chemicals all move on this interval, and the per-tick rates are scaled by it, so changing it doesn't change how much moves overall. |
 | `hoppers.fluidPerTick` | `1000` | 1 or more | Fluid in mB moved per side each tick. |
+| `hoppers.essencePerDeath` | `100` | 1 to 16000 | Essence in mB an Essence Hopper extracts from each mob that dies in its zone. |
 | `hoppers.energyPerTick` | `10000` | 1 or more | Energy in FE moved per input side each tick by the Omnidirectional Hopper and Bridge. NeoForge only. |
 | `hoppers.chemicalPerTick` | `1000` | 1 or more | Mekanism chemicals in mB moved per input side each tick by the Omnidirectional Hopper and Bridge. NeoForge only, and only with Mekanism installed. |
 

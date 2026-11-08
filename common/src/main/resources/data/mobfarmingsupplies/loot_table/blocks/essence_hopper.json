@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "mobfarmingsupplies:essence_hopper",
+          "modifier": {
+            "source": "block_entity",
+            "include": [
+              "minecraft:block_entity_data"
+            ],
+            "type": "minecraft:copy_components"
+          }
+        }
+      ],
+      "condition": {
+        "type": "minecraft:survives_explosion"
+      }
+    }
+  ]
+}

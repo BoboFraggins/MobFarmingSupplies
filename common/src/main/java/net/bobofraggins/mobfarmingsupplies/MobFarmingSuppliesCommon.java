@@ -33,6 +33,7 @@ public final class MobFarmingSuppliesCommon {
         MagicHatCaptureEvents.registerCommonEvents();
         PresentWrapEvents.registerCommonEvents();
         BeheadingDrops.register();
+        net.bobofraggins.mobfarmingsupplies.essencehopper.EssenceCollector.register();
         // Bridge networks hold loaded block entities; never carry them into the next world.
         LifecycleEvent.SERVER_STOPPED.register(server -> BridgeNetworks.clear());
         MFSNetwork.register();

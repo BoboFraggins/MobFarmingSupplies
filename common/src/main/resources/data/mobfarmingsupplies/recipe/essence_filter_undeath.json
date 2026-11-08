@@ -1,0 +1,9 @@
+{
+  "type": "mobfarmingsupplies:upgrading",
+  "item": "minecraft:zombie_head",
+  "input": "mobfarmingsupplies:blank_upgrade",
+  "result": {
+    "id": "mobfarmingsupplies:essence_filter_undeath",
+    "count": 1
+  }
+}

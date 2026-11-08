@@ -52,10 +52,10 @@ public class MobFarmingSupplies {
         // Present enderman easter egg — same split as the Magic Hat.
         NeoForge.EVENT_BUS.register(new PresentSpawnEvents());
         NeoForge.EVENT_BUS.register(new HeadPikeSpawnEvents());
-        // Servers only send clients the recipe types someone asks for; JEI's Incubating page reads
-        // the client's copy, so ask for the incubator's (Fabric does this with RecipeSynchronization).
+        // Servers only send clients the recipe types someone asks for; JEI's Incubating and Upgrading
+        // pages read the client's copy, so ask for them (Fabric does this with RecipeSynchronization).
         NeoForge.EVENT_BUS.addListener((OnDatapackSyncEvent event) ->
-                event.sendRecipes(Registration.INCUBATING_TYPE.get()));
+                event.sendRecipes(Registration.INCUBATING_TYPE.get(), Registration.UPGRADING_TYPE.get()));
         // Magic Hat Curios integration — soft dependency, registered only if Curios is present.
         // MUST check isLoaded() before ever calling into MagicHatCurioSetup: that class
         // references Curios API types, and simply loading it (even just to have this class's
