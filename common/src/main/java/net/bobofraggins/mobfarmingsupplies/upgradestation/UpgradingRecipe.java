@@ -3,8 +3,13 @@ package net.bobofraggins.mobfarmingsupplies.upgradestation;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
+import java.util.Optional;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -25,33 +30,43 @@ import net.minecraft.world.level.Level;
  *   "input": "mobfarmingsupplies:blank_upgrade",
  *   "result": { "id": "mobfarmingsupplies:harvester_upgrade_sharpness" } }
  * }</pre>
+ * A recipe whose {@code item} is a Mob Head can name the mob with {@code "mob_head": "minecraft:spider"}.
  */
 public class UpgradingRecipe implements Recipe<UpgradingInput> {
 
     public static final MapCodec<UpgradingRecipe> MAP_CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             Ingredient.CODEC.fieldOf("item").forGetter(UpgradingRecipe::item),
+            BuiltInRegistries.ENTITY_TYPE.byNameCodec().optionalFieldOf("mob_head").forGetter(UpgradingRecipe::mobHead),
             Ingredient.CODEC.fieldOf("input").forGetter(UpgradingRecipe::input),
             ItemStackTemplate.CODEC.fieldOf("result").forGetter(UpgradingRecipe::result)
     ).apply(i, UpgradingRecipe::new));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, UpgradingRecipe> STREAM_CODEC = StreamCodec.composite(
             Ingredient.CONTENTS_STREAM_CODEC, UpgradingRecipe::item,
+            ByteBufCodecs.optional(ByteBufCodecs.registry(Registries.ENTITY_TYPE)), UpgradingRecipe::mobHead,
             Ingredient.CONTENTS_STREAM_CODEC, UpgradingRecipe::input,
             ItemStackTemplate.STREAM_CODEC, UpgradingRecipe::result,
             UpgradingRecipe::new);
 
     private final Ingredient item;
+    private final Optional<EntityType<?>> mobHead;
     private final Ingredient input;
     private final ItemStackTemplate result;
 
-    public UpgradingRecipe(Ingredient item, Ingredient input, ItemStackTemplate result) {
+    public UpgradingRecipe(Ingredient item, Optional<EntityType<?>> mobHead, Ingredient input, ItemStackTemplate result) {
         this.item = item;
+        this.mobHead = mobHead;
         this.input = input;
         this.result = result;
     }
 
     public Ingredient item() {
         return item;
+    }
+
+    /** Which mob's head {@link #item} must be, if it's a particular one. */
+    public Optional<EntityType<?>> mobHead() {
+        return mobHead;
     }
 
     public Ingredient input() {
@@ -64,7 +79,8 @@ public class UpgradingRecipe implements Recipe<UpgradingInput> {
 
     @Override
     public boolean matches(UpgradingInput in, Level level) {
-        return item.test(in.item()) && input.test(in.input());
+        return item.test(in.item()) && input.test(in.input())
+                && mobHead.map(mob -> mob == in.item().get(Registration.MOB_HEAD_TYPE.get())).orElse(true);
     }
 
     @Override

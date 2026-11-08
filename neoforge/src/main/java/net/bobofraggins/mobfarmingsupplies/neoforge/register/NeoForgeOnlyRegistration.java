@@ -21,6 +21,7 @@ import net.bobofraggins.mobfarmingsupplies.neoforge.tank.TankFluidHandler;
 import net.bobofraggins.mobfarmingsupplies.neoforge.tank.TankItemAccessFluidHandler;
 import net.bobofraggins.mobfarmingsupplies.neoforge.tank.TankItemFluidHandler;
 import net.bobofraggins.mobfarmingsupplies.neoforge.xpjuice.XpJuiceFluid;
+import net.bobofraggins.mobfarmingsupplies.essencehopper.Essence;
 import net.minecraft.sounds.SoundEvents;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.capabilities.Capabilities;
@@ -110,6 +111,36 @@ public final class NeoForgeOnlyRegistration {
                     .slopeFindDistance(2)
                     .levelDecreasePerBlock(1)
                     .tickRate(20);
+
+    // ── Essences ──────────────────────────────────────────────────────────────────
+
+    public static final java.util.Map<Essence, net.neoforged.neoforge.registries.DeferredHolder<FluidType, FluidType>> ESSENCE_TYPES =
+            new java.util.EnumMap<>(Essence.class);
+    public static final java.util.Map<Essence, BaseFlowingFluid.Properties> ESSENCE_FLUID_PROPS =
+            new java.util.EnumMap<>(Essence.class);
+
+    static {
+        for (Essence essence : Essence.values()) {
+            var type = FLUID_TYPES.register(essence.fluidId(),
+                    () -> new FluidType(
+                            FluidType.Properties.create()
+                                    .density(3000).viscosity(6000).temperature(300)
+                                    .lightLevel(15)
+                                    .sound(SoundActions.BUCKET_FILL,  SoundEvents.BUCKET_FILL_LAVA)
+                                    .sound(SoundActions.BUCKET_EMPTY, SoundEvents.BUCKET_EMPTY_LAVA)));
+            ESSENCE_TYPES.put(essence, type);
+            // Lava's flow. New sources need FluidType's canConvertToSource, which stays off.
+            ESSENCE_FLUID_PROPS.put(essence, new BaseFlowingFluid.Properties(
+                    type,
+                    () -> Registration.ESSENCE_SOURCES.get(essence).get(),
+                    () -> Registration.ESSENCE_FLOWING.get(essence).get())
+                    .bucket(() -> Registration.ESSENCE_BUCKETS.get(essence).get())
+                    .block(() -> Registration.ESSENCE_BLOCKS.get(essence).get())
+                    .slopeFindDistance(2)
+                    .levelDecreasePerBlock(2)
+                    .tickRate(30));
+        }
+    }
 
     // ── Tank ──────────────────────────────────────────────────────────────────────
     // TANK, TANK_ITEM, TANK_BE_TYPE, TANK_MENU moved to common Registration

@@ -79,6 +79,9 @@ public final class MobFarmingSuppliesCommonClient {
                 Registration.DISENCHANTER_MENU.get(),
                 DisenchanterScreen::new);
         MenuScreenRegistry.registerScreenFactory(
+                Registration.ESSENCE_HOPPER_MENU.get(),
+                net.bobofraggins.mobfarmingsupplies.essencehopper.EssenceHopperScreen::new);
+        MenuScreenRegistry.registerScreenFactory(
                 Registration.ABSORPTION_HOPPER_MENU.get(),
                 AbsorptionHopperScreen::new);
         MenuScreenRegistry.registerScreenFactory(

@@ -10,6 +10,7 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommon;
+import net.bobofraggins.mobfarmingsupplies.mobhead.MobHeads;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.bobofraggins.mobfarmingsupplies.upgradestation.UpgradingRecipe;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -43,7 +44,9 @@ public final class UpgradingCategory implements IRecipeCategory<UpgradingCategor
     /** Every row to show for {@code recipes}. */
     public static List<Display> displays(List<UpgradingRecipe> recipes) {
         return recipes.stream()
-                .map(recipe -> new Display(stacks(recipe.item()), stacks(recipe.input()), recipe.result().create()))
+                .map(recipe -> new Display(
+                        recipe.mobHead().map(mob -> List.of(MobHeads.modHead(mob))).orElseGet(() -> stacks(recipe.item())),
+                        stacks(recipe.input()), recipe.result().create()))
                 .toList();
     }
 

@@ -1,0 +1,10 @@
+{
+  "type": "mobfarmingsupplies:upgrading",
+  "item": "mobfarmingsupplies:mob_head",
+  "mob_head": "minecraft:spider",
+  "input": "mobfarmingsupplies:blank_upgrade",
+  "result": {
+    "id": "mobfarmingsupplies:essence_filter_venom",
+    "count": 1
+  }
+}

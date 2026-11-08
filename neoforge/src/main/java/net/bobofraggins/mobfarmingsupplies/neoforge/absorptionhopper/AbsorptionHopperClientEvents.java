@@ -5,6 +5,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.bobofraggins.mobfarmingsupplies.absorptionhopper.AbsorptionHopperScreen;
+import net.bobofraggins.mobfarmingsupplies.essencehopper.EssenceHopperScreen;
 
 public final class AbsorptionHopperClientEvents {
 
@@ -15,6 +16,9 @@ public final class AbsorptionHopperClientEvents {
         event.registerBlockEntityRenderer(
                 Registration.ABSORPTION_HOPPER_BE_TYPE.get(),
                 AbsorptionHopperBlockEntityRenderer::new);
+        event.registerBlockEntityRenderer(
+                Registration.ESSENCE_HOPPER_BE_TYPE.get(),
+                AbsorptionHopperBlockEntityRenderer::new);
     }
 
     // NeoForge's RegisterMenuScreensEvent has already fired by the time the common
@@ -22,5 +26,6 @@ public final class AbsorptionHopperClientEvents {
     @SubscribeEvent
     public static void onRegisterMenuScreens(RegisterMenuScreensEvent event) {
         event.register(Registration.ABSORPTION_HOPPER_MENU.get(), AbsorptionHopperScreen::new);
+        event.register(Registration.ESSENCE_HOPPER_MENU.get(), EssenceHopperScreen::new);
     }
 }

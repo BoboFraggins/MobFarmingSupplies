@@ -71,6 +71,7 @@ public final class MFSConfigImpl {
     }
 
     public static int getHopperItemsPerTransfer() { return MFSServerConfig.OMNI_HOPPER_ITEMS_PER_TRANSFER.get(); }
+    public static int getEssencePerDeath() { return MFSServerConfig.ESSENCE_PER_DEATH.get(); }
 
     public static int getHopperTransferInterval() { return MFSServerConfig.OMNI_HOPPER_TRANSFER_INTERVAL.get(); }
 

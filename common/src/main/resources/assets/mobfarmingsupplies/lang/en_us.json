@@ -1,5 +1,12 @@
 {
   "block.mobfarmingsupplies.absorption_hopper": "Absorption Hopper",
+  "block.mobfarmingsupplies.essence_hopper": "Essence Hopper",
+  "item.mobfarmingsupplies.essence_hopper": "Essence Hopper",
+  "item.mobfarmingsupplies.essence_filter_venom": "Venom Essence Filter",
+  "item.mobfarmingsupplies.essence_of_venom_bucket": "Essence of Venom Bucket",
+  "fluid_type.mobfarmingsupplies.essence_of_venom": "Essence of Venom",
+  "fluid.mobfarmingsupplies.essence_of_venom": "Essence of Venom",
+  "block.mobfarmingsupplies.essence_of_venom": "Essence of Venom",
   "item.mobfarmingsupplies.absorption_hopper": "Absorption Hopper",
   "block.mobfarmingsupplies.clone_o_matic": "Clone-O-Matic",
   "item.mobfarmingsupplies.clone_o_matic": "Clone-O-Matic",

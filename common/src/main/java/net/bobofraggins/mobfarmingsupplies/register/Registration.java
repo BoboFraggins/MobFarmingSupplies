@@ -1,5 +1,7 @@
 package net.bobofraggins.mobfarmingsupplies.register;
 
+import java.util.EnumMap;
+import java.util.Map;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import dev.architectury.registry.menu.MenuRegistry;
@@ -106,6 +108,12 @@ import net.bobofraggins.mobfarmingsupplies.tank.TankTier;
 import net.bobofraggins.mobfarmingsupplies.tank.ExperienceTankRecipe;
 import net.bobofraggins.mobfarmingsupplies.tank.TankUpgradeRecipe;
 import net.bobofraggins.mobfarmingsupplies.experiencepylon.ExperiencePylonBlock;
+import net.bobofraggins.mobfarmingsupplies.essencehopper.Essence;
+import net.bobofraggins.mobfarmingsupplies.essencehopper.EssenceFilterItem;
+import net.bobofraggins.mobfarmingsupplies.essencehopper.EssenceFluidPlatform;
+import net.bobofraggins.mobfarmingsupplies.essencehopper.EssenceHopperBlock;
+import net.bobofraggins.mobfarmingsupplies.essencehopper.EssenceHopperBlockEntity;
+import net.bobofraggins.mobfarmingsupplies.essencehopper.EssenceHopperMenu;
 import net.bobofraggins.mobfarmingsupplies.incubator.IncubatingRecipe;
 import net.bobofraggins.mobfarmingsupplies.incubator.IncubatorBlock;
 import net.bobofraggins.mobfarmingsupplies.incubator.IncubatorBlockEntity;
@@ -594,6 +602,29 @@ public final class Registration {
             BLOCK_ENTITIES.register("absorption_hopper",
                     () -> BlockEntityTypePlatform.create(AbsorptionHopperBlockEntity::new, ABSORPTION_HOPPER.get()));
 
+    // ── Essence Hopper ───────────────────────────────────────────────────
+
+    public static final RegistrySupplier<EssenceHopperBlock> ESSENCE_HOPPER =
+            BLOCKS.register("essence_hopper",
+                    () -> new EssenceHopperBlock(BlockBehaviour.Properties.of()
+                            .setId(blockKey("essence_hopper"))
+                            .strength(3.5f)
+                            .explosionResistance(Float.MAX_VALUE)
+                            .sound(SoundType.METAL)
+                            .noOcclusion()));
+
+    public static final RegistrySupplier<BlockItem> ESSENCE_HOPPER_ITEM =
+            ITEMS.register("essence_hopper",
+                    () -> new OrientedBlockItem(ESSENCE_HOPPER.get(), new Item.Properties()
+                            .setId(itemKey("essence_hopper"))));
+
+    public static final RegistrySupplier<MenuType<EssenceHopperMenu>> ESSENCE_HOPPER_MENU =
+            MENUS.register("essence_hopper", () -> MenuRegistry.ofExtended(EssenceHopperMenu::new));
+
+    public static final RegistrySupplier<BlockEntityType<EssenceHopperBlockEntity>> ESSENCE_HOPPER_BE_TYPE =
+            BLOCK_ENTITIES.register("essence_hopper",
+                    () -> BlockEntityTypePlatform.create(EssenceHopperBlockEntity::new, ESSENCE_HOPPER.get()));
+
     // ── Ender Inhibitor ───────────────────────────────────────────────────────────
 
     public static final RegistrySupplier<EnderInhibitorBlock> ENDER_INHIBITOR =
@@ -869,6 +900,41 @@ public final class Registration {
                                     .setId(itemKey("xp_juice_bucket"))
                                     .stacksTo(1)
                                     .craftRemainder(Items.BUCKET)));
+
+    // ── Essences ──────────────────────────────────────────────────────────────────
+
+    public static final Map<Essence, RegistrySupplier<FlowingFluid>> ESSENCE_SOURCES = new EnumMap<>(Essence.class);
+    public static final Map<Essence, RegistrySupplier<FlowingFluid>> ESSENCE_FLOWING = new EnumMap<>(Essence.class);
+    public static final Map<Essence, RegistrySupplier<LiquidBlock>> ESSENCE_BLOCKS = new EnumMap<>(Essence.class);
+    public static final Map<Essence, RegistrySupplier<BucketItem>> ESSENCE_BUCKETS = new EnumMap<>(Essence.class);
+    public static final Map<Essence, RegistrySupplier<EssenceFilterItem>> ESSENCE_FILTERS = new EnumMap<>(Essence.class);
+
+    static {
+        for (Essence essence : Essence.values()) {
+            String fluid = essence.fluidId();
+            ESSENCE_SOURCES.put(essence, FLUIDS.register(fluid, () -> EssenceFluidPlatform.createSource(essence)));
+            ESSENCE_FLOWING.put(essence, FLUIDS.register(fluid + "_flowing", () -> EssenceFluidPlatform.createFlowing(essence)));
+            ESSENCE_BLOCKS.put(essence, BLOCKS.register(fluid,
+                    () -> new LiquidBlock(ESSENCE_SOURCES.get(essence).get(),
+                            BlockBehaviour.Properties.of()
+                                    .setId(blockKey(fluid))
+                                    .noCollision()
+                                    .strength(100f)
+                                    .lightLevel(state -> 15)
+                                    .noLootTable()
+                                    .liquid()
+                                    .replaceable()
+                                    .pushReaction(PushReaction.DESTROY))));
+            ESSENCE_BUCKETS.put(essence, ITEMS.register(essence.bucketId(),
+                    () -> new BucketItem(ESSENCE_SOURCES.get(essence).get(),
+                            new Item.Properties()
+                                    .setId(itemKey(essence.bucketId()))
+                                    .stacksTo(1)
+                                    .craftRemainder(Items.BUCKET))));
+            ESSENCE_FILTERS.put(essence, ITEMS.register(essence.filterId(),
+                    () -> new EssenceFilterItem(essence, new Item.Properties().setId(itemKey(essence.filterId())))));
+        }
+    }
 
     // ── Tank ──────────────────────────────────────────────────────────────────────
 
@@ -1482,6 +1548,11 @@ public final class Registration {
                         ItemStack guide = GuideBook.stack(params.holders());
                         if (!guide.isEmpty()) output.accept(guide);
                         output.accept(ABSORPTION_HOPPER_ITEM.get());
+                        output.accept(ESSENCE_HOPPER_ITEM.get());
+                        for (Essence essence : Essence.values()) {
+                            output.accept(ESSENCE_FILTERS.get(essence).get());
+                            output.accept(ESSENCE_BUCKETS.get(essence).get());
+                        }
                         output.accept(OMNI_HOPPER_ITEM.get());
                         output.accept(EINSTEIN_ROSEN_BRIDGE_ITEM.get());
                         output.accept(LOGISTIC_SORTER_ITEM.get());

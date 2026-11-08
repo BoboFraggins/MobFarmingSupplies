@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "IHI",
+    "HCH",
+    "IMI"
+  ],
+  "key": {
+    "I": "minecraft:bucket",
+    "H": "minecraft:hopper",
+    "C": "minecraft:chest",
+    "M": "mobfarmingsupplies:superconducting_magnet"
+  },
+  "result": {
+    "id": "mobfarmingsupplies:essence_hopper",
+    "count": 1
+  },
+  "category": "misc"
+}

@@ -59,6 +59,10 @@ public final class MFSTags {
         public static final TagKey<Item> UPGRADE_STATION_INPUTS = TagKey.create(
                 Registries.ITEM, Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "upgrade_station_inputs"));
 
+        /** What the Essence Hopper's slot takes: its Essence Filters. */
+        public static final TagKey<Item> ESSENCE_FILTERS = TagKey.create(
+                Registries.ITEM, Identifier.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "essence_filters"));
+
         private Items() {}
     }
 
