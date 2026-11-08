@@ -1,6 +1,16 @@
 {
   "replace": false,
   "values": [
-    "mobfarmingsupplies:essence_filter_venom"
+    "mobfarmingsupplies:essence_filter_venom",
+    "mobfarmingsupplies:essence_filter_spacetime",
+    "mobfarmingsupplies:essence_filter_water",
+    "mobfarmingsupplies:essence_filter_fire",
+    "mobfarmingsupplies:essence_filter_sight",
+    "mobfarmingsupplies:essence_filter_wither",
+    "mobfarmingsupplies:essence_filter_growth",
+    "mobfarmingsupplies:essence_filter_color",
+    "mobfarmingsupplies:essence_filter_frost",
+    "mobfarmingsupplies:essence_filter_undeath",
+    "mobfarmingsupplies:essence_filter_bacon"
   ]
 }

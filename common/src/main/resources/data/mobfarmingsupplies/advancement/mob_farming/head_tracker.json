@@ -749,6 +749,19 @@
         ]
       }
     },
+    "squid_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:mob_head",
+            "components": {
+              "mobfarmingsupplies:mob_head_type": "minecraft:squid"
+            }
+          }
+        ]
+      }
+    },
     "stray_head": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
@@ -1109,6 +1122,9 @@
     ],
     [
       "spider_head"
+    ],
+    [
+      "squid_head"
     ],
     [
       "stray_head"

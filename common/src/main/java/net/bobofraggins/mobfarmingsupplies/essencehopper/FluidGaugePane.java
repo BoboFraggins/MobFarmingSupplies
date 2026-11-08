@@ -57,7 +57,7 @@ final class FluidGaugePane implements IDialogPane {
                 && be.getTankAmount() > 0) {
             int filled = (int) ((long) be.getTankAmount() * GAUGE_W / be.getTankCapacity());
             Essence essence = Essence.of(be.getTankFluid());
-            if (essence != null) g.fill(GAUGE_X, 0, GAUGE_X + filled, GAUGE_H, essence.color());
+            if (essence != null) g.fill(GAUGE_X, 0, GAUGE_X + filled, GAUGE_H, essence.gaugeColor());
         }
         tick(g, GAUGE_X + GAUGE_W / 4, TICK_SHORT);
         tick(g, GAUGE_X + GAUGE_W / 2, TICK_LONG);

@@ -10,7 +10,9 @@ It writes, for each essence:
   textures/item/essence_of_<id>_bucket.png         the XP Juice bucket, recoloured
   textures/item/essence_filter_<id>.png            a Blank Filter card in lime, with the mob's face
 """
+import colorsys
 import io
+import json
 import sys
 import zipfile
 
@@ -18,19 +20,79 @@ from PIL import Image
 
 ASSETS = "common/src/main/resources/assets/mobfarmingsupplies/textures"
 
-# id: dark, middle and light fluid colours, the mob's texture, and where its head's front face is.
+# id: dark, middle and light fluid colours (or "rainbow"), the mob's texture (and any glowing eyes layered on
+# it), where its head's front face is, and optionally how much to enlarge a tiny face and where a
+# separately modelled snout is on the texture and goes on the face.
 ESSENCES = {
     "venom": {
         "colors": ((8, 40, 14), (24, 96, 40), (86, 172, 84)),
         "skin": "assets/minecraft/textures/entity/spider/spider.png",
         "face": (40, 12, 48, 20),
     },
+    "spacetime": {
+        "colors": ((3, 1, 8), (62, 16, 124), (170, 70, 235)),
+        "skin": "assets/minecraft/textures/entity/enderman/enderman.png",
+        "eyes": "assets/minecraft/textures/entity/enderman/enderman_eyes.png",
+        "face": (8, 8, 16, 16),
+    },
+    "water": {
+        "colors": ((1, 3, 12), (12, 42, 128), (66, 128, 235)),
+        "skin": "assets/minecraft/textures/entity/squid/squid.png",
+        "face": (14, 14, 22, 22),  # the middle of its tall front, with both eyes
+    },
+    "fire": {
+        "colors": ((6, 1, 1), (128, 12, 12), (240, 58, 40)),
+        "skin": "assets/minecraft/textures/entity/blaze/blaze.png",
+        "face": (8, 8, 16, 16),
+    },
+    "sight": {
+        "colors": ((4, 4, 4), (112, 112, 112), (245, 245, 245)),
+        "skin": "assets/minecraft/textures/entity/bat/bat.png",
+        "face": (1, 9, 7, 12),  # its eyes and nose, which wrap onto the sides of its tiny head
+        "scale": 2,
+    },
+    "wither": {
+        "colors": ((38, 38, 40), (124, 124, 128), (245, 245, 245)),
+        "skin": "assets/minecraft/textures/entity/skeleton/wither_skeleton.png",
+        "face": (8, 8, 16, 16),
+    },
+    "growth": {
+        "colors": ((242, 133, 0), (250, 180, 30), (255, 225, 53)),
+        "skin": "assets/minecraft/textures/entity/cow/cow_temperate.png",
+        "face": (6, 6, 14, 14),
+    },
+    "color": {
+        "rainbow": True,
+        "skin": "assets/minecraft/textures/entity/sheep/sheep.png",
+        "face": (8, 8, 14, 14),
+    },
+    "frost": {
+        "colors": ((150, 205, 245), (205, 232, 250), (255, 255, 255)),
+        "skin": "assets/minecraft/textures/entity/breeze/breeze.png",
+        "eyes": "assets/minecraft/textures/entity/breeze/breeze_eyes.png",
+        "face": (8, 8, 16, 16),
+    },
+    "undeath": {
+        "colors": ((45, 47, 48), (84, 140, 44), (128, 232, 42)),
+        "skin": "assets/minecraft/textures/entity/zombie/zombie.png",
+        "face": (8, 8, 16, 16),
+    },
+    "bacon": {
+        "colors": ((250, 170, 190), (253, 213, 223), (255, 255, 255)),
+        "skin": "assets/minecraft/textures/entity/pig/pig_temperate.png",
+        "face": (8, 8, 16, 16),
+        "snout": ((17, 17, 21, 20), (2, 4)),
+    },
 }
 
 # The Blank Filter's purples, and the lime that replaces them.
 CARD = {(58, 25, 156): (118, 214, 32), (125, 86, 242): (176, 240, 96)}
-# Where a mob's face goes on the card (the Smite Upgrade's), and how big each of its pixels is.
-FACE_LEFT, FACE_TOP, FACE_SCALE = 12, 17, 1
+# A rainbow fluid's animation: as long as still lava's, which plays its 20 frames there and back.
+RAINBOW_FRAMES, RAINBOW_FRAMETIME = 38, 2
+WHITE = (255, 255, 255)
+
+# The middle of a mob's face on the card (as on the Smite Upgrade's).
+FACE_CENTRE_X, FACE_CENTRE_Y = 16, 21
 
 
 def mix(a, b, t):
@@ -59,6 +121,38 @@ def recolour(image, colors, wanted):
                 px[x, y] = shade(luma, colors) + (px[x, y][3],)
 
 
+def rgb(hue, saturation, value):
+    return tuple(round(c * 255) for c in colorsys.hsv_to_rgb(hue % 1, saturation, value))
+
+
+def rainbow_fluid(image):
+    """Lava with each frame shaded from one colour of the rainbow to white, going round the
+    rainbow over the animation. Source and flowing fluid get the same number of frames at the
+    same speed, so they're the same colour at the same moment, and lava's own frames are written
+    out in the order they play, so the colours join up where the animation loops. Still lava
+    bounces back and forth through its frames; flowing lava loops through its own twice.
+    Returns the new strip and its .mcmeta."""
+    size = image.size[0]
+    count = image.size[1] // size
+    if count == RAINBOW_FRAMES // 2 + 1:
+        order = list(range(count)) + list(range(count - 2, 0, -1))
+    else:
+        order = [i * 2 * count // RAINBOW_FRAMES % count for i in range(RAINBOW_FRAMES)]
+    source = image.load()
+    lumas = [luminance(source[x, y]) for x in range(size) for y in range(image.size[1])]
+    low, high = min(lumas), max(lumas)
+    strip = Image.new("RGBA", (size, size * len(order)))
+    px = strip.load()
+    for i, frame in enumerate(order):
+        colour = rgb(i / len(order), 1.0, 0.95)
+        colours = (colour, mix(colour, WHITE, 0.5), WHITE)
+        for y in range(size):
+            for x in range(size):
+                luma = (luminance(source[x, frame * size + y]) - low) / (high - low or 1)
+                px[x, i * size + y] = shade(luma, colours) + (255,)
+    return strip, json.dumps({"animation": {"frametime": RAINBOW_FRAMETIME}}, indent=2).encode() + b"\n"
+
+
 def main():
     if len(sys.argv) != 2:
         raise SystemExit(__doc__)
@@ -71,15 +165,25 @@ def main():
             for kind in ("still", "flow"):
                 lava = f"assets/minecraft/textures/block/lava_{kind}.png"
                 image = load(lava)
-                recolour(image, essence["colors"], lambda p: p[3] > 0)
+                mcmeta = jar.read(lava + ".mcmeta")
+                if essence.get("rainbow"):
+                    image, mcmeta = rainbow_fluid(image)
+                else:
+                    recolour(image, essence["colors"], lambda p: p[3] > 0)
                 image.save(f"{ASSETS}/block/{fluid}_{kind}.png")
                 with open(f"{ASSETS}/block/{fluid}_{kind}.png.mcmeta", "wb") as f:
-                    f.write(jar.read(lava + ".mcmeta"))
+                    f.write(mcmeta)
 
             bucket = Image.open(f"{ASSETS}/item/xp_juice_bucket.png").convert("RGBA")
             is_juice = lambda p: 0 < p[3] < 255 and p[1] > p[0] and p[1] > p[2]
-            recolour(bucket, essence["colors"], is_juice)
             px = bucket.load()
+            if essence.get("rainbow"):
+                for y in range(bucket.size[1]):
+                    for x in range(bucket.size[0]):
+                        if is_juice(px[x, y]):
+                            px[x, y] = rgb(x / bucket.size[0], 0.85, 0.95) + (px[x, y][3],)
+            else:
+                recolour(bucket, essence["colors"], is_juice)
             for y in range(bucket.size[1]):
                 for x in range(bucket.size[0]):
                     if px[x, y][3] not in (0, 255):
@@ -92,9 +196,17 @@ def main():
                 for x in range(card.size[0]):
                     if px[x, y][:3] in CARD and px[x, y][3] > 0:
                         px[x, y] = CARD[px[x, y][:3]] + (px[x, y][3],)
-            face = load(essence["skin"]).crop(essence["face"])
-            face = face.resize((face.width * FACE_SCALE, face.height * FACE_SCALE), Image.NEAREST)
-            card.paste(face, (FACE_LEFT, FACE_TOP), face)
+            skin = load(essence["skin"])
+            if "eyes" in essence:
+                skin.alpha_composite(load(essence["eyes"]))
+            face = skin.crop(essence["face"])
+            if "snout" in essence:
+                area, at = essence["snout"]
+                snout = skin.crop(area)
+                face.paste(snout, at, snout)
+            scale = essence.get("scale", 1)
+            face = face.resize((face.width * scale, face.height * scale), Image.NEAREST)
+            card.paste(face, (FACE_CENTRE_X - face.width // 2, FACE_CENTRE_Y - face.height // 2), face)
             card.save(f"{ASSETS}/item/essence_filter_{name}.png")
             print(name)
 

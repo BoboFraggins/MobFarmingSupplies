@@ -44,7 +44,7 @@ public final class MobHeads {
             "ghast", "goat", "guardian", "happy_ghast", "hoglin", "horse", "husk", "illusioner",
             "iron_golem", "llama", "magma_cube", "mooshroom", "mule", "ocelot", "panda", "parched",
             "parrot", "phantom", "pig", "piglin_brute", "pillager", "polar_bear", "rabbit",
-            "ravager", "sheep", "shulker", "skeleton_horse", "slime", "sniffer", "spider", "stray",
+            "ravager", "sheep", "shulker", "skeleton_horse", "slime", "sniffer", "spider", "squid", "stray",
             "trader_llama", "turtle", "vex", "villager", "vindicator", "wandering_trader", "warden",
             "witch", "wolf", "zoglin", "zombie_horse", "zombie_villager", "zombified_piglin");
 

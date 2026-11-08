@@ -186,13 +186,13 @@ public final class MobHeadModels {
     }
 
     /**
-     * The model part that is the mob's head, or null for the whole model: slimes and ghasts are
-     * all head.
+     * The model part that is the mob's head, or null for the whole model: slimes, ghasts and squid
+     * are all head.
      */
     @Nullable
     private static String headPartFor(Identifier id) {
         return switch (id.getPath()) {
-            case "ghast", "happy_ghast" -> "body";
+            case "ghast", "happy_ghast", "squid" -> "body";
             case "slime", "magma_cube" -> null;
             default -> "head";
         };
@@ -200,7 +200,7 @@ public final class MobHeadModels {
 
     /**
      * A fresh copy of {@code partName} (null = the whole model) baked from {@code layer}, or null
-     * if the layer has no such part. Ghast tentacles are hidden: a head shouldn't dangle.
+     * if the layer has no such part. Ghast and squid tentacles are hidden: a head shouldn't dangle.
      */
     @Nullable
     private static ModelPart bakeHead(ModelLayerLocation layer, @Nullable String partName) {

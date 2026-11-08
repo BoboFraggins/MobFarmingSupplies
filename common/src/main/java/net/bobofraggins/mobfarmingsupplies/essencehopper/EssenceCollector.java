@@ -68,16 +68,16 @@ public final class EssenceCollector {
         }
         if (nearest != null) {
             nearest.collect(essence);
-            sendTrail(level, entity, Vec3.atCenterOf(nearest.getBlockPos()), essence.color());
+            sendTrail(level, entity, Vec3.atCenterOf(nearest.getBlockPos()), essence);
         }
         return EventResult.pass();
     }
 
-    private static void sendTrail(ServerLevel level, LivingEntity from, Vec3 target, int color) {
+    private static void sendTrail(ServerLevel level, LivingEntity from, Vec3 target, Essence essence) {
         RandomSource random = level.getRandom();
         for (int i = 0; i < PARTICLES; i++) {
             int ticks = MIN_FLIGHT_TICKS + random.nextInt(MAX_FLIGHT_TICKS - MIN_FLIGHT_TICKS + 1);
-            level.sendParticles(new TrailParticleOption(target, color, ticks),
+            level.sendParticles(new TrailParticleOption(target, essence.particleColor(random), ticks),
                     from.getRandomX(0.5), from.getRandomY(), from.getRandomZ(0.5), 1, 0, 0, 0, 0);
         }
     }
