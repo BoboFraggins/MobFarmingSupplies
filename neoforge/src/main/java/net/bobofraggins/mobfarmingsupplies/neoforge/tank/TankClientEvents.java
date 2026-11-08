@@ -25,6 +25,7 @@ public final class TankClientEvents {
         event.registerBlockEntityRenderer(Registration.TANK_BE_TYPE.get(), TankRenderer::new);
         event.registerBlockEntityRenderer(Registration.EXPERIENCE_PYLON_BE_TYPE.get(), NeoExperiencePylonRenderer::new);
         event.registerBlockEntityRenderer(Registration.INCUBATOR_BE_TYPE.get(), NeoIncubatorRenderer::new);
+        event.registerBlockEntityRenderer(Registration.UPGRADE_STATION_BE_TYPE.get(), NeoUpgradeStationRenderer::new);
         event.registerBlockEntityRenderer(Registration.DISENCHANTER_BE_TYPE.get(), DisenchanterRenderer::new);
         event.registerBlockEntityRenderer(Registration.BLOCK_BREAKER_BE_TYPE.get(),
                 net.bobofraggins.mobfarmingsupplies.blockbreaker.BlockBreakerRenderer::new);
@@ -40,6 +41,7 @@ public final class TankClientEvents {
         event.register(Registration.TANK_MENU.get(), TankScreen::new);
         event.register(Registration.EXPERIENCE_PYLON_MENU.get(), ExperiencePylonScreen::new);
         event.register(Registration.INCUBATOR_MENU.get(), IncubatorScreen::new);
+        event.register(Registration.UPGRADE_STATION_MENU.get(), net.bobofraggins.mobfarmingsupplies.upgradestation.UpgradeStationScreen::new);
         event.register(Registration.XP_ANVIL_MENU.get(), XpAnvilScreen::new);
         event.register(Registration.DISENCHANTER_MENU.get(), DisenchanterScreen::new);
     }

@@ -26,6 +26,9 @@ public final class EnderInhibitorClientEvents {
         event.registerBlockEntityRenderer(
                 Registration.WITHER_INHIBITOR_BE_TYPE.get(),
                 EnderInhibitorBlockEntityRenderer::wither);
+        event.registerBlockEntityRenderer(
+                Registration.WARDEN_INHIBITOR_BE_TYPE.get(),
+                EnderInhibitorBlockEntityRenderer::warden);
     }
 
     @SubscribeEvent

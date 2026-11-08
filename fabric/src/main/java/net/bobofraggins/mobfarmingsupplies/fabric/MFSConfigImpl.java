@@ -46,6 +46,7 @@ public final class MFSConfigImpl {
     private static int hopperItemsPerTransfer = MFSConfig.DEFAULT_HOPPER_ITEMS_PER_TRANSFER;
     private static int hopperTransferInterval = MFSConfig.DEFAULT_HOPPER_TRANSFER_INTERVAL;
     private static int hopperFluidPerTick = MFSConfig.DEFAULT_HOPPER_FLUID_PER_TICK;
+    private static int essencePerDeath = MFSConfig.DEFAULT_ESSENCE_PER_DEATH;
     private static double dnaSamplePackCommonChestChance = MFSConfig.DEFAULT_DNA_SAMPLE_PACK_COMMON_CHEST_CHANCE;
     private static double dnaSamplePackRareChestChance = MFSConfig.DEFAULT_DNA_SAMPLE_PACK_RARE_CHEST_CHANCE;
 
@@ -71,6 +72,7 @@ public final class MFSConfigImpl {
     public static int getTankBaseCapacity()              { return tankBaseCapacity; }
     public static int getTankUpgradeMultiplier()         { return tankUpgradeMultiplier; }
     public static int getHopperItemsPerTransfer()    { return hopperItemsPerTransfer; }
+    public static int getEssencePerDeath()           { return essencePerDeath; }
     public static int getHopperTransferInterval()    { return hopperTransferInterval; }
     public static int getHopperFluidPerTick()        { return hopperFluidPerTick; }
     // Energy and chemicals aren't moved on Fabric (no energy API in Fabric itself, no Mekanism).
@@ -156,6 +158,8 @@ public final class MFSConfigImpl {
                     hopperTransferInterval = clamp(oh.get("itemTransferIntervalTicks").getAsInt(), 1, 200);
                 if (oh.has("fluidPerTick"))
                     hopperFluidPerTick = clamp(oh.get("fluidPerTick").getAsInt(), 1, Integer.MAX_VALUE);
+                if (oh.has("essencePerDeath"))
+                    essencePerDeath = clamp(oh.get("essencePerDeath").getAsInt(), 1, 16000);
             }
 
             if (root.has("dnaSamplePacks")) {
@@ -250,6 +254,7 @@ public final class MFSConfigImpl {
         oh.addProperty("itemsPerTransfer", MFSConfig.DEFAULT_HOPPER_ITEMS_PER_TRANSFER);
         oh.addProperty("itemTransferIntervalTicks", MFSConfig.DEFAULT_HOPPER_TRANSFER_INTERVAL);
         oh.addProperty("fluidPerTick", MFSConfig.DEFAULT_HOPPER_FLUID_PER_TICK);
+        oh.addProperty("essencePerDeath", MFSConfig.DEFAULT_ESSENCE_PER_DEATH);
         root.add("hoppers", oh);
 
         JsonObject packs = new JsonObject();

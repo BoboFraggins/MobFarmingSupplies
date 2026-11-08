@@ -1,0 +1,8 @@
+{
+  "name": "book.mobfarmingsupplies.guide.essences.name",
+  "icon": {
+    "id": "mobfarmingsupplies:essence_hopper"
+  },
+  "display_mode": "index",
+  "sort_number": 5
+}

@@ -13,7 +13,7 @@ import net.minecraft.resources.Identifier;
  * The Absorption Hopper's side grid: whether it pushes collected items and XP out of each side.
  * Mode 0 = not pushing, 1 = pushing. The push mask's bit layout is {@link IAbsorptionHopperBlockEntity#bitToWorldDir}.
  */
-final class PushSidesModel implements SideGridPane.Model {
+public final class PushSidesModel implements SideGridPane.Model {
 
     private static final Identifier TEX_ON =
             Identifier.fromNamespaceAndPath("mobfarmingsupplies", "widget/push_button_on");
@@ -21,7 +21,7 @@ final class PushSidesModel implements SideGridPane.Model {
     private final BlockPos pos;
     private int mask;
 
-    PushSidesModel(BlockPos pos) {
+    public PushSidesModel(BlockPos pos) {
         this.pos = pos;
         refresh();
     }

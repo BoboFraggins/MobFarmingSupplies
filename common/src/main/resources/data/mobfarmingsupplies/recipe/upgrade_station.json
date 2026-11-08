@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "minecraft:crafting_table",
+    "mobfarmingsupplies:blank_upgrade",
+    "minecraft:blue_stained_glass"
+  ],
+  "result": {
+    "id": "mobfarmingsupplies:upgrade_station",
+    "count": 1
+  }
+}

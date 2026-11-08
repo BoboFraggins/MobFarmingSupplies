@@ -24,7 +24,7 @@ public class WitherInhibitorBlock extends EnderInhibitorBlock {
     }
 
     @Override
-    public MapCodec<WitherInhibitorBlock> codec() {
+    public MapCodec<? extends WitherInhibitorBlock> codec() {
         return CODEC;
     }
 

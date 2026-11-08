@@ -58,6 +58,7 @@ public class MobFarmingSuppliesFabric implements ModInitializer {
         RecipeSynchronization.synchronizeRecipeSerializer(Registration.EXPERIENCE_TANK_SERIALIZER.get());
         RecipeSynchronization.synchronizeRecipeSerializer(Registration.SKULL_LIGHTS_SERIALIZER.get());
         RecipeSynchronization.synchronizeRecipeSerializer(Registration.INCUBATING_SERIALIZER.get());
+        RecipeSynchronization.synchronizeRecipeSerializer(Registration.UPGRADING_SERIALIZER.get());
         RecipeSynchronization.synchronizeRecipeSerializer(Registration.SKULL_LIGHTS_DYE_SERIALIZER.get());
         RecipeSynchronization.synchronizeRecipeSerializer(Registration.BRIDGE_PAIR_SERIALIZER.get());
         RecipeSynchronization.synchronizeRecipeSerializer(Registration.BRIDGE_LINK_SERIALIZER.get());
