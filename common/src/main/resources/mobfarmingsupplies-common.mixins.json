@@ -13,7 +13,9 @@
     "InventoryChangeTriggerMixin",
     "LivingEntityLootMixin",
     "EntityVexCollisionMixin",
-    "WitherBossMixin"
+    "WitherBossMixin",
+    "SonicBoomMixin",
+    "WardenMixin"
   ],
   "client": [
     "HumanoidModelMixin",

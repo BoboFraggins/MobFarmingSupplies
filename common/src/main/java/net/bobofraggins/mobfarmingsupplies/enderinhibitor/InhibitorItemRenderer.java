@@ -6,7 +6,9 @@ import com.mojang.math.Axis;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import java.util.Optional;
 import java.util.function.Consumer;
+import net.bobofraggins.mobfarmingsupplies.mobhead.MobHeads;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
@@ -21,6 +23,7 @@ import net.minecraft.data.AtlasIds;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.util.Util;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
@@ -30,8 +33,8 @@ import org.joml.Vector3f;
 import org.joml.Vector3fc;
 
 /**
- * Item renderer for the Ender and Wither Inhibitors: the item that floats above the prongs (an
- * Ender Pearl or a Wither Skeleton Skull), turning as it does on the placed block, and the block's
+ * Item renderer for the Ender, Wither and Warden Inhibitors: the item that floats above the prongs
+ * (an Ender Pearl, a Wither Skeleton Skull or a Warden Head), turning as it does on the placed block, and the block's
  * particles. Particles only exist in the world, so these are drawn here as particle sprites that
  * move as the real ones do, scaled down to stay around the item. Drawn over the block model by the
  * item's composite model, which is marked animated so icons keep moving.
@@ -58,13 +61,16 @@ public class InhibitorItemRenderer implements SpecialModelRenderer<Void> {
     }
 
     private final Item floating;
+    /** For a {@code mob_head} floating item, whose head it is. */
+    private final Optional<EntityType<?>> mobHead;
     private final Particles particles;
     /** The floating item's model, resolved on first use; its look never changes. */
     @Nullable private ItemStackRenderState floatingState;
     @Nullable private TextureAtlasSprite[] sprites;
 
-    public InhibitorItemRenderer(Item floating, Particles particles) {
+    public InhibitorItemRenderer(Item floating, Optional<EntityType<?>> mobHead, Particles particles) {
         this.floating = floating;
+        this.mobHead = mobHead;
         this.particles = particles;
     }
 
@@ -83,7 +89,8 @@ public class InhibitorItemRenderer implements SpecialModelRenderer<Void> {
         if (floatingState == null) {
             floatingState = new ItemStackRenderState();
             Minecraft.getInstance().getItemModelResolver().updateForTopItem(
-                    floatingState, new ItemStack(floating), ItemDisplayContext.FIXED, null, null, 0);
+                    floatingState, mobHead.map(MobHeads::modHead).orElseGet(() -> new ItemStack(floating)),
+                    ItemDisplayContext.FIXED, null, null, 0);
         }
         poseStack.pushPose();
         poseStack.translate(0.5f, 0.5f + OFFSET, 0.5f);
@@ -197,15 +204,16 @@ public class InhibitorItemRenderer implements SpecialModelRenderer<Void> {
         return (h >>> 40) / (float) (1 << 24);
     }
 
-    public record Unbaked(Item floating, Particles particles) implements SpecialModelRenderer.Unbaked<Void> {
+    public record Unbaked(Item floating, Optional<EntityType<?>> mobHead, Particles particles) implements SpecialModelRenderer.Unbaked<Void> {
         public static final MapCodec<Unbaked> MAP_CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
                 BuiltInRegistries.ITEM.byNameCodec().fieldOf("item").forGetter(Unbaked::floating),
+                BuiltInRegistries.ENTITY_TYPE.byNameCodec().optionalFieldOf("mob_head").forGetter(Unbaked::mobHead),
                 Particles.CODEC.optionalFieldOf("particles", Particles.NONE).forGetter(Unbaked::particles)
         ).apply(i, Unbaked::new));
 
         @Override
         public SpecialModelRenderer<Void> bake(SpecialModelRenderer.BakingContext context) {
-            return new InhibitorItemRenderer(floating, particles);
+            return new InhibitorItemRenderer(floating, mobHead, particles);
         }
 
         @Override

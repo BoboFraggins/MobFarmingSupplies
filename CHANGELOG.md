@@ -3,6 +3,7 @@
 ## 26.3.0.8, 26.2.0.9, 26.1.2.11, 1.21.1.3
 
 * Added Upgrade Station (used for all upgrade crafts now)
+* Added Warden Inhibitor
 
 * Fixed side configuration on Absorption Hopper when next to EnderIO conduits
 * Fixed Jade name of Giant Player Lawn Ornament when assigned a player

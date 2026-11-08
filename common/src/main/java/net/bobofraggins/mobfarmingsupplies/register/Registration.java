@@ -638,6 +638,26 @@ public final class Registration {
                     () -> BlockEntityTypePlatform.create(net.bobofraggins.mobfarmingsupplies.witherinhibitor.WitherInhibitorBlockEntity::new,
                             WITHER_INHIBITOR.get()));
 
+    // ── Warden Inhibitor ──────────────────────────────────────────────────────────
+
+    public static final RegistrySupplier<net.bobofraggins.mobfarmingsupplies.wardeninhibitor.WardenInhibitorBlock> WARDEN_INHIBITOR =
+            BLOCKS.register("warden_inhibitor",
+                    () -> new net.bobofraggins.mobfarmingsupplies.wardeninhibitor.WardenInhibitorBlock(BlockBehaviour.Properties.of()
+                            .setId(blockKey("warden_inhibitor"))
+                            .strength(3.0f)
+                            .sound(SoundType.METAL)
+                            .noOcclusion()));
+
+    public static final RegistrySupplier<BlockItem> WARDEN_INHIBITOR_ITEM =
+            ITEMS.register("warden_inhibitor",
+                    () -> new BlockItem(WARDEN_INHIBITOR.get(), new Item.Properties()
+                            .setId(itemKey("warden_inhibitor"))));
+
+    public static final RegistrySupplier<BlockEntityType<net.bobofraggins.mobfarmingsupplies.wardeninhibitor.WardenInhibitorBlockEntity>> WARDEN_INHIBITOR_BE_TYPE =
+            BLOCK_ENTITIES.register("warden_inhibitor",
+                    () -> BlockEntityTypePlatform.create(net.bobofraggins.mobfarmingsupplies.wardeninhibitor.WardenInhibitorBlockEntity::new,
+                            WARDEN_INHIBITOR.get()));
+
     // ── Fan ───────────────────────────────────────────────────────────────────────
 
     public static final RegistrySupplier<FanBlock> FAN =
@@ -1516,6 +1536,7 @@ public final class Registration {
                         output.accept(DISENCHANTER_ITEM.get());
                         output.accept(ENDER_INHIBITOR_ITEM.get());
                         output.accept(WITHER_INHIBITOR_ITEM.get());
+                        output.accept(WARDEN_INHIBITOR_ITEM.get());
                         output.accept(MAGIC_HAT_ITEM.get());
                         output.accept(PRESENT_ITEM.get());
                         output.accept(PICNIC_BASKET_ITEM.get());

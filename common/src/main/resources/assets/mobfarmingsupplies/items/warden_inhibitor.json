@@ -1,0 +1,64 @@
+{
+  "model": {
+    "type": "mobfarmingsupplies:animated",
+    "model": {
+      "type": "minecraft:select",
+      "property": "minecraft:display_context",
+      "cases": [
+        {
+          "when": "gui",
+          "model": {
+            "type": "minecraft:composite",
+            "models": [
+              {
+                "type": "minecraft:special",
+                "base": "mobfarmingsupplies:item/gui_backdrop",
+                "model": {
+                  "type": "mobfarmingsupplies:gui_backdrop"
+                }
+              },
+              {
+                "type": "minecraft:composite",
+                "models": [
+                  {
+                    "type": "minecraft:model",
+                    "model": "mobfarmingsupplies:item/warden_inhibitor"
+                  },
+                  {
+                    "type": "minecraft:special",
+                    "base": "mobfarmingsupplies:item/warden_inhibitor",
+                    "model": {
+                      "type": "mobfarmingsupplies:inhibitor_item",
+                      "item": "mobfarmingsupplies:mob_head",
+                      "mob_head": "minecraft:warden",
+                      "particles": "smoke"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "fallback": {
+        "type": "minecraft:composite",
+        "models": [
+          {
+            "type": "minecraft:model",
+            "model": "mobfarmingsupplies:item/warden_inhibitor"
+          },
+          {
+            "type": "minecraft:special",
+            "base": "mobfarmingsupplies:item/warden_inhibitor",
+            "model": {
+              "type": "mobfarmingsupplies:inhibitor_item",
+              "item": "mobfarmingsupplies:mob_head",
+              "mob_head": "minecraft:warden",
+              "particles": "smoke"
+            }
+          }
+        ]
+      }
+    }
+  }
+}
