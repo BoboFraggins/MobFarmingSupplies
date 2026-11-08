@@ -1549,10 +1549,6 @@ public final class Registration {
                         if (!guide.isEmpty()) output.accept(guide);
                         output.accept(ABSORPTION_HOPPER_ITEM.get());
                         output.accept(ESSENCE_HOPPER_ITEM.get());
-                        for (Essence essence : Essence.values()) {
-                            output.accept(ESSENCE_FILTERS.get(essence).get());
-                            output.accept(ESSENCE_BUCKETS.get(essence).get());
-                        }
                         output.accept(OMNI_HOPPER_ITEM.get());
                         output.accept(EINSTEIN_ROSEN_BRIDGE_ITEM.get());
                         output.accept(LOGISTIC_SORTER_ITEM.get());
@@ -1633,6 +1629,10 @@ public final class Registration {
                         output.accept(HEAD_PIKE_ITEM.get());
                         // A Mob Head for every mob without a vanilla head (the ones Beheading drops).
                         for (EntityType<?> type : MobHeads.MOD_HEADS) output.accept(MobHeads.modHead(type));
+                        for (Essence essence : Essence.values()) {
+                            output.accept(ESSENCE_FILTERS.get(essence).get());
+                            output.accept(ESSENCE_BUCKETS.get(essence).get());
+                        }
                         output.accept(RED_ALERT_BUTTON_ITEM.get());
                         output.accept(DRAMATIC_BUTTON_ITEM.get());
                         output.accept(RIMSHOT_BUTTON_ITEM.get());

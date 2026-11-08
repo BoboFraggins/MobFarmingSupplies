@@ -14,17 +14,17 @@ import org.jetbrains.annotations.Nullable;
  * {@code blockbench/essence_assets.py} and its filter's recipe is an {@code upgrading} recipe.
  */
 public enum Essence {
-    VENOM("venom", EntityType.SPIDER, 0xFF1F6B2E),
-    SPACETIME("spacetime", EntityType.ENDERMAN, 0xFF8A2BE2),
-    WATER("water", EntityType.SQUID, 0xFF2F7BFF),
-    FIRE("fire", EntityType.BLAZE, 0xFFE8281E),
-    SIGHT("sight", EntityType.BAT, 0xFFF2F2F2),
-    WITHER("wither", EntityType.WITHER_SKELETON, 0xFF4A4A4E),
-    GROWTH("growth", EntityType.COW, 0xFFFFB627),
+    BACON("bacon", EntityType.PIG, 0xFFFFA6C1),
     COLOR("color", EntityType.SHEEP, RainbowColor.RAINBOW),
+    FIRE("fire", EntityType.BLAZE, 0xFFE8281E),
     FROST("frost", EntityType.BREEZE, 0xFF9BD6FF),
+    GROWTH("growth", EntityType.COW, 0xFFFFB627),
+    SIGHT("sight", EntityType.BAT, 0xFFF2F2F2),
+    SPACETIME("spacetime", EntityType.ENDERMAN, 0xFF8A2BE2),
     UNDEATH("undeath", EntityType.ZOMBIE, 0xFF7BE02A),
-    BACON("bacon", EntityType.PIG, 0xFFFFA6C1);
+    VENOM("venom", EntityType.SPIDER, 0xFF1F6B2E),
+    WATER("water", EntityType.SQUID, 0xFF2F7BFF),
+    WITHER("wither", EntityType.WITHER_SKELETON, 0xFF4A4A4E);
 
     /** Holds the marker colour, since an enum's constants can't refer to its own static fields. */
     private static final class RainbowColor {
