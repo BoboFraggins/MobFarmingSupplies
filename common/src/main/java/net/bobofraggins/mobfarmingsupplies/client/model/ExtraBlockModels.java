@@ -11,6 +11,8 @@ import net.bobofraggins.mobfarmingsupplies.glamping.present.PresentRenderer;
 import net.bobofraggins.mobfarmingsupplies.mobharvester.MobHarvesterRenderer;
 import net.bobofraggins.mobfarmingsupplies.picnicbasket.PicnicBasketRenderer;
 import net.bobofraggins.mobfarmingsupplies.toilet.ToiletBlockEntityRenderer;
+import net.bobofraggins.mobfarmingsupplies.upgradestation.UpgradeStationItemRenderer;
+import net.bobofraggins.mobfarmingsupplies.upgradestation.UpgradeStationRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -45,6 +47,8 @@ public final class ExtraBlockModels {
             PresentRenderer.MODEL_ID,
             ToiletBlockEntityRenderer.LID_MODEL_ID,
             ExperiencePylonRenderer.PYLON_MODEL_ID,
+            UpgradeStationItemRenderer.BASE_MODEL_ID,
+            UpgradeStationRenderer.LID_MODEL_ID,
             IncubatorItemRenderer.BASE_MODEL_ID,
             IncubatorRenderer.LID_MODEL_ID,
             IncubatorRenderer.TEST_TUBE_MODEL_ID,

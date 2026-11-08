@@ -55,6 +55,14 @@ public final class MFSTags {
         public static final TagKey<Item> INCUBATOR_INPUTS = TagKey.create(
                 Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "incubator_inputs"));
 
+        /** What the Upgrade Station's input slot takes: the Blank Upgrade, and any other recipe inputs. */
+        public static final TagKey<Item> UPGRADE_STATION_INPUTS = TagKey.create(
+                Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "upgrade_station_inputs"));
+
+        /** What the Essence Hopper's slot takes: its Essence Filters. */
+        public static final TagKey<Item> ESSENCE_FILTERS = TagKey.create(
+                Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "essence_filters"));
+
         private Items() {}
     }
 
@@ -63,10 +71,10 @@ public final class MFSTags {
         /**
          * Entities in this tag cannot be sampled with the DNA Collector.
          *
-         * <p>Defaults: {@code minecraft:wither}, {@code minecraft:ender_dragon}.
-         * Also includes {@code mob_farming_supplies:no_swab} (optional — ignored when MGU
-         * is not installed) so any mob blocked in MGU is automatically blocked here too.
-         * Extend via data pack with {@code "replace": false}.
+         * <p>Defaults: {@code minecraft:wither}, {@code minecraft:ender_dragon}, {@code minecraft:armor_stand}.
+         * Also includes Mob Grinding Utils' {@code mob_grinding_utils:no_swab}, which this mod
+         * ships too (with MGU's defaults), so packs written for MGU keep working as intended.
+         * Extend either tag via data pack with {@code "replace": false}.
          */
         public static final TagKey<EntityType<?>> NO_DNA_SAMPLING = TagKey.create(
                 Registries.ENTITY_TYPE,

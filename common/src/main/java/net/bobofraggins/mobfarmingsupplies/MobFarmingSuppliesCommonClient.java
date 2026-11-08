@@ -89,6 +89,12 @@ public final class MobFarmingSuppliesCommonClient {
                 Registration.DISENCHANTER_MENU.get(),
                 DisenchanterScreen::new);
         MenuRegistry.registerScreenFactory(
+                Registration.UPGRADE_STATION_MENU.get(),
+                net.bobofraggins.mobfarmingsupplies.upgradestation.UpgradeStationScreen::new);
+        MenuRegistry.registerScreenFactory(
+                Registration.ESSENCE_HOPPER_MENU.get(),
+                net.bobofraggins.mobfarmingsupplies.essencehopper.EssenceHopperScreen::new);
+        MenuRegistry.registerScreenFactory(
                 Registration.ABSORPTION_HOPPER_MENU.get(),
                 AbsorptionHopperScreen::new);
         MenuRegistry.registerScreenFactory(
@@ -133,6 +139,8 @@ public final class MobFarmingSuppliesCommonClient {
         SpecialItemRenderers.register(Registration.LOGISTIC_SORTER_ITEM.get(), new LogisticSorterItemRenderer());
         SpecialItemRenderers.register(Registration.MOB_HEAD_ITEM.get(), new MobHeadItemRenderer());
         SpecialItemRenderers.register(Registration.INCUBATOR_ITEM.get(), new IncubatorItemRenderer());
+        SpecialItemRenderers.register(Registration.UPGRADE_STATION_ITEM.get(),
+                new net.bobofraggins.mobfarmingsupplies.upgradestation.UpgradeStationItemRenderer());
         SpecialItemRenderers.register(Registration.GIANT_SKELETON_ORNAMENT_ITEM.get(),
                 new GiantOrnamentItemRenderer(GiantOrnament.SKELETON));
         SpecialItemRenderers.register(Registration.GIANT_HEROBRINE_ORNAMENT_ITEM.get(),
@@ -141,6 +149,9 @@ public final class MobFarmingSuppliesCommonClient {
                 new GiantOrnamentItemRenderer(GiantOrnament.PLAYER));
         SpecialItemRenderers.register(Registration.ENDER_INHIBITOR_ITEM.get(), new InhibitorItemRenderer(
                 Registration.ENDER_INHIBITOR, Items.ENDER_PEARL, InhibitorItemRenderer.Particles.PORTAL));
+        SpecialItemRenderers.register(Registration.WARDEN_INHIBITOR_ITEM.get(), new InhibitorItemRenderer(
+                Registration.WARDEN_INHIBITOR, () -> net.bobofraggins.mobfarmingsupplies.mobhead.MobHeads.modHead(net.minecraft.world.entity.EntityType.WARDEN),
+                InhibitorItemRenderer.Particles.SMOKE));
         SpecialItemRenderers.register(Registration.WITHER_INHIBITOR_ITEM.get(), new InhibitorItemRenderer(
                 Registration.WITHER_INHIBITOR, Items.WITHER_SKELETON_SKULL, InhibitorItemRenderer.Particles.SMOKE));
     }
@@ -155,7 +166,8 @@ public final class MobFarmingSuppliesCommonClient {
         RenderTypeRegistry.register(RenderType.cutout(),
                 Registration.TANK.get(), Registration.GOLD_TANK.get(), Registration.DIAMOND_TANK.get(),
                 Registration.EMERALD_TANK.get(), Registration.ABSORPTION_HOPPER.get(), Registration.CLONE_O_MATIC.get(),
-                Registration.ENDER_INHIBITOR.get(), Registration.WITHER_INHIBITOR.get(), Registration.FAN.get(),
+                Registration.ENDER_INHIBITOR.get(), Registration.WITHER_INHIBITOR.get(), Registration.WARDEN_INHIBITOR.get(),
+                Registration.ESSENCE_HOPPER.get(), Registration.FAN.get(),
                 Registration.FILTER_SCRIBING_TERMINAL.get(), Registration.HALTING_PLATE.get(),
                 Registration.LOGISTIC_SORTER.get(), Registration.MOB_HARVESTER.get(), Registration.OMNI_HOPPER.get(),
                 Registration.PRESENT.get(), Registration.TOILET.get(), Registration.VECTOR_PLATE.get(),

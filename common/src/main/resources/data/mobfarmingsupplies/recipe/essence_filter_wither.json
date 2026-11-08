@@ -1,0 +1,13 @@
+{
+  "type": "mobfarmingsupplies:upgrading",
+  "item": {
+    "item": "minecraft:wither_skeleton_skull"
+  },
+  "input": {
+    "item": "mobfarmingsupplies:blank_upgrade"
+  },
+  "result": {
+    "id": "mobfarmingsupplies:essence_filter_wither",
+    "count": 1
+  }
+}

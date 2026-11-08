@@ -1,16 +1,13 @@
 {
-  "type": "minecraft:crafting_shapeless",
-  "category": "misc",
-  "ingredients": [
-    {
-      "item": "minecraft:ladder"
-    },
-    {
-      "item": "mobfarmingsupplies:blank_upgrade"
-    }
-  ],
+  "type": "mobfarmingsupplies:upgrading",
+  "item": {
+    "item": "minecraft:ladder"
+  },
+  "input": {
+    "item": "mobfarmingsupplies:blank_upgrade"
+  },
   "result": {
-    "count": 1,
-    "id": "mobfarmingsupplies:fan_upgrade_height"
+    "id": "mobfarmingsupplies:fan_upgrade_height",
+    "count": 1
   }
 }

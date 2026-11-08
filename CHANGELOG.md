@@ -1,5 +1,17 @@
 # Mob Farming Supplies
 
+## 26.3.0.8, 26.2.0.9, 26.1.2.11, 1.21.1.3
+
+* Added Upgrade Station (used for all upgrade crafts now)
+* Added Warden Inhibitor
+* Added Essence Hopper
+* Added Essences of Bacon, Color, Fire, Frost, Growth, Sight, Spacetime,
+  Undeath, Venom, Water, and Wither
+
+* Fixed side configuration on Absorption Hopper when next to EnderIO conduits
+* Fixed Jade name of Giant Player Lawn Ornament when assigned a player
+* Honor mob_grinding_utils:no_swab along with mobfarmingsupplies:no_dna_sampling
+
 ## 26.3.0.7, 26.2.0.8, 26.1.2.10, 1.21.1.2
 
 * Added Player Exclusion Glass

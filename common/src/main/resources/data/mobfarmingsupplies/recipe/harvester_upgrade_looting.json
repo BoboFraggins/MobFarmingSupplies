@@ -1,16 +1,13 @@
 {
-  "type": "minecraft:crafting_shapeless",
-  "category": "misc",
-  "ingredients": [
-    {
-      "tag": "c:gems/emerald"
-    },
-    {
-      "item": "mobfarmingsupplies:blank_upgrade"
-    }
-  ],
+  "type": "mobfarmingsupplies:upgrading",
+  "item": {
+    "tag": "c:gems/emerald"
+  },
+  "input": {
+    "item": "mobfarmingsupplies:blank_upgrade"
+  },
   "result": {
-    "count": 1,
-    "id": "mobfarmingsupplies:harvester_upgrade_looting"
+    "id": "mobfarmingsupplies:harvester_upgrade_looting",
+    "count": 1
   }
 }

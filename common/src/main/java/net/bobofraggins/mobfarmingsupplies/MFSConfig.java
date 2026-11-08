@@ -108,6 +108,7 @@ public final class MFSConfig {
     public static final int DEFAULT_HOPPER_FLUID_PER_TICK = 1000;
     public static final int DEFAULT_HOPPER_ENERGY_PER_TICK = 10000;
     public static final int DEFAULT_HOPPER_CHEMICAL_PER_TICK = 1000;
+    public static final int DEFAULT_ESSENCE_PER_DEATH = 100;
 
     /** Tank defaults: the basic tank's size in buckets, and the multiplier per upgrade tier. */
     public static final int DEFAULT_TANK_BASE_CAPACITY = 64;
@@ -197,6 +198,10 @@ public final class MFSConfig {
     /** Ticks between every hopper's transfers, of every material (default: 8). */
     @ExpectPlatform
     public static int getHopperTransferInterval() { throw new AssertionError(); }
+
+    /** Essence (mB) an Essence Hopper extracts from each death (default: 100). */
+    @ExpectPlatform
+    public static int getEssencePerDeath() { throw new AssertionError(); }
 
     /** Fluid (mB) every hopper moves per side per tick (default: 1000). */
     @ExpectPlatform

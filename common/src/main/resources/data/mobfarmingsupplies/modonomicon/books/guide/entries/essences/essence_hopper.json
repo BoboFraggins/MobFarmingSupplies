@@ -1,0 +1,35 @@
+{
+  "type": "modonomicon:content",
+  "id": "mobfarmingsupplies:essences/essence_hopper",
+  "category": "mobfarmingsupplies:essences",
+  "name": "book.mobfarmingsupplies.guide.essences.essence_hopper.name",
+  "description": "book.mobfarmingsupplies.guide.essences.essence_hopper.description",
+  "icon": {
+    "id": "mobfarmingsupplies:essence_hopper"
+  },
+  "x": 0,
+  "y": 0,
+  "sort_number": 0,
+  "pages": [
+    {
+      "id": "p0",
+      "sort_number": 0,
+      "type": "modonomicon:text",
+      "title": "book.mobfarmingsupplies.guide.essences.essence_hopper.p0.title",
+      "text": "book.mobfarmingsupplies.guide.essences.essence_hopper.p0.text"
+    },
+    {
+      "id": "p1",
+      "sort_number": 1,
+      "type": "modonomicon:text",
+      "title": "book.mobfarmingsupplies.guide.essences.essence_hopper.p1.title",
+      "text": "book.mobfarmingsupplies.guide.essences.essence_hopper.p1.text"
+    },
+    {
+      "id": "p2",
+      "sort_number": 2,
+      "type": "modonomicon:crafting_recipe",
+      "recipe_id_1": "mobfarmingsupplies:essence_hopper"
+    }
+  ]
+}

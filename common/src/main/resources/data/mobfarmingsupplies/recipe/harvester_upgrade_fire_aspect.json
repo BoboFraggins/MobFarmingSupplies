@@ -1,16 +1,13 @@
 {
-  "type": "minecraft:crafting_shapeless",
-  "category": "misc",
-  "ingredients": [
-    {
-      "item": "minecraft:flint_and_steel"
-    },
-    {
-      "item": "mobfarmingsupplies:blank_upgrade"
-    }
-  ],
+  "type": "mobfarmingsupplies:upgrading",
+  "item": {
+    "item": "minecraft:flint_and_steel"
+  },
+  "input": {
+    "item": "mobfarmingsupplies:blank_upgrade"
+  },
   "result": {
-    "count": 1,
-    "id": "mobfarmingsupplies:harvester_upgrade_fire_aspect"
+    "id": "mobfarmingsupplies:harvester_upgrade_fire_aspect",
+    "count": 1
   }
 }

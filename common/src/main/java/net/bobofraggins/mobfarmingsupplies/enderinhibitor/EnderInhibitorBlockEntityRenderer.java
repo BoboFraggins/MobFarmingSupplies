@@ -7,6 +7,8 @@ import net.bobofraggins.mobfarmingsupplies.shared.render.Geometry;
 import net.bobofraggins.mobfarmingsupplies.shared.render.ItemModelResolver;
 import net.bobofraggins.mobfarmingsupplies.shared.render.ItemStackRenderState;
 import net.bobofraggins.mobfarmingsupplies.shared.render.StateBlockEntityRenderer;
+import java.util.function.Supplier;
+import net.bobofraggins.mobfarmingsupplies.mobhead.MobHeads;
 import net.minecraft.Util;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -14,7 +16,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
-import net.minecraft.world.item.Item;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -42,7 +44,7 @@ public class EnderInhibitorBlockEntityRenderer<T extends EnderInhibitorBlockEnti
     /** The area wireframe's colour, red, green and blue. */
     private final int wfR, wfG, wfB;
     /** What floats above the prongs. */
-    private final Item floating;
+    private final Supplier<ItemStack> floating;
     private static final float WF_LINE_WIDTH = 2.0f;
 
     /** The floating item's size; {@link InhibitorItemRenderer} matches it. */
@@ -70,10 +72,10 @@ public class EnderInhibitorBlockEntityRenderer<T extends EnderInhibitorBlockEnti
 
     /** The Ender Inhibitor's: an Ender Pearl, and a violet area matching its portal particles. */
     public EnderInhibitorBlockEntityRenderer(BlockEntityRendererProvider.Context ctx) {
-        this(ctx, Items.ENDER_PEARL, 165, 60, 230);
+        this(ctx, () -> new ItemStack(Items.ENDER_PEARL), 165, 60, 230);
     }
 
-    public EnderInhibitorBlockEntityRenderer(BlockEntityRendererProvider.Context ctx, Item floating, int r, int g, int b) {
+    public EnderInhibitorBlockEntityRenderer(BlockEntityRendererProvider.Context ctx, Supplier<ItemStack> floating, int r, int g, int b) {
         this.itemModelResolver = ItemModelResolver.INSTANCE;
         this.floating = floating;
         this.wfR = r;
@@ -84,7 +86,13 @@ public class EnderInhibitorBlockEntityRenderer<T extends EnderInhibitorBlockEnti
     /** The Wither Inhibitor's: a Wither Skeleton Skull, and a grey area. */
     public static <T extends EnderInhibitorBlockEntity> EnderInhibitorBlockEntityRenderer<T> wither(
             BlockEntityRendererProvider.Context ctx) {
-        return new EnderInhibitorBlockEntityRenderer<>(ctx, Items.WITHER_SKELETON_SKULL, 120, 120, 120);
+        return new EnderInhibitorBlockEntityRenderer<>(ctx, () -> new ItemStack(Items.WITHER_SKELETON_SKULL), 120, 120, 120);
+    }
+
+    /** The Warden Inhibitor's: a Warden Head, and a sculk-teal area. */
+    public static <T extends EnderInhibitorBlockEntity> EnderInhibitorBlockEntityRenderer<T> warden(
+            BlockEntityRendererProvider.Context ctx) {
+        return new EnderInhibitorBlockEntityRenderer<>(ctx, () -> MobHeads.modHead(EntityType.WARDEN), 20, 160, 170);
     }
 
     // ── Render state ──────────────────────────────────────────────────────────────
@@ -142,7 +150,7 @@ public class EnderInhibitorBlockEntityRenderer<T extends EnderInhibitorBlockEnti
         }
 
         // Populate item render state (runs on the main thread, safe to call MC APIs).
-        if (floatingStack == null) floatingStack = new ItemStack(floating);
+        if (floatingStack == null) floatingStack = floating.get();
         state.itemState.clear();
         itemModelResolver.updateForTopItem(
                 state.itemState,

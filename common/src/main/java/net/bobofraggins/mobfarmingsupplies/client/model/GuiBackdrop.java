@@ -34,7 +34,8 @@ public final class GuiBackdrop {
         }
         return item == Registration.WITHER_PROOF_GLASS_ITEM.get() || item == Registration.MOB_EXCLUSION_GLASS_ITEM.get()
                 || item == Registration.TANK_ITEM.get() || item == Registration.ENDER_INHIBITOR_ITEM.get()
-                || item == Registration.WITHER_INHIBITOR_ITEM.get() || item == Registration.CLONE_O_MATIC_ITEM.get()
+                || item == Registration.WITHER_INHIBITOR_ITEM.get() || item == Registration.WARDEN_INHIBITOR_ITEM.get()
+                || item == Registration.ESSENCE_HOPPER_ITEM.get() || item == Registration.CLONE_O_MATIC_ITEM.get()
                 || item == Registration.MAGIC_HAT_ITEM.get() || item == Registration.MOB_HARVESTER_ITEM.get()
                 || item == Registration.EXPERIENCE_SYRINGE.get() || item == Registration.ABSORPTION_HOPPER_ITEM.get()
                 || item == Registration.EINSTEIN_ROSEN_BRIDGE_ITEM.get() || item == Registration.LOGISTIC_SORTER_ITEM.get()

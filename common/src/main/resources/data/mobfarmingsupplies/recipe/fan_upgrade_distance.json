@@ -1,16 +1,13 @@
 {
-  "type": "minecraft:crafting_shapeless",
-  "category": "misc",
-  "ingredients": [
-    {
-      "tag": "c:feathers"
-    },
-    {
-      "item": "mobfarmingsupplies:blank_upgrade"
-    }
-  ],
+  "type": "mobfarmingsupplies:upgrading",
+  "item": {
+    "tag": "c:feathers"
+  },
+  "input": {
+    "item": "mobfarmingsupplies:blank_upgrade"
+  },
   "result": {
-    "count": 1,
-    "id": "mobfarmingsupplies:fan_upgrade_distance"
+    "id": "mobfarmingsupplies:fan_upgrade_distance",
+    "count": 1
   }
 }

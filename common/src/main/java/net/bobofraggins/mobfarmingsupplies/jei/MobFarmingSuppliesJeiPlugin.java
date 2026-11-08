@@ -60,6 +60,7 @@ public class MobFarmingSuppliesJeiPlugin implements IModPlugin {
                 AnvilCrushingGuide.category(guiHelper),
                 new FilterScribingCategory(guiHelper), new FilteringCategory(guiHelper), new XpRepairingCategory(guiHelper), new HeadPikeGuide(guiHelper), BeheadingGuide.category(guiHelper),
                 new DnaSamplingGuide(guiHelper), new CloningGuide(guiHelper), new IncubatingCategory(guiHelper),
+                new UpgradingCategory(guiHelper),
                 new DisenchantingCategory(guiHelper));
     }
 
@@ -76,6 +77,7 @@ public class MobFarmingSuppliesJeiPlugin implements IModPlugin {
         reg.addRecipes(DnaSamplingGuide.RECIPE_TYPE, List.of(DnaSamplingGuide.recipe()));
         reg.addRecipes(CloningGuide.RECIPE_TYPE, List.of(CloningGuide.recipe()));
         reg.addRecipes(IncubatingCategory.RECIPE_TYPE, IncubatingCategory.displays(incubatingRecipes()));
+        reg.addRecipes(UpgradingCategory.RECIPE_TYPE, UpgradingCategory.displays(upgradingRecipes()));
         reg.addRecipes(DisenchantingCategory.RECIPE_TYPE, DisenchantingCategory.displays());
     }
 
@@ -145,9 +147,19 @@ public class MobFarmingSuppliesJeiPlugin implements IModPlugin {
         reg.addRecipeCatalyst(Registration.DNA_COLLECTOR.get().getDefaultInstance(), DnaSamplingGuide.RECIPE_TYPE);
         reg.addRecipeCatalyst(Registration.CLONE_O_MATIC_ITEM.get().getDefaultInstance(), CloningGuide.RECIPE_TYPE);
         reg.addRecipeCatalyst(Registration.INCUBATOR_ITEM.get().getDefaultInstance(), IncubatingCategory.RECIPE_TYPE);
+        reg.addRecipeCatalyst(Registration.UPGRADE_STATION_ITEM.get().getDefaultInstance(), UpgradingCategory.RECIPE_TYPE);
         reg.addRecipeCatalyst(Registration.DISENCHANTER_ITEM.get().getDefaultInstance(), DisenchantingCategory.RECIPE_TYPE);
         reg.addRecipeCatalyst(Registration.XP_ANVIL_ITEM.get().getDefaultInstance(), XpRepairingCategory.RECIPE_TYPE);
         reg.addRecipeCatalyst(Registration.HEAD_PIKE_ITEM.get().getDefaultInstance(), HeadPikeGuide.RECIPE_TYPE);
+    }
+
+    /** The Upgrade Station's recipes the server sent this client (1.21.1 sends every recipe). */
+    private static List<net.bobofraggins.mobfarmingsupplies.upgradestation.UpgradingRecipe> upgradingRecipes() {
+        var level = net.minecraft.client.Minecraft.getInstance().level;
+        if (level == null) return List.of();
+        return level.getRecipeManager().getAllRecipesFor(Registration.UPGRADING_TYPE.get()).stream()
+                .map(holder -> holder.value())
+                .toList();
     }
 
     /** The incubating recipes the server sent this client (1.21.1 sends every recipe). */

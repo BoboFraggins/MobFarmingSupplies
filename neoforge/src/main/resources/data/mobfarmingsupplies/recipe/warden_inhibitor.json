@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " P ",
+    " O ",
+    " S "
+  ],
+  "key": {
+    "P": {
+      "type": "neoforge:components",
+      "items": "mobfarmingsupplies:mob_head",
+      "components": {
+        "mobfarmingsupplies:mob_head_type": "minecraft:warden"
+      }
+    },
+    "O": {
+      "tag": "c:obsidians"
+    },
+    "S": {
+      "item": "minecraft:stone_slab"
+    }
+  },
+  "result": {
+    "id": "mobfarmingsupplies:warden_inhibitor",
+    "count": 1
+  },
+  "category": "misc"
+}

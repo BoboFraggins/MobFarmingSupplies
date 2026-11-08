@@ -1,6 +1,7 @@
 package net.bobofraggins.mobfarmingsupplies.neoforge.xpjuice;
 
 import net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommon;
+import net.bobofraggins.mobfarmingsupplies.essencehopper.Essence;
 import net.bobofraggins.mobfarmingsupplies.neoforge.register.NeoForgeOnlyRegistration;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -34,5 +35,25 @@ public final class XpJuiceClientEvents {
                 return 0xFFFFFFFF; // no tint: the textures are green themselves
             }
         }, NeoForgeOnlyRegistration.XP_JUICE_TYPE.get());
+        for (Essence essence : Essence.values()) {
+            ResourceLocation still = ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "block/" + essence.fluidId() + "_still");
+            ResourceLocation flow = ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "block/" + essence.fluidId() + "_flow");
+            event.registerFluidType(new IClientFluidTypeExtensions() {
+                @Override
+                public ResourceLocation getStillTexture() {
+                    return still;
+                }
+
+                @Override
+                public ResourceLocation getFlowingTexture() {
+                    return flow;
+                }
+
+                @Override
+                public int getTintColor() {
+                    return 0xFFFFFFFF; // no tint: the textures are coloured themselves
+                }
+            }, NeoForgeOnlyRegistration.ESSENCE_TYPES.get(essence).get());
+        }
     }
 }

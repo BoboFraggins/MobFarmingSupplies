@@ -1,0 +1,7 @@
+{
+  "parent": "mobfarmingsupplies:block/absorption_hopper_north",
+  "textures": {
+    "0": "mobfarmingsupplies:block/essence_hopper_texture",
+    "particle": "mobfarmingsupplies:block/essence_hopper_texture"
+  }
+}

@@ -5,6 +5,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -12,6 +13,7 @@ import net.minecraft.world.item.component.ResolvableProfile;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.Mirror;
@@ -89,6 +91,16 @@ public class GiantOrnamentBlock extends Block implements EntityBlock {
                 && level.getBlockEntity(pos) instanceof GiantOrnamentBlockEntity be) {
             be.claim(new ResolvableProfile(player.getGameProfile()));
         }
+    }
+
+    /** Pick block (and Jade's name, which comes from it) carries the owner, so it reads "Giant <owner> Lawn Ornament". */
+    @Override
+    public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state) {
+        ItemStack stack = super.getCloneItemStack(level, pos, state);
+        if (level.getBlockEntity(pos) instanceof GiantOrnamentBlockEntity be && be.owner() != null) {
+            stack.set(DataComponents.PROFILE, be.owner());
+        }
+        return stack;
     }
 
     @Override

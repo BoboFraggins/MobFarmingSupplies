@@ -26,6 +26,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.bobofraggins.mobfarmingsupplies.shared.nbt.ValueInput;
@@ -115,7 +116,11 @@ public class AbsorptionHopperBlockEntity extends BlockEntity implements SideOrie
     // ── Constructor ─────────────────────────────────────────────────────────────
 
     public AbsorptionHopperBlockEntity(BlockPos pos, BlockState state) {
-        super(MFSRegistryHelper.getBEType("absorption_hopper"), pos, state);
+        this(MFSRegistryHelper.getBEType("absorption_hopper"), pos, state);
+    }
+
+    protected AbsorptionHopperBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+        super(type, pos, state);
     }
 
     // ── Server tick ─────────────────────────────────────────────────────────────
@@ -129,7 +134,7 @@ public class AbsorptionHopperBlockEntity extends BlockEntity implements SideOrie
         tickCounter++;
         if (transferSchedule.due(pos)) {
             transferSchedule.attempt(TransferSchedule.Kind.ITEMS,
-                    () -> AbsorptionHopperBlockEntityPlatform.pushItems(this, level, pos));
+                    () -> pushItems(level, pos));
             transferSchedule.attempt(TransferSchedule.Kind.FLUIDS,
                     () -> AbsorptionHopperBlockEntityPlatform.pushFluid(this, level, pos));
         }
@@ -142,18 +147,15 @@ public class AbsorptionHopperBlockEntity extends BlockEntity implements SideOrie
         }
     }
 
+    /** Passes stored items on to the push sides; returns whether anything moved. */
+    protected boolean pushItems(Level level, BlockPos pos) {
+        return AbsorptionHopperBlockEntityPlatform.pushItems(this, level, pos);
+    }
+
     // ── Pickup ──────────────────────────────────────────────────────────────────
 
-    private void pickupPhase(Level level, BlockPos pos) {
-        if (cachedPickupBox == null) {
-            double cx = pos.getX() + 0.5 + offsetX;
-            double cy = pos.getY() + 0.5 + offsetY;
-            double cz = pos.getZ() + 0.5 + offsetZ;
-            cachedPickupBox = new AABB(
-                    cx - PICKUP_RADIUS, cy - PICKUP_RADIUS, cz - PICKUP_RADIUS,
-                    cx + PICKUP_RADIUS, cy + PICKUP_RADIUS, cz + PICKUP_RADIUS);
-        }
-        AABB box = cachedPickupBox;
+    protected void pickupPhase(Level level, BlockPos pos) {
+        AABB box = pickupBox();
         boolean picked = false;
 
         List<ItemEntity> items = level.getEntitiesOfClass(ItemEntity.class, box,
@@ -193,6 +195,19 @@ public class AbsorptionHopperBlockEntity extends BlockEntity implements SideOrie
             }
         }
         if (picked) transferSchedule.reset(); // something new to pass on
+    }
+
+    /** The pickup zone, in world coordinates. */
+    protected AABB pickupBox() {
+        if (cachedPickupBox == null) {
+            double cx = worldPosition.getX() + 0.5 + offsetX;
+            double cy = worldPosition.getY() + 0.5 + offsetY;
+            double cz = worldPosition.getZ() + 0.5 + offsetZ;
+            cachedPickupBox = new AABB(
+                    cx - PICKUP_RADIUS, cy - PICKUP_RADIUS, cz - PICKUP_RADIUS,
+                    cx + PICKUP_RADIUS, cy + PICKUP_RADIUS, cz + PICKUP_RADIUS);
+        }
+        return cachedPickupBox;
     }
 
     private boolean canInsertItem(ItemStack incoming) {

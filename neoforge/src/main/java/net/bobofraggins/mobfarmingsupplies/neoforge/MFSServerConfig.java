@@ -108,6 +108,7 @@ public final class MFSServerConfig {
     public static final ModConfigSpec.DoubleValue SMORE_CHEST_CHANCE;
 
     public static final ModConfigSpec.IntValue OMNI_HOPPER_ITEMS_PER_TRANSFER;
+    public static final ModConfigSpec.IntValue ESSENCE_PER_DEATH;
     public static final ModConfigSpec.IntValue OMNI_HOPPER_TRANSFER_INTERVAL;
     public static final ModConfigSpec.IntValue OMNI_HOPPER_FLUID_PER_TICK;
     public static final ModConfigSpec.IntValue OMNI_HOPPER_ENERGY_PER_TICK;
@@ -412,6 +413,9 @@ public final class MFSServerConfig {
         OMNI_HOPPER_CHEMICAL_PER_TICK = b
                 .comment("Mekanism chemicals (mB) moved per input side each tick (Omnidirectional Hopper and Bridge).")
                 .defineInRange("chemicalPerTick", MFSConfig.DEFAULT_HOPPER_CHEMICAL_PER_TICK, 1, Integer.MAX_VALUE);
+        ESSENCE_PER_DEATH = b
+                .comment("Essence (mB) an Essence Hopper extracts from each mob that dies in its zone.")
+                .defineInRange("essencePerDeath", MFSConfig.DEFAULT_ESSENCE_PER_DEATH, 1, 16000);
         b.pop();
 
         SPEC = b.build();

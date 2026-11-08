@@ -1,16 +1,13 @@
 {
-  "type": "minecraft:crafting_shapeless",
-  "category": "misc",
-  "ingredients": [
-    {
-      "tag": "c:fences"
-    },
-    {
-      "item": "mobfarmingsupplies:blank_upgrade"
-    }
-  ],
+  "type": "mobfarmingsupplies:upgrading",
+  "item": {
+    "tag": "c:fences"
+  },
+  "input": {
+    "item": "mobfarmingsupplies:blank_upgrade"
+  },
   "result": {
-    "count": 1,
-    "id": "mobfarmingsupplies:fan_upgrade_width"
+    "id": "mobfarmingsupplies:fan_upgrade_width",
+    "count": 1
   }
 }

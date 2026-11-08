@@ -38,6 +38,7 @@ public final class EnderInhibitorEvents {
         LifecycleEvent.SERVER_LEVEL_UNLOAD.register(level -> {
             InhibitorRegistry.ENDER.clear(level);
             InhibitorRegistry.WITHER.clear(level);
+            InhibitorRegistry.WARDEN.clear(level);
         });
     }
 }

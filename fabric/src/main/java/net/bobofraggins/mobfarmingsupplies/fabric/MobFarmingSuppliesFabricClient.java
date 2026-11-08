@@ -22,6 +22,7 @@ import net.bobofraggins.mobfarmingsupplies.tank.TankTier;
 import net.bobofraggins.mobfarmingsupplies.tank.fabric.TankItemRenderer;
 import net.bobofraggins.mobfarmingsupplies.tank.fabric.TankRenderer;
 import net.bobofraggins.mobfarmingsupplies.toilet.ToiletBlockEntityRenderer;
+import net.bobofraggins.mobfarmingsupplies.upgradestation.UpgradeStationRenderer;
 import net.bobofraggins.mobfarmingsupplies.experiencepylon.ExperiencePylonRenderer;
 import net.bobofraggins.mobfarmingsupplies.incubator.IncubatorRenderer;
 import net.bobofraggins.mobfarmingsupplies.disenchanter.DisenchanterRenderer;
@@ -42,6 +43,9 @@ public class MobFarmingSuppliesFabricClient implements ClientModInitializer {
         BlockEntityRendererRegistry.register(
                 Registration.WITHER_INHIBITOR_BE_TYPE.get(),
                 EnderInhibitorBlockEntityRenderer::wither);
+        BlockEntityRendererRegistry.register(
+                Registration.WARDEN_INHIBITOR_BE_TYPE.get(),
+                EnderInhibitorBlockEntityRenderer::warden);
         BlockEntityRendererRegistry.register(
                 Registration.FAN_BE_TYPE.get(),
                 FanBlockEntityRenderer::new);
@@ -82,6 +86,9 @@ public class MobFarmingSuppliesFabricClient implements ClientModInitializer {
                 Registration.INCUBATOR_BE_TYPE.get(),
                 IncubatorRenderer::new);
         BlockEntityRendererRegistry.register(
+                Registration.UPGRADE_STATION_BE_TYPE.get(),
+                UpgradeStationRenderer::new);
+        BlockEntityRendererRegistry.register(
                 Registration.DISENCHANTER_BE_TYPE.get(),
                 DisenchanterRenderer::new);
         BlockEntityRendererRegistry.register(
@@ -89,6 +96,8 @@ public class MobFarmingSuppliesFabricClient implements ClientModInitializer {
                 net.bobofraggins.mobfarmingsupplies.blockbreaker.BlockBreakerRenderer::new);
         net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry.getInstance()
                 .register(Registration.XP_RUNE.get(), XpRuneProvider::new);
+        net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry.getInstance()
+                .register(Registration.ESSENCE_TRAIL.get(), net.bobofraggins.mobfarmingsupplies.essencehopper.EssenceTrailParticle.Provider::new);
         // The toilet seat is invisible: only its rider is drawn.
         EntityRendererRegistry.register(Registration.TOILET_SEAT, NoopRenderer::new);
         ExtraBlockModelsImpl.registerModelLoadingPlugin();

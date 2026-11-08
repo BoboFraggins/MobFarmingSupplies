@@ -1,6 +1,7 @@
 {
   "values": [
     "mobfarmingsupplies:absorption_hopper",
+    "mobfarmingsupplies:essence_hopper",
     "mobfarmingsupplies:clone_o_matic",
     "mobfarmingsupplies:mob_harvester",
     "mobfarmingsupplies:fan",
@@ -24,6 +25,7 @@
     "mobfarmingsupplies:giant_herobrine_lawn_ornament",
     "mobfarmingsupplies:giant_player_lawn_ornament",
     "mobfarmingsupplies:wither_inhibitor",
+    "mobfarmingsupplies:warden_inhibitor",
     "mobfarmingsupplies:block_breaker"
   ]
 }

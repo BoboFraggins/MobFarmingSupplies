@@ -25,8 +25,8 @@ import org.joml.Matrix3f;
 import org.joml.Vector3f;
 
 /**
- * Item renderer for the Ender and Wither Inhibitors: the item that floats above the prongs (an
- * Ender Pearl or a Wither Skeleton Skull), turning as it does on the placed block, and the block's
+ * Item renderer for the Ender, Wither and Warden Inhibitors: the item that floats above the prongs
+ * (an Ender Pearl, a Wither Skeleton Skull or a Warden Head), turning as it does on the placed block, and the block's
  * particles. Particles only exist in the world, so these are drawn here as particle sprites that
  * move as the real ones do, scaled down to stay around the item. Draws the block model first.
  */
@@ -43,13 +43,17 @@ public class InhibitorItemRenderer implements SpecialModelRenderer<Void> {
     public enum Particles { NONE, PORTAL, SMOKE }
 
     private final Supplier<? extends Block> block;
-    private final Item floating;
+    private final Supplier<ItemStack> floating;
     private final Particles particles;
     /** The floating item's model, resolved on first use; its look never changes. */
     @Nullable private ItemStackRenderState floatingState;
     @Nullable private TextureAtlasSprite[] sprites;
 
     public InhibitorItemRenderer(Supplier<? extends Block> block, Item floating, Particles particles) {
+        this(block, () -> new ItemStack(floating), particles);
+    }
+
+    public InhibitorItemRenderer(Supplier<? extends Block> block, Supplier<ItemStack> floating, Particles particles) {
         this.block = block;
         this.floating = floating;
         this.particles = particles;
@@ -69,7 +73,7 @@ public class InhibitorItemRenderer implements SpecialModelRenderer<Void> {
         if (floatingState == null) {
             floatingState = new ItemStackRenderState();
             ItemModelResolver.INSTANCE.updateForTopItem(
-                    floatingState, new ItemStack(floating), ItemDisplayContext.FIXED, null, null, 0);
+                    floatingState, floating.get(), ItemDisplayContext.FIXED, null, null, 0);
         }
         poseStack.pushPose();
         poseStack.translate(0.5f, 0.5f + OFFSET, 0.5f);
