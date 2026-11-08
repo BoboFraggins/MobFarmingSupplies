@@ -1,12 +1,9 @@
 {
-  "type": "minecraft:crafting_shapeless",
-  "category": "misc",
-  "ingredients": [
-    "minecraft:iron_sword",
-    "mobfarmingsupplies:blank_upgrade"
-  ],
+  "type": "mobfarmingsupplies:upgrading",
+  "item": "minecraft:iron_sword",
+  "input": "mobfarmingsupplies:blank_upgrade",
   "result": {
-    "count": 1,
-    "id": "mobfarmingsupplies:harvester_upgrade_sharpness"
+    "id": "mobfarmingsupplies:harvester_upgrade_sharpness",
+    "count": 1
   }
 }

@@ -21,22 +21,9 @@
     {
       "id": "p1",
       "sort_number": 1,
-      "type": "modonomicon:crafting_recipe",
-      "recipe_id_1": "mobfarmingsupplies:harvester_upgrade_sharpness",
-      "recipe_id_2": "mobfarmingsupplies:harvester_upgrade_looting"
-    },
-    {
-      "id": "p2",
-      "sort_number": 2,
-      "type": "modonomicon:crafting_recipe",
-      "recipe_id_1": "mobfarmingsupplies:harvester_upgrade_beheading",
-      "recipe_id_2": "mobfarmingsupplies:harvester_upgrade_fire_aspect"
-    },
-    {
-      "id": "p3",
-      "sort_number": 3,
-      "type": "modonomicon:crafting_recipe",
-      "recipe_id_1": "mobfarmingsupplies:harvester_upgrade_smite"
+      "type": "modonomicon:text",
+      "title": "book.mobfarmingsupplies.guide.mob_farming.harvester_upgrades.p1.title",
+      "text": "book.mobfarmingsupplies.guide.mob_farming.harvester_upgrades.p1.text"
     }
   ]
 }

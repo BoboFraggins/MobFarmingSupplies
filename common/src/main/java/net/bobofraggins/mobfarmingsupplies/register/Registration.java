@@ -118,6 +118,10 @@ import net.bobofraggins.mobfarmingsupplies.toilet.ToiletBlock;
 import net.bobofraggins.mobfarmingsupplies.toilet.ToiletBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.toilet.ToiletBlockItem;
 import net.bobofraggins.mobfarmingsupplies.toilet.ToiletSeatEntity;
+import net.bobofraggins.mobfarmingsupplies.upgradestation.UpgradeStationBlock;
+import net.bobofraggins.mobfarmingsupplies.upgradestation.UpgradeStationBlockEntity;
+import net.bobofraggins.mobfarmingsupplies.upgradestation.UpgradeStationMenu;
+import net.bobofraggins.mobfarmingsupplies.upgradestation.UpgradingRecipe;
 import net.bobofraggins.mobfarmingsupplies.vectorplate.VectorPlateBlock;
 import net.bobofraggins.mobfarmingsupplies.witherproofglass.WitherProofGlassBlock;
 import net.bobofraggins.mobfarmingsupplies.xpjuice.XpJuicePlatformHelper;
@@ -264,6 +268,19 @@ public final class Registration {
     public static final RegistrySupplier<RecipeSerializer<IncubatingRecipe>> INCUBATING_SERIALIZER =
             RECIPE_SERIALIZERS.register("incubating",
                     () -> new RecipeSerializer<>(IncubatingRecipe.MAP_CODEC, IncubatingRecipe.STREAM_CODEC));
+
+    public static final RegistrySupplier<RecipeType<UpgradingRecipe>> UPGRADING_TYPE =
+            RECIPE_TYPES.register("upgrading", () -> new RecipeType<UpgradingRecipe>() {
+                @Override
+                public String toString() {
+                    return MobFarmingSuppliesCommon.MODID + ":upgrading";
+                }
+            });
+
+    /** What the Upgrade Station makes: see {@link UpgradingRecipe}. */
+    public static final RegistrySupplier<RecipeSerializer<UpgradingRecipe>> UPGRADING_SERIALIZER =
+            RECIPE_SERIALIZERS.register("upgrading",
+                    () -> new RecipeSerializer<>(UpgradingRecipe.MAP_CODEC, UpgradingRecipe.STREAM_CODEC));
 
     public static final RegistrySupplier<RecipeSerializer<AnvilCrushingRecipe>> ANVIL_CRUSHING_SERIALIZER =
             RECIPE_SERIALIZERS.register("anvil_crushing",
@@ -1248,6 +1265,29 @@ public final class Registration {
             BLOCK_ENTITIES.register("mob_head",
                     () -> BlockEntityTypePlatform.create(MobHeadBlockEntity::new, MOB_HEAD.get(), MOB_WALL_HEAD.get()));
 
+    // ── Upgrade Station ───────────────────────────────────────────────────────────
+
+    public static final RegistrySupplier<UpgradeStationBlock> UPGRADE_STATION =
+            BLOCKS.register("upgrade_station",
+                    () -> new UpgradeStationBlock(BlockBehaviour.Properties.of()
+                            .setId(blockKey("upgrade_station"))
+                            .mapColor(MapColor.WOOD)
+                            .strength(2.5f)
+                            .sound(SoundType.WOOD)
+                            .noOcclusion()
+                            .isViewBlocking((s, r, p) -> false)));
+
+    public static final RegistrySupplier<BlockItem> UPGRADE_STATION_ITEM =
+            ITEMS.register("upgrade_station",
+                    () -> new BlockItem(UPGRADE_STATION.get(), new Item.Properties().setId(itemKey("upgrade_station"))));
+
+    public static final RegistrySupplier<BlockEntityType<UpgradeStationBlockEntity>> UPGRADE_STATION_BE_TYPE =
+            BLOCK_ENTITIES.register("upgrade_station",
+                    () -> BlockEntityTypePlatform.create(UpgradeStationBlockEntity::new, UPGRADE_STATION.get()));
+
+    public static final RegistrySupplier<MenuType<UpgradeStationMenu>> UPGRADE_STATION_MENU =
+            MENUS.register("upgrade_station", () -> MenuRegistry.ofExtended(UpgradeStationMenu::new));
+
     // ── Toilet ────────────────────────────────────────────────────────────────────
 
     public static final RegistrySupplier<ToiletBlock> TOILET =
@@ -1433,6 +1473,7 @@ public final class Registration {
                         output.accept(BIOSLUDGE.get());
                         output.accept(BIOPLASTIC.get());
                         output.accept(BLANK_UPGRADE.get());
+                        output.accept(UPGRADE_STATION_ITEM.get());
                         output.accept(FILTER_SCRIBING_TERMINAL_ITEM.get());
                         output.accept(BLANK_FILTER.get());
                         output.accept(ITEM_FILTER.get());

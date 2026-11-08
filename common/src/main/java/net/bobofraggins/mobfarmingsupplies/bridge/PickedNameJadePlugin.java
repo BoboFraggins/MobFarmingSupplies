@@ -9,7 +9,8 @@ import snownee.jade.api.WailaPlugin;
 
 /**
  * Has Jade name these blocks after the item picking them gives: an Einstein-Rosen Bridge then shows
- * its channel, and a Mob Head its mob. Jade only does that for blocks on its pick list.
+ * its channel, a Mob Head its mob, and a Giant Player Lawn Ornament its owner. Jade only does that
+ * for blocks on its pick list.
  */
 @WailaPlugin
 public class PickedNameJadePlugin implements IWailaPlugin {
@@ -19,6 +20,7 @@ public class PickedNameJadePlugin implements IWailaPlugin {
         pick(registration, Registration.EINSTEIN_ROSEN_BRIDGE.get());
         pick(registration, Registration.MOB_HEAD.get());
         pick(registration, Registration.MOB_WALL_HEAD.get());
+        pick(registration, Registration.GIANT_PLAYER_ORNAMENT.get());
     }
 
     private static void pick(IWailaCommonRegistration registration, Block block) {

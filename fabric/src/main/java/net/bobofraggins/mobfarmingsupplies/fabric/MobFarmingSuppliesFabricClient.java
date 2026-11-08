@@ -31,6 +31,7 @@ import net.bobofraggins.mobfarmingsupplies.skulllights.SkullLightsRenderer;
 import net.bobofraggins.mobfarmingsupplies.tank.fabric.TankItemRenderer;
 import net.bobofraggins.mobfarmingsupplies.tank.fabric.TankRenderer;
 import net.bobofraggins.mobfarmingsupplies.toilet.ToiletBlockEntityRenderer;
+import net.bobofraggins.mobfarmingsupplies.upgradestation.UpgradeStationRenderer;
 import net.bobofraggins.mobfarmingsupplies.experiencepylon.ExperiencePylonRenderer;
 import net.bobofraggins.mobfarmingsupplies.incubator.IncubatorRenderer;
 import net.bobofraggins.mobfarmingsupplies.disenchanter.DisenchanterRenderer;
@@ -100,6 +101,9 @@ public class MobFarmingSuppliesFabricClient implements ClientModInitializer {
         BlockEntityRendererRegistry.register(
                 Registration.INCUBATOR_BE_TYPE.get(),
                 IncubatorRenderer::new);
+        BlockEntityRendererRegistry.register(
+                Registration.UPGRADE_STATION_BE_TYPE.get(),
+                UpgradeStationRenderer::new);
         BlockEntityRendererRegistry.register(
                 Registration.DISENCHANTER_BE_TYPE.get(),
                 DisenchanterRenderer::new);

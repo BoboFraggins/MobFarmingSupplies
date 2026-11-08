@@ -70,6 +70,9 @@ public final class MobFarmingSuppliesCommonClient {
                 Registration.INCUBATOR_MENU.get(),
                 IncubatorScreen::new);
         MenuScreenRegistry.registerScreenFactory(
+                Registration.UPGRADE_STATION_MENU.get(),
+                net.bobofraggins.mobfarmingsupplies.upgradestation.UpgradeStationScreen::new);
+        MenuScreenRegistry.registerScreenFactory(
                 Registration.XP_ANVIL_MENU.get(),
                 XpAnvilScreen::new);
         MenuScreenRegistry.registerScreenFactory(
