@@ -3,7 +3,7 @@
   "item": {
     "item": "mobfarmingsupplies:mob_head"
   },
-  "mob_head": "minecraft:breeze",
+  "mob_head": "minecraft:snow_golem",
   "input": {
     "item": "mobfarmingsupplies:blank_upgrade"
   },

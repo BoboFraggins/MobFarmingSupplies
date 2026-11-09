@@ -112,6 +112,19 @@
         ]
       }
     },
+    "bee_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:mob_head",
+            "components": {
+              "mobfarmingsupplies:mob_head_type": "minecraft:bee"
+            }
+          }
+        ]
+      }
+    },
     "blaze_head": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
@@ -203,6 +216,19 @@
         ]
       }
     },
+    "cod_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:mob_head",
+            "components": {
+              "mobfarmingsupplies:mob_head_type": "minecraft:cod"
+            }
+          }
+        ]
+      }
+    },
     "cow_head": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
@@ -281,6 +307,19 @@
         ]
       }
     },
+    "endermite_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:mob_head",
+            "components": {
+              "mobfarmingsupplies:mob_head_type": "minecraft:endermite"
+            }
+          }
+        ]
+      }
+    },
     "evoker_head": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
@@ -328,6 +367,19 @@
             "items": "mobfarmingsupplies:mob_head",
             "components": {
               "mobfarmingsupplies:mob_head_type": "minecraft:ghast"
+            }
+          }
+        ]
+      }
+    },
+    "glow_squid_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:mob_head",
+            "components": {
+              "mobfarmingsupplies:mob_head_type": "minecraft:glow_squid"
             }
           }
         ]
@@ -580,6 +632,19 @@
         ]
       }
     },
+    "pufferfish_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:mob_head",
+            "components": {
+              "mobfarmingsupplies:mob_head_type": "minecraft:pufferfish"
+            }
+          }
+        ]
+      }
+    },
     "rabbit_head": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
@@ -606,6 +671,19 @@
         ]
       }
     },
+    "salmon_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:mob_head",
+            "components": {
+              "mobfarmingsupplies:mob_head_type": "minecraft:salmon"
+            }
+          }
+        ]
+      }
+    },
     "sheep_head": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
@@ -627,6 +705,19 @@
             "items": "mobfarmingsupplies:mob_head",
             "components": {
               "mobfarmingsupplies:mob_head_type": "minecraft:shulker"
+            }
+          }
+        ]
+      }
+    },
+    "silverfish_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:mob_head",
+            "components": {
+              "mobfarmingsupplies:mob_head_type": "minecraft:silverfish"
             }
           }
         ]
@@ -671,6 +762,19 @@
         ]
       }
     },
+    "snow_golem_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:mob_head",
+            "components": {
+              "mobfarmingsupplies:mob_head_type": "minecraft:snow_golem"
+            }
+          }
+        ]
+      }
+    },
     "spider_head": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
@@ -710,6 +814,32 @@
         ]
       }
     },
+    "strider_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:mob_head",
+            "components": {
+              "mobfarmingsupplies:mob_head_type": "minecraft:strider"
+            }
+          }
+        ]
+      }
+    },
+    "tadpole_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:mob_head",
+            "components": {
+              "mobfarmingsupplies:mob_head_type": "minecraft:tadpole"
+            }
+          }
+        ]
+      }
+    },
     "trader_llama_head": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
@@ -718,6 +848,19 @@
             "items": "mobfarmingsupplies:mob_head",
             "components": {
               "mobfarmingsupplies:mob_head_type": "minecraft:trader_llama"
+            }
+          }
+        ]
+      }
+    },
+    "tropical_fish_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "mobfarmingsupplies:mob_head",
+            "components": {
+              "mobfarmingsupplies:mob_head_type": "minecraft:tropical_fish"
             }
           }
         ]
@@ -912,6 +1055,9 @@
       "bat_head"
     ],
     [
+      "bee_head"
+    ],
+    [
       "blaze_head"
     ],
     [
@@ -933,6 +1079,9 @@
       "chicken_head"
     ],
     [
+      "cod_head"
+    ],
+    [
       "cow_head"
     ],
     [
@@ -951,6 +1100,9 @@
       "enderman_head"
     ],
     [
+      "endermite_head"
+    ],
+    [
       "evoker_head"
     ],
     [
@@ -961,6 +1113,9 @@
     ],
     [
       "ghast_head"
+    ],
+    [
+      "glow_squid_head"
     ],
     [
       "goat_head"
@@ -1020,16 +1175,25 @@
       "polar_bear_head"
     ],
     [
+      "pufferfish_head"
+    ],
+    [
       "rabbit_head"
     ],
     [
       "ravager_head"
     ],
     [
+      "salmon_head"
+    ],
+    [
       "sheep_head"
     ],
     [
       "shulker_head"
+    ],
+    [
+      "silverfish_head"
     ],
     [
       "skeleton_horse_head"
@@ -1041,6 +1205,9 @@
       "sniffer_head"
     ],
     [
+      "snow_golem_head"
+    ],
+    [
       "spider_head"
     ],
     [
@@ -1050,7 +1217,16 @@
       "stray_head"
     ],
     [
+      "strider_head"
+    ],
+    [
+      "tadpole_head"
+    ],
+    [
       "trader_llama_head"
+    ],
+    [
+      "tropical_fish_head"
     ],
     [
       "turtle_head"

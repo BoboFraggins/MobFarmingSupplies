@@ -61,6 +61,7 @@ public class MobFarmingSuppliesJeiPlugin implements IModPlugin {
                 new FilterScribingCategory(guiHelper), new FilteringCategory(guiHelper), new XpRepairingCategory(guiHelper), new HeadPikeGuide(guiHelper), BeheadingGuide.category(guiHelper),
                 new DnaSamplingGuide(guiHelper), new CloningGuide(guiHelper), new IncubatingCategory(guiHelper),
                 new UpgradingCategory(guiHelper),
+                new EssenceExtractionCategory(reg.getJeiHelpers()),
                 new DisenchantingCategory(guiHelper));
     }
 
@@ -78,6 +79,7 @@ public class MobFarmingSuppliesJeiPlugin implements IModPlugin {
         reg.addRecipes(CloningGuide.RECIPE_TYPE, List.of(CloningGuide.recipe()));
         reg.addRecipes(IncubatingCategory.RECIPE_TYPE, IncubatingCategory.displays(incubatingRecipes()));
         reg.addRecipes(UpgradingCategory.RECIPE_TYPE, UpgradingCategory.displays(upgradingRecipes()));
+        reg.addRecipes(EssenceExtractionCategory.RECIPE_TYPE, EssenceExtractionCategory.recipes());
         reg.addRecipes(DisenchantingCategory.RECIPE_TYPE, DisenchantingCategory.displays());
     }
 
@@ -148,6 +150,7 @@ public class MobFarmingSuppliesJeiPlugin implements IModPlugin {
         reg.addRecipeCatalyst(Registration.CLONE_O_MATIC_ITEM.get().getDefaultInstance(), CloningGuide.RECIPE_TYPE);
         reg.addRecipeCatalyst(Registration.INCUBATOR_ITEM.get().getDefaultInstance(), IncubatingCategory.RECIPE_TYPE);
         reg.addRecipeCatalyst(Registration.UPGRADE_STATION_ITEM.get().getDefaultInstance(), UpgradingCategory.RECIPE_TYPE);
+        reg.addRecipeCatalyst(Registration.ESSENCE_HOPPER_ITEM.get().getDefaultInstance(), EssenceExtractionCategory.RECIPE_TYPE);
         reg.addRecipeCatalyst(Registration.DISENCHANTER_ITEM.get().getDefaultInstance(), DisenchantingCategory.RECIPE_TYPE);
         reg.addRecipeCatalyst(Registration.XP_ANVIL_ITEM.get().getDefaultInstance(), XpRepairingCategory.RECIPE_TYPE);
         reg.addRecipeCatalyst(Registration.HEAD_PIKE_ITEM.get().getDefaultInstance(), HeadPikeGuide.RECIPE_TYPE);

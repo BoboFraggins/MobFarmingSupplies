@@ -1,6 +1,7 @@
 package net.bobofraggins.mobfarmingsupplies.mobhead;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,6 +24,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.MushroomCow;
 import net.minecraft.world.entity.animal.Sheep;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
@@ -39,7 +41,8 @@ import org.joml.Vector3f;
  * <p>A few mobs need more than their base texture to look like themselves; {@link #build} adds
  * those layers by hand (Enderman eyes, Sheep wool, the Drowned's outer skin, the Slime's jelly,
  * the Mooshroom's mushroom), the way the mob's own render layers draw them. Mobs that are all head
- * (slimes, ghasts) are drawn whole, less a ghast's dangling tentacles.
+ * (slimes, ghasts) are drawn whole, less a ghast's dangling tentacles. A strider's is its body, and
+ * a fish's or bug's is the front third of it ({@link #cutBehind}).
  */
 public final class MobHeadModels {
 
@@ -50,17 +53,37 @@ public final class MobHeadModels {
     private static final ResourceLocation SHEEP_WOOL = ResourceLocation.withDefaultNamespace("textures/entity/sheep/sheep_fur.png");
     private static final ResourceLocation SLIME = ResourceLocation.withDefaultNamespace("textures/entity/slime/slime.png");
     private static final ResourceLocation DROWNED_OUTER = ResourceLocation.withDefaultNamespace("textures/entity/zombie/drowned_outer_layer.png");
+    private static final ResourceLocation KOB_PATTERN = ResourceLocation.withDefaultNamespace("textures/entity/fish/tropical_a_pattern_1.png");
 
-    /** One pass of a head: a model part drawn with a render type and tint (-1 = none). */
-    public record Layer(ModelPart part, RenderType renderType, int tint) {}
+    private static final int FULL_BRIGHT = 0xF000F0;
+
+    /** A cut head's cubes thinner than this are fins or antennae: they stick out rather than count towards its size. */
+    private static final float MIN_SIZED_THICKNESS = 2f;
+
+    /** A corner of a {@link CutQuad}, in block units in the model's own space. */
+    public record CutVertex(float x, float y, float z, float u, float v) {}
+
+    /** One face of a head that's been cut. */
+    public record CutQuad(CutVertex[] vertices, Vector3f normal) {}
+
+    /**
+     * One pass of a head: a model part drawn with a render type and tint (-1 = none), or, for a
+     * head that's been cut ({@link #cutBehind}), the faces left of it.
+     */
+    public record Layer(ModelPart part, RenderType renderType, int tint, @Nullable List<CutQuad> cut) {
+        public Layer(ModelPart part, RenderType renderType, int tint) {
+            this(part, renderType, tint, null);
+        }
+    }
 
     /**
      * A ready-to-draw head: its layers, bottom first, and optionally the mushroom a Mooshroom
      * wears on its head. Its bounds are in the model's own space (block units, y down, facing
      * -z); {@link #submit} centres it, stands it on y = 0 and scales it to vanilla head size.
+     * One that {@code glows} ignores the light around it, as a Glow Squid does.
      */
     public record Head(List<Layer> layers, @Nullable BlockState mushroom,
-                       float scale, float centreX, float bottomY, float centreZ) {}
+                       float scale, float centreX, float bottomY, float centreZ, boolean glows) {}
 
     private static final Map<EntityType<?>, Optional<Head>> CACHE = new HashMap<>();
     private static int nextDummyId = 1;
@@ -97,15 +120,18 @@ public final class MobHeadModels {
     }
 
     /** As {@link #submit(EntityType, PoseStack, MultiBufferSource, int)}, every layer tinted {@code tint} (-1 = none). */
-    public static void submit(EntityType<?> type, PoseStack poseStack, MultiBufferSource buffers, int light, int tint) {
+    public static void submit(EntityType<?> type, PoseStack poseStack, MultiBufferSource buffers, int worldLight, int tint) {
         Head head = get(type);
         if (head == null) return;
+        int light = head.glows() ? FULL_BRIGHT : worldLight;
         poseStack.pushPose();
         poseStack.scale(head.scale(), head.scale(), head.scale());
         poseStack.translate(-head.centreX(), -head.bottomY(), -head.centreZ());
         for (Layer layer : head.layers()) {
-            layer.part().render(poseStack, buffers.getBuffer(layer.renderType()), light, OverlayTexture.NO_OVERLAY,
-                    tint == -1 ? layer.tint() : layer.tint() == -1 ? tint : FastColor.ARGB32.multiply(layer.tint(), tint));
+            int colour = tint == -1 ? layer.tint() : layer.tint() == -1 ? tint : FastColor.ARGB32.multiply(layer.tint(), tint);
+            VertexConsumer buffer = buffers.getBuffer(layer.renderType());
+            if (layer.cut() != null) drawCut(layer.cut(), poseStack.last(), buffer, light, colour);
+            else layer.part().render(poseStack, buffer, light, OverlayTexture.NO_OVERLAY, colour);
         }
         if (head.mushroom() != null) {
             // Where MushroomCowMushroomLayer puts the mushroom on the head.
@@ -156,6 +182,13 @@ public final class MobHeadModels {
             case "mooshroom" -> {
                 if (living instanceof MushroomCow cow) mushroom = cow.getVariant().getBlockState();
             }
+            case "tropical_fish" -> {
+                // The one type of head stands for every pattern: a clownfish, the best known.
+                layers.set(0, new Layer(part, layers.getFirst().renderType(), DyeColor.ORANGE.getTextureDiffuseColor()));
+                ModelPart pattern = bakeHead(ModelLayers.TROPICAL_FISH_SMALL_PATTERN, null);
+                if (pattern != null) layers.add(new Layer(pattern, RenderType.entityCutout(KOB_PATTERN),
+                        DyeColor.WHITE.getTextureDiffuseColor()));
+            }
             default -> {}
         }
 
@@ -165,31 +198,150 @@ public final class MobHeadModels {
         // cubes uses them all.
         float[] min = {Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE};
         float[] max = {-Float.MAX_VALUE, -Float.MAX_VALUE, -Float.MAX_VALUE};
-        if (!bounds(sizedBy, true, min, max)) bounds(sizedBy, false, min, max);
+        Float cut = cutFor(id);
+        if (cut != null) {
+            layers.replaceAll(layer -> new Layer(layer.part(), layer.renderType(), layer.tint(),
+                    cutBehind(layer.part(), cut, min, max)));
+        } else if (!bounds(sizedBy, true, min, max)) {
+            bounds(sizedBy, false, min, max);
+        }
         float size = Math.max(max[0] - min[0], Math.max(max[1] - min[1], max[2] - min[2]));
         if (!(size > 0)) return null;
         return new Head(List.copyOf(layers), mushroom, HEAD_SIZE / size,
-                (min[0] + max[0]) / 2, max[1], (min[2] + max[2]) / 2); // y points down: max y is the base
+                (min[0] + max[0]) / 2, max[1], (min[2] + max[2]) / 2, // y points down: max y is the base
+                id.getPath().equals("glow_squid"));
     }
 
     /** The model layer a mob's head comes from: its own, except where it borrows another mob's. */
     private static ModelLayerLocation layerFor(ResourceLocation id) {
         return switch (id.getPath()) {
+            case "pufferfish" -> ModelLayers.PUFFERFISH_BIG; // puffed up: its small form is barely there
+            case "tropical_fish" -> ModelLayers.TROPICAL_FISH_SMALL;
             default -> new ModelLayerLocation(id, "main");
         };
     }
 
     /**
-     * The model part that is the mob's head, or null for the whole model: slimes, ghasts and squid
-     * are all head.
+     * The model part that is the mob's head, or null for the whole model: slimes are all head, and
+     * so is a ghast's, squid's or strider's body. Fish and bugs are whole until {@link #cutBehind} is done.
      */
     @Nullable
     private static String headPartFor(ResourceLocation id) {
         return switch (id.getPath()) {
-            case "ghast", "squid" -> "body";
-            case "slime", "magma_cube" -> null;
+            case "ghast", "squid", "glow_squid", "strider" -> "body";
+            case "slime", "magma_cube", "bee", "cod", "endermite", "pufferfish", "salmon", "silverfish",
+                 "tadpole", "tropical_fish" -> null;
             default -> "head";
         };
+    }
+
+    /**
+     * Where a fish's or bug's head ends: the model z (in pixels; they face -z) about a third of
+     * the way along its body, or null for a mob that isn't cut.
+     */
+    @Nullable
+    private static Float cutFor(ResourceLocation id) {
+        return switch (id.getPath()) {
+            case "cod", "tadpole" -> 0f;
+            case "bee" -> -2f;
+            case "salmon" -> 3.2f;
+            case "endermite" -> -1.5f;
+            case "silverfish" -> 1f;
+            case "pufferfish", "tropical_fish" -> -1f;
+            default -> null;
+        };
+    }
+
+    /**
+     * The faces of {@code root} in front of {@code cutZ} (pixels). A cube across it loses its back:
+     * the faces along it are shortened (with their textures, so nothing is squashed) and its back
+     * face moves up to the cut to close it. A cube wholly behind it is dropped. Grows {@code min} /
+     * {@code max} (block units) to what's left, not counting fins.
+     *
+     * <p>1.21.1's model faces can't be reached from outside their package, so each cube is read back
+     * by having it draw itself into a {@link FaceCollector}, and what's left is drawn by
+     * {@link #drawCut}.
+     */
+    private static List<CutQuad> cutBehind(ModelPart root, float cutZ, float[] min, float[] max) {
+        float cut = cutZ / 16f;
+        List<CutQuad> kept = new ArrayList<>();
+        root.visit(new PoseStack(), (pose, path, index, cube) -> {
+            if (path.endsWith("_wing")) return; // a bee's start just behind its cut, and would leave a sliver each side
+            FaceCollector faces = new FaceCollector();
+            cube.compile(pose, faces, 0, 0, -1);
+            boolean crossesCut = faces.quads.stream()
+                    .anyMatch(quad -> java.util.Arrays.stream(quad.vertices()).anyMatch(vertex -> vertex.z() < cut));
+            if (!crossesCut) return;
+            boolean sized = !flat(cube) && Math.min(cube.maxX - cube.minX, cube.maxY - cube.minY) >= MIN_SIZED_THICKNESS;
+            for (CutQuad face : faces.quads) {
+                CutQuad shortened = shortened(face, cut);
+                kept.add(shortened);
+                if (!sized) continue;
+                for (CutVertex vertex : shortened.vertices()) {
+                    min[0] = Math.min(min[0], vertex.x()); max[0] = Math.max(max[0], vertex.x());
+                    min[1] = Math.min(min[1], vertex.y()); max[1] = Math.max(max[1], vertex.y());
+                    min[2] = Math.min(min[2], vertex.z()); max[2] = Math.max(max[2], vertex.z());
+                }
+            }
+        });
+        return List.copyOf(kept);
+    }
+
+    /** {@code quad} with every corner behind {@code cut} brought up to it. */
+    private static CutQuad shortened(CutQuad quad, float cut) {
+        CutVertex[] vertices = quad.vertices().clone();
+        for (int i = 0; i < vertices.length; i++) {
+            CutVertex vertex = vertices[i];
+            if (vertex.z() <= cut) continue;
+            float u = vertex.u(), v = vertex.v();
+            // A face along the cut keeps its texture in place: the corner's u and v slide with it.
+            for (CutVertex front : quad.vertices()) {
+                if (front.z() < cut && Math.abs(front.x() - vertex.x()) < 1e-4f && Math.abs(front.y() - vertex.y()) < 1e-4f) {
+                    float t = (cut - front.z()) / (vertex.z() - front.z());
+                    u = front.u() + (vertex.u() - front.u()) * t;
+                    v = front.v() + (vertex.v() - front.v()) * t;
+                }
+            }
+            vertices[i] = new CutVertex(vertex.x(), vertex.y(), cut, u, v);
+        }
+        return new CutQuad(vertices, quad.normal());
+    }
+
+    private static void drawCut(List<CutQuad> quads, PoseStack.Pose pose, VertexConsumer buffer, int light, int colour) {
+        Vector3f position = new Vector3f();
+        Vector3f normal = new Vector3f();
+        for (CutQuad quad : quads) {
+            pose.transformNormal(quad.normal(), normal);
+            for (CutVertex vertex : quad.vertices()) {
+                pose.pose().transformPosition(vertex.x(), vertex.y(), vertex.z(), position);
+                buffer.addVertex(position.x, position.y, position.z, colour, vertex.u(), vertex.v(),
+                        OverlayTexture.NO_OVERLAY, light, normal.x, normal.y, normal.z);
+            }
+        }
+    }
+
+    /** Takes down the faces a cube draws into it. */
+    private static final class FaceCollector implements VertexConsumer {
+        private final List<CutQuad> quads = new ArrayList<>();
+        private final CutVertex[] pending = new CutVertex[4];
+        private int count;
+
+        @Override
+        public void addVertex(float x, float y, float z, int colour, float u, float v, int overlay, int light,
+                              float normalX, float normalY, float normalZ) {
+            pending[count++] = new CutVertex(x, y, z, u, v);
+            if (count == pending.length) {
+                quads.add(new CutQuad(pending.clone(), new Vector3f(normalX, normalY, normalZ)));
+                count = 0;
+            }
+        }
+
+        @Override public VertexConsumer addVertex(float x, float y, float z) { return this; }
+        @Override public VertexConsumer setColor(int red, int green, int blue, int alpha) { return this; }
+        @Override public VertexConsumer setUv(float u, float v) { return this; }
+        @Override public VertexConsumer setUv1(int u, int v) { return this; }
+        @Override public VertexConsumer setUv2(int u, int v) { return this; }
+        @Override public VertexConsumer setNormal(float x, float y, float z) { return this; }
     }
 
     /**
