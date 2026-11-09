@@ -38,15 +38,16 @@ public final class MobHeads {
      * the creative tab and JEI.
      */
     private static final List<String> MOD_HEAD_IDS = List.of(
-            "allay", "armadillo", "axolotl", "bat", "blaze", "bogged", "breeze", "camel",
-            "camel_husk", "cat", "cave_spider", "chicken", "copper_golem", "cow", "creaking",
-            "dolphin", "donkey", "drowned", "elder_guardian", "enderman", "evoker", "fox", "frog",
-            "ghast", "goat", "guardian", "happy_ghast", "hoglin", "horse", "husk", "illusioner",
-            "iron_golem", "llama", "magma_cube", "mooshroom", "mule", "ocelot", "panda", "parched",
-            "parrot", "phantom", "pig", "piglin_brute", "pillager", "polar_bear", "rabbit",
-            "ravager", "sheep", "shulker", "skeleton_horse", "slime", "sniffer", "spider", "squid", "stray",
-            "trader_llama", "turtle", "vex", "villager", "vindicator", "wandering_trader", "warden",
-            "witch", "wolf", "zoglin", "zombie_horse", "zombie_villager", "zombified_piglin");
+            "allay", "armadillo", "axolotl", "bat", "bee", "blaze", "bogged", "breeze", "camel",
+            "camel_husk", "cat", "cave_spider", "chicken", "cod", "copper_golem", "cow", "creaking",
+            "dolphin", "donkey", "drowned", "elder_guardian", "enderman", "endermite", "evoker", "fox", "frog",
+            "ghast", "glow_squid", "goat", "guardian", "happy_ghast", "hoglin", "horse", "husk", "illusioner",
+            "iron_golem", "llama", "magma_cube", "mooshroom", "mule", "nautilus", "ocelot", "panda", "parched",
+            "parrot", "phantom", "pig", "piglin_brute", "pillager", "polar_bear", "pufferfish", "rabbit",
+            "ravager", "salmon", "sheep", "shulker", "silverfish", "skeleton_horse", "slime", "sniffer", "snow_golem", "spider",
+            "squid", "stray", "strider", "tadpole", "trader_llama", "tropical_fish", "turtle", "vex", "villager",
+            "vindicator", "wandering_trader", "warden",
+            "witch", "wolf", "zoglin", "zombie_horse", "zombie_nautilus", "zombie_villager", "zombified_piglin");
 
     /** The entity types in {@link #MOD_HEAD_IDS} that exist in this version, in that order. */
     public static final List<EntityType<?>> MOD_HEADS = MOD_HEAD_IDS.stream()

@@ -14,10 +14,11 @@ import org.jetbrains.annotations.Nullable;
  * {@code blockbench/essence_assets.py} and its filter's recipe is an {@code upgrading} recipe.
  */
 public enum Essence {
+    AIR("air", EntityType.BREEZE, 0xFF87CEEB),
     BACON("bacon", EntityType.PIG, 0xFFFFA6C1),
     COLOR("color", EntityType.SHEEP, RainbowColor.RAINBOW),
     FIRE("fire", EntityType.BLAZE, 0xFFE8281E),
-    FROST("frost", EntityType.BREEZE, 0xFF9BD6FF),
+    FROST("frost", EntityType.SNOW_GOLEM, 0xFF9BD6FF),
     GROWTH("growth", EntityType.COW, 0xFFFFB627),
     SIGHT("sight", EntityType.BAT, 0xFFF2F2F2),
     SPACETIME("spacetime", EntityType.ENDERMAN, 0xFF8A2BE2),

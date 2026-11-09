@@ -5,7 +5,7 @@
 * Added Upgrade Station (used for all upgrade crafts now)
 * Added Warden Inhibitor
 * Added Essence Hopper
-* Added Essences of Bacon, Color, Fire, Frost, Growth, Sight, Spacetime,
+* Added Essences of Air, Bacon, Color, Fire, Frost, Growth, Sight, Spacetime,
   Undeath, Venom, Water, and Wither
 
 * Fixed side configuration on Absorption Hopper when next to EnderIO conduits
