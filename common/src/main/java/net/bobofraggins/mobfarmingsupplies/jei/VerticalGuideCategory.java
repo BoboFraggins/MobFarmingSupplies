@@ -132,7 +132,7 @@ public class VerticalGuideCategory implements IRecipeCategory<GuideRecipe> {
     }
 
     /** Draws a small plus sign (5×5 px) centred on ({@code cx}, {@code cy}). */
-    private static void drawPlus(GuiGraphicsExtractor g, int cx, int cy) {
+    static void drawPlus(GuiGraphicsExtractor g, int cx, int cy) {
         g.fill(cx - 2, cy, cx + 3, cy + 1, ARROW_COLOR);
         g.fill(cx, cy - 2, cx + 1, cy + 3, ARROW_COLOR);
     }

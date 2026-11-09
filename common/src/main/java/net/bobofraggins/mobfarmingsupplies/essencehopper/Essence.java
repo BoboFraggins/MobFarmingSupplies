@@ -46,6 +46,9 @@ public enum Essence {
         this.color = color;
     }
 
+    /** The mob it comes from. */
+    public EntityType<?> mob() { return mob; }
+
     /** The registry id of its fluid and fluid block. */
     public String fluidId() { return "essence_of_" + id; }
 
