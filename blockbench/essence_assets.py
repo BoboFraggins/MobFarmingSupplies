@@ -68,6 +68,11 @@ ESSENCES = {
     },
     "frost": {
         "colors": ((150, 205, 245), (205, 232, 250), (255, 255, 255)),
+        "skin": "assets/minecraft/textures/entity/snow_golem/snow_golem.png",
+        "face": (8, 8, 16, 16),
+    },
+    "air": {
+        "colors": ((196, 196, 200), (164, 198, 222), (120, 200, 245)),
         "skin": "assets/minecraft/textures/entity/breeze/breeze.png",
         "eyes": "assets/minecraft/textures/entity/breeze/breeze_eyes.png",
         "face": (8, 8, 16, 16),

@@ -57,6 +57,7 @@ public class MobFarmingSuppliesJeiPlugin implements IModPlugin {
                 new FilterScribingCategory(guiHelper), new FilteringCategory(guiHelper), new XpRepairingCategory(guiHelper), new HeadPikeGuide(guiHelper), BeheadingGuide.category(guiHelper),
                 new DnaSamplingGuide(guiHelper), new CloningGuide(guiHelper), new IncubatingCategory(guiHelper),
                 new UpgradingCategory(guiHelper),
+                new EssenceExtractionCategory(reg.getJeiHelpers()),
                 new DisenchantingCategory(guiHelper));
     }
 
@@ -74,6 +75,7 @@ public class MobFarmingSuppliesJeiPlugin implements IModPlugin {
         reg.addRecipes(CloningGuide.RECIPE_TYPE, List.of(CloningGuide.recipe()));
         reg.addRecipes(IncubatingCategory.RECIPE_TYPE, IncubatingCategory.displays(incubatingRecipes()));
         reg.addRecipes(UpgradingCategory.RECIPE_TYPE, UpgradingCategory.displays(upgradingRecipes()));
+        reg.addRecipes(EssenceExtractionCategory.RECIPE_TYPE, EssenceExtractionCategory.recipes());
         reg.addRecipes(DisenchantingCategory.RECIPE_TYPE, DisenchantingCategory.displays());
     }
 
@@ -118,6 +120,7 @@ public class MobFarmingSuppliesJeiPlugin implements IModPlugin {
         reg.addCraftingStation(CloningGuide.RECIPE_TYPE, Registration.CLONE_O_MATIC_ITEM.get());
         reg.addCraftingStation(IncubatingCategory.RECIPE_TYPE, Registration.INCUBATOR_ITEM.get());
         reg.addCraftingStation(UpgradingCategory.RECIPE_TYPE, Registration.UPGRADE_STATION_ITEM.get());
+        reg.addCraftingStation(EssenceExtractionCategory.RECIPE_TYPE, Registration.ESSENCE_HOPPER_ITEM.get());
         reg.addCraftingStation(DisenchantingCategory.RECIPE_TYPE, Registration.DISENCHANTER_ITEM.get());
         reg.addCraftingStation(FilteringCategory.RECIPE_TYPE, Registration.OMNI_HOPPER_ITEM.get(),
                 Registration.EINSTEIN_ROSEN_BRIDGE_ITEM.get(), Registration.LOGISTIC_SORTER_ITEM.get(),

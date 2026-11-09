@@ -15,10 +15,11 @@ import org.jetbrains.annotations.Nullable;
  * {@code blockbench/essence_assets.py} and its filter's recipe is an {@code upgrading} recipe.
  */
 public enum Essence {
+    AIR("air", EntityTypes.BREEZE, 0xFF87CEEB),
     BACON("bacon", EntityTypes.PIG, 0xFFFFA6C1),
     COLOR("color", EntityTypes.SHEEP, RainbowColor.RAINBOW),
     FIRE("fire", EntityTypes.BLAZE, 0xFFE8281E),
-    FROST("frost", EntityTypes.BREEZE, 0xFF9BD6FF),
+    FROST("frost", EntityTypes.SNOW_GOLEM, 0xFF9BD6FF),
     GROWTH("growth", EntityTypes.COW, 0xFFFFB627),
     SIGHT("sight", EntityTypes.BAT, 0xFFF2F2F2),
     SPACETIME("spacetime", EntityTypes.ENDERMAN, 0xFF8A2BE2),
@@ -45,6 +46,9 @@ public enum Essence {
         this.mob = mob;
         this.color = color;
     }
+
+    /** The mob it comes from. */
+    public EntityType<?> mob() { return mob; }
 
     /** The registry id of its fluid and fluid block. */
     public String fluidId() { return "essence_of_" + id; }

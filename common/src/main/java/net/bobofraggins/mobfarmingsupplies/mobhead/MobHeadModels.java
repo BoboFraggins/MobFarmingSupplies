@@ -27,6 +27,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.DyeColor;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
@@ -43,7 +44,9 @@ import org.joml.Vector3f;
  * those layers by hand (Enderman eyes, Sheep wool, the Drowned's outer skin, the Slime's jelly,
  * the Sulfur Cube's inner cube, the Mooshroom's mushroom), the way the mob's own render layers
  * draw them. Mobs that are all head (slimes, sulfur cubes, ghasts) are drawn whole, less a ghast's
- * dangling tentacles.
+ * dangling tentacles. A strider's is its body, and a fish's or bug's is the front third of it
+ * ({@link #cutBehind}). A nautilus's is the front two-thirds of what's under its shell, back to
+ * just behind its eyes ({@link #fillNautilusHoles}).
  */
 public final class MobHeadModels {
 
@@ -55,6 +58,16 @@ public final class MobHeadModels {
     private static final Identifier SLIME = Identifier.withDefaultNamespace("textures/entity/slime/slime.png");
     private static final Identifier SULFUR_CUBE_INNER = Identifier.withDefaultNamespace("textures/entity/sulfur_cube/sulfur_cube_inner.png");
     private static final Identifier DROWNED_OUTER = Identifier.withDefaultNamespace("textures/entity/zombie/drowned_outer_layer.png");
+    private static final Identifier KOB_PATTERN = Identifier.withDefaultNamespace("textures/entity/fish/tropical_a_pattern_1.png");
+
+    private static final int FULL_BRIGHT = 0xF000F0;
+    /** The inside of a nautilus's mouth on its texture (texels of the 128-wide sheet), a plain dark red. */
+    private static final float MOUTH_U0 = 3f / 128f, MOUTH_V0 = 78f / 128f, MOUTH_U1 = 7f / 128f, MOUTH_V1 = 81f / 128f;
+    /** The order {@code ModelPart.Cube} builds its faces in. */
+    private static final int FACE_DOWN = 0, FACE_UP = 1, FACE_NORTH = 3, FACE_SOUTH = 5;
+
+    /** A cut head's cubes thinner than this are fins or antennae: they stick out rather than count towards its size. */
+    private static final float MIN_SIZED_THICKNESS = 2f;
 
     /** One pass of a head: a model part drawn with a render type and tint (-1 = none). */
     public record Layer(ModelPart part, RenderType renderType, int tint) {}
@@ -63,9 +76,10 @@ public final class MobHeadModels {
      * A ready-to-draw head: its layers, bottom first, and optionally the mushroom a Mooshroom
      * wears on its head. Its bounds are in the model's own space (block units, y down, facing
      * -z); {@link #submit} centres it, stands it on y = 0 and scales it to vanilla head size.
+     * One that {@code glows} ignores the light around it, as a Glow Squid does.
      */
     public record Head(List<Layer> layers, @Nullable BlockModelRenderState mushroom,
-                       float scale, float centreX, float bottomY, float centreZ) {}
+                       float scale, float centreX, float bottomY, float centreZ, boolean glows) {}
 
     private static final Map<EntityType<?>, Optional<Head>> CACHE = new HashMap<>();
     private static int nextDummyId = 1;
@@ -102,9 +116,10 @@ public final class MobHeadModels {
     }
 
     /** As {@link #submit(EntityType, PoseStack, SubmitNodeCollector, int)}, every layer tinted {@code tint} (-1 = none). */
-    public static void submit(EntityType<?> type, PoseStack poseStack, SubmitNodeCollector collector, int light, int tint) {
+    public static void submit(EntityType<?> type, PoseStack poseStack, SubmitNodeCollector collector, int worldLight, int tint) {
         Head head = get(type);
         if (head == null) return;
+        int light = head.glows() ? FULL_BRIGHT : worldLight;
         poseStack.pushPose();
         poseStack.scale(head.scale(), head.scale(), head.scale());
         poseStack.translate(-head.centreX(), -head.bottomY(), -head.centreZ());
@@ -167,6 +182,23 @@ public final class MobHeadModels {
             case "mooshroom" -> {
                 if (state instanceof MushroomCowRenderState cow && !cow.mushroomModel.isEmpty()) mushroom = cow.mushroomModel;
             }
+            case "nautilus", "zombie_nautilus" -> {
+                part.yRot = (float) Math.PI; // its mouth is at +z, and heads face -z
+                fillNautilusHoles(part);
+            }
+            case "bee" -> {
+                // They start just behind where it's cut, and would leave a sliver out each side.
+                ModelPart bone = part.getChild("bone");
+                bone.getChild("right_wing").visible = false;
+                bone.getChild("left_wing").visible = false;
+            }
+            case "tropical_fish" -> {
+                // The one type of head stands for every pattern: a clownfish, the best known.
+                layers.set(0, new Layer(part, layers.getFirst().renderType(), DyeColor.ORANGE.getTextureDiffuseColor()));
+                ModelPart pattern = bakeHead(ModelLayers.TROPICAL_FISH_SMALL_PATTERN, null);
+                if (pattern != null) layers.add(new Layer(pattern, RenderTypes.entityCutout(KOB_PATTERN),
+                        DyeColor.WHITE.getTextureDiffuseColor()));
+            }
             default -> {}
         }
 
@@ -176,32 +208,165 @@ public final class MobHeadModels {
         // cubes uses them all.
         float[] min = {Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE};
         float[] max = {-Float.MAX_VALUE, -Float.MAX_VALUE, -Float.MAX_VALUE};
-        if (!bounds(sizedBy, true, min, max)) bounds(sizedBy, false, min, max);
+        Float cut = cutFor(id);
+        if (cut != null) {
+            for (Layer layer : layers) cutBehind(layer.part(), cut, min, max);
+        } else if (!bounds(sizedBy, true, min, max)) {
+            bounds(sizedBy, false, min, max);
+        }
         float size = Math.max(max[0] - min[0], Math.max(max[1] - min[1], max[2] - min[2]));
         if (!(size > 0)) return null;
         return new Head(List.copyOf(layers), mushroom, HEAD_SIZE / size,
-                (min[0] + max[0]) / 2, max[1], (min[2] + max[2]) / 2); // y points down: max y is the base
+                (min[0] + max[0]) / 2, max[1], (min[2] + max[2]) / 2, // y points down: max y is the base
+                id.getPath().equals("glow_squid"));
     }
 
     /** The model layer a mob's head comes from: its own, except where it borrows another mob's. */
     private static ModelLayerLocation layerFor(Identifier id) {
         return switch (id.getPath()) {
             case "camel_husk" -> ModelLayers.CAMEL; // drawn with the camel model and its own texture
+            case "pufferfish" -> ModelLayers.PUFFERFISH_BIG; // puffed up: its small form is barely there
+            case "tropical_fish" -> ModelLayers.TROPICAL_FISH_SMALL;
             default -> new ModelLayerLocation(id, "main");
         };
     }
 
     /**
-     * The model part that is the mob's head, or null for the whole model: slimes, sulfur cubes,
-     * ghasts and squid are all head.
+     * The model part that is the mob's head, or null for the whole model: slimes and sulfur cubes are
+     * all head, and so is a ghast's, squid's or strider's body. Fish and bugs are whole until
+     * {@link #cutBehind} is done.
      */
     @Nullable
     private static String headPartFor(Identifier id) {
         return switch (id.getPath()) {
-            case "ghast", "happy_ghast", "squid" -> "body";
-            case "slime", "magma_cube", "sulfur_cube" -> null;
+            case "ghast", "happy_ghast", "squid", "glow_squid", "strider", "nautilus", "zombie_nautilus" -> "body";
+            case "slime", "magma_cube", "sulfur_cube", "bee", "cod", "endermite", "pufferfish", "salmon", "silverfish",
+                 "tadpole", "tropical_fish" -> null;
             default -> "head";
         };
+    }
+
+    /**
+     * Where a fish's or bug's head ends: the model z (in pixels; they face -z) about a third of
+     * the way along its body, or null for a mob that isn't cut.
+     */
+    @Nullable
+    private static Float cutFor(Identifier id) {
+        return switch (id.getPath()) {
+            case "cod", "tadpole" -> 0f;
+            case "bee" -> -2f;
+            case "salmon" -> -4f;
+            case "endermite" -> -1.5f;
+            case "nautilus", "zombie_nautilus" -> 10.3f; // just behind its eyes
+            case "silverfish" -> 1f;
+            case "pufferfish", "tropical_fish" -> -1f;
+            default -> null;
+        };
+    }
+
+    /**
+     * Cuts off everything of {@code root} behind {@code cutZ}. A cube across it loses its back:
+     * the faces along it are shortened (with their textures, so nothing is squashed) and its back
+     * face moves up to the cut to close it. A cube wholly behind it collapses to nothing. Grows
+     * {@code min} / {@code max} (block units) to what's left, not counting fins.
+     */
+    private static void cutBehind(ModelPart root, float cutZ, float[] min, float[] max) {
+        Vector3f corner = new Vector3f();
+        root.visit(new PoseStack(), (pose, path, index, cube) -> {
+            // Which way the part's own z runs in the model (a nautilus is turned around), and the
+            // cut in the part's own space, from its origin in pixels.
+            float direction = pose.pose().m22() < 0f ? -1f : 1f;
+            float localCut = direction * (cutZ - pose.pose().m32() * 16f);
+            float nearest = direction > 0f ? cube.minZ : cube.maxZ;
+            if (direction * (nearest - localCut) >= 0f) {
+                collapse(cube);
+                return;
+            }
+            for (int i = 0; i < cube.polygons.length; i++) {
+                cube.polygons[i] = shortened(cube.polygons[i], localCut, direction);
+            }
+            if (flat(cube) || Math.min(cube.maxX - cube.minX, cube.maxY - cube.minY) < MIN_SIZED_THICKNESS) return;
+            for (ModelPart.Polygon polygon : cube.polygons) {
+                for (ModelPart.Vertex vertex : polygon.vertices()) {
+                    corner.set(vertex.worldX(), vertex.worldY(), vertex.worldZ());
+                    pose.pose().transformPosition(corner);
+                    for (int axis = 0; axis < 3; axis++) {
+                        min[axis] = Math.min(min[axis], corner.get(axis));
+                        max[axis] = Math.max(max[axis], corner.get(axis));
+                    }
+                }
+            }
+        });
+    }
+
+    /** Leaves {@code cube} with no area to draw. */
+    private static void collapse(ModelPart.Cube cube) {
+        ModelPart.Vertex point = new ModelPart.Vertex(0f, 0f, 0f, 0f, 0f);
+        for (int i = 0; i < cube.polygons.length; i++) {
+            ModelPart.Polygon polygon = cube.polygons[i];
+            ModelPart.Vertex[] vertices = new ModelPart.Vertex[polygon.vertices().length];
+            java.util.Arrays.fill(vertices, point);
+            cube.polygons[i] = new ModelPart.Polygon(vertices, polygon.normal());
+        }
+    }
+
+    /**
+     * Fills the holes Mojang left in a nautilus, which its shell normally hides: its body's back
+     * (which closes the cut), each lip's and tongue's ends and the faces where the lips meet have
+     * no texture, so they're given the mouth's dark red. The front ends are set back a pixel from
+     * where the lips start, leaving the jagged rims of the lips standing proud of them.
+     */
+    private static void fillNautilusHoles(ModelPart body) {
+        body.visit(new PoseStack(), (pose, path, index, cube) -> {
+            if (index != 0) return; // the body's second cube is the plate the mouth is fixed to
+            ModelPart.Polygon[] faces = cube.polygons;
+            if (path.isEmpty()) {
+                faces[FACE_NORTH] = filled(faces[FACE_NORTH]);
+                return;
+            }
+            faces[FACE_NORTH] = filled(faces[FACE_NORTH]);
+            faces[FACE_SOUTH] = filled(setBack(faces[FACE_SOUTH], cube.minZ + 1f));
+            if (path.endsWith("upper_mouth")) faces[FACE_UP] = filled(faces[FACE_UP]);
+            if (path.endsWith("lower_mouth")) faces[FACE_DOWN] = filled(faces[FACE_DOWN]);
+        });
+    }
+
+    /** {@code polygon} moved to {@code z}, its texture unchanged. */
+    private static ModelPart.Polygon setBack(ModelPart.Polygon polygon, float z) {
+        ModelPart.Vertex[] vertices = polygon.vertices().clone();
+        for (int i = 0; i < vertices.length; i++) {
+            ModelPart.Vertex vertex = vertices[i];
+            vertices[i] = new ModelPart.Vertex(vertex.x(), vertex.y(), z, vertex.u(), vertex.v());
+        }
+        return new ModelPart.Polygon(vertices, polygon.normal());
+    }
+
+    /** {@code polygon} textured with the inside of the mouth. */
+    private static ModelPart.Polygon filled(ModelPart.Polygon polygon) {
+        ModelPart.Vertex[] old = polygon.vertices();
+        return new ModelPart.Polygon(new ModelPart.Vertex[]{
+                old[0].remap(MOUTH_U1, MOUTH_V0), old[1].remap(MOUTH_U0, MOUTH_V0),
+                old[2].remap(MOUTH_U0, MOUTH_V1), old[3].remap(MOUTH_U1, MOUTH_V1)}, polygon.normal());
+    }
+
+    /** {@code polygon} with every corner behind {@code localCut} brought up to it. */
+    private static ModelPart.Polygon shortened(ModelPart.Polygon polygon, float localCut, float direction) {
+        ModelPart.Vertex[] vertices = polygon.vertices().clone();
+        for (int i = 0; i < vertices.length; i++) {
+            ModelPart.Vertex vertex = vertices[i];
+            if (direction * (vertex.z() - localCut) <= 0f) continue;
+            float u = vertex.u(), v = vertex.v();
+            // A face along the cut keeps its texture in place: the corner's u and v slide with it.
+            for (ModelPart.Vertex front : polygon.vertices()) {
+                if (direction * (front.z() - localCut) < 0f && front.x() == vertex.x() && front.y() == vertex.y()) {
+                    float t = (localCut - front.z()) / (vertex.z() - front.z());
+                    u = front.u() + (vertex.u() - front.u()) * t;
+                    v = front.v() + (vertex.v() - front.v()) * t;
+                }
+            }
+            vertices[i] = new ModelPart.Vertex(vertex.x(), vertex.y(), localCut, u, v);
+        }
+        return new ModelPart.Polygon(vertices, polygon.normal());
     }
 
     /**
