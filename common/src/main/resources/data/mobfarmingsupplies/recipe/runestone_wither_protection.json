@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " E ",
+    "ESE",
+    " E "
+  ],
+  "key": {
+    "E": "mobfarmingsupplies:essence_of_wither_bucket",
+    "S": "minecraft:stone"
+  },
+  "result": {
+    "id": "mobfarmingsupplies:runestone_wither_protection",
+    "count": 1
+  }
+}

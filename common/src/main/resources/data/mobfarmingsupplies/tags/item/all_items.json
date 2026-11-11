@@ -99,6 +99,10 @@
     "mobfarmingsupplies:disenchanter",
     "mobfarmingsupplies:superconducting_magnet",
     "mobfarmingsupplies:block_breaker",
-    "mobfarmingsupplies:upgrade_station"
+    "mobfarmingsupplies:upgrade_station",
+    "mobfarmingsupplies:runestone_fire_protection",
+    "mobfarmingsupplies:runestone_poison_protection",
+    "mobfarmingsupplies:runestone_wither_protection",
+    "mobfarmingsupplies:runestone_water_breathing"
   ]
 }

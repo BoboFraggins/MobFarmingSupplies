@@ -1,5 +1,9 @@
 {
   "values": [
-    "mobfarmingsupplies:superconducting_magnet"
+    "mobfarmingsupplies:superconducting_magnet",
+    "mobfarmingsupplies:runestone_fire_protection",
+    "mobfarmingsupplies:runestone_poison_protection",
+    "mobfarmingsupplies:runestone_wither_protection",
+    "mobfarmingsupplies:runestone_water_breathing"
   ]
 }

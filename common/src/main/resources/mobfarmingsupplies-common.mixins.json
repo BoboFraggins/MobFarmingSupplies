@@ -15,7 +15,10 @@
     "EntityVexCollisionMixin",
     "WitherBossMixin",
     "SonicBoomMixin",
-    "WardenMixin"
+    "WardenMixin",
+    "RunestoneEntityMixin",
+    "RunestoneLivingEntityMixin",
+    "RunestonePlayerMixin"
   ],
   "client": [
     "HumanoidModelMixin",

@@ -1075,6 +1075,21 @@ public final class Registration {
                             .setId(itemKey("superconducting_magnet"))
                             .stacksTo(1)));
 
+    // ── Runestones ────────────────────────────────────────────────────────────────
+
+    public static final Map<net.bobofraggins.mobfarmingsupplies.runestone.Runestone,
+            RegistrySupplier<net.bobofraggins.mobfarmingsupplies.runestone.RunestoneItem>> RUNESTONES =
+            new EnumMap<>(net.bobofraggins.mobfarmingsupplies.runestone.Runestone.class);
+
+    static {
+        for (var runestone : net.bobofraggins.mobfarmingsupplies.runestone.Runestone.values()) {
+            RUNESTONES.put(runestone, ITEMS.register(runestone.itemId(),
+                    () -> new net.bobofraggins.mobfarmingsupplies.runestone.RunestoneItem(runestone, new Item.Properties()
+                            .setId(itemKey(runestone.itemId()))
+                            .stacksTo(1))));
+        }
+    }
+
     public static final RegistrySupplier<ExperienceSyringeItem> EXPERIENCE_SYRINGE =
             ITEMS.register("experience_syringe",
                     () -> new ExperienceSyringeItem(new Item.Properties()
@@ -1554,6 +1569,7 @@ public final class Registration {
                         output.accept(LOGISTIC_SORTER_ITEM.get());
                         output.accept(BLOCK_BREAKER_ITEM.get());
                         output.accept(SUPERCONDUCTING_MAGNET.get());
+                        RUNESTONES.values().forEach(runestone -> output.accept(runestone.get()));
                         output.accept(SILICON_CLUMP.get());
                         output.accept(SILICON.get());
                         output.accept(SILICON_WAFER.get());
