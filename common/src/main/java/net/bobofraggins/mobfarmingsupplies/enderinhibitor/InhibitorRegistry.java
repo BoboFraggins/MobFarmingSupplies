@@ -20,6 +20,8 @@ public final class InhibitorRegistry {
     public static final InhibitorRegistry ENDER = new InhibitorRegistry();
     public static final InhibitorRegistry WITHER = new InhibitorRegistry();
     public static final InhibitorRegistry WARDEN = new InhibitorRegistry();
+    /** Mufflers, server side. Their sound muting is client side; see {@code MufflerSounds}. */
+    public static final InhibitorRegistry MUFFLER = new InhibitorRegistry();
 
     private final Map<ResourceKey<Level>, Map<BlockPos, BlockPos>> inhibitors = new HashMap<>();
 

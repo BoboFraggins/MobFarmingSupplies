@@ -98,6 +98,12 @@ public class EnderInhibitorBlockEntityRenderer<T extends EnderInhibitorBlockEnti
         return new EnderInhibitorBlockEntityRenderer<>(ctx, () -> MobHeads.modHead(EntityType.WARDEN), 20, 160, 170);
     }
 
+    /** The Muffler's: nothing floating, and a light grey area like its wool. */
+    public static <T extends EnderInhibitorBlockEntity> EnderInhibitorBlockEntityRenderer<T> muffler(
+            BlockEntityRendererProvider.Context ctx) {
+        return new EnderInhibitorBlockEntityRenderer<>(ctx, () -> ItemStack.EMPTY, 190, 190, 190);
+    }
+
     // ── Render state ──────────────────────────────────────────────────────────────
 
     public static class PearlState extends BlockEntityRenderState {
@@ -146,13 +152,14 @@ public class EnderInhibitorBlockEntityRenderer<T extends EnderInhibitorBlockEnti
 
         Level level = be.getLevel();
         state.angleDeg = spinDegrees();
-        state.facing   = be.getBlockState().getValue(EnderInhibitorBlock.FACING);
+        // Blocks without a facing (the Muffler) draw only the area.
+        state.facing   = be.getBlockState().getValueOrElse(EnderInhibitorBlock.FACING, Direction.UP);
 
         if (be.showArea) {
             double cx = be.getOffsetX();
             double cy = be.getOffsetY();
             double cz = be.getOffsetZ();
-            int range = InhibitorRegistry.RANGE;
+            int range = be.areaRange();
             state.localAreaAABB = new AABB(
                     cx - range, cy - range, cz - range,
                     cx + range + 1, cy + range + 1, cz + range + 1);

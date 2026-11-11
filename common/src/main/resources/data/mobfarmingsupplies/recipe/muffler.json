@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "pattern": [
+    "WWW",
+    "WHW",
+    "WWW"
+  ],
+  "key": {
+    "W": "minecraft:light_gray_wool",
+    "H": "mobfarmingsupplies:omnidirectional_hopper"
+  },
+  "result": {
+    "id": "mobfarmingsupplies:muffler",
+    "count": 1
+  }
+}

@@ -412,6 +412,7 @@
   "item.mobfarmingsupplies.runestone_water_breathing.tooltip": "Breathe underwater; air never runs out.",
   "item.mobfarmingsupplies.runestone.worn": "Works when worn as a charm.",
   "block.mobfarmingsupplies.forsaken_soil": "Forsaken Soil",
+  "block.mobfarmingsupplies.muffler": "Muffler",
   "block.mobfarmingsupplies.hyper_farmland": "Hyper Farmland",
   "item.mobfarmingsupplies.superconducting_magnet": "Superconducting Magnet",
   "item.mobfarmingsupplies.superconducting_magnet.tooltip": "Collects items and experience within %s blocks.",

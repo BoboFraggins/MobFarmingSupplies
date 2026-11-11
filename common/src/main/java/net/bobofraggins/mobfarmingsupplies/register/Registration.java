@@ -689,6 +689,27 @@ public final class Registration {
                     () -> BlockEntityTypePlatform.create(net.bobofraggins.mobfarmingsupplies.wardeninhibitor.WardenInhibitorBlockEntity::new,
                             WARDEN_INHIBITOR.get()));
 
+    // ── Muffler ───────────────────────────────────────────────────────────────────
+
+    public static final RegistrySupplier<net.bobofraggins.mobfarmingsupplies.muffler.MufflerBlock> MUFFLER =
+            BLOCKS.register("muffler",
+                    () -> new net.bobofraggins.mobfarmingsupplies.muffler.MufflerBlock(BlockBehaviour.Properties.of()
+                            .setId(blockKey("muffler"))
+                            .mapColor(net.minecraft.world.level.material.MapColor.COLOR_LIGHT_GRAY)
+                            .strength(0.8f)
+                            .sound(SoundType.WOOL)
+                            .noOcclusion()));
+
+    public static final RegistrySupplier<BlockItem> MUFFLER_ITEM =
+            ITEMS.register("muffler",
+                    () -> new BlockItem(MUFFLER.get(), new Item.Properties()
+                            .setId(itemKey("muffler"))));
+
+    public static final RegistrySupplier<BlockEntityType<net.bobofraggins.mobfarmingsupplies.muffler.MufflerBlockEntity>> MUFFLER_BE_TYPE =
+            BLOCK_ENTITIES.register("muffler",
+                    () -> BlockEntityTypePlatform.create(net.bobofraggins.mobfarmingsupplies.muffler.MufflerBlockEntity::new,
+                            MUFFLER.get()));
+
     // ── Fan ───────────────────────────────────────────────────────────────────────
 
     public static final RegistrySupplier<FanBlock> FAN =
@@ -1652,6 +1673,7 @@ public final class Registration {
                         output.accept(ENDER_INHIBITOR_ITEM.get());
                         output.accept(WITHER_INHIBITOR_ITEM.get());
                         output.accept(WARDEN_INHIBITOR_ITEM.get());
+                        output.accept(MUFFLER_ITEM.get());
                         output.accept(MAGIC_HAT_ITEM.get());
                         output.accept(PRESENT_ITEM.get());
                         output.accept(PICNIC_BASKET_ITEM.get());

@@ -66,6 +66,9 @@ public class MobFarmingSuppliesFabricClient implements ClientModInitializer {
                 Registration.WARDEN_INHIBITOR_BE_TYPE.get(),
                 EnderInhibitorBlockEntityRenderer::warden);
         BlockEntityRendererRegistry.register(
+                Registration.MUFFLER_BE_TYPE.get(),
+                EnderInhibitorBlockEntityRenderer::muffler);
+        BlockEntityRendererRegistry.register(
                 Registration.FAN_BE_TYPE.get(),
                 FanBlockEntityRenderer::new);
         BlockEntityRendererRegistry.register(

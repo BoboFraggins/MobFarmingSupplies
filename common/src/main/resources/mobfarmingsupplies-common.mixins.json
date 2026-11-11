@@ -23,7 +23,8 @@
   "client": [
     "HumanoidModelMixin",
     "LivingEntityRendererMixin",
-    "LivingEntityRenderStateMixin"
+    "LivingEntityRenderStateMixin",
+    "SoundEngineMufflerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

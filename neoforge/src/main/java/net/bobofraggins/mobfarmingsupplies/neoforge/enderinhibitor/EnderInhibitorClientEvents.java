@@ -29,6 +29,9 @@ public final class EnderInhibitorClientEvents {
         event.registerBlockEntityRenderer(
                 Registration.WARDEN_INHIBITOR_BE_TYPE.get(),
                 EnderInhibitorBlockEntityRenderer::warden);
+        event.registerBlockEntityRenderer(
+                Registration.MUFFLER_BE_TYPE.get(),
+                EnderInhibitorBlockEntityRenderer::muffler);
     }
 
     @SubscribeEvent

@@ -11,6 +11,7 @@
   and Water Breathing
 * Added Forsaken Soil (spawns mobs quickly)
 * Added Hyper Farmland (grows crops and trees faster)
+* Added Muffler (squelches sounds in an area)
 
 * Fixed side configuration on Absorption Hopper when next to EnderIO conduits
 * Fixed Jade name of Giant Player Lawn Ornament when assigned a player
