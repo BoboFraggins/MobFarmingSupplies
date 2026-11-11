@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "DDD",
+    "DED",
+    "DDD"
+  ],
+  "key": {
+    "D": "minecraft:dirt",
+    "E": "mobfarmingsupplies:essence_of_growth_bucket"
+  },
+  "result": {
+    "id": "mobfarmingsupplies:hyper_farmland",
+    "count": 8
+  }
+}

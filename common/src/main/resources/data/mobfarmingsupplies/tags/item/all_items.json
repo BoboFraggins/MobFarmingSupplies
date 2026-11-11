@@ -103,6 +103,8 @@
     "mobfarmingsupplies:runestone_fire_protection",
     "mobfarmingsupplies:runestone_poison_protection",
     "mobfarmingsupplies:runestone_wither_protection",
-    "mobfarmingsupplies:runestone_water_breathing"
+    "mobfarmingsupplies:runestone_water_breathing",
+    "mobfarmingsupplies:forsaken_soil",
+    "mobfarmingsupplies:hyper_farmland"
   ]
 }

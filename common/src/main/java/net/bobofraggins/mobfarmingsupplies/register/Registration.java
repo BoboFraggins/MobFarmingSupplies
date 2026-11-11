@@ -814,6 +814,36 @@ public final class Registration {
                     () -> new BlockItem(PLAYER_EXCLUSION_GLASS.get(), new Item.Properties()
                             .setId(itemKey("player_exclusion_glass"))));
 
+    // ── Soils ─────────────────────────────────────────────────────────────────────
+
+    public static final RegistrySupplier<net.bobofraggins.mobfarmingsupplies.soil.ForsakenSoilBlock> FORSAKEN_SOIL =
+            BLOCKS.register("forsaken_soil",
+                    () -> new net.bobofraggins.mobfarmingsupplies.soil.ForsakenSoilBlock(BlockBehaviour.Properties.of()
+                            .setId(blockKey("forsaken_soil"))
+                            .mapColor(net.minecraft.world.level.material.MapColor.COLOR_PURPLE)
+                            .strength(0.6f)
+                            .sound(SoundType.GRASS)));
+
+    public static final RegistrySupplier<BlockItem> FORSAKEN_SOIL_ITEM =
+            ITEMS.register("forsaken_soil",
+                    () -> new BlockItem(FORSAKEN_SOIL.get(), new Item.Properties()
+                            .setId(itemKey("forsaken_soil"))));
+
+    public static final RegistrySupplier<net.bobofraggins.mobfarmingsupplies.soil.HyperFarmlandBlock> HYPER_FARMLAND =
+            BLOCKS.register("hyper_farmland",
+                    () -> new net.bobofraggins.mobfarmingsupplies.soil.HyperFarmlandBlock(BlockBehaviour.Properties.of()
+                            .setId(blockKey("hyper_farmland"))
+                            .mapColor(net.minecraft.world.level.material.MapColor.COLOR_YELLOW)
+                            .strength(0.6f)
+                            .sound(SoundType.GRAVEL)
+                            .isViewBlocking((st, l, p) -> true)
+                            .isSuffocating((st, l, p) -> true)));
+
+    public static final RegistrySupplier<BlockItem> HYPER_FARMLAND_ITEM =
+            ITEMS.register("hyper_farmland",
+                    () -> new BlockItem(HYPER_FARMLAND.get(), new Item.Properties()
+                            .setId(itemKey("hyper_farmland"))));
+
     // ── Toggle Buttons ────────────────────────────────────────────────────────────
 
     public static final RegistrySupplier<ToggleButtonBlock> RED_ALERT_BUTTON =
@@ -1570,6 +1600,8 @@ public final class Registration {
                         output.accept(BLOCK_BREAKER_ITEM.get());
                         output.accept(SUPERCONDUCTING_MAGNET.get());
                         RUNESTONES.values().forEach(runestone -> output.accept(runestone.get()));
+                        output.accept(FORSAKEN_SOIL_ITEM.get());
+                        output.accept(HYPER_FARMLAND_ITEM.get());
                         output.accept(SILICON_CLUMP.get());
                         output.accept(SILICON.get());
                         output.accept(SILICON_WAFER.get());
