@@ -56,6 +56,9 @@ public class MobFarmingSuppliesFabricClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         MobFarmingSuppliesCommonClient.init();
+        // Oresight's x-ray outlines, drawn after everything else in the world.
+        net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents.AFTER_TRANSLUCENT_FEATURES.register(ctx ->
+                net.bobofraggins.mobfarmingsupplies.oresight.OresightClient.render(ctx.poseStack(), ctx.bufferSource()));
         BlockEntityRendererRegistry.register(
                 Registration.ENDER_INHIBITOR_BE_TYPE.get(),
                 EnderInhibitorBlockEntityRenderer::new);

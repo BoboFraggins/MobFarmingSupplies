@@ -1,0 +1,6 @@
+{
+  "type": "mobfarmingsupplies:oresight",
+  "category": "misc",
+  "essence": "mobfarmingsupplies:essence_of_sight_bucket",
+  "ore": "#mobfarmingsupplies:oresight_inputs"
+}

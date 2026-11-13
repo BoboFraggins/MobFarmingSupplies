@@ -2,7 +2,11 @@ package net.bobofraggins.mobfarmingsupplies.essencehopper;
 
 import dev.architectury.fluid.FluidStack;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.Mth;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.Util;
 import net.minecraft.world.entity.EntityType;
@@ -14,7 +18,7 @@ import org.jetbrains.annotations.Nullable;
  * {@code blockbench/essence_assets.py} and its filter's recipe is an {@code upgrading} recipe.
  */
 public enum Essence {
-    AIR("air", EntityType.BREEZE, 0xFF87CEEB),
+    AIR("air", EntityType.PHANTOM, 0xFF87CEEB),
     BACON("bacon", EntityType.PIG, 0xFFFFA6C1),
     COLOR("color", EntityType.SHEEP, RainbowColor.RAINBOW),
     FIRE("fire", EntityType.BLAZE, 0xFFE8281E),
@@ -55,6 +59,26 @@ public enum Essence {
     public String bucketId() { return fluidId() + "_bucket"; }
 
     public String filterId() { return "essence_filter_" + id; }
+
+    /** Whether its bucket can be drunk (see {@link EssenceBucketItem}). */
+    public boolean drinkable() {
+        return switch (this) {
+            case AIR, FIRE, SIGHT, WATER -> true;
+            default -> false;
+        };
+    }
+
+    /** The effect drinking its bucket gives, or null if it can't be drunk. */
+    @Nullable
+    public Holder<MobEffect> drinkEffect() {
+        return switch (this) {
+            case AIR -> BuiltInRegistries.MOB_EFFECT.wrapAsHolder(Registration.FLIGHT.get());
+            case FIRE -> MobEffects.FIRE_RESISTANCE;
+            case SIGHT -> MobEffects.NIGHT_VISION;
+            case WATER -> MobEffects.WATER_BREATHING;
+            default -> null;
+        };
+    }
 
     /** ARGB, for one of its particles: a rainbow essence's are each a random hue. */
     public int particleColor(RandomSource random) {

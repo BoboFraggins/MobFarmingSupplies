@@ -42,7 +42,8 @@ public final class MobFarmingSuppliesCommon {
         VillageLawnOrnaments.register();
         HeadPikes.register();
         net.bobofraggins.mobfarmingsupplies.magnet.MagnetPull.register();
-        net.bobofraggins.mobfarmingsupplies.runestone.Runestones.register();
+        net.bobofraggins.mobfarmingsupplies.essencehopper.FlightMobEffect.register();
+        net.bobofraggins.mobfarmingsupplies.oresight.Oresight.register();
         LOGGER.info("MobFarmingSupplies initialized");
     }
 }

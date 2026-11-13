@@ -1,0 +1,34 @@
+{
+  "values": [
+    {
+      "id": "#c:ores",
+      "required": false
+    },
+    {
+      "id": "#c:raw_materials",
+      "required": false
+    },
+    {
+      "id": "#c:gems/diamond",
+      "required": false
+    },
+    {
+      "id": "#c:gems/emerald",
+      "required": false
+    },
+    {
+      "id": "#c:gems/lapis",
+      "required": false
+    },
+    {
+      "id": "#c:gems/quartz",
+      "required": false
+    },
+    {
+      "id": "#c:dusts/redstone",
+      "required": false
+    },
+    "minecraft:netherite_scrap",
+    "minecraft:coal"
+  ]
+}

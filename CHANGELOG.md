@@ -7,8 +7,7 @@
 * Added Essence Hopper
 * Added Essences of Air, Bacon, Color, Fire, Frost, Growth, Sight, Spacetime,
   Undeath, Venom, Water, and Wither
-* Added Runestones of Fire Protection, Poison Protection, Wither Protection,
-  and Water Breathing
+* Added potion effects from drinking buckets of essences
 * Added Forsaken Soil (spawns mobs quickly)
 * Added Hyper Farmland (grows crops and trees faster)
 * Added Muffler (squelches sounds in an area)

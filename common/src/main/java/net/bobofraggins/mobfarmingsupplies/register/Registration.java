@@ -243,6 +243,17 @@ public final class Registration {
     public static final DeferredRegister<ParticleType<?>> PARTICLE_TYPES =
             DeferredRegister.create(MobFarmingSuppliesCommon.MODID, Registries.PARTICLE_TYPE);
 
+    public static final DeferredRegister<net.minecraft.world.effect.MobEffect> MOB_EFFECTS =
+            DeferredRegister.create(MobFarmingSuppliesCommon.MODID, Registries.MOB_EFFECT);
+
+    /** Creative-style flight, from drinking Essence of Air. */
+    public static final RegistrySupplier<net.minecraft.world.effect.MobEffect> FLIGHT =
+            MOB_EFFECTS.register("flight", net.bobofraggins.mobfarmingsupplies.essencehopper.FlightMobEffect::new);
+
+    /** Traces one kind of block through walls, from a Bucket of Oresight. */
+    public static final RegistrySupplier<net.minecraft.world.effect.MobEffect> ORESIGHT =
+            MOB_EFFECTS.register("oresight", net.bobofraggins.mobfarmingsupplies.oresight.OresightMobEffect::new);
+
     /** The XP Powered Disenchanter's runes: vanilla's enchanting table runes in XP Juice green. */
     public static final RegistrySupplier<SimpleParticleType> XP_RUNE =
             PARTICLE_TYPES.register("xp_rune", () -> new SimpleParticleType(false) {});
@@ -312,6 +323,12 @@ public final class Registration {
     public static final RegistrySupplier<RecipeSerializer<SkullLightsDyeRecipe>> SKULL_LIGHTS_DYE_SERIALIZER =
             RECIPE_SERIALIZERS.register("skull_lights_dye",
                     () -> new RecipeSerializer<>(SkullLightsDyeRecipe.MAP_CODEC, SkullLightsDyeRecipe.STREAM_CODEC));
+
+    /** A Bucket of Sight Essence and a block give a Bucket of Oresight for the block. */
+    public static final RegistrySupplier<RecipeSerializer<net.bobofraggins.mobfarmingsupplies.oresight.OresightRecipe>> ORESIGHT_SERIALIZER =
+            RECIPE_SERIALIZERS.register("oresight",
+                    () -> new RecipeSerializer<>(net.bobofraggins.mobfarmingsupplies.oresight.OresightRecipe.MAP_CODEC,
+                            net.bobofraggins.mobfarmingsupplies.oresight.OresightRecipe.STREAM_CODEC));
 
     /** Shaped recipe for a linked pair of Einstein-Rosen Bridges on a new random channel. */
     public static final RegistrySupplier<RecipeSerializer<BridgePairRecipe>> BRIDGE_PAIR_SERIALIZER =
@@ -424,6 +441,14 @@ public final class Registration {
                     () -> DataComponentType.<TankContents>builder()
                             .persistent(TankContents.CODEC)
                             .networkSynchronized(TankContents.STREAM_CODEC)
+                            .build());
+
+    /** The block a Bucket of Oresight shows. */
+    public static final RegistrySupplier<DataComponentType<net.minecraft.world.level.block.Block>> ORESIGHT_BLOCK =
+            DATA_COMPONENTS.register("oresight_block",
+                    () -> DataComponentType.<net.minecraft.world.level.block.Block>builder()
+                            .persistent(net.minecraft.core.registries.BuiltInRegistries.BLOCK.byNameCodec())
+                            .networkSynchronized(net.minecraft.network.codec.ByteBufCodecs.registry(Registries.BLOCK))
                             .build());
 
     public static final RegistrySupplier<DataComponentType<SkullLights>> SKULL_LIGHTS =
@@ -977,14 +1002,34 @@ public final class Registration {
                                     .replaceable()
                                     .pushReaction(PushReaction.DESTROY))));
             ESSENCE_BUCKETS.put(essence, ITEMS.register(essence.bucketId(),
-                    () -> new BucketItem(ESSENCE_SOURCES.get(essence).get(),
-                            new Item.Properties()
-                                    .setId(itemKey(essence.bucketId()))
-                                    .stacksTo(1)
-                                    .craftRemainder(Items.BUCKET))));
+                    () -> new net.bobofraggins.mobfarmingsupplies.essencehopper.EssenceBucketItem(essence,
+                            ESSENCE_SOURCES.get(essence).get(), essenceBucketProperties(essence))));
             ESSENCE_FILTERS.put(essence, ITEMS.register(essence.filterId(),
                     () -> new EssenceFilterItem(essence, new Item.Properties().setId(itemKey(essence.filterId())))));
         }
+    }
+
+    public static final RegistrySupplier<net.bobofraggins.mobfarmingsupplies.oresight.OresightBucketItem> ORESIGHT_BUCKET =
+            ITEMS.register("oresight_bucket",
+                    () -> new net.bobofraggins.mobfarmingsupplies.oresight.OresightBucketItem(new Item.Properties()
+                            .setId(itemKey("oresight_bucket"))
+                            .stacksTo(1)
+                            .component(net.minecraft.core.component.DataComponents.CONSUMABLE,
+                                    net.minecraft.world.item.component.Consumables.defaultDrink().build())
+                            .usingConvertsTo(Items.BUCKET)));
+
+    /** A drinkable essence's bucket is drunk like a Milk Bucket, leaving an empty bucket. */
+    private static Item.Properties essenceBucketProperties(Essence essence) {
+        Item.Properties properties = new Item.Properties()
+                .setId(itemKey(essence.bucketId()))
+                .stacksTo(1)
+                .craftRemainder(Items.BUCKET);
+        if (essence.drinkable()) {
+            properties.component(net.minecraft.core.component.DataComponents.CONSUMABLE,
+                            net.minecraft.world.item.component.Consumables.defaultDrink().build())
+                    .usingConvertsTo(Items.BUCKET);
+        }
+        return properties;
     }
 
     // ── Tank ──────────────────────────────────────────────────────────────────────
@@ -1125,21 +1170,6 @@ public final class Registration {
                     () -> new net.bobofraggins.mobfarmingsupplies.magnet.SuperconductingMagnetItem(new Item.Properties()
                             .setId(itemKey("superconducting_magnet"))
                             .stacksTo(1)));
-
-    // ── Runestones ────────────────────────────────────────────────────────────────
-
-    public static final Map<net.bobofraggins.mobfarmingsupplies.runestone.Runestone,
-            RegistrySupplier<net.bobofraggins.mobfarmingsupplies.runestone.RunestoneItem>> RUNESTONES =
-            new EnumMap<>(net.bobofraggins.mobfarmingsupplies.runestone.Runestone.class);
-
-    static {
-        for (var runestone : net.bobofraggins.mobfarmingsupplies.runestone.Runestone.values()) {
-            RUNESTONES.put(runestone, ITEMS.register(runestone.itemId(),
-                    () -> new net.bobofraggins.mobfarmingsupplies.runestone.RunestoneItem(runestone, new Item.Properties()
-                            .setId(itemKey(runestone.itemId()))
-                            .stacksTo(1))));
-        }
-    }
 
     public static final RegistrySupplier<ExperienceSyringeItem> EXPERIENCE_SYRINGE =
             ITEMS.register("experience_syringe",
@@ -1620,7 +1650,6 @@ public final class Registration {
                         output.accept(LOGISTIC_SORTER_ITEM.get());
                         output.accept(BLOCK_BREAKER_ITEM.get());
                         output.accept(SUPERCONDUCTING_MAGNET.get());
-                        RUNESTONES.values().forEach(runestone -> output.accept(runestone.get()));
                         output.accept(FORSAKEN_SOIL_ITEM.get());
                         output.accept(HYPER_FARMLAND_ITEM.get());
                         output.accept(SILICON_CLUMP.get());
@@ -1703,6 +1732,9 @@ public final class Registration {
                             output.accept(ESSENCE_FILTERS.get(essence).get());
                             output.accept(ESSENCE_BUCKETS.get(essence).get());
                         }
+                        // An example; any block can be crafted in.
+                        output.accept(net.bobofraggins.mobfarmingsupplies.oresight.OresightBucketItem.of(
+                                net.minecraft.world.level.block.Blocks.DIAMOND_ORE));
                         output.accept(RED_ALERT_BUTTON_ITEM.get());
                         output.accept(DRAMATIC_BUTTON_ITEM.get());
                         output.accept(RIMSHOT_BUTTON_ITEM.get());
@@ -1734,6 +1766,7 @@ public final class Registration {
         STRUCTURE_PROCESSORS.register();
         STRUCTURE_TYPES.register();
         PARTICLE_TYPES.register();
+        MOB_EFFECTS.register();
         net.bobofraggins.mobfarmingsupplies.advancement.MFSTriggers.TRIGGERS.register();
     }
 }

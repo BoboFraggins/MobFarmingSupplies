@@ -73,9 +73,10 @@ ESSENCES = {
     },
     "air": {
         "colors": ((196, 196, 200), (164, 198, 222), (120, 200, 245)),
-        "skin": "assets/minecraft/textures/entity/breeze/breeze.png",
-        "eyes": "assets/minecraft/textures/entity/breeze/breeze_eyes.png",
-        "face": (8, 8, 16, 16),
+        "skin": "assets/minecraft/textures/entity/phantom/phantom.png",
+        "eyes": "assets/minecraft/textures/entity/phantom/phantom_eyes.png",
+        "face": (5, 5, 12, 8),  # its flat head's front, with both eyes
+        "scale": 2,
     },
     "undeath": {
         "colors": ((45, 47, 48), (84, 140, 44), (128, 232, 42)),
