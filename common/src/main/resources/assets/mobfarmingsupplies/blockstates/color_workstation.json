@@ -1,0 +1,31 @@
+{
+  "variants": {
+    "facing=north,half=lower": {
+      "model": "mobfarmingsupplies:block/color_workstation"
+    },
+    "facing=north,half=upper": {
+      "model": "mobfarmingsupplies:block/color_workstation_top"
+    },
+    "facing=east,half=lower": {
+      "model": "mobfarmingsupplies:block/color_workstation",
+      "y": 90
+    },
+    "facing=east,half=upper": {
+      "model": "mobfarmingsupplies:block/color_workstation_top"
+    },
+    "facing=south,half=lower": {
+      "model": "mobfarmingsupplies:block/color_workstation",
+      "y": 180
+    },
+    "facing=south,half=upper": {
+      "model": "mobfarmingsupplies:block/color_workstation_top"
+    },
+    "facing=west,half=lower": {
+      "model": "mobfarmingsupplies:block/color_workstation",
+      "y": 270
+    },
+    "facing=west,half=upper": {
+      "model": "mobfarmingsupplies:block/color_workstation_top"
+    }
+  }
+}

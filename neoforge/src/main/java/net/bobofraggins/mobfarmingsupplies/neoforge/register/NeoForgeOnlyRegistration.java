@@ -197,6 +197,16 @@ public final class NeoForgeOnlyRegistration {
                 (stack, ctx) -> ctx != null ? new ExperienceSyringeFluidHandler(ctx) : null,
                 Registration.EXPERIENCE_SYRINGE.get());
 
+        // Essence buckets are EssenceBucketItems (drinkable), and NeoForge only gives a bucket its
+        // fluid handler when the item's class is exactly BucketItem: without this they can't be
+        // poured into tanks, the Color Workstation or pipes' containers.
+        for (Essence essence : Essence.values()) {
+            event.registerItem(
+                    Capabilities.Fluid.ITEM,
+                    (stack, ctx) -> ctx != null ? new net.neoforged.neoforge.transfer.fluid.BucketResourceHandler(ctx) : null,
+                    Registration.ESSENCE_BUCKETS.get(essence).get());
+        }
+
         event.registerBlockEntity(
                 Capabilities.Item.BLOCK,
                 Registration.ABSORPTION_HOPPER_BE_TYPE.get(),
@@ -249,6 +259,16 @@ public final class NeoForgeOnlyRegistration {
                         DisenchanterBlockEntity.OUTPUT));
         event.registerBlockEntity(Capabilities.Fluid.BLOCK, Registration.DISENCHANTER_BE_TYPE.get(),
                 (be, side) -> new InsertOnlyTankFluidHandler(be));
+
+        // Color Workstation, at either half: Essence of Color in only; dyes out only.
+        event.registerBlock(Capabilities.Fluid.BLOCK, (level, pos, state, be, side) -> {
+            var station = net.bobofraggins.mobfarmingsupplies.colorworkstation.ColorWorkstationBlock.blockEntity(level, pos, state);
+            return station == null ? null : new InsertOnlyTankFluidHandler(station);
+        }, Registration.COLOR_WORKSTATION.get());
+        event.registerBlock(Capabilities.Item.BLOCK, (level, pos, state, be, side) -> {
+            var station = net.bobofraggins.mobfarmingsupplies.colorworkstation.ColorWorkstationBlock.blockEntity(level, pos, state);
+            return station == null ? null : new net.bobofraggins.mobfarmingsupplies.neoforge.tank.ColorWorkstationDyeHandler(station);
+        }, Registration.COLOR_WORKSTATION.get());
 
         // XP Powered Anvil: experience in only.
         event.registerBlockEntity(

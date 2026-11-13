@@ -77,6 +77,9 @@ public final class MobFarmingSuppliesCommonClient {
                 Registration.XP_ANVIL_MENU.get(),
                 XpAnvilScreen::new);
         MenuScreenRegistry.registerScreenFactory(
+                Registration.COLOR_WORKSTATION_MENU.get(),
+                net.bobofraggins.mobfarmingsupplies.colorworkstation.ColorWorkstationScreen::new);
+        MenuScreenRegistry.registerScreenFactory(
                 Registration.DISENCHANTER_MENU.get(),
                 DisenchanterScreen::new);
         MenuScreenRegistry.registerScreenFactory(

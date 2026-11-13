@@ -52,6 +52,7 @@ public class MobFarmingSuppliesFabric implements ModInitializer {
         // client's copy) never sees the Tank Upgrade or Einstein-Rosen Bridge recipes.
         RecipeSynchronization.synchronizeRecipeSerializer(Registration.TANK_UPGRADE_SERIALIZER.get());
         RecipeSynchronization.synchronizeRecipeSerializer(Registration.EXPERIENCE_TANK_SERIALIZER.get());
+        RecipeSynchronization.synchronizeRecipeSerializer(Registration.EMPTY_TANK_SERIALIZER.get());
         RecipeSynchronization.synchronizeRecipeSerializer(Registration.SKULL_LIGHTS_SERIALIZER.get());
         RecipeSynchronization.synchronizeRecipeSerializer(Registration.INCUBATING_SERIALIZER.get());
         RecipeSynchronization.synchronizeRecipeSerializer(Registration.UPGRADING_SERIALIZER.get());
@@ -84,6 +85,16 @@ public class MobFarmingSuppliesFabric implements ModInitializer {
                 (be, direction) -> FilteringStorage.insertOnlyOf(new FabricTankFluidStorage((TankBlockEntity) be)),
                 Registration.INCUBATOR_BE_TYPE.get(), Registration.XP_ANVIL_BE_TYPE.get(),
                 Registration.DISENCHANTER_BE_TYPE.get());
+
+        // Color Workstation, at either half: Essence of Color in only; dyes out only.
+        FluidStorage.SIDED.registerForBlocks((level, pos, state, be, direction) -> {
+            var station = net.bobofraggins.mobfarmingsupplies.colorworkstation.ColorWorkstationBlock.blockEntity(level, pos, state);
+            return station == null ? null : FilteringStorage.insertOnlyOf(new FabricTankFluidStorage(station));
+        }, Registration.COLOR_WORKSTATION.get());
+        ItemStorage.SIDED.registerForBlocks((level, pos, state, be, direction) -> {
+            var station = net.bobofraggins.mobfarmingsupplies.colorworkstation.ColorWorkstationBlock.blockEntity(level, pos, state);
+            return station == null ? null : new net.bobofraggins.mobfarmingsupplies.tank.fabric.ColorWorkstationDyeStorage(station);
+        }, Registration.COLOR_WORKSTATION.get());
 
         // Block-side fluid storage for AbsorptionHopperBlockEntity.
         FluidStorage.SIDED.registerForBlockEntities(

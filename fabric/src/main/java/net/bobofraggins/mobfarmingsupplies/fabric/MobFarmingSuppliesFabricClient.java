@@ -108,6 +108,9 @@ public class MobFarmingSuppliesFabricClient implements ClientModInitializer {
                 Registration.EXPERIENCE_PYLON_BE_TYPE.get(),
                 ExperiencePylonRenderer::new);
         BlockEntityRendererRegistry.register(
+                Registration.COLOR_WORKSTATION_BE_TYPE.get(),
+                net.bobofraggins.mobfarmingsupplies.colorworkstation.ColorWorkstationRenderer::new);
+        BlockEntityRendererRegistry.register(
                 Registration.INCUBATOR_BE_TYPE.get(),
                 IncubatorRenderer::new);
         BlockEntityRendererRegistry.register(

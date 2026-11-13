@@ -55,6 +55,9 @@ import net.bobofraggins.mobfarmingsupplies.disenchanter.DisenchanterBlock;
 import net.bobofraggins.mobfarmingsupplies.disenchanter.DisenchanterBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.disenchanter.DisenchanterMenu;
 import net.bobofraggins.mobfarmingsupplies.worldgen.DryLandJigsawStructure;
+import net.bobofraggins.mobfarmingsupplies.colorworkstation.ColorWorkstationBlock;
+import net.bobofraggins.mobfarmingsupplies.colorworkstation.ColorWorkstationBlockEntity;
+import net.bobofraggins.mobfarmingsupplies.colorworkstation.ColorWorkstationMenu;
 import net.bobofraggins.mobfarmingsupplies.xpanvil.XpAnvilBlock;
 import net.bobofraggins.mobfarmingsupplies.xpanvil.XpAnvilBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.xpanvil.XpAnvilMenu;
@@ -314,6 +317,12 @@ public final class Registration {
     public static final RegistrySupplier<RecipeSerializer<ExperienceTankRecipe>> EXPERIENCE_TANK_SERIALIZER =
             RECIPE_SERIALIZERS.register("experience_tank",
                     () -> new RecipeSerializer<>(ExperienceTankRecipe.MAP_CODEC, ExperienceTankRecipe.STREAM_CODEC));
+
+    /** Shaped recipe that uses up an empty tank (the Color Workstation). */
+    public static final RegistrySupplier<RecipeSerializer<net.bobofraggins.mobfarmingsupplies.tank.EmptyTankRecipe>> EMPTY_TANK_SERIALIZER =
+            RECIPE_SERIALIZERS.register("empty_tank",
+                    () -> new RecipeSerializer<>(net.bobofraggins.mobfarmingsupplies.tank.EmptyTankRecipe.MAP_CODEC,
+                            net.bobofraggins.mobfarmingsupplies.tank.EmptyTankRecipe.STREAM_CODEC));
 
     public static final RegistrySupplier<RecipeSerializer<SkullLightsRecipe>> SKULL_LIGHTS_SERIALIZER =
             RECIPE_SERIALIZERS.register("skull_lights",
@@ -1116,6 +1125,28 @@ public final class Registration {
     public static final RegistrySupplier<MenuType<XpAnvilMenu>> XP_ANVIL_MENU =
             MENUS.register("anvil", () -> MenuRegistry.ofExtended(XpAnvilMenu::new));
 
+    // ── Color Workstation ─────────────────────────────────────────────────────────
+
+    public static final RegistrySupplier<ColorWorkstationBlock> COLOR_WORKSTATION =
+            BLOCKS.register("color_workstation",
+                    () -> new ColorWorkstationBlock(BlockBehaviour.Properties.of()
+                            .setId(blockKey("color_workstation"))
+                            .mapColor(MapColor.WOOD)
+                            .strength(2.5f)
+                            .sound(SoundType.WOOD)
+                            .noOcclusion()));
+
+    public static final RegistrySupplier<BlockItem> COLOR_WORKSTATION_ITEM =
+            ITEMS.register("color_workstation",
+                    () -> new BlockItem(COLOR_WORKSTATION.get(), new Item.Properties().setId(itemKey("color_workstation"))));
+
+    public static final RegistrySupplier<BlockEntityType<ColorWorkstationBlockEntity>> COLOR_WORKSTATION_BE_TYPE =
+            BLOCK_ENTITIES.register("color_workstation",
+                    () -> BlockEntityTypePlatform.create(ColorWorkstationBlockEntity::new, COLOR_WORKSTATION.get()));
+
+    public static final RegistrySupplier<MenuType<ColorWorkstationMenu>> COLOR_WORKSTATION_MENU =
+            MENUS.register("color_workstation", () -> MenuRegistry.ofExtended(ColorWorkstationMenu::new));
+
     // ── Incubator ─────────────────────────────────────────────────────────────────
 
     public static final RegistrySupplier<IncubatorBlock> INCUBATOR =
@@ -1699,6 +1730,7 @@ public final class Registration {
                         output.accept(INCUBATOR_ITEM.get());
                         output.accept(XP_ANVIL_ITEM.get());
                         output.accept(DISENCHANTER_ITEM.get());
+                        output.accept(COLOR_WORKSTATION_ITEM.get());
                         output.accept(ENDER_INHIBITOR_ITEM.get());
                         output.accept(WITHER_INHIBITOR_ITEM.get());
                         output.accept(WARDEN_INHIBITOR_ITEM.get());
