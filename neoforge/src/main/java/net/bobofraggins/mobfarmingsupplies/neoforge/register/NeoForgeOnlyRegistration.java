@@ -197,16 +197,6 @@ public final class NeoForgeOnlyRegistration {
                 (stack, ctx) -> ctx != null ? new ExperienceSyringeFluidHandler(ctx) : null,
                 Registration.EXPERIENCE_SYRINGE.get());
 
-        // Essence buckets are EssenceBucketItems (drinkable), and NeoForge only gives a bucket its
-        // fluid handler when the item's class is exactly BucketItem: without this they can't be
-        // poured into tanks, the Color Workstation or pipes' containers.
-        for (Essence essence : Essence.values()) {
-            event.registerItem(
-                    Capabilities.Fluid.ITEM,
-                    (stack, ctx) -> ctx != null ? new net.neoforged.neoforge.transfer.fluid.BucketResourceHandler(ctx) : null,
-                    Registration.ESSENCE_BUCKETS.get(essence).get());
-        }
-
         event.registerBlockEntity(
                 Capabilities.Item.BLOCK,
                 Registration.ABSORPTION_HOPPER_BE_TYPE.get(),

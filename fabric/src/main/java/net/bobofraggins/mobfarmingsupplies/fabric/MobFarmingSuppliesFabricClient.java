@@ -71,6 +71,13 @@ public class MobFarmingSuppliesFabricClient implements ClientModInitializer {
         BlockEntityRendererRegistry.register(
                 Registration.MUFFLER_BE_TYPE.get(),
                 EnderInhibitorBlockEntityRenderer::muffler);
+        // Show Area wireframes for the Absorption and Essence Hoppers.
+        BlockEntityRendererRegistry.register(
+                Registration.ABSORPTION_HOPPER_BE_TYPE.get(),
+                net.bobofraggins.mobfarmingsupplies.absorptionhopper.AbsorptionHopperBlockEntityRenderer::new);
+        BlockEntityRendererRegistry.register(
+                Registration.ESSENCE_HOPPER_BE_TYPE.get(),
+                net.bobofraggins.mobfarmingsupplies.absorptionhopper.AbsorptionHopperBlockEntityRenderer::new);
         BlockEntityRendererRegistry.register(
                 Registration.FAN_BE_TYPE.get(),
                 FanBlockEntityRenderer::new);

@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "net.bobofraggins.mobfarmingsupplies.potion.fabric.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "BrewingStandBlockEntityMixin",
+    "PotionBrewingMixin",
+    "PotionSlotMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

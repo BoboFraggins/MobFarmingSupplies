@@ -1,14 +1,9 @@
 {
   "type": "mobfarmingsupplies:empty_tank",
   "category": "misc",
-  "pattern": [
-    " T ",
-    " D ",
-    " C "
-  ],
-  "key": {
-    "T": "mobfarmingsupplies:tank",
-    "D": [
+  "ingredients": [
+    "mobfarmingsupplies:tank",
+    [
       "minecraft:white_dye",
       "minecraft:orange_dye",
       "minecraft:magenta_dye",
@@ -26,8 +21,8 @@
       "minecraft:red_dye",
       "minecraft:black_dye"
     ],
-    "C": "minecraft:crafting_table"
-  },
+    "minecraft:crafting_table"
+  ],
   "result": {
     "id": "mobfarmingsupplies:color_workstation",
     "count": 1

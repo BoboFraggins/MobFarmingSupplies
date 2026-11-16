@@ -31,7 +31,7 @@ public class HyperFarmlandBlock extends Block {
     public static final MapCodec<HyperFarmlandBlock> CODEC = simpleCodec(HyperFarmlandBlock::new);
 
     /** How many times as fast plants grow. */
-    public static final int SPEED = 8;
+    public static final int SPEED = 16;
     /** Ticks between handing out the extra random ticks. */
     private static final int INTERVAL = 20;
     /** Tallest stalk it speeds up. */

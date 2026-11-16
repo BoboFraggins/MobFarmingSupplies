@@ -249,11 +249,11 @@ public final class Registration {
     public static final DeferredRegister<net.minecraft.world.effect.MobEffect> MOB_EFFECTS =
             DeferredRegister.create(MobFarmingSuppliesCommon.MODID, Registries.MOB_EFFECT);
 
-    /** Creative-style flight, from drinking Essence of Air. */
+    /** Creative-style flight, from a Potion of Flight. */
     public static final RegistrySupplier<net.minecraft.world.effect.MobEffect> FLIGHT =
             MOB_EFFECTS.register("flight", net.bobofraggins.mobfarmingsupplies.essencehopper.FlightMobEffect::new);
 
-    /** Traces one kind of block through walls, from a Bucket of Oresight. */
+    /** Traces one kind of ore through walls, from a Potion of Oresight. */
     public static final RegistrySupplier<net.minecraft.world.effect.MobEffect> ORESIGHT =
             MOB_EFFECTS.register("oresight", net.bobofraggins.mobfarmingsupplies.oresight.OresightMobEffect::new);
 
@@ -332,12 +332,6 @@ public final class Registration {
     public static final RegistrySupplier<RecipeSerializer<SkullLightsDyeRecipe>> SKULL_LIGHTS_DYE_SERIALIZER =
             RECIPE_SERIALIZERS.register("skull_lights_dye",
                     () -> new RecipeSerializer<>(SkullLightsDyeRecipe.MAP_CODEC, SkullLightsDyeRecipe.STREAM_CODEC));
-
-    /** A Bucket of Sight Essence and a block give a Bucket of Oresight for the block. */
-    public static final RegistrySupplier<RecipeSerializer<net.bobofraggins.mobfarmingsupplies.oresight.OresightRecipe>> ORESIGHT_SERIALIZER =
-            RECIPE_SERIALIZERS.register("oresight",
-                    () -> new RecipeSerializer<>(net.bobofraggins.mobfarmingsupplies.oresight.OresightRecipe.MAP_CODEC,
-                            net.bobofraggins.mobfarmingsupplies.oresight.OresightRecipe.STREAM_CODEC));
 
     /** Shaped recipe for a linked pair of Einstein-Rosen Bridges on a new random channel. */
     public static final RegistrySupplier<RecipeSerializer<BridgePairRecipe>> BRIDGE_PAIR_SERIALIZER =
@@ -993,6 +987,8 @@ public final class Registration {
     public static final Map<Essence, RegistrySupplier<LiquidBlock>> ESSENCE_BLOCKS = new EnumMap<>(Essence.class);
     public static final Map<Essence, RegistrySupplier<BucketItem>> ESSENCE_BUCKETS = new EnumMap<>(Essence.class);
     public static final Map<Essence, RegistrySupplier<EssenceFilterItem>> ESSENCE_FILTERS = new EnumMap<>(Essence.class);
+    public static final Map<Essence, RegistrySupplier<net.bobofraggins.mobfarmingsupplies.essencehopper.EssenceBottleItem>> ESSENCE_BOTTLES =
+            new EnumMap<>(Essence.class);
 
     static {
         for (Essence essence : Essence.values()) {
@@ -1011,34 +1007,51 @@ public final class Registration {
                                     .replaceable()
                                     .pushReaction(PushReaction.DESTROY))));
             ESSENCE_BUCKETS.put(essence, ITEMS.register(essence.bucketId(),
-                    () -> new net.bobofraggins.mobfarmingsupplies.essencehopper.EssenceBucketItem(essence,
-                            ESSENCE_SOURCES.get(essence).get(), essenceBucketProperties(essence))));
+                    () -> new BucketItem(ESSENCE_SOURCES.get(essence).get(), new Item.Properties()
+                            .setId(itemKey(essence.bucketId()))
+                            .stacksTo(1)
+                            .craftRemainder(Items.BUCKET))));
+            ESSENCE_BOTTLES.put(essence, ITEMS.register(essence.bottleId(),
+                    () -> new net.bobofraggins.mobfarmingsupplies.essencehopper.EssenceBottleItem(essence,
+                            new Item.Properties()
+                                    .setId(itemKey(essence.bottleId()))
+                                    .stacksTo(16)
+                                    .craftRemainder(Items.GLASS_BOTTLE))));
             ESSENCE_FILTERS.put(essence, ITEMS.register(essence.filterId(),
                     () -> new EssenceFilterItem(essence, new Item.Properties().setId(itemKey(essence.filterId())))));
         }
     }
 
-    public static final RegistrySupplier<net.bobofraggins.mobfarmingsupplies.oresight.OresightBucketItem> ORESIGHT_BUCKET =
-            ITEMS.register("oresight_bucket",
-                    () -> new net.bobofraggins.mobfarmingsupplies.oresight.OresightBucketItem(new Item.Properties()
-                            .setId(itemKey("oresight_bucket"))
+    // ── Potions ───────────────────────────────────────────────────────────────────
+
+    /** Lesser, Greater and Superior Potions of Flight, brewed from Essence of Air (see {@code MFSBrewing}). */
+    public static final Map<net.bobofraggins.mobfarmingsupplies.potion.PotionTier,
+            RegistrySupplier<net.bobofraggins.mobfarmingsupplies.potion.TieredPotionItem>> FLIGHT_POTIONS =
+            registerPotions(net.bobofraggins.mobfarmingsupplies.potion.TieredPotionItem.Kind.FLIGHT);
+
+    /** Lesser, Greater and Superior Potions of Oresight, brewed from Essence of Sight and an ore. */
+    public static final Map<net.bobofraggins.mobfarmingsupplies.potion.PotionTier,
+            RegistrySupplier<net.bobofraggins.mobfarmingsupplies.potion.TieredPotionItem>> ORESIGHT_POTIONS =
+            registerPotions(net.bobofraggins.mobfarmingsupplies.potion.TieredPotionItem.Kind.ORESIGHT);
+
+    private static Map<net.bobofraggins.mobfarmingsupplies.potion.PotionTier,
+            RegistrySupplier<net.bobofraggins.mobfarmingsupplies.potion.TieredPotionItem>> registerPotions(
+            net.bobofraggins.mobfarmingsupplies.potion.TieredPotionItem.Kind kind) {
+        Map<net.bobofraggins.mobfarmingsupplies.potion.PotionTier,
+                RegistrySupplier<net.bobofraggins.mobfarmingsupplies.potion.TieredPotionItem>> potions =
+                new EnumMap<>(net.bobofraggins.mobfarmingsupplies.potion.PotionTier.class);
+        for (var tier : net.bobofraggins.mobfarmingsupplies.potion.PotionTier.values()) {
+            String id = tier.id() + "_potion_of_" + kind.id();
+            // Drunk like a vanilla potion, leaving a glass bottle.
+            potions.put(tier, ITEMS.register(id, () -> new net.bobofraggins.mobfarmingsupplies.potion.TieredPotionItem(
+                    kind, tier, new Item.Properties()
+                            .setId(itemKey(id))
                             .stacksTo(1)
                             .component(net.minecraft.core.component.DataComponents.CONSUMABLE,
-                                    net.minecraft.world.item.component.Consumables.defaultDrink().build())
-                            .usingConvertsTo(Items.BUCKET)));
-
-    /** A drinkable essence's bucket is drunk like a Milk Bucket, leaving an empty bucket. */
-    private static Item.Properties essenceBucketProperties(Essence essence) {
-        Item.Properties properties = new Item.Properties()
-                .setId(itemKey(essence.bucketId()))
-                .stacksTo(1)
-                .craftRemainder(Items.BUCKET);
-        if (essence.drinkable()) {
-            properties.component(net.minecraft.core.component.DataComponents.CONSUMABLE,
-                            net.minecraft.world.item.component.Consumables.defaultDrink().build())
-                    .usingConvertsTo(Items.BUCKET);
+                                    net.minecraft.world.item.component.Consumables.DEFAULT_DRINK)
+                            .usingConvertsTo(Items.GLASS_BOTTLE))));
         }
-        return properties;
+        return potions;
     }
 
     // ── Tank ──────────────────────────────────────────────────────────────────────
@@ -1199,8 +1212,7 @@ public final class Registration {
     public static final RegistrySupplier<net.bobofraggins.mobfarmingsupplies.magnet.SuperconductingMagnetItem>
             SUPERCONDUCTING_MAGNET = ITEMS.register("superconducting_magnet",
                     () -> new net.bobofraggins.mobfarmingsupplies.magnet.SuperconductingMagnetItem(new Item.Properties()
-                            .setId(itemKey("superconducting_magnet"))
-                            .stacksTo(1)));
+                            .setId(itemKey("superconducting_magnet"))));
 
     public static final RegistrySupplier<ExperienceSyringeItem> EXPERIENCE_SYRINGE =
             ITEMS.register("experience_syringe",
@@ -1680,6 +1692,7 @@ public final class Registration {
                         output.accept(EINSTEIN_ROSEN_BRIDGE_ITEM.get());
                         output.accept(LOGISTIC_SORTER_ITEM.get());
                         output.accept(BLOCK_BREAKER_ITEM.get());
+                        output.accept(MUFFLER_ITEM.get());
                         output.accept(SUPERCONDUCTING_MAGNET.get());
                         output.accept(FORSAKEN_SOIL_ITEM.get());
                         output.accept(HYPER_FARMLAND_ITEM.get());
@@ -1734,7 +1747,6 @@ public final class Registration {
                         output.accept(ENDER_INHIBITOR_ITEM.get());
                         output.accept(WITHER_INHIBITOR_ITEM.get());
                         output.accept(WARDEN_INHIBITOR_ITEM.get());
-                        output.accept(MUFFLER_ITEM.get());
                         output.accept(MAGIC_HAT_ITEM.get());
                         output.accept(PRESENT_ITEM.get());
                         output.accept(PICNIC_BASKET_ITEM.get());
@@ -1763,10 +1775,16 @@ public final class Registration {
                         for (Essence essence : Essence.values()) {
                             output.accept(ESSENCE_FILTERS.get(essence).get());
                             output.accept(ESSENCE_BUCKETS.get(essence).get());
+                            output.accept(ESSENCE_BOTTLES.get(essence).get());
                         }
-                        // An example; any block can be crafted in.
-                        output.accept(net.bobofraggins.mobfarmingsupplies.oresight.OresightBucketItem.of(
-                                net.minecraft.world.level.block.Blocks.DIAMOND_ORE));
+                        for (var tier : net.bobofraggins.mobfarmingsupplies.potion.PotionTier.values()) {
+                            output.accept(FLIGHT_POTIONS.get(tier).get());
+                        }
+                        // An example; any ore can be brewed in.
+                        for (var tier : net.bobofraggins.mobfarmingsupplies.potion.PotionTier.values()) {
+                            output.accept(net.bobofraggins.mobfarmingsupplies.potion.TieredPotionItem.oresight(
+                                    tier, net.minecraft.world.level.block.Blocks.DIAMOND_ORE));
+                        }
                         output.accept(RED_ALERT_BUTTON_ITEM.get());
                         output.accept(DRAMATIC_BUTTON_ITEM.get());
                         output.accept(RIMSHOT_BUTTON_ITEM.get());
