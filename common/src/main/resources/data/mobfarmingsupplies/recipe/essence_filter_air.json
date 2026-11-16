@@ -3,7 +3,7 @@
   "item": {
     "item": "mobfarmingsupplies:mob_head"
   },
-  "mob_head": "minecraft:breeze",
+  "mob_head": "minecraft:phantom",
   "input": {
     "item": "mobfarmingsupplies:blank_upgrade"
   },

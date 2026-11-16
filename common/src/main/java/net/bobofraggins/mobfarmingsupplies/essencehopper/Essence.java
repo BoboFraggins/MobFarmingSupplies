@@ -14,7 +14,7 @@ import org.jetbrains.annotations.Nullable;
  * {@code blockbench/essence_assets.py} and its filter's recipe is an {@code upgrading} recipe.
  */
 public enum Essence {
-    AIR("air", EntityType.BREEZE, 0xFF87CEEB),
+    AIR("air", EntityType.PHANTOM, 0xFF87CEEB),
     BACON("bacon", EntityType.PIG, 0xFFFFA6C1),
     COLOR("color", EntityType.SHEEP, RainbowColor.RAINBOW),
     FIRE("fire", EntityType.BLAZE, 0xFFE8281E),
@@ -53,6 +53,8 @@ public enum Essence {
     public String fluidId() { return "essence_of_" + id; }
 
     public String bucketId() { return fluidId() + "_bucket"; }
+
+    public String bottleId() { return fluidId() + "_bottle"; }
 
     public String filterId() { return "essence_filter_" + id; }
 

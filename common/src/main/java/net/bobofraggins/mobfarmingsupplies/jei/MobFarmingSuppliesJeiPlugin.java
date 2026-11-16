@@ -68,6 +68,8 @@ public class MobFarmingSuppliesJeiPlugin implements IModPlugin {
     @Override
     public void registerRecipes(IRecipeRegistration reg) {
         reg.addRecipes(XpJuiceGuide.RECIPE_TYPE, XpJuiceGuide.recipes());
+        reg.addRecipes(mezz.jei.api.constants.RecipeTypes.BREWING,
+                BrewingGuide.recipes(reg.getVanillaRecipeFactory()));
         reg.addRecipes(BottlingGuide.RECIPE_TYPE, BottlingGuide.recipes());
         reg.addRecipes(AnvilCrushingGuide.RECIPE_TYPE, List.of(AnvilCrushingGuide.recipe()));
         reg.addRecipes(FilterScribingCategory.RECIPE_TYPE, List.of(FilterScribingExamples.create()));

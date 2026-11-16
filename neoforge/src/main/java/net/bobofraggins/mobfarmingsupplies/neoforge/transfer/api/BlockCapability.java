@@ -57,6 +57,16 @@ public final class BlockCapability<H, C> {
         });
     }
 
+    /** Offers {@code provider}'s handlers for these blocks, with or without a block entity. */
+    public void registerBlock(RegisterCapabilitiesEvent event,
+                              net.neoforged.neoforge.capabilities.IBlockCapabilityProvider<H, C> provider,
+                              net.minecraft.world.level.block.Block... blocks) {
+        event.registerBlock(raw, (level, pos, state, be, context) -> {
+            H handler = provider.getCapability(level, pos, state, be, context);
+            return handler == null ? null : unwrap.apply(handler);
+        }, blocks);
+    }
+
     /** A {@link BlockCapabilityCache} whose handler is wrapped once per handler the cache returns. */
     public static final class Cache<H> {
         private final BlockCapabilityCache<Object, ?> cache;

@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "net.bobofraggins.mobfarmingsupplies.soil.fabric.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "FarmlandPlantMixin",
+    "CropGrowthSpeedMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

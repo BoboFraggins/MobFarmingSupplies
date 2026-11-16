@@ -22,6 +22,9 @@ public final class EnderInhibitorClientEvents {
         event.registerBlockEntityRenderer(
                 Registration.WARDEN_INHIBITOR_BE_TYPE.get(),
                 EnderInhibitorBlockEntityRenderer::warden);
+        event.registerBlockEntityRenderer(
+                Registration.MUFFLER_BE_TYPE.get(),
+                EnderInhibitorBlockEntityRenderer::muffler);
     }
 
     // NeoForge's RegisterMenuScreensEvent has already fired by the time the common

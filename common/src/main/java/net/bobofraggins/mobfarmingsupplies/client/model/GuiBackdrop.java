@@ -40,7 +40,7 @@ public final class GuiBackdrop {
                 || item == Registration.EXPERIENCE_SYRINGE.get() || item == Registration.ABSORPTION_HOPPER_ITEM.get()
                 || item == Registration.EINSTEIN_ROSEN_BRIDGE_ITEM.get() || item == Registration.LOGISTIC_SORTER_ITEM.get()
                 || item == Registration.OMNI_HOPPER_ITEM.get() || item == Registration.EXPERIENCE_PYLON_ITEM.get()
-                || item == Registration.PLAYER_EXCLUSION_GLASS_ITEM.get();
+                || item == Registration.PLAYER_EXCLUSION_GLASS_ITEM.get() || item == Registration.MUFFLER_ITEM.get();
     }
 
     /** Whether {@code stack}'s GUI icon is drawn bigger than its slot and has to be clipped to it. */

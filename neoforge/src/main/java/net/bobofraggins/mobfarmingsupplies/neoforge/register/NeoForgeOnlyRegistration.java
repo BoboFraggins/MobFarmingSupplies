@@ -243,6 +243,16 @@ public final class NeoForgeOnlyRegistration {
         Capabilities.Fluid.BLOCK.registerBlockEntity(event, Registration.DISENCHANTER_BE_TYPE.get(),
                 (be, side) -> new InsertOnlyTankFluidHandler(be));
 
+        // Color Workstation, at either half: Essence of Color in only; dyes out only.
+        Capabilities.Fluid.BLOCK.registerBlock(event, (level, pos, state, be, side) -> {
+            var station = net.bobofraggins.mobfarmingsupplies.colorworkstation.ColorWorkstationBlock.blockEntity(level, pos, state);
+            return station == null ? null : new InsertOnlyTankFluidHandler(station);
+        }, Registration.COLOR_WORKSTATION.get());
+        Capabilities.Item.BLOCK.registerBlock(event, (level, pos, state, be, side) -> {
+            var station = net.bobofraggins.mobfarmingsupplies.colorworkstation.ColorWorkstationBlock.blockEntity(level, pos, state);
+            return station == null ? null : new net.bobofraggins.mobfarmingsupplies.neoforge.tank.ColorWorkstationDyeHandler(station);
+        }, Registration.COLOR_WORKSTATION.get());
+
         // XP Powered Anvil: experience in only.
         Capabilities.Fluid.BLOCK.registerBlockEntity(event, Registration.XP_ANVIL_BE_TYPE.get(),
                 (be, side) -> new InsertOnlyTankFluidHandler(be));

@@ -37,6 +37,17 @@ public class MobFarmingSuppliesFabricClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         MobFarmingSuppliesCommonClient.init();
+        // The Potions of Flight and Oresight tint their liquid (26.x does this in their item definitions).
+        for (var potions : java.util.List.of(Registration.FLIGHT_POTIONS, Registration.ORESIGHT_POTIONS)) {
+            for (var potion : potions.values()) {
+                net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry.ITEM.register(
+                        net.bobofraggins.mobfarmingsupplies.potion.TieredPotionItem::tint, potion.get());
+            }
+        }
+        // Oresight's x-ray outlines, drawn after everything else in the world.
+        net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents.AFTER_TRANSLUCENT.register(ctx ->
+                net.bobofraggins.mobfarmingsupplies.oresight.OresightClient.render(
+                        ctx.matrixStack() != null ? ctx.matrixStack() : new com.mojang.blaze3d.vertex.PoseStack()));
         BlockEntityRendererRegistry.register(
                 Registration.ENDER_INHIBITOR_BE_TYPE.get(),
                 EnderInhibitorBlockEntityRenderer::new);
@@ -46,6 +57,16 @@ public class MobFarmingSuppliesFabricClient implements ClientModInitializer {
         BlockEntityRendererRegistry.register(
                 Registration.WARDEN_INHIBITOR_BE_TYPE.get(),
                 EnderInhibitorBlockEntityRenderer::warden);
+        BlockEntityRendererRegistry.register(
+                Registration.MUFFLER_BE_TYPE.get(),
+                EnderInhibitorBlockEntityRenderer::muffler);
+        // Show Area wireframes for the Absorption and Essence Hoppers.
+        BlockEntityRendererRegistry.register(
+                Registration.ABSORPTION_HOPPER_BE_TYPE.get(),
+                net.bobofraggins.mobfarmingsupplies.absorptionhopper.AbsorptionHopperBlockEntityRenderer::new);
+        BlockEntityRendererRegistry.register(
+                Registration.ESSENCE_HOPPER_BE_TYPE.get(),
+                net.bobofraggins.mobfarmingsupplies.absorptionhopper.AbsorptionHopperBlockEntityRenderer::new);
         BlockEntityRendererRegistry.register(
                 Registration.FAN_BE_TYPE.get(),
                 FanBlockEntityRenderer::new);
@@ -82,6 +103,9 @@ public class MobFarmingSuppliesFabricClient implements ClientModInitializer {
         BlockEntityRendererRegistry.register(
                 Registration.EXPERIENCE_PYLON_BE_TYPE.get(),
                 ExperiencePylonRenderer::new);
+        BlockEntityRendererRegistry.register(
+                Registration.COLOR_WORKSTATION_BE_TYPE.get(),
+                net.bobofraggins.mobfarmingsupplies.colorworkstation.ColorWorkstationRenderer::new);
         BlockEntityRendererRegistry.register(
                 Registration.INCUBATOR_BE_TYPE.get(),
                 IncubatorRenderer::new);

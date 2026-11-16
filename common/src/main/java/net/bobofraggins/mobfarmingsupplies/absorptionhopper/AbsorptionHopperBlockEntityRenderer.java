@@ -1,8 +1,7 @@
-package net.bobofraggins.mobfarmingsupplies.neoforge.absorptionhopper;
+package net.bobofraggins.mobfarmingsupplies.absorptionhopper;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.bobofraggins.mobfarmingsupplies.absorptionhopper.AbsorptionHopperBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.shared.render.BlockEntityRenderState;
 import net.bobofraggins.mobfarmingsupplies.shared.render.Geometry;
 import net.bobofraggins.mobfarmingsupplies.shared.render.StateBlockEntityRenderer;
@@ -22,11 +21,12 @@ import org.joml.Matrix4f;
  * hopper's current pickup area — a 7×7×7-block zone centred at the offset from the
  * block's position.
  *
- * <p>The wireframe is always shown; it is naturally culled by the render bounding box when
- * the block is outside the camera frustum.
+ * <p>Shared by the Essence Hopper, and by both loaders: NeoForge widens its culling box in a
+ * subclass ({@code NeoAbsorptionHopperRenderer}), and on Fabric the box is drawn even while the
+ * hopper's own block is off screen.
  */
-public class AbsorptionHopperBlockEntityRenderer
-        extends StateBlockEntityRenderer<AbsorptionHopperBlockEntity, AbsorptionHopperBlockEntityRenderer.HopperState> {
+public class AbsorptionHopperBlockEntityRenderer<T extends AbsorptionHopperBlockEntity>
+        extends StateBlockEntityRenderer<T, AbsorptionHopperBlockEntityRenderer.HopperState> {
 
     /** Half-side of the pickup cube — mirrors {@code AbsorptionHopperBlockEntity.PICKUP_RADIUS}. */
     private static final double PICKUP_RADIUS = 3.5;
@@ -56,7 +56,7 @@ public class AbsorptionHopperBlockEntityRenderer
     // ── Two-phase rendering ───────────────────────────────────────────────────
 
     @Override
-    public void extractRenderState(AbsorptionHopperBlockEntity be, HopperState state, float partialTick) {
+    public void extractRenderState(T be, HopperState state, float partialTick) {
         if (!be.showArea) {
             state.localPickupAABB = null;
             return;
@@ -87,13 +87,16 @@ public class AbsorptionHopperBlockEntityRenderer
 
     // ── Visibility ────────────────────────────────────────────────────────────
 
-    /**
-     * Inflates the render bounding box so the wireframe is not culled when the pickup
-     * zone extends far from the block.  Max offset (8) + pickup radius (3.5) = 11.5;
-     * we use 12 for a small safety margin.
-     */
+    /** The pickup box reaches up to 12 blocks away: keep drawing it while the hopper is off screen. */
     @Override
-    public AABB getRenderBoundingBox(AbsorptionHopperBlockEntity be) {
+    public boolean shouldRenderOffScreen(T be) {
+        return true;
+    }
+
+    /**
+     * The culling box NeoForge should use: max offset (8) + pickup radius (3.5) = 11.5, plus a margin.
+     */
+    public static AABB renderBounds(AbsorptionHopperBlockEntity be) {
         return new AABB(be.getBlockPos()).inflate(12);
     }
 

@@ -21,11 +21,22 @@ public final class TankClientEvents {
     public static void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerBlockEntityRenderer(Registration.TANK_BE_TYPE.get(), TankRenderer::new);
         event.registerBlockEntityRenderer(Registration.EXPERIENCE_PYLON_BE_TYPE.get(), NeoExperiencePylonRenderer::new);
+        event.registerBlockEntityRenderer(Registration.COLOR_WORKSTATION_BE_TYPE.get(), NeoColorWorkstationRenderer::new);
         event.registerBlockEntityRenderer(Registration.INCUBATOR_BE_TYPE.get(), NeoIncubatorRenderer::new);
         event.registerBlockEntityRenderer(Registration.UPGRADE_STATION_BE_TYPE.get(), NeoUpgradeStationRenderer::new);
         event.registerBlockEntityRenderer(Registration.DISENCHANTER_BE_TYPE.get(), DisenchanterRenderer::new);
         event.registerBlockEntityRenderer(Registration.BLOCK_BREAKER_BE_TYPE.get(),
                 net.bobofraggins.mobfarmingsupplies.blockbreaker.BlockBreakerRenderer::new);
+    }
+
+    /** The Potions of Flight and Oresight tint their liquid (26.x does this in their item definitions). */
+    @SubscribeEvent
+    public static void onRegisterItemColors(net.neoforged.neoforge.client.event.RegisterColorHandlersEvent.Item event) {
+        for (var potions : java.util.List.of(Registration.FLIGHT_POTIONS, Registration.ORESIGHT_POTIONS)) {
+            for (var potion : potions.values()) {
+                event.register(net.bobofraggins.mobfarmingsupplies.potion.TieredPotionItem::tint, potion.get());
+            }
+        }
     }
 
     @SubscribeEvent
@@ -41,6 +52,8 @@ public final class TankClientEvents {
         event.register(Registration.INCUBATOR_MENU.get(), IncubatorScreen::new);
         event.register(Registration.UPGRADE_STATION_MENU.get(), net.bobofraggins.mobfarmingsupplies.upgradestation.UpgradeStationScreen::new);
         event.register(Registration.XP_ANVIL_MENU.get(), XpAnvilScreen::new);
+        event.register(Registration.COLOR_WORKSTATION_MENU.get(),
+                net.bobofraggins.mobfarmingsupplies.colorworkstation.ColorWorkstationScreen::new);
         event.register(Registration.DISENCHANTER_MENU.get(), DisenchanterScreen::new);
     }
 }

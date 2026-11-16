@@ -49,6 +49,8 @@ public class MobFarmingSupplies {
         // Present enderman easter egg — same split as the Magic Hat.
         NeoForge.EVENT_BUS.register(new PresentSpawnEvents());
         NeoForge.EVENT_BUS.register(new HeadPikeSpawnEvents());
+        // Potions of Flight and Oresight — NeoForge has a brewing recipe API; Fabric uses mixins.
+        NeoForge.EVENT_BUS.addListener(net.bobofraggins.mobfarmingsupplies.neoforge.potion.MFSBrewingRecipe::register);
         // Magic Hat Curios integration — soft dependency, registered only if Curios is present.
         // MUST check isLoaded() before ever calling into MagicHatCurioSetup: that class
         // references Curios API types, and simply loading it (even just to have this class's
@@ -65,6 +67,7 @@ public class MobFarmingSupplies {
             modEventBus.addListener((FMLClientSetupEvent e) -> MobFarmingSuppliesCommonClient.init());
             // NeoForge-specific client events (renderers, standalone models, NeoForge fluid rendering, etc.)
             modEventBus.register(EnderInhibitorClientEvents.class);
+            NeoForge.EVENT_BUS.addListener(net.bobofraggins.mobfarmingsupplies.neoforge.oresight.OresightClientEvents::onRenderLevel);
             modEventBus.register(FilterScribingTerminalClientEvents.class);
             modEventBus.register(LogisticSorterClientEvents.class);
             modEventBus.register(OmniHopperClientEvents.class);

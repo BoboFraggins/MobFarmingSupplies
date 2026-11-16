@@ -15,10 +15,10 @@ public final class AbsorptionHopperClientEvents {
     public static void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerBlockEntityRenderer(
                 Registration.ABSORPTION_HOPPER_BE_TYPE.get(),
-                AbsorptionHopperBlockEntityRenderer::new);
+                NeoAbsorptionHopperRenderer::new);
         event.registerBlockEntityRenderer(
                 Registration.ESSENCE_HOPPER_BE_TYPE.get(),
-                AbsorptionHopperBlockEntityRenderer::new);
+                NeoAbsorptionHopperRenderer::new);
     }
 
     // NeoForge's RegisterMenuScreensEvent has already fired by the time the common

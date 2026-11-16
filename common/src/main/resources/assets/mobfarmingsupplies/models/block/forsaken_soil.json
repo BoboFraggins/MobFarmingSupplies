@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "bottom": "minecraft:block/dirt",
+    "top": "mobfarmingsupplies:block/forsaken_soil_top",
+    "side": "mobfarmingsupplies:block/forsaken_soil_side",
+    "particle": "minecraft:block/dirt"
+  }
+}

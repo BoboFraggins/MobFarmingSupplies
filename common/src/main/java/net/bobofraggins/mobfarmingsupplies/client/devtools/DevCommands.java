@@ -34,7 +34,9 @@ import org.slf4j.LoggerFactory;
  * its uses, "USEON x y z" uses the held item on the top of that block, "USEBLOCK x y z" clicks that block
  * with it as a player does, and
  * "CLIENTDATA x y z" logs the client's copy of the block entity there. "MENUBUTTON id" presses
- * button {@code id} of the open menu, and "QUICKMOVE slot" shift-clicks that slot of it.
+ * button {@code id} of the open menu, "QUICKMOVE slot" shift-clicks that slot of it, "USEKEY
+ * down|up" holds or releases the use key (to drink), "BUTTON label" presses the open screen's
+ * button whose label contains that text, and "CLOSE" closes the open screen.
  */
 public final class DevCommands {
 
@@ -191,6 +193,34 @@ public final class DevCommands {
             // Sets the player's experience bar fraction directly (to recreate float drift).
             float bar = Float.parseFloat(line.substring(6).strip());
             server.execute(() -> server.getPlayerList().getPlayers().getFirst().experienceProgress = bar);
+            return;
+        }
+        if (line.equals("CLOSE")) {
+            // Closes the open screen, as Escape does.
+            if (mc.player != null && mc.screen != null) mc.player.closeContainer();
+            return;
+        }
+        if (line.startsWith("BUTTON ")) {
+            // Presses the open screen's first button whose label contains the text, as a click does.
+            String label = line.substring(7).strip();
+            if (mc.screen != null) {
+                for (var child : mc.screen.children()) {
+                    if (child instanceof net.minecraft.client.gui.components.AbstractButton button
+                            && button.getMessage().getString().contains(label)) {
+                        button.onPress();
+                        LOGGER.info("BUTTON {}", label);
+                        return;
+                    }
+                }
+            }
+            LOGGER.warn("BUTTON {}: no such button in {}", label,
+                    mc.screen == null ? "no screen" : mc.screen.getClass().getSimpleName());
+            return;
+        }
+        if (line.startsWith("USEKEY ")) {
+            // Holds ("down") or releases ("up") the use key, to drink or eat: a use started on the
+            // server alone gets cancelled by the client, which sees the key isn't held.
+            mc.options.keyUse.setDown(line.substring(7).strip().equals("down"));
             return;
         }
         if (line.startsWith("USEBLOCK ")) {

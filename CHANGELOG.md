@@ -5,8 +5,13 @@
 * Added Upgrade Station (used for all upgrade crafts now)
 * Added Warden Inhibitor
 * Added Essence Hopper
-* Added Essences of Bacon, Color, Fire, Frost, Growth, Sight, Spacetime,
+* Added Essences of Air, Bacon, Color, Fire, Frost, Growth, Sight, Spacetime,
   Undeath, Venom, Water, and Wither
+* Added Flight and Oresight potions
+* Added Forsaken Soil (spawns mobs quickly)
+* Added Hyper Farmland (grows crops and trees faster)
+* Added Muffler (squelches sounds in an area)
+* Added Color Workstation (converts Essence of Color into dyes)
 
 * Fixed side configuration on Absorption Hopper when next to EnderIO conduits
 * Fixed Jade name of Giant Player Lawn Ornament when assigned a player

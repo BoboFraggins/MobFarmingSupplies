@@ -93,8 +93,8 @@ public class TankBlock extends BaseEntityBlock {
             BlockHitResult hit) {
         if (level.isClientSide()) return ItemInteractionResult.SUCCESS;
 
-        // Bottles (empty, water, or XP) — shared with the Tank UI's transfer slot
-        if (stack.is(Items.GLASS_BOTTLE) || stack.is(Items.POTION) || stack.is(Items.EXPERIENCE_BOTTLE)) {
+        // Bottles (empty, water, XP or essence) — shared with the Tank UI's transfer slot
+        if (TankBottleTransfer.isBottle(stack)) {
             if (!(level.getBlockEntity(pos) instanceof TankBlockEntity be))
                 return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
             ItemStack result = TankBottleTransfer.tryTransfer(be, stack);

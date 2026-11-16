@@ -15,12 +15,15 @@
     "EntityVexCollisionMixin",
     "WitherBossMixin",
     "SonicBoomMixin",
-    "WardenMixin"
+    "WardenMixin",
+    "SugarCaneHyperFarmlandMixin",
+    "TrunkPlacerHyperFarmlandMixin"
   ],
   "client": [
     "GuiGraphicsBackdropMixin",
     "JeiBatchBackdropMixin",
-    "HumanoidModelMixin"
+    "HumanoidModelMixin",
+    "SoundEngineMufflerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

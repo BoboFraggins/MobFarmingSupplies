@@ -72,6 +72,16 @@ public class MobFarmingSuppliesFabric implements ModInitializer {
                 Registration.INCUBATOR_BE_TYPE.get(), Registration.XP_ANVIL_BE_TYPE.get(),
                 Registration.DISENCHANTER_BE_TYPE.get());
 
+        // Color Workstation, at either half: Essence of Color in only; dyes out only.
+        FluidStorage.SIDED.registerForBlocks((level, pos, state, be, direction) -> {
+            var station = net.bobofraggins.mobfarmingsupplies.colorworkstation.ColorWorkstationBlock.blockEntity(level, pos, state);
+            return station == null ? null : FilteringStorage.insertOnlyOf(new FabricTankFluidStorage(station));
+        }, Registration.COLOR_WORKSTATION.get());
+        ItemStorage.SIDED.registerForBlocks((level, pos, state, be, direction) -> {
+            var station = net.bobofraggins.mobfarmingsupplies.colorworkstation.ColorWorkstationBlock.blockEntity(level, pos, state);
+            return station == null ? null : new net.bobofraggins.mobfarmingsupplies.tank.fabric.ColorWorkstationDyeStorage(station);
+        }, Registration.COLOR_WORKSTATION.get());
+
         // Block-side fluid storage for AbsorptionHopperBlockEntity.
         FluidStorage.SIDED.registerForBlockEntities(
                 (be, direction) -> new FabricAbsorptionHopperFluidStorage((AbsorptionHopperBlockEntity) be),

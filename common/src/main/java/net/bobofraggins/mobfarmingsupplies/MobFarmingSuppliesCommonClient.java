@@ -52,6 +52,7 @@ public final class MobFarmingSuppliesCommonClient {
         net.bobofraggins.mobfarmingsupplies.client.devtools.BlockIconRenderer.register();
         // Development only: runs a command script as the player when MFS_DEV_COMMANDS is set.
         net.bobofraggins.mobfarmingsupplies.client.devtools.DevCommands.register();
+        net.bobofraggins.mobfarmingsupplies.oresight.OresightClient.register();
         // Menu → screen bindings (menu and screen both in common). On Fabric this is
         // the only registration path and works correctly. On NeoForge,
         // MenuRegistry.registerScreenFactory adds a RegisterMenuScreensEvent
@@ -85,6 +86,9 @@ public final class MobFarmingSuppliesCommonClient {
         MenuRegistry.registerScreenFactory(
                 Registration.XP_ANVIL_MENU.get(),
                 XpAnvilScreen::new);
+        MenuRegistry.registerScreenFactory(
+                Registration.COLOR_WORKSTATION_MENU.get(),
+                net.bobofraggins.mobfarmingsupplies.colorworkstation.ColorWorkstationScreen::new);
         MenuRegistry.registerScreenFactory(
                 Registration.DISENCHANTER_MENU.get(),
                 DisenchanterScreen::new);
@@ -173,7 +177,8 @@ public final class MobFarmingSuppliesCommonClient {
                 Registration.PRESENT.get(), Registration.TOILET.get(), Registration.VECTOR_PLATE.get(),
                 Registration.DRAMATIC_BUTTON.get(), Registration.RED_ALERT_BUTTON.get(),
                 Registration.RIMSHOT_BUTTON.get(), Registration.WILHELM_BUTTON.get(), Registration.HEAD_PIKE.get(),
-                Registration.SKULL_LIGHT_HOOK.get(), Registration.XP_ANVIL.get(), Registration.INCUBATOR.get());
+                Registration.SKULL_LIGHT_HOOK.get(), Registration.XP_ANVIL.get(), Registration.INCUBATOR.get(),
+                Registration.COLOR_WORKSTATION.get());
         RenderTypeRegistry.register(RenderType.translucent(),
                 Registration.WITHER_PROOF_GLASS.get(), Registration.MOB_EXCLUSION_GLASS.get(),
                 Registration.EINSTEIN_ROSEN_BRIDGE.get(), Registration.PLAYER_EXCLUSION_GLASS.get(),
