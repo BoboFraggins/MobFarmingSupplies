@@ -10,6 +10,8 @@
     "AnvilBlockMixin",
     "BlockItemSilkSpawnerMixin",
     "EnderManPresentMixin",
+    "EnderManTakeBlockGoalMixin",
+    "EnderManLeaveBlockGoalMixin",
     "InventoryChangeTriggerMixin",
     "LivingEntityLootMixin",
     "EntityVexCollisionMixin",
