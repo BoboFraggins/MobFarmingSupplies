@@ -62,7 +62,9 @@ public class MobFarmingSuppliesJeiPlugin implements IModPlugin {
                 new DnaSamplingGuide(guiHelper), new CloningGuide(guiHelper), new IncubatingCategory(guiHelper),
                 new UpgradingCategory(guiHelper),
                 new EssenceExtractionCategory(reg.getJeiHelpers()),
-                new DisenchantingCategory(guiHelper));
+                new DisenchantingCategory(guiHelper),
+                new DyeMixingCategory(reg.getJeiHelpers()),
+                EssenceContainerGuide.bucketCategory(guiHelper), EssenceContainerGuide.bottleCategory(guiHelper));
     }
 
     @Override
@@ -83,6 +85,9 @@ public class MobFarmingSuppliesJeiPlugin implements IModPlugin {
         reg.addRecipes(UpgradingCategory.RECIPE_TYPE, UpgradingCategory.displays(upgradingRecipes()));
         reg.addRecipes(EssenceExtractionCategory.RECIPE_TYPE, EssenceExtractionCategory.recipes());
         reg.addRecipes(DisenchantingCategory.RECIPE_TYPE, DisenchantingCategory.displays());
+        reg.addRecipes(DyeMixingCategory.RECIPE_TYPE, DyeMixingCategory.displays());
+        reg.addRecipes(EssenceContainerGuide.BUCKET_TYPE, EssenceContainerGuide.bucketRecipes());
+        reg.addRecipes(EssenceContainerGuide.BOTTLE_TYPE, EssenceContainerGuide.bottleRecipes());
     }
 
     /** Each mob's Mob Head is its own JEI entry (one item, told apart by its mob type). */
@@ -156,6 +161,11 @@ public class MobFarmingSuppliesJeiPlugin implements IModPlugin {
         reg.addRecipeCatalyst(Registration.DISENCHANTER_ITEM.get().getDefaultInstance(), DisenchantingCategory.RECIPE_TYPE);
         reg.addRecipeCatalyst(Registration.XP_ANVIL_ITEM.get().getDefaultInstance(), XpRepairingCategory.RECIPE_TYPE);
         reg.addRecipeCatalyst(Registration.HEAD_PIKE_ITEM.get().getDefaultInstance(), HeadPikeGuide.RECIPE_TYPE);
+        reg.addRecipeCatalyst(Registration.COLOR_WORKSTATION_ITEM.get().getDefaultInstance(), DyeMixingCategory.RECIPE_TYPE);
+        for (var type : List.of(EssenceContainerGuide.BUCKET_TYPE, EssenceContainerGuide.BOTTLE_TYPE)) {
+            reg.addRecipeCatalyst(Registration.ESSENCE_HOPPER_ITEM.get().getDefaultInstance(), type);
+            reg.addRecipeCatalyst(Registration.TANK_ITEM.get().getDefaultInstance(), type);
+        }
     }
 
     /** The Upgrade Station's recipes the server sent this client (1.21.1 sends every recipe). */
