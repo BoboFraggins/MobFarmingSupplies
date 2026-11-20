@@ -3,6 +3,9 @@
   "pools": [
     {
       "rolls": 1,
+      "condition": {
+        "type": "minecraft:survives_explosion"
+      },
       "entries": [
         {
           "type": "minecraft:item",
@@ -13,12 +16,16 @@
             "include": [
               "minecraft:block_entity_data"
             ]
+          },
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mobfarmingsupplies:mob_harvester",
+            "state": {
+              "half": "lower"
+            }
           }
         }
-      ],
-      "condition": {
-        "type": "minecraft:survives_explosion"
-      }
+      ]
     }
   ]
 }

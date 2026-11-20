@@ -1,0 +1,12 @@
+{
+  "type": "mobfarmingsupplies:brewing",
+  "input": {
+    "item": "mobfarmingsupplies:essence_of_sight_bottle"
+  },
+  "reagent": {
+    "item": "#mobfarmingsupplies:oresight_inputs"
+  },
+  "output": {
+    "id": "mobfarmingsupplies:lesser_potion_of_oresight"
+  }
+}

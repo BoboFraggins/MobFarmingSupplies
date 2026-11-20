@@ -24,11 +24,12 @@ import org.jetbrains.annotations.Nullable;
  * hopper's current pickup area — a 7×7×7-block zone centred at the offset from the
  * block's position.
  *
- * <p>The wireframe is always shown; it is naturally culled by the render bounding box when
- * the block is outside the camera frustum.
+ * <p>Shared by the Essence Hopper, and by both loaders: NeoForge widens its culling box in a
+ * subclass ({@code NeoAbsorptionHopperRenderer}), and on Fabric the box is drawn even while the
+ * hopper's own block is off screen.
  */
-public class AbsorptionHopperBlockEntityRenderer
-        implements BlockEntityRenderer<AbsorptionHopperBlockEntity, AbsorptionHopperBlockEntityRenderer.HopperState> {
+public class AbsorptionHopperBlockEntityRenderer<T extends AbsorptionHopperBlockEntity>
+        implements BlockEntityRenderer<T, AbsorptionHopperBlockEntityRenderer.HopperState> {
 
     /** Half-side of the pickup cube — mirrors {@code AbsorptionHopperBlockEntity.PICKUP_RADIUS}. */
     private static final double PICKUP_RADIUS = 3.5;
@@ -59,7 +60,7 @@ public class AbsorptionHopperBlockEntityRenderer
 
     @Override
     public void extractRenderState(
-            AbsorptionHopperBlockEntity be,
+            T be,
             HopperState state,
             float partialTick,
             Vec3 camera,
@@ -103,16 +104,17 @@ public class AbsorptionHopperBlockEntityRenderer
 
     // ── Visibility ────────────────────────────────────────────────────────────
 
-    /**
-     * Disables frustum culling for this renderer so the wireframe isn't clipped when
-     * the pickup zone (up to 11.5 blocks from the block position) extends outside the
-     * block's own small render bounds. Cross-platform equivalent of NeoForge's
-     * {@code IBlockEntityRendererExtension#getRenderBoundingBox}, which isn't available
-     * on vanilla/Fabric.
-     */
+    /** The pickup box reaches up to 12 blocks away: keep drawing it while the hopper is off screen. */
     @Override
     public boolean shouldRenderOffScreen() {
         return true;
+    }
+
+    /**
+     * The culling box NeoForge should use: max offset (8) + pickup radius (3.5) = 11.5, plus a margin.
+     */
+    public static AABB renderBounds(AbsorptionHopperBlockEntity be) {
+        return new AABB(be.getBlockPos()).inflate(12);
     }
 
     // ── Static helpers — line drawing ─────────────────────────────────────────

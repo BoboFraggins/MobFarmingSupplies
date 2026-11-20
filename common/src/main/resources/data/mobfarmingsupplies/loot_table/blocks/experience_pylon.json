@@ -3,6 +3,9 @@
   "pools": [
     {
       "rolls": 1,
+      "condition": {
+        "type": "minecraft:survives_explosion"
+      },
       "entries": [
         {
           "type": "minecraft:item",
@@ -13,12 +16,16 @@
             "include": [
               "mobfarmingsupplies:tank_contents"
             ]
+          },
+          "condition": {
+            "type": "minecraft:match_block",
+            "blocks": "mobfarmingsupplies:experience_pylon",
+            "state": {
+              "half": "lower"
+            }
           }
         }
-      ],
-      "condition": {
-        "type": "minecraft:survives_explosion"
-      }
+      ]
     }
   ]
 }

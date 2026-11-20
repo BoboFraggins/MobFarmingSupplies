@@ -1,0 +1,12 @@
+{
+  "type": "mobfarmingsupplies:brewing",
+  "input": {
+    "item": "mobfarmingsupplies:essence_of_air_bottle"
+  },
+  "reagent": {
+    "item": "minecraft:elytra"
+  },
+  "output": {
+    "id": "mobfarmingsupplies:lesser_potion_of_flight"
+  }
+}

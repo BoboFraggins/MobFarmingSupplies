@@ -10,6 +10,8 @@
     "AnvilBlockMixin",
     "BlockItemSilkSpawnerMixin",
     "EnderManPresentMixin",
+    "EnderManTakeBlockGoalMixin",
+    "EnderManLeaveBlockGoalMixin",
     "InventoryChangeTriggerMixin",
     "LivingEntityLootMixin",
     "EntityVexCollisionMixin",
@@ -20,7 +22,8 @@
   "client": [
     "HumanoidModelMixin",
     "LivingEntityRendererMixin",
-    "LivingEntityRenderStateMixin"
+    "LivingEntityRenderStateMixin",
+    "SoundEngineMufflerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

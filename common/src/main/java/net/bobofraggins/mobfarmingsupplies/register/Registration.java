@@ -55,6 +55,9 @@ import net.bobofraggins.mobfarmingsupplies.disenchanter.DisenchanterBlock;
 import net.bobofraggins.mobfarmingsupplies.disenchanter.DisenchanterBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.disenchanter.DisenchanterMenu;
 import net.bobofraggins.mobfarmingsupplies.worldgen.DryLandJigsawStructure;
+import net.bobofraggins.mobfarmingsupplies.colorworkstation.ColorWorkstationBlock;
+import net.bobofraggins.mobfarmingsupplies.colorworkstation.ColorWorkstationBlockEntity;
+import net.bobofraggins.mobfarmingsupplies.colorworkstation.ColorWorkstationMenu;
 import net.bobofraggins.mobfarmingsupplies.xpanvil.XpAnvilBlock;
 import net.bobofraggins.mobfarmingsupplies.xpanvil.XpAnvilBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.xpanvil.XpAnvilMenu;
@@ -257,6 +260,17 @@ public final class Registration {
     public static final DeferredRegister<ParticleType<?>> PARTICLE_TYPES =
             DeferredRegister.create(MobFarmingSuppliesCommon.MODID, Registries.PARTICLE_TYPE);
 
+    public static final DeferredRegister<net.minecraft.world.effect.MobEffect> MOB_EFFECTS =
+            DeferredRegister.create(MobFarmingSuppliesCommon.MODID, Registries.MOB_EFFECT);
+
+    /** Creative-style flight, from a Potion of Flight. */
+    public static final RegistrySupplier<net.minecraft.world.effect.MobEffect> FLIGHT =
+            MOB_EFFECTS.register("flight", net.bobofraggins.mobfarmingsupplies.essencehopper.FlightMobEffect::new);
+
+    /** Traces one kind of ore through walls, from a Potion of Oresight. */
+    public static final RegistrySupplier<net.minecraft.world.effect.MobEffect> ORESIGHT =
+            MOB_EFFECTS.register("oresight", net.bobofraggins.mobfarmingsupplies.oresight.OresightMobEffect::new);
+
     /** The XP Powered Disenchanter's runes: vanilla's enchanting table runes in XP Juice green. */
     public static final RegistrySupplier<SimpleParticleType> XP_RUNE =
             PARTICLE_TYPES.register("xp_rune", () -> new SimpleParticleType(false) {});
@@ -317,6 +331,18 @@ public final class Registration {
     public static final RegistrySupplier<RecipeSerializer<ExperienceTankRecipe>> EXPERIENCE_TANK_SERIALIZER =
             RECIPE_SERIALIZERS.register("experience_tank",
                     () -> new RecipeSerializer<>(ExperienceTankRecipe.MAP_CODEC, ExperienceTankRecipe.STREAM_CODEC));
+
+    /** Shaped recipe that uses up an empty tank (the Color Workstation). */
+    /** The brewing stand's Flight and Oresight recipes (brewing is data-driven on 26.3). */
+    public static final RegistrySupplier<RecipeSerializer<net.bobofraggins.mobfarmingsupplies.potion.MFSBrewingRecipe>> MFS_BREWING_SERIALIZER =
+            RECIPE_SERIALIZERS.register("brewing",
+                    () -> new RecipeSerializer<>(net.bobofraggins.mobfarmingsupplies.potion.MFSBrewingRecipe.MAP_CODEC,
+                            net.bobofraggins.mobfarmingsupplies.potion.MFSBrewingRecipe.STREAM_CODEC));
+
+    public static final RegistrySupplier<RecipeSerializer<net.bobofraggins.mobfarmingsupplies.tank.EmptyTankRecipe>> EMPTY_TANK_SERIALIZER =
+            RECIPE_SERIALIZERS.register("empty_tank",
+                    () -> new RecipeSerializer<>(net.bobofraggins.mobfarmingsupplies.tank.EmptyTankRecipe.MAP_CODEC,
+                            net.bobofraggins.mobfarmingsupplies.tank.EmptyTankRecipe.STREAM_CODEC));
 
     public static final RegistrySupplier<RecipeSerializer<SkullLightsRecipe>> SKULL_LIGHTS_SERIALIZER =
             RECIPE_SERIALIZERS.register("skull_lights",
@@ -440,6 +466,14 @@ public final class Registration {
                             .networkSynchronized(TankContents.STREAM_CODEC)
                             .build());
 
+    /** The block a Bucket of Oresight shows. */
+    public static final RegistrySupplier<DataComponentType<net.minecraft.world.level.block.Block>> ORESIGHT_BLOCK =
+            DATA_COMPONENTS.register("oresight_block",
+                    () -> DataComponentType.<net.minecraft.world.level.block.Block>builder()
+                            .persistent(net.minecraft.core.registries.BuiltInRegistries.BLOCK.byNameCodec())
+                            .networkSynchronized(net.minecraft.network.codec.ByteBufCodecs.registry(Registries.BLOCK))
+                            .build());
+
     public static final RegistrySupplier<DataComponentType<SkullLights>> SKULL_LIGHTS =
             DATA_COMPONENTS.register("skull_lights",
                     () -> DataComponentType.<SkullLights>builder()
@@ -521,7 +555,8 @@ public final class Registration {
                             .strength(3.5f)
                             .explosionResistance(Float.MAX_VALUE)
                             .sound(SoundType.METAL)
-                            .noOcclusion()));
+                            .noOcclusion()
+                            .pushReaction(PushReaction.IMMOVEABLE))); // a piston would split its halves
 
     public static final RegistrySupplier<BlockItem> MOB_HARVESTER_ITEM =
             ITEMS.register("mob_harvester",
@@ -633,7 +668,7 @@ public final class Registration {
                             .setId(itemKey("essence_hopper"))));
 
     public static final RegistrySupplier<MenuType<EssenceHopperMenu>> ESSENCE_HOPPER_MENU =
-            MENUS.register("essence_hopper", () -> MenuRegistry.ofExtended(EssenceHopperMenu::new));
+            MENUS.register("essence_hopper", () -> MenuRegistry.ofExtended(EssenceHopperMenu::new, BlockPos.STREAM_CODEC));
 
     public static final RegistrySupplier<BlockEntityType<EssenceHopperBlockEntity>> ESSENCE_HOPPER_BE_TYPE =
             BLOCK_ENTITIES.register("essence_hopper",
@@ -702,6 +737,27 @@ public final class Registration {
             BLOCK_ENTITIES.register("warden_inhibitor",
                     () -> BlockEntityTypePlatform.create(net.bobofraggins.mobfarmingsupplies.wardeninhibitor.WardenInhibitorBlockEntity::new,
                             WARDEN_INHIBITOR.get()));
+
+    // ── Muffler ───────────────────────────────────────────────────────────────────
+
+    public static final RegistrySupplier<net.bobofraggins.mobfarmingsupplies.muffler.MufflerBlock> MUFFLER =
+            BLOCKS.register("muffler",
+                    () -> new net.bobofraggins.mobfarmingsupplies.muffler.MufflerBlock(BlockBehaviour.Properties.of()
+                            .setId(blockKey("muffler"))
+                            .mapColor(net.minecraft.world.level.material.MapColor.COLOR_LIGHT_GRAY)
+                            .strength(0.8f)
+                            .sound(SoundType.WOOL)
+                            .noOcclusion()));
+
+    public static final RegistrySupplier<BlockItem> MUFFLER_ITEM =
+            ITEMS.register("muffler",
+                    () -> new BlockItem(MUFFLER.get(), new Item.Properties()
+                            .setId(itemKey("muffler"))));
+
+    public static final RegistrySupplier<BlockEntityType<net.bobofraggins.mobfarmingsupplies.muffler.MufflerBlockEntity>> MUFFLER_BE_TYPE =
+            BLOCK_ENTITIES.register("muffler",
+                    () -> BlockEntityTypePlatform.create(net.bobofraggins.mobfarmingsupplies.muffler.MufflerBlockEntity::new,
+                            MUFFLER.get()));
 
     // ── Fan ───────────────────────────────────────────────────────────────────────
 
@@ -828,6 +884,36 @@ public final class Registration {
                     () -> new BlockItem(PLAYER_EXCLUSION_GLASS.get(), new Item.Properties()
                             .setId(itemKey("player_exclusion_glass"))));
 
+    // ── Soils ─────────────────────────────────────────────────────────────────────
+
+    public static final RegistrySupplier<net.bobofraggins.mobfarmingsupplies.soil.ForsakenSoilBlock> FORSAKEN_SOIL =
+            BLOCKS.register("forsaken_soil",
+                    () -> new net.bobofraggins.mobfarmingsupplies.soil.ForsakenSoilBlock(BlockBehaviour.Properties.of()
+                            .setId(blockKey("forsaken_soil"))
+                            .mapColor(net.minecraft.world.level.material.MapColor.COLOR_PURPLE)
+                            .strength(0.6f)
+                            .sound(SoundType.GRASS)));
+
+    public static final RegistrySupplier<BlockItem> FORSAKEN_SOIL_ITEM =
+            ITEMS.register("forsaken_soil",
+                    () -> new BlockItem(FORSAKEN_SOIL.get(), new Item.Properties()
+                            .setId(itemKey("forsaken_soil"))));
+
+    public static final RegistrySupplier<net.bobofraggins.mobfarmingsupplies.soil.HyperFarmlandBlock> HYPER_FARMLAND =
+            BLOCKS.register("hyper_farmland",
+                    () -> new net.bobofraggins.mobfarmingsupplies.soil.HyperFarmlandBlock(BlockBehaviour.Properties.of()
+                            .setId(blockKey("hyper_farmland"))
+                            .mapColor(net.minecraft.world.level.material.MapColor.COLOR_YELLOW)
+                            .strength(0.6f)
+                            .sound(SoundType.GRAVEL)
+                            .isViewBlocking((st, l, p, aabb) -> true)
+                            .isSuffocating((st, l, p) -> true)));
+
+    public static final RegistrySupplier<BlockItem> HYPER_FARMLAND_ITEM =
+            ITEMS.register("hyper_farmland",
+                    () -> new BlockItem(HYPER_FARMLAND.get(), new Item.Properties()
+                            .setId(itemKey("hyper_farmland"))));
+
     // ── Toggle Buttons ────────────────────────────────────────────────────────────
 
     public static final RegistrySupplier<ToggleButtonBlock> RED_ALERT_BUTTON =
@@ -922,6 +1008,8 @@ public final class Registration {
     public static final Map<Essence, RegistrySupplier<LiquidBlock>> ESSENCE_BLOCKS = new EnumMap<>(Essence.class);
     public static final Map<Essence, RegistrySupplier<BucketItem>> ESSENCE_BUCKETS = new EnumMap<>(Essence.class);
     public static final Map<Essence, RegistrySupplier<EssenceFilterItem>> ESSENCE_FILTERS = new EnumMap<>(Essence.class);
+    public static final Map<Essence, RegistrySupplier<net.bobofraggins.mobfarmingsupplies.essencehopper.EssenceBottleItem>> ESSENCE_BOTTLES =
+            new EnumMap<>(Essence.class);
 
     static {
         for (Essence essence : Essence.values()) {
@@ -940,14 +1028,51 @@ public final class Registration {
                                     .replaceable()
                                     .pushReaction(PushReaction.POPPED))));
             ESSENCE_BUCKETS.put(essence, ITEMS.register(essence.bucketId(),
-                    () -> new BucketItem(ESSENCE_SOURCES.get(essence).get(),
+                    () -> new BucketItem(ESSENCE_SOURCES.get(essence).get(), new Item.Properties()
+                            .setId(itemKey(essence.bucketId()))
+                            .stacksTo(1)
+                            .craftRemainder(Items.BUCKET))));
+            ESSENCE_BOTTLES.put(essence, ITEMS.register(essence.bottleId(),
+                    () -> new net.bobofraggins.mobfarmingsupplies.essencehopper.EssenceBottleItem(essence,
                             new Item.Properties()
-                                    .setId(itemKey(essence.bucketId()))
-                                    .stacksTo(1)
-                                    .craftRemainder(Items.BUCKET))));
+                                    .setId(itemKey(essence.bottleId()))
+                                    .stacksTo(16)
+                                    .craftRemainder(Items.GLASS_BOTTLE))));
             ESSENCE_FILTERS.put(essence, ITEMS.register(essence.filterId(),
                     () -> new EssenceFilterItem(essence, new Item.Properties().setId(itemKey(essence.filterId())))));
         }
+    }
+
+    // ── Potions ───────────────────────────────────────────────────────────────────
+
+    /** Lesser, Greater and Superior Potions of Flight, brewed from Essence of Air (see {@code MFSBrewing}). */
+    public static final Map<net.bobofraggins.mobfarmingsupplies.potion.PotionTier,
+            RegistrySupplier<net.bobofraggins.mobfarmingsupplies.potion.TieredPotionItem>> FLIGHT_POTIONS =
+            registerPotions(net.bobofraggins.mobfarmingsupplies.potion.TieredPotionItem.Kind.FLIGHT);
+
+    /** Lesser, Greater and Superior Potions of Oresight, brewed from Essence of Sight and an ore. */
+    public static final Map<net.bobofraggins.mobfarmingsupplies.potion.PotionTier,
+            RegistrySupplier<net.bobofraggins.mobfarmingsupplies.potion.TieredPotionItem>> ORESIGHT_POTIONS =
+            registerPotions(net.bobofraggins.mobfarmingsupplies.potion.TieredPotionItem.Kind.ORESIGHT);
+
+    private static Map<net.bobofraggins.mobfarmingsupplies.potion.PotionTier,
+            RegistrySupplier<net.bobofraggins.mobfarmingsupplies.potion.TieredPotionItem>> registerPotions(
+            net.bobofraggins.mobfarmingsupplies.potion.TieredPotionItem.Kind kind) {
+        Map<net.bobofraggins.mobfarmingsupplies.potion.PotionTier,
+                RegistrySupplier<net.bobofraggins.mobfarmingsupplies.potion.TieredPotionItem>> potions =
+                new EnumMap<>(net.bobofraggins.mobfarmingsupplies.potion.PotionTier.class);
+        for (var tier : net.bobofraggins.mobfarmingsupplies.potion.PotionTier.values()) {
+            String id = tier.id() + "_potion_of_" + kind.id();
+            // Drunk like a vanilla potion, leaving a glass bottle.
+            potions.put(tier, ITEMS.register(id, () -> new net.bobofraggins.mobfarmingsupplies.potion.TieredPotionItem(
+                    kind, tier, new Item.Properties()
+                            .setId(itemKey(id))
+                            .stacksTo(1)
+                            .component(net.minecraft.core.component.DataComponents.CONSUMABLE,
+                                    net.minecraft.world.item.component.Consumables.DEFAULT_DRINK)
+                            .usingConvertsTo(Items.GLASS_BOTTLE))));
+        }
+        return potions;
     }
 
     // ── Tank ──────────────────────────────────────────────────────────────────────
@@ -1034,6 +1159,28 @@ public final class Registration {
     public static final RegistrySupplier<MenuType<XpAnvilMenu>> XP_ANVIL_MENU =
             MENUS.register("anvil", () -> MenuRegistry.ofExtended(XpAnvilMenu::new));
 
+    // ── Color Workstation ─────────────────────────────────────────────────────────
+
+    public static final RegistrySupplier<ColorWorkstationBlock> COLOR_WORKSTATION =
+            BLOCKS.register("color_workstation",
+                    () -> new ColorWorkstationBlock(BlockBehaviour.Properties.of()
+                            .setId(blockKey("color_workstation"))
+                            .mapColor(MapColor.WOOD)
+                            .strength(2.5f)
+                            .sound(SoundType.WOOD)
+                            .noOcclusion()));
+
+    public static final RegistrySupplier<BlockItem> COLOR_WORKSTATION_ITEM =
+            ITEMS.register("color_workstation",
+                    () -> new BlockItem(COLOR_WORKSTATION.get(), new Item.Properties().setId(itemKey("color_workstation"))));
+
+    public static final RegistrySupplier<BlockEntityType<ColorWorkstationBlockEntity>> COLOR_WORKSTATION_BE_TYPE =
+            BLOCK_ENTITIES.register("color_workstation",
+                    () -> BlockEntityTypePlatform.create(ColorWorkstationBlockEntity::new, COLOR_WORKSTATION.get()));
+
+    public static final RegistrySupplier<MenuType<ColorWorkstationMenu>> COLOR_WORKSTATION_MENU =
+            MENUS.register("color_workstation", () -> MenuRegistry.ofExtended(ColorWorkstationMenu::new));
+
     // ── Incubator ─────────────────────────────────────────────────────────────────
 
     public static final RegistrySupplier<IncubatorBlock> INCUBATOR =
@@ -1067,7 +1214,8 @@ public final class Registration {
                             .strength(0.3f, 1200.0f) // a tank's mining time, more blast resistance
                             .lightLevel(state -> 15)
                             .sound(SoundType.STONE)
-                            .noOcclusion()));
+                            .noOcclusion()
+                            .pushReaction(PushReaction.IMMOVEABLE))); // a piston would split its halves
 
     public static final RegistrySupplier<ExperiencePylonBlockItem> EXPERIENCE_PYLON_ITEM =
             ITEMS.register("experience_pylon",
@@ -1086,8 +1234,7 @@ public final class Registration {
     public static final RegistrySupplier<net.bobofraggins.mobfarmingsupplies.magnet.SuperconductingMagnetItem>
             SUPERCONDUCTING_MAGNET = ITEMS.register("superconducting_magnet",
                     () -> new net.bobofraggins.mobfarmingsupplies.magnet.SuperconductingMagnetItem(new Item.Properties()
-                            .setId(itemKey("superconducting_magnet"))
-                            .stacksTo(1)));
+                            .setId(itemKey("superconducting_magnet"))));
 
     public static final RegistrySupplier<ExperienceSyringeItem> EXPERIENCE_SYRINGE =
             ITEMS.register("experience_syringe",
@@ -1567,7 +1714,10 @@ public final class Registration {
                         output.accept(EINSTEIN_ROSEN_BRIDGE_ITEM.get());
                         output.accept(LOGISTIC_SORTER_ITEM.get());
                         output.accept(BLOCK_BREAKER_ITEM.get());
+                        output.accept(MUFFLER_ITEM.get());
                         output.accept(SUPERCONDUCTING_MAGNET.get());
+                        output.accept(FORSAKEN_SOIL_ITEM.get());
+                        output.accept(HYPER_FARMLAND_ITEM.get());
                         output.accept(SILICON_CLUMP.get());
                         output.accept(SILICON.get());
                         output.accept(SILICON_WAFER.get());
@@ -1615,6 +1765,7 @@ public final class Registration {
                         output.accept(INCUBATOR_ITEM.get());
                         output.accept(XP_ANVIL_ITEM.get());
                         output.accept(DISENCHANTER_ITEM.get());
+                        output.accept(COLOR_WORKSTATION_ITEM.get());
                         output.accept(ENDER_INHIBITOR_ITEM.get());
                         output.accept(WITHER_INHIBITOR_ITEM.get());
                         output.accept(WARDEN_INHIBITOR_ITEM.get());
@@ -1646,6 +1797,15 @@ public final class Registration {
                         for (Essence essence : Essence.values()) {
                             output.accept(ESSENCE_FILTERS.get(essence).get());
                             output.accept(ESSENCE_BUCKETS.get(essence).get());
+                            output.accept(ESSENCE_BOTTLES.get(essence).get());
+                        }
+                        for (var tier : net.bobofraggins.mobfarmingsupplies.potion.PotionTier.values()) {
+                            output.accept(FLIGHT_POTIONS.get(tier).get());
+                        }
+                        // An example; any ore can be brewed in.
+                        for (var tier : net.bobofraggins.mobfarmingsupplies.potion.PotionTier.values()) {
+                            output.accept(net.bobofraggins.mobfarmingsupplies.potion.TieredPotionItem.oresight(
+                                    tier, net.minecraft.world.level.block.Blocks.DIAMOND_ORE));
                         }
                         output.accept(RED_ALERT_BUTTON_ITEM.get());
                         output.accept(DRAMATIC_BUTTON_ITEM.get());
@@ -1678,6 +1838,7 @@ public final class Registration {
         STRUCTURE_PROCESSORS.register();
         STRUCTURE_TYPES.register();
         PARTICLE_TYPES.register();
+        MOB_EFFECTS.register();
         net.bobofraggins.mobfarmingsupplies.advancement.MFSTriggers.TRIGGERS.register();
     }
 }

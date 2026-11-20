@@ -60,6 +60,9 @@ public class MobFarmingSuppliesFabricClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         MobFarmingSuppliesCommonClient.init();
+        // Oresight's x-ray outlines, submitted with the world's other geometry.
+        net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents.COLLECT_SUBMITS.register(ctx ->
+                net.bobofraggins.mobfarmingsupplies.oresight.OresightClient.render(ctx.poseStack(), ctx.submitNodeCollector()));
         BlockEntityRendererRegistry.register(
                 Registration.ENDER_INHIBITOR_BE_TYPE.get(),
                 EnderInhibitorBlockEntityRenderer::new);
@@ -69,6 +72,16 @@ public class MobFarmingSuppliesFabricClient implements ClientModInitializer {
         BlockEntityRendererRegistry.register(
                 Registration.WARDEN_INHIBITOR_BE_TYPE.get(),
                 EnderInhibitorBlockEntityRenderer::warden);
+        BlockEntityRendererRegistry.register(
+                Registration.MUFFLER_BE_TYPE.get(),
+                EnderInhibitorBlockEntityRenderer::muffler);
+        // Show Area wireframes for the Absorption and Essence Hoppers.
+        BlockEntityRendererRegistry.register(
+                Registration.ABSORPTION_HOPPER_BE_TYPE.get(),
+                net.bobofraggins.mobfarmingsupplies.absorptionhopper.AbsorptionHopperBlockEntityRenderer::new);
+        BlockEntityRendererRegistry.register(
+                Registration.ESSENCE_HOPPER_BE_TYPE.get(),
+                net.bobofraggins.mobfarmingsupplies.absorptionhopper.AbsorptionHopperBlockEntityRenderer::new);
         BlockEntityRendererRegistry.register(
                 Registration.FAN_BE_TYPE.get(),
                 FanBlockEntityRenderer::new);
@@ -91,9 +104,6 @@ public class MobFarmingSuppliesFabricClient implements ClientModInitializer {
                 Registration.TANK_BE_TYPE.get(),
                 TankRenderer::new);
         BlockEntityRendererRegistry.register(
-                Registration.ABSORPTION_HOPPER_BE_TYPE.get(),
-                AbsorptionHopperBlockEntityRenderer::new);
-        BlockEntityRendererRegistry.register(
                 Registration.PICNIC_BASKET_BE_TYPE.get(),
                 PicnicBasketRenderer::new);
         BlockEntityRendererRegistry.register(
@@ -108,6 +118,9 @@ public class MobFarmingSuppliesFabricClient implements ClientModInitializer {
         BlockEntityRendererRegistry.register(
                 Registration.EXPERIENCE_PYLON_BE_TYPE.get(),
                 ExperiencePylonRenderer::new);
+        BlockEntityRendererRegistry.register(
+                Registration.COLOR_WORKSTATION_BE_TYPE.get(),
+                net.bobofraggins.mobfarmingsupplies.colorworkstation.ColorWorkstationRenderer::new);
         BlockEntityRendererRegistry.register(
                 Registration.INCUBATOR_BE_TYPE.get(),
                 IncubatorRenderer::new);

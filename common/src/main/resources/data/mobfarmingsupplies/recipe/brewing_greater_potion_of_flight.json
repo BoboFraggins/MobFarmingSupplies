@@ -1,0 +1,12 @@
+{
+  "type": "mobfarmingsupplies:brewing",
+  "input": {
+    "item": "mobfarmingsupplies:lesser_potion_of_flight"
+  },
+  "reagent": {
+    "item": "minecraft:redstone"
+  },
+  "output": {
+    "id": "mobfarmingsupplies:greater_potion_of_flight"
+  }
+}

@@ -4,7 +4,6 @@ import net.bobofraggins.mobfarmingsupplies.absorptionhopper.AbsorptionHopperMenu
 import net.bobofraggins.mobfarmingsupplies.register.MFSTags;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -43,9 +42,9 @@ public class EssenceHopperMenu extends AbstractContainerMenu {
         this(syncId, playerInv, be.getBlockPos(), be.getInventory());
     }
 
-    /** Client side: the position comes over the network; the slot is synced in. */
-    public EssenceHopperMenu(int syncId, Inventory playerInv, FriendlyByteBuf buf) {
-        this(syncId, playerInv, buf.readBlockPos(), new SimpleContainer(MACHINE_SLOTS));
+    /** Client side: the position comes over the network (as the Absorption Hopper's); the slot is synced in. */
+    public EssenceHopperMenu(int syncId, Inventory playerInv, BlockPos pos) {
+        this(syncId, playerInv, pos, new SimpleContainer(MACHINE_SLOTS));
     }
 
     private EssenceHopperMenu(int syncId, Inventory playerInv, BlockPos pos, Container items) {

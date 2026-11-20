@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "DDD",
+    "DED",
+    "DDD"
+  ],
+  "key": {
+    "D": "minecraft:dirt",
+    "E": "mobfarmingsupplies:essence_of_undeath_bucket"
+  },
+  "result": {
+    "id": "mobfarmingsupplies:forsaken_soil",
+    "count": 8
+  }
+}

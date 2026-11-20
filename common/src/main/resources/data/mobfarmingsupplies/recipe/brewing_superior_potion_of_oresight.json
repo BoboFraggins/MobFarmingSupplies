@@ -1,0 +1,12 @@
+{
+  "type": "mobfarmingsupplies:brewing",
+  "input": {
+    "item": "mobfarmingsupplies:greater_potion_of_oresight"
+  },
+  "reagent": {
+    "item": "minecraft:redstone_block"
+  },
+  "output": {
+    "id": "mobfarmingsupplies:superior_potion_of_oresight"
+  }
+}

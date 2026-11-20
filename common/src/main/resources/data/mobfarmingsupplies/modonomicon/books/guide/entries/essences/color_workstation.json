@@ -1,0 +1,38 @@
+{
+  "type": "modonomicon:content",
+  "id": "mobfarmingsupplies:essences/color_workstation",
+  "category": "mobfarmingsupplies:essences",
+  "name": "book.mobfarmingsupplies.guide.essences.color_workstation.name",
+  "description": "book.mobfarmingsupplies.guide.essences.color_workstation.description",
+  "icon": {
+    "id": "mobfarmingsupplies:color_workstation"
+  },
+  "x": 0,
+  "y": 0,
+  "sort_number": 1,
+  "pages": [
+    {
+      "id": "p0",
+      "sort_number": 0,
+      "type": "modonomicon:spotlight",
+      "item": {
+        "id": "mobfarmingsupplies:color_workstation"
+      },
+      "title": "book.mobfarmingsupplies.guide.essences.color_workstation.p0.title",
+      "text": "book.mobfarmingsupplies.guide.essences.color_workstation.p0.text"
+    },
+    {
+      "id": "p1",
+      "sort_number": 1,
+      "type": "modonomicon:text",
+      "title": "book.mobfarmingsupplies.guide.essences.color_workstation.p1.title",
+      "text": "book.mobfarmingsupplies.guide.essences.color_workstation.p1.text"
+    },
+    {
+      "id": "p2",
+      "sort_number": 2,
+      "type": "modonomicon:crafting_recipe",
+      "recipe_id_1": "mobfarmingsupplies:color_workstation"
+    }
+  ]
+}
