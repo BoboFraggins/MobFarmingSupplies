@@ -1,12 +1,58 @@
 {
   "variants": {
-    "facing=south,powered=false": { "model": "mobfarmingsupplies:block/mob_harvester" },
-    "facing=south,powered=true":  { "model": "mobfarmingsupplies:block/mob_harvester" },
-    "facing=west,powered=false":  { "model": "mobfarmingsupplies:block/mob_harvester", "y": 90 },
-    "facing=west,powered=true":   { "model": "mobfarmingsupplies:block/mob_harvester", "y": 90 },
-    "facing=north,powered=false": { "model": "mobfarmingsupplies:block/mob_harvester", "y": 180 },
-    "facing=north,powered=true":  { "model": "mobfarmingsupplies:block/mob_harvester", "y": 180 },
-    "facing=east,powered=false":  { "model": "mobfarmingsupplies:block/mob_harvester", "y": 270 },
-    "facing=east,powered=true":   { "model": "mobfarmingsupplies:block/mob_harvester", "y": 270 }
+    "facing=south,half=lower,powered=false": {
+      "model": "mobfarmingsupplies:block/mob_harvester"
+    },
+    "facing=south,half=upper,powered=false": {
+      "model": "mobfarmingsupplies:block/mob_harvester_top"
+    },
+    "facing=south,half=lower,powered=true": {
+      "model": "mobfarmingsupplies:block/mob_harvester"
+    },
+    "facing=south,half=upper,powered=true": {
+      "model": "mobfarmingsupplies:block/mob_harvester_top"
+    },
+    "facing=west,half=lower,powered=false": {
+      "model": "mobfarmingsupplies:block/mob_harvester",
+      "y": 90
+    },
+    "facing=west,half=upper,powered=false": {
+      "model": "mobfarmingsupplies:block/mob_harvester_top"
+    },
+    "facing=west,half=lower,powered=true": {
+      "model": "mobfarmingsupplies:block/mob_harvester",
+      "y": 90
+    },
+    "facing=west,half=upper,powered=true": {
+      "model": "mobfarmingsupplies:block/mob_harvester_top"
+    },
+    "facing=north,half=lower,powered=false": {
+      "model": "mobfarmingsupplies:block/mob_harvester",
+      "y": 180
+    },
+    "facing=north,half=upper,powered=false": {
+      "model": "mobfarmingsupplies:block/mob_harvester_top"
+    },
+    "facing=north,half=lower,powered=true": {
+      "model": "mobfarmingsupplies:block/mob_harvester",
+      "y": 180
+    },
+    "facing=north,half=upper,powered=true": {
+      "model": "mobfarmingsupplies:block/mob_harvester_top"
+    },
+    "facing=east,half=lower,powered=false": {
+      "model": "mobfarmingsupplies:block/mob_harvester",
+      "y": 270
+    },
+    "facing=east,half=upper,powered=false": {
+      "model": "mobfarmingsupplies:block/mob_harvester_top"
+    },
+    "facing=east,half=lower,powered=true": {
+      "model": "mobfarmingsupplies:block/mob_harvester",
+      "y": 270
+    },
+    "facing=east,half=upper,powered=true": {
+      "model": "mobfarmingsupplies:block/mob_harvester_top"
+    }
   }
 }

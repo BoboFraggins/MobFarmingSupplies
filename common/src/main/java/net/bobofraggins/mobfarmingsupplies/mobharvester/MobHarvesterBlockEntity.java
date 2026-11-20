@@ -58,8 +58,7 @@ public class MobHarvesterBlockEntity extends BlockEntity implements MenuProvider
     /**
      * Kill-zone vertical height from the block's base.
      *
-     * <p>The harvester block itself has a two-block-tall hitbox ({@link MobHarvesterBlock#getShape}),
-     * so a mob standing on top of it has its feet at {@code +2}. Extending to {@code +3}
+     * <p>The harvester is two blocks tall (a lower and an upper half), so a mob standing on top of it has its feet at {@code +2}. Extending to {@code +3}
      * ensures those mobs' bounding boxes still overlap the kill box rather than just
      * grazing its upper edge.
      */

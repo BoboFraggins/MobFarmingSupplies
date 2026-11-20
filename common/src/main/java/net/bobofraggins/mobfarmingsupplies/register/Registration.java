@@ -521,7 +521,8 @@ public final class Registration {
                             .strength(3.5f)
                             .explosionResistance(Float.MAX_VALUE)
                             .sound(SoundType.METAL)
-                            .noOcclusion()));
+                            .noOcclusion()
+                            .pushReaction(PushReaction.BLOCK))); // a piston would split its halves
 
     public static final RegistrySupplier<BlockItem> MOB_HARVESTER_ITEM =
             ITEMS.register("mob_harvester",
@@ -1115,7 +1116,8 @@ public final class Registration {
                             .strength(0.3f, 1200.0f) // a tank's mining time, more blast resistance
                             .lightLevel(state -> 15)
                             .sound(SoundType.STONE)
-                            .noOcclusion()));
+                            .noOcclusion()
+                            .pushReaction(PushReaction.BLOCK))); // a piston would split its halves
 
     public static final RegistrySupplier<ExperiencePylonBlockItem> EXPERIENCE_PYLON_ITEM =
             ITEMS.register("experience_pylon",

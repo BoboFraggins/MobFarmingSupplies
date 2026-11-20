@@ -180,8 +180,11 @@ public final class NeoForgeOnlyRegistration {
                 Registration.TANK_BE_TYPE.get(),
                 (be, side) -> new TankFluidHandler(be));
 
-        Capabilities.Fluid.BLOCK.registerBlockEntity(event, Registration.EXPERIENCE_PYLON_BE_TYPE.get(),
-                (be, side) -> new TankFluidHandler(be));
+        // The Experience Pylon, at either half.
+        Capabilities.Fluid.BLOCK.registerBlock(event, (level, pos, state, be, side) -> {
+            var pylon = net.bobofraggins.mobfarmingsupplies.experiencepylon.ExperiencePylonBlock.blockEntity(level, pos, state);
+            return pylon == null ? null : new TankFluidHandler(pylon);
+        }, Registration.EXPERIENCE_PYLON.get());
 
         event.registerItem(
                 net.neoforged.neoforge.capabilities.Capabilities.FluidHandler.ITEM,
@@ -222,12 +225,16 @@ public final class NeoForgeOnlyRegistration {
         Capabilities.Fluid.BLOCK.registerBlockEntity(event, Registration.INCUBATOR_BE_TYPE.get(),
                 (be, side) -> new InsertOnlyTankFluidHandler(be));
 
-        // Tanks and the Experience Pylon: containers into the fill-and-empty slot, results out of the other.
-        for (var type : java.util.List.of(Registration.TANK_BE_TYPE.get(), Registration.EXPERIENCE_PYLON_BE_TYPE.get())) {
-            Capabilities.Item.BLOCK.registerBlockEntity(event, type, (be, side) -> new InOutSlotsItemHandler(
-                    ((net.bobofraggins.mobfarmingsupplies.tank.TankBlockEntity) be).transferContainer, 0, 1, 64,
-                    net.bobofraggins.mobfarmingsupplies.tank.TankMenu::canFillOrEmpty));
-        }
+        // Tanks and the Experience Pylon (at either half): containers into the fill-and-empty slot,
+        // results out of the other.
+        Capabilities.Item.BLOCK.registerBlockEntity(event, Registration.TANK_BE_TYPE.get(),
+                (be, side) -> new InOutSlotsItemHandler(be.transferContainer, 0, 1, 64,
+                        net.bobofraggins.mobfarmingsupplies.tank.TankMenu::canFillOrEmpty));
+        Capabilities.Item.BLOCK.registerBlock(event, (level, pos, state, be, side) -> {
+            var pylon = net.bobofraggins.mobfarmingsupplies.experiencepylon.ExperiencePylonBlock.blockEntity(level, pos, state);
+            return pylon == null ? null : new InOutSlotsItemHandler(pylon.transferContainer, 0, 1, 64,
+                    net.bobofraggins.mobfarmingsupplies.tank.TankMenu::canFillOrEmpty);
+        }, Registration.EXPERIENCE_PYLON.get());
 
         // XP Powered Anvil: damaged items in, one at a time; repaired ones out.
         Capabilities.Item.BLOCK.registerBlockEntity(event, Registration.XP_ANVIL_BE_TYPE.get(),

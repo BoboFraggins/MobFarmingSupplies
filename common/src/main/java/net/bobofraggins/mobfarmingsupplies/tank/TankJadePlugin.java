@@ -96,6 +96,8 @@ public class TankJadePlugin implements IWailaPlugin {
 
             // The pylon shows its experience in levels; Jade's own fluid bar shows the amount.
             if (accessor.getBlock() instanceof ExperiencePylonBlock) {
+                // The upper half has no block entity, so no data: Jade's fluid bar still shows the amount.
+                if (!data.contains(KEY_AMOUNT)) return;
                 tooltip.add(PylonExperience.storedLine(data.getLong(KEY_AMOUNT)));
                 return;
             }
