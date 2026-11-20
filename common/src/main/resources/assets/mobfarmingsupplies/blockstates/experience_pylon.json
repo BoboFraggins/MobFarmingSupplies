@@ -1,7 +1,10 @@
 {
   "variants": {
-    "": {
+    "half=lower": {
       "model": "mobfarmingsupplies:block/experience_pylon_base"
+    },
+    "half=upper": {
+      "model": "mobfarmingsupplies:block/experience_pylon_top"
     }
   }
 }

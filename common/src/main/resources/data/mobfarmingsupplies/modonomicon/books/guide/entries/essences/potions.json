@@ -1,0 +1,42 @@
+{
+  "type": "modonomicon:content",
+  "id": "mobfarmingsupplies:essences/potions",
+  "category": "mobfarmingsupplies:essences",
+  "name": "book.mobfarmingsupplies.guide.essences.potions.name",
+  "description": "book.mobfarmingsupplies.guide.essences.potions.description",
+  "icon": {
+    "id": "mobfarmingsupplies:lesser_potion_of_flight"
+  },
+  "x": 0,
+  "y": 0,
+  "sort_number": 2,
+  "pages": [
+    {
+      "id": "p0",
+      "sort_number": 0,
+      "type": "modonomicon:spotlight",
+      "item": {
+        "id": "mobfarmingsupplies:lesser_potion_of_flight"
+      },
+      "title": "book.mobfarmingsupplies.guide.essences.potions.p0.title",
+      "text": "book.mobfarmingsupplies.guide.essences.potions.p0.text"
+    },
+    {
+      "id": "p1",
+      "sort_number": 1,
+      "type": "modonomicon:spotlight",
+      "item": {
+        "id": "mobfarmingsupplies:lesser_potion_of_oresight"
+      },
+      "title": "book.mobfarmingsupplies.guide.essences.potions.p1.title",
+      "text": "book.mobfarmingsupplies.guide.essences.potions.p1.text"
+    },
+    {
+      "id": "p2",
+      "sort_number": 2,
+      "type": "modonomicon:text",
+      "title": "book.mobfarmingsupplies.guide.essences.potions.p2.title",
+      "text": "book.mobfarmingsupplies.guide.essences.potions.p2.text"
+    }
+  ]
+}

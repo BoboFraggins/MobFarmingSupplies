@@ -82,6 +82,11 @@ public class EnderInhibitorBlockEntity extends BlockEntity implements MenuProvid
     public int getOffsetY() { return offsetY; }
     public int getOffsetZ() { return offsetZ; }
 
+    /** How far its area reaches from the centre, in each direction. */
+    public int areaRange() {
+        return InhibitorRegistry.RANGE;
+    }
+
     private BlockPos effectiveCenter() {
         return worldPosition.offset(offsetX, offsetY, offsetZ);
     }

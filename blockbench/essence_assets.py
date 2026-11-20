@@ -8,6 +8,7 @@ Run from the repository root, after adding an essence to ESSENCES, with a Minecr
 It writes, for each essence:
   textures/block/essence_of_<id>_{still,flow}.png  vanilla's lava, recoloured, with its animation
   textures/item/essence_of_<id>_bucket.png         the XP Juice bucket, recoloured
+  textures/item/essence_of_<id>_bottle.png         vanilla's potion, its liquid recoloured
   textures/item/essence_filter_<id>.png            a Blank Filter card in lime, with the mob's face
 """
 import colorsys
@@ -73,9 +74,10 @@ ESSENCES = {
     },
     "air": {
         "colors": ((196, 196, 200), (164, 198, 222), (120, 200, 245)),
-        "skin": "assets/minecraft/textures/entity/breeze/breeze.png",
-        "eyes": "assets/minecraft/textures/entity/breeze/breeze_eyes.png",
-        "face": (8, 8, 16, 16),
+        "skin": "assets/minecraft/textures/entity/phantom/phantom.png",
+        "eyes": "assets/minecraft/textures/entity/phantom/phantom_eyes.png",
+        "face": (5, 5, 12, 8),  # its flat head's front, with both eyes
+        "scale": 2,
     },
     "undeath": {
         "colors": ((45, 47, 48), (84, 140, 44), (128, 232, 42)),
@@ -194,6 +196,20 @@ def main():
                     if px[x, y][3] not in (0, 255):
                         px[x, y] = px[x, y][:3] + (255,)  # dark colours need to be opaque to read
             bucket.save(f"{ASSETS}/item/{fluid}_bucket.png")
+
+            # Vanilla tints the potion's liquid (a grey overlay) and draws the glass over it.
+            liquid = load("assets/minecraft/textures/item/potion_overlay.png")
+            px = liquid.load()
+            if essence.get("rainbow"):
+                left, _, right, _ = liquid.getbbox()  # the liquid is narrower than the bucket's
+                for y in range(liquid.size[1]):
+                    for x in range(liquid.size[0]):
+                        if px[x, y][3] > 0:
+                            px[x, y] = rgb((x - left) / (right - left), 0.85, 0.95) + (px[x, y][3],)
+            else:
+                recolour(liquid, essence["colors"], lambda p: p[3] > 0)
+            liquid.alpha_composite(load("assets/minecraft/textures/item/potion.png"))
+            liquid.save(f"{ASSETS}/item/{fluid}_bottle.png")
 
             card = Image.open(f"{ASSETS}/item/blank_filter.png").convert("RGBA")
             px = card.load()

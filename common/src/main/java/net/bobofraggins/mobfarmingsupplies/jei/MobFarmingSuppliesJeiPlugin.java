@@ -58,12 +58,16 @@ public class MobFarmingSuppliesJeiPlugin implements IModPlugin {
                 new DnaSamplingGuide(guiHelper), new CloningGuide(guiHelper), new IncubatingCategory(guiHelper),
                 new UpgradingCategory(guiHelper),
                 new EssenceExtractionCategory(reg.getJeiHelpers()),
-                new DisenchantingCategory(guiHelper));
+                new DisenchantingCategory(guiHelper),
+                new DyeMixingCategory(reg.getJeiHelpers()),
+                EssenceContainerGuide.bucketCategory(guiHelper), EssenceContainerGuide.bottleCategory(guiHelper));
     }
 
     @Override
     public void registerRecipes(IRecipeRegistration reg) {
         reg.addRecipes(XpJuiceGuide.RECIPE_TYPE, XpJuiceGuide.recipes());
+        reg.addRecipes(mezz.jei.api.constants.RecipeTypes.BREWING,
+                BrewingGuide.recipes(reg.getVanillaRecipeFactory()));
         reg.addRecipes(BottlingGuide.RECIPE_TYPE, BottlingGuide.recipes());
         reg.addRecipes(AnvilCrushingGuide.RECIPE_TYPE, List.of(AnvilCrushingGuide.recipe()));
         reg.addRecipes(FilterScribingCategory.RECIPE_TYPE, List.of(FilterScribingExamples.create()));
@@ -77,6 +81,9 @@ public class MobFarmingSuppliesJeiPlugin implements IModPlugin {
         reg.addRecipes(UpgradingCategory.RECIPE_TYPE, UpgradingCategory.displays(upgradingRecipes()));
         reg.addRecipes(EssenceExtractionCategory.RECIPE_TYPE, EssenceExtractionCategory.recipes());
         reg.addRecipes(DisenchantingCategory.RECIPE_TYPE, DisenchantingCategory.displays());
+        reg.addRecipes(DyeMixingCategory.RECIPE_TYPE, DyeMixingCategory.displays());
+        reg.addRecipes(EssenceContainerGuide.BUCKET_TYPE, EssenceContainerGuide.bucketRecipes());
+        reg.addRecipes(EssenceContainerGuide.BOTTLE_TYPE, EssenceContainerGuide.bottleRecipes());
     }
 
     /** Each mob's Mob Head is its own JEI entry (one item, told apart by its mob type). */
@@ -127,6 +134,9 @@ public class MobFarmingSuppliesJeiPlugin implements IModPlugin {
                 Registration.BLOCK_BREAKER_ITEM.get());
         reg.addCraftingStation(XpRepairingCategory.RECIPE_TYPE, Registration.XP_ANVIL_ITEM.get());
         reg.addCraftingStation(HeadPikeGuide.RECIPE_TYPE, Registration.HEAD_PIKE_ITEM.get());
+        reg.addCraftingStation(DyeMixingCategory.RECIPE_TYPE, Registration.COLOR_WORKSTATION_ITEM.get());
+        reg.addCraftingStation(EssenceContainerGuide.BUCKET_TYPE, Registration.ESSENCE_HOPPER_ITEM.get(), Registration.TANK_ITEM.get());
+        reg.addCraftingStation(EssenceContainerGuide.BOTTLE_TYPE, Registration.ESSENCE_HOPPER_ITEM.get(), Registration.TANK_ITEM.get());
     }
 
     /**

@@ -1,6 +1,8 @@
 package net.bobofraggins.mobfarmingsupplies.tank;
 
 import dev.architectury.fluid.FluidStack;
+import net.bobofraggins.mobfarmingsupplies.essencehopper.Essence;
+import net.bobofraggins.mobfarmingsupplies.essencehopper.EssenceBottleItem;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
@@ -16,7 +18,7 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.core.registries.BuiltInRegistries;
 
 /**
- * Glass bottle / water bottle / bottle o' enchanting transfer logic for the Tank, shared by
+ * Glass bottle / water bottle / bottle o' enchanting / bottle of essence transfer logic for the Tank, shared by
  * both the direct block right-click ({@link TankBlock#useItemOn}) and the Tank UI's
  * transfer-slot mechanism ({@link TankBlockEntity#tickFluidTransfer}).
  *
@@ -42,7 +44,8 @@ public final class TankBottleTransfer {
      * ever reaches that logic.
      */
     public static boolean isBottle(ItemStack stack) {
-        return stack.is(Items.GLASS_BOTTLE) || stack.is(Items.POTION) || stack.is(Items.EXPERIENCE_BOTTLE);
+        return stack.is(Items.GLASS_BOTTLE) || stack.is(Items.POTION) || stack.is(Items.EXPERIENCE_BOTTLE)
+                || stack.getItem() instanceof EssenceBottleItem;
     }
 
     /**
@@ -65,6 +68,11 @@ public final class TankBottleTransfer {
                     be.extract(BOTTLE_MB, false);
                     return new ItemStack(Items.EXPERIENCE_BOTTLE);
                 }
+                Essence essence = Essence.of(simulated);
+                if (essence != null) {
+                    be.extract(BOTTLE_MB, false);
+                    return new ItemStack(Registration.ESSENCE_BOTTLES.get(essence).get());
+                }
             }
             return null;
         }
@@ -79,6 +87,13 @@ public final class TankBottleTransfer {
                 return new ItemStack(Items.GLASS_BOTTLE);
             }
             return null;
+        }
+
+        if (input.getItem() instanceof EssenceBottleItem bottle) {
+            FluidStack essence = FluidStack.create(Registration.ESSENCE_SOURCES.get(bottle.essence()).get(), BOTTLE_MB);
+            if (be.insert(essence, BOTTLE_MB, true) < BOTTLE_MB) return null;
+            be.insert(essence, BOTTLE_MB, false);
+            return new ItemStack(Items.GLASS_BOTTLE);
         }
 
         if (input.is(Items.EXPERIENCE_BOTTLE)) {

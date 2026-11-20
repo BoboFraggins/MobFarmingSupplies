@@ -17,8 +17,14 @@ public final class MFSNetwork {
                     TankCapacitiesPacket.TYPE,
                     TankCapacitiesPacket.STREAM_CODEC,
                     TankCapacitiesPacket::handle);
+            NetworkManager.registerReceiver(
+                    NetworkManager.s2c(),
+                    OresightPacket.TYPE,
+                    OresightPacket.STREAM_CODEC,
+                    OresightPacket::handle);
         } else {
             NetworkManager.registerS2CPayloadType(TankCapacitiesPacket.TYPE, TankCapacitiesPacket.STREAM_CODEC);
+            NetworkManager.registerS2CPayloadType(OresightPacket.TYPE, OresightPacket.STREAM_CODEC);
         }
         NetworkManager.registerReceiver(
                 NetworkManager.c2s(),

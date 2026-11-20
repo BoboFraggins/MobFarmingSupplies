@@ -1,0 +1,31 @@
+{
+  "type": "modonomicon:content",
+  "id": "mobfarmingsupplies:mob_farming/muffler",
+  "category": "mobfarmingsupplies:mob_farming",
+  "name": "book.mobfarmingsupplies.guide.mob_farming.muffler.name",
+  "description": "book.mobfarmingsupplies.guide.mob_farming.muffler.description",
+  "icon": {
+    "id": "mobfarmingsupplies:muffler"
+  },
+  "x": 0,
+  "y": 0,
+  "sort_number": 11,
+  "pages": [
+    {
+      "id": "p0",
+      "sort_number": 0,
+      "type": "modonomicon:spotlight",
+      "item": {
+        "id": "mobfarmingsupplies:muffler"
+      },
+      "title": "book.mobfarmingsupplies.guide.mob_farming.muffler.p0.title",
+      "text": "book.mobfarmingsupplies.guide.mob_farming.muffler.p0.text"
+    },
+    {
+      "id": "p1",
+      "sort_number": 1,
+      "type": "modonomicon:crafting_recipe",
+      "recipe_id_1": "mobfarmingsupplies:muffler"
+    }
+  ]
+}

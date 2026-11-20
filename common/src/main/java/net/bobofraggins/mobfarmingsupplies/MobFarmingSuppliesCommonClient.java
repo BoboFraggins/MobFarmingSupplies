@@ -39,6 +39,7 @@ public final class MobFarmingSuppliesCommonClient {
         net.bobofraggins.mobfarmingsupplies.client.devtools.BlockIconRenderer.register();
         // Development only: runs a command script as the player when MFS_DEV_COMMANDS is set.
         net.bobofraggins.mobfarmingsupplies.client.devtools.DevCommands.register();
+        net.bobofraggins.mobfarmingsupplies.oresight.OresightClient.register();
         // Menu → screen bindings (menu and screen both in common). On Fabric this is
         // the only registration path and works correctly. On NeoForge,
         // MenuScreenRegistry.registerScreenFactory adds a RegisterMenuScreensEvent
@@ -75,6 +76,9 @@ public final class MobFarmingSuppliesCommonClient {
         MenuScreenRegistry.registerScreenFactory(
                 Registration.XP_ANVIL_MENU.get(),
                 XpAnvilScreen::new);
+        MenuScreenRegistry.registerScreenFactory(
+                Registration.COLOR_WORKSTATION_MENU.get(),
+                net.bobofraggins.mobfarmingsupplies.colorworkstation.ColorWorkstationScreen::new);
         MenuScreenRegistry.registerScreenFactory(
                 Registration.DISENCHANTER_MENU.get(),
                 DisenchanterScreen::new);
