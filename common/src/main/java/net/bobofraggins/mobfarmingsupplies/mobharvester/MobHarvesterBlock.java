@@ -2,6 +2,13 @@ package net.bobofraggins.mobfarmingsupplies.mobharvester;
 
 import com.mojang.serialization.MapCodec;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
+import net.bobofraggins.mobfarmingsupplies.shared.TallBlock;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.ScheduledTickAccess;
+import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.item.BlockItem;
@@ -39,7 +46,9 @@ import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Mob Harvester block.
+ * Mob Harvester block, two blocks tall ({@link TallBlock}): the lower half holds the
+ * {@link MobHarvesterBlockEntity} and draws the whole model; redstone at either half powers it,
+ * and either half opens it.
  *
  * <p>When powered by redstone, attacks all {@link net.minecraft.world.entity.LivingEntity}s
  * (excluding players) in a {@value MobHarvesterBlockEntity#KILL_WIDTH}×
@@ -63,7 +72,8 @@ public class MobHarvesterBlock extends BaseEntityBlock {
         super(props);
         registerDefaultState(stateDefinition.any()
                 .setValue(POWERED, false)
-                .setValue(FACING, Direction.SOUTH));
+                .setValue(FACING, Direction.SOUTH)
+                .setValue(TallBlock.HALF, DoubleBlockHalf.LOWER));
     }
 
     @Override
@@ -73,13 +83,13 @@ public class MobHarvesterBlock extends BaseEntityBlock {
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(POWERED, FACING);
+        builder.add(POWERED, FACING, TallBlock.HALF);
     }
 
     // ── Shape ────────────────────────────────────────────────────────────────────
 
-    /** Full two-block-tall hitbox (0–16 px wide/deep, 0–32 px tall). */
-    private static final VoxelShape SHAPE = Block.box(0, 0, 0, 16, 32, 16);
+    /** Each half is a full block. */
+    private static final VoxelShape SHAPE = Block.box(0, 0, 0, 16, 16, 16);
 
     @Override
     protected BlockState rotate(BlockState state, Rotation rotation) {
@@ -119,23 +129,64 @@ public class MobHarvesterBlock extends BaseEntityBlock {
 
     // ── Placement ────────────────────────────────────────────────────────────────
 
+    @Nullable
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext ctx) {
-        boolean powered = ctx.getLevel().hasNeighborSignal(ctx.getClickedPos());
+        if (!TallBlock.roomAbove(ctx)) return null;
+        boolean powered = ctx.getLevel().hasNeighborSignal(ctx.getClickedPos())
+                || ctx.getLevel().hasNeighborSignal(ctx.getClickedPos().above());
         Direction facing = ctx.getHorizontalDirection().getOpposite();
         return defaultBlockState().setValue(POWERED, powered).setValue(FACING, facing);
     }
 
+    @Override
+    public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
+        super.setPlacedBy(level, pos, state, placer, stack);
+        TallBlock.placeUpper(level, pos, state);
+    }
+
+    // ── Two blocks tall ───────────────────────────────────────────────────────────
+
+    @Override
+    protected boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
+        return TallBlock.canSurvive(state, level, pos);
+    }
+
+    @Override
+    protected BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess ticks, BlockPos pos,
+                                     Direction direction, BlockPos neighborPos, BlockState neighborState, RandomSource random) {
+        BlockState updated = TallBlock.updateShape(state, direction, neighborState);
+        return updated != state ? updated
+                : super.updateShape(state, level, ticks, pos, direction, neighborPos, neighborState, random);
+    }
+
+    @Override
+    public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
+        TallBlock.playerWillDestroy(level, pos, state, player);
+        return super.playerWillDestroy(level, pos, state, player);
+    }
+
+    @Override
+    protected void affectNeighborsAfterRemoval(BlockState state, ServerLevel level, BlockPos pos, boolean movedByPiston) {
+        TallBlock.afterRemoval(state, level, pos);
+        super.affectNeighborsAfterRemoval(state, level, pos, movedByPiston);
+    }
+
     // ── Redstone ─────────────────────────────────────────────────────────────────
 
+    /** A signal at either half powers the harvester; the lower half's state carries it. */
     @Override
     protected void neighborChanged(
             BlockState state, Level level, BlockPos pos,
             Block sourceBlock, Orientation orientation, boolean isMoving) {
         if (level.isClientSide()) return;
-        boolean powered = level.hasNeighborSignal(pos);
-        if (powered != state.getValue(POWERED)) {
-            level.setBlock(pos, state.setValue(POWERED, powered), Block.UPDATE_ALL);
+        BlockPos lower = TallBlock.lowerPos(state, pos);
+        BlockState lowerState = level.getBlockState(lower);
+        if (!lowerState.is(this) || TallBlock.isUpper(lowerState)) return;
+        boolean powered = level.hasNeighborSignal(lower)
+                || (level.getBlockState(lower.above()).is(this) && level.hasNeighborSignal(lower.above()));
+        if (powered != lowerState.getValue(POWERED)) {
+            level.setBlock(lower, lowerState.setValue(POWERED, powered), Block.UPDATE_ALL);
         }
     }
 
@@ -144,7 +195,7 @@ public class MobHarvesterBlock extends BaseEntityBlock {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new MobHarvesterBlockEntity(pos, state);
+        return TallBlock.isUpper(state) ? null : new MobHarvesterBlockEntity(pos, state);
     }
 
     @Nullable
@@ -152,8 +203,10 @@ public class MobHarvesterBlock extends BaseEntityBlock {
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(
             Level level, BlockState state, BlockEntityType<T> beType) {
         if (level.isClientSide()) return null;
-        return createTickerHelper(beType, Registration.MOB_HARVESTER_BE_TYPE.get(),
-                MobHarvesterBlockEntity::serverTick);
+        return createTickerHelper(beType, Registration.MOB_HARVESTER_BE_TYPE.get(), (lvl, pos, st, be) -> {
+            TallBlock.growUpper(lvl, pos, st);
+            MobHarvesterBlockEntity.serverTick(lvl, pos, st, be);
+        });
     }
 
     // ── GUI ───────────────────────────────────────────────────────────────────────
@@ -162,9 +215,10 @@ public class MobHarvesterBlock extends BaseEntityBlock {
     protected InteractionResult useWithoutItem(
             BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
         if (!level.isClientSide()) {
-            if (level.getBlockEntity(pos) instanceof MobHarvesterBlockEntity be
+            BlockPos lower = TallBlock.lowerPos(state, pos);
+            if (level.getBlockEntity(lower) instanceof MobHarvesterBlockEntity be
                     && player instanceof ServerPlayer sp) {
-                MenuRegistry.openExtendedMenu(sp, be, buf -> buf.writeBlockPos(pos));
+                MenuRegistry.openExtendedMenu(sp, be, buf -> buf.writeBlockPos(lower));
             }
         }
         return InteractionResult.SUCCESS;

@@ -77,7 +77,12 @@ public class MobFarmingSuppliesFabric implements ModInitializer {
         // Block-side fluid storage for TankBlockEntity.
         FluidStorage.SIDED.registerForBlockEntities(
                 (be, direction) -> new FabricTankFluidStorage((TankBlockEntity) be),
-                Registration.TANK_BE_TYPE.get(), Registration.EXPERIENCE_PYLON_BE_TYPE.get());
+                Registration.TANK_BE_TYPE.get());
+        // The Experience Pylon, at either half.
+        FluidStorage.SIDED.registerForBlocks((level, pos, state, be, direction) -> {
+            var pylon = net.bobofraggins.mobfarmingsupplies.experiencepylon.ExperiencePylonBlock.blockEntity(level, pos, state);
+            return pylon == null ? null : new FabricTankFluidStorage(pylon);
+        }, Registration.EXPERIENCE_PYLON.get());
 
         // The XP Powered Incubator's experience tank: experience in only.
         FluidStorage.SIDED.registerForBlockEntities(
@@ -129,11 +134,17 @@ public class MobFarmingSuppliesFabric implements ModInitializer {
         registerHopperNodeStorages(Registration.OMNI_HOPPER_BE_TYPE.get());
         registerHopperNodeStorages(Registration.BRIDGE_BE_TYPE.get());
 
-        // Tanks and the Experience Pylon: containers into the fill-and-empty slot, results out of the other.
+        // Tanks and the Experience Pylon (at either half): containers into the fill-and-empty slot,
+        // results out of the other.
         ItemStorage.SIDED.registerForBlockEntities(
                 (be, direction) -> new InOutSlotsItemStorage(((TankBlockEntity) be).transferContainer, 0, 1, 64,
                         net.bobofraggins.mobfarmingsupplies.tank.TankMenu::canFillOrEmpty),
-                Registration.TANK_BE_TYPE.get(), Registration.EXPERIENCE_PYLON_BE_TYPE.get());
+                Registration.TANK_BE_TYPE.get());
+        ItemStorage.SIDED.registerForBlocks((level, pos, state, be, direction) -> {
+            var pylon = net.bobofraggins.mobfarmingsupplies.experiencepylon.ExperiencePylonBlock.blockEntity(level, pos, state);
+            return pylon == null ? null : new InOutSlotsItemStorage(pylon.transferContainer, 0, 1, 64,
+                    net.bobofraggins.mobfarmingsupplies.tank.TankMenu::canFillOrEmpty);
+        }, Registration.EXPERIENCE_PYLON.get());
 
         // XP Powered Anvil: damaged items in, one at a time; repaired ones out.
         ItemStorage.SIDED.registerForBlockEntities(

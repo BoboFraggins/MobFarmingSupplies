@@ -1,0 +1,31 @@
+{
+  "type": "modonomicon:content",
+  "id": "mobfarmingsupplies:mob_farming/hyper_farmland",
+  "category": "mobfarmingsupplies:mob_farming",
+  "name": "book.mobfarmingsupplies.guide.mob_farming.hyper_farmland.name",
+  "description": "book.mobfarmingsupplies.guide.mob_farming.hyper_farmland.description",
+  "icon": {
+    "id": "mobfarmingsupplies:hyper_farmland"
+  },
+  "x": 0,
+  "y": 0,
+  "sort_number": 13,
+  "pages": [
+    {
+      "id": "p0",
+      "sort_number": 0,
+      "type": "modonomicon:spotlight",
+      "item": {
+        "id": "mobfarmingsupplies:hyper_farmland"
+      },
+      "title": "book.mobfarmingsupplies.guide.mob_farming.hyper_farmland.p0.title",
+      "text": "book.mobfarmingsupplies.guide.mob_farming.hyper_farmland.p0.text"
+    },
+    {
+      "id": "p1",
+      "sort_number": 1,
+      "type": "modonomicon:crafting_recipe",
+      "recipe_id_1": "mobfarmingsupplies:hyper_farmland"
+    }
+  ]
+}
