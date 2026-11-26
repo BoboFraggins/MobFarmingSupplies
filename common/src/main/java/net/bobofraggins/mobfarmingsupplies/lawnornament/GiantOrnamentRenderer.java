@@ -18,11 +18,10 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.resources.PlayerSkin;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.world.item.component.ResolvableProfile;
+import com.mojang.authlib.GameProfile;
 import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.Nullable;
 
@@ -36,8 +35,8 @@ public class GiantOrnamentRenderer
     /** A humanoid is about two blocks tall; this makes it four. */
     static final float SCALE = 2.0f;
 
-    private static final ResourceLocation STEVE = ResourceLocation.withDefaultNamespace("textures/entity/player/wide/steve.png");
-    private static final ResourceLocation ALEX = ResourceLocation.withDefaultNamespace("textures/entity/player/slim/alex.png");
+    private static final ResourceLocation STEVE = new ResourceLocation("textures/entity/player/wide/steve.png");
+    private static final ResourceLocation ALEX = new ResourceLocation("textures/entity/player/slim/alex.png");
 
     /** Which vanilla model an ornament uses, and the texture drawn on it. */
     record Figure(ModelLayerLocation layer, ResourceLocation texture) {}
@@ -46,9 +45,9 @@ public class GiantOrnamentRenderer
     static Figure figure(GiantOrnament ornament) {
         return switch (ornament) {
             case SKELETON -> new Figure(ModelLayers.SKELETON,
-                    ResourceLocation.withDefaultNamespace("textures/entity/skeleton/skeleton.png"));
+                    new ResourceLocation("textures/entity/skeleton/skeleton.png"));
             case HEROBRINE -> new Figure(ModelLayers.PLAYER,
-                    ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID,
+                    new ResourceLocation(MobFarmingSuppliesCommon.MODID,
                             "textures/entity/player/wide/herobrine.png"));
             case PLAYER -> new Figure(ModelLayers.PLAYER, STEVE);
         };
@@ -67,7 +66,7 @@ public class GiantOrnamentRenderer
         }
 
         /** The model to draw, and how it's textured. */
-        Look look(GiantOrnament ornament, @Nullable ResolvableProfile owner, boolean alexWhenUnowned) {
+        Look look(GiantOrnament ornament, @Nullable GameProfile owner, boolean alexWhenUnowned) {
             if (ornament != GiantOrnament.PLAYER) {
                 GiantFigureModel model = byOrnament.get(ornament);
                 return new Look(model, model.renderType(model.texture()));
@@ -76,9 +75,19 @@ public class GiantOrnamentRenderer
                 GiantFigureModel model = alexWhenUnowned ? slimPlayer : byOrnament.get(ornament);
                 return new Look(model, model.renderType(alexWhenUnowned ? ALEX : STEVE));
             }
-            PlayerSkin skin = Minecraft.getInstance().getSkinManager().getInsecureSkin(resolved(owner).gameProfile());
-            GiantFigureModel model = skin.model() == PlayerSkin.Model.SLIM ? slimPlayer : byOrnament.get(ornament);
-            return new Look(model, RenderType.entityTranslucent(skin.texture()));
+            GameProfile profile = resolved(owner);
+            var skins = Minecraft.getInstance().getSkinManager();
+            var textures = skins.getInsecureSkinInformation(profile);
+            var skinTexture = textures.get(com.mojang.authlib.minecraft.MinecraftProfileTexture.Type.SKIN);
+            boolean slim = skinTexture != null ? "slim".equals(skinTexture.getMetadata("model"))
+                    : "slim".equals(net.minecraft.client.resources.DefaultPlayerSkin.getSkinModelName(
+                            net.minecraft.core.UUIDUtil.getOrCreatePlayerUUID(profile)));
+            ResourceLocation texture = skinTexture != null
+                    ? skins.registerTexture(skinTexture, com.mojang.authlib.minecraft.MinecraftProfileTexture.Type.SKIN)
+                    : net.minecraft.client.resources.DefaultPlayerSkin.getDefaultSkin(
+                            net.minecraft.core.UUIDUtil.getOrCreatePlayerUUID(profile));
+            GiantFigureModel model = slim ? slimPlayer : byOrnament.get(ornament);
+            return new Look(model, RenderType.entityTranslucent(texture));
         }
 
         /**
@@ -95,17 +104,21 @@ public class GiantOrnamentRenderer
     record Look(GiantFigureModel model, RenderType renderType) {}
 
     /** Owners being looked up (an ornament from a village yard names its owner by name or id only). */
-    private static final Map<ResolvableProfile, CompletableFuture<ResolvableProfile>> RESOLVING = new ConcurrentHashMap<>();
+    private static final Map<GameProfile, CompletableFuture<GameProfile>> RESOLVING = new ConcurrentHashMap<>();
 
     /** {@code owner} with its skin, once looked up; until then as it is (drawn with the default skin). */
-    static ResolvableProfile resolved(ResolvableProfile owner) {
-        if (owner.isResolved()) return owner;
-        return RESOLVING.computeIfAbsent(owner, ResolvableProfile::resolve).getNow(owner);
+    static GameProfile resolved(GameProfile owner) {
+        if (owner.getProperties().containsKey("textures")) return owner;
+        return RESOLVING.computeIfAbsent(owner, o -> {
+            CompletableFuture<GameProfile> looked = new CompletableFuture<>();
+            net.minecraft.world.level.block.entity.SkullBlockEntity.updateGameprofile(o, looked::complete);
+            return looked;
+        }).getNow(owner);
     }
 
     public static class State extends BlockEntityRenderState {
         GiantOrnament ornament = GiantOrnament.SKELETON;
-        @Nullable ResolvableProfile owner;
+        @Nullable GameProfile owner;
         boolean alexWhenUnowned;
         Direction facing = Direction.NORTH;
         GiantFigureModel.Pose pose = GiantFigureModel.Pose.FORWARD;
@@ -160,8 +173,8 @@ public class GiantOrnamentRenderer
         poseStack.scale(-1f, -1f, 1f);
         poseStack.translate(0f, -1.501f, 0f);
         look.model().setupAnim(pose);
-        look.model().renderToBuffer(poseStack, buffers.getBuffer(look.renderType()), light,
-                OverlayTexture.NO_OVERLAY, color);
+        net.bobofraggins.mobfarmingsupplies.shared.compat.ModelRendering.render(look.model(), poseStack,
+                buffers.getBuffer(look.renderType()), light, OverlayTexture.NO_OVERLAY, color);
         poseStack.popPose();
     }
 

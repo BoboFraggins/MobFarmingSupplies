@@ -1,5 +1,8 @@
 package net.bobofraggins.mobfarmingsupplies.picnicbasket;
 
+import net.minecraft.resources.ResourceLocation;
+
+import net.bobofraggins.mobfarmingsupplies.shared.compat.MFSCodecs;
 import net.minecraft.core.registries.Registries;
 import net.bobofraggins.mobfarmingsupplies.register.MFSRegistryHelper;
 import net.minecraft.advancements.CriteriaTriggers;
@@ -54,7 +57,7 @@ public class PicnicBasketBlockEntity extends BlockEntity implements MenuProvider
 
     /** Loot table to fill the basket from on first open or break, as set by a structure. */
     @Nullable
-    private ResourceKey<LootTable> lootTable;
+    private ResourceLocation lootTable;
     private long lootTableSeed;
 
     // ── Lid animation state (client-side only) ──────────────────────────────────
@@ -153,7 +156,7 @@ public class PicnicBasketBlockEntity extends BlockEntity implements MenuProvider
     /** Fills the basket from its loot table, if it has one, the way vanilla chests do. */
     public void unpackLootTable(@Nullable Player player) {
         if (lootTable == null || !(level instanceof ServerLevel serverLevel)) return;
-        LootTable table = serverLevel.getServer().reloadableRegistries().getLootTable(lootTable);
+        LootTable table = serverLevel.getServer().getLootData().getLootTable(lootTable);
         if (player instanceof ServerPlayer sp) CriteriaTriggers.GENERATE_LOOT.trigger(sp, lootTable);
         lootTable = null;
         LootParams.Builder params = new LootParams.Builder(serverLevel)
@@ -164,10 +167,13 @@ public class PicnicBasketBlockEntity extends BlockEntity implements MenuProvider
         // Unlike LootTable.fill, keeps each rolled stack whole in a random empty slot.
         List<Integer> empty = new ArrayList<>();
         for (int i = 0; i < SLOT_COUNT; i++) if (inventory.getItem(i).isEmpty()) empty.add(i);
-        Util.shuffle(empty, serverLevel.getRandom());
+        for (int i = empty.size() - 1; i > 0; i--) {
+            int j = serverLevel.getRandom().nextInt(i + 1);
+            empty.set(i, empty.set(j, empty.get(i)));
+        }
         for (ItemStack stack : table.getRandomItems(params.create(LootContextParamSets.CHEST), lootTableSeed)) {
             if (empty.isEmpty()) break;
-            inventory.setItem(empty.removeLast(), stack);
+            inventory.setItem(empty.remove(empty.size() - 1), stack);
         }
         setChanged();
     }
@@ -197,38 +203,38 @@ public class PicnicBasketBlockEntity extends BlockEntity implements MenuProvider
     // ── NBT ──────────────────────────────────────────────────────────────────────
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.saveAdditional(tag, registries);
-        ValueOutput output = new ValueOutput(tag, registries);
+    protected void saveAdditional(CompoundTag tag) {
+        super.saveAdditional(tag);
+        ValueOutput output = new ValueOutput(tag);
         List<ItemStack> stacks = new ArrayList<>(SLOT_COUNT);
         for (int i = 0; i < SLOT_COUNT; i++) stacks.add(inventory.getItem(i));
-        output.store("Items", ItemStack.OPTIONAL_CODEC.listOf(), stacks);
+        output.store("Items", MFSCodecs.OPTIONAL_ITEM_STACK.listOf(), stacks);
         output.putBoolean("AutoFeed", autoFeed);
         if (lootTable != null) {
-            output.store("LootTable", ResourceKey.codec(Registries.LOOT_TABLE), lootTable);
+            output.putString("LootTable", lootTable.toString());
             if (lootTableSeed != 0L) output.putLong("LootTableSeed", lootTableSeed);
         }
     }
 
     @Override
-    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
-        ValueInput input = new ValueInput(tag, registries);
-        input.read("Items", ItemStack.OPTIONAL_CODEC.listOf()).ifPresent(loaded -> {
+    public void load(CompoundTag tag) {
+        super.load(tag);
+        ValueInput input = new ValueInput(tag);
+        input.read("Items", MFSCodecs.OPTIONAL_ITEM_STACK.listOf()).ifPresent(loaded -> {
             for (int i = 0; i < Math.min(loaded.size(), SLOT_COUNT); i++) {
                 inventory.setItem(i, loaded.get(i));
             }
         });
         autoFeed = input.getBooleanOr("AutoFeed", true);
-        lootTable = input.read("LootTable", ResourceKey.codec(Registries.LOOT_TABLE)).orElse(null);
+        lootTable = tag.contains("LootTable") ? ResourceLocation.tryParse(tag.getString("LootTable")) : null;
         lootTableSeed = input.getLongOr("LootTableSeed", 0L);
     }
 
     // ── Client sync ───────────────────────────────────────────────────────────────
 
     @Override
-    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
-        return saveWithoutMetadata(registries);
+    public CompoundTag getUpdateTag() {
+        return saveWithoutMetadata();
     }
 
     @Override

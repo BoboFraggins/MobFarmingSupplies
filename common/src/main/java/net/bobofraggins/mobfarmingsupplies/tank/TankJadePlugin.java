@@ -31,7 +31,7 @@ import snownee.jade.api.config.IPluginConfig;
 public class TankJadePlugin implements IWailaPlugin {
 
     static final ResourceLocation TANK_PROVIDER =
-            ResourceLocation.fromNamespaceAndPath("mobfarmingsupplies", "tank");
+            new ResourceLocation("mobfarmingsupplies", "tank");
 
     private static final String KEY_AMOUNT   = "Amount";
     private static final String KEY_CAPACITY = "Capacity";
@@ -68,10 +68,9 @@ public class TankJadePlugin implements IWailaPlugin {
             data.putLong(KEY_CAPACITY, be.getCapacity());
             FluidStack fluid = be.getStoredFluid();
             if (!fluid.isEmpty()) {
-                net.minecraft.nbt.Tag fluidTag = FluidStack.CODEC
+                net.minecraft.nbt.Tag fluidTag = net.bobofraggins.mobfarmingsupplies.shared.compat.MFSCodecs.FLUID_STACK
                         .encodeStart(
-                                accessor.getLevel().registryAccess()
-                                        .createSerializationContext(NbtOps.INSTANCE),
+                                NbtOps.INSTANCE,
                                 fluid)
                         .result()
                         .orElse(new CompoundTag());
@@ -107,10 +106,9 @@ public class TankJadePlugin implements IWailaPlugin {
                 return;
             }
 
-            FluidStack fluid = FluidStack.CODEC
+            FluidStack fluid = net.bobofraggins.mobfarmingsupplies.shared.compat.MFSCodecs.FLUID_STACK
                     .parse(
-                            accessor.getLevel().registryAccess()
-                                    .createSerializationContext(NbtOps.INSTANCE),
+                            NbtOps.INSTANCE,
                             data.getCompound(KEY_FLUID))
                     .result()
                     .orElse(FluidStack.empty());

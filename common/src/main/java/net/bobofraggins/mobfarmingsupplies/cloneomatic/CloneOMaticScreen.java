@@ -26,7 +26,7 @@ import net.minecraft.world.entity.player.Inventory;
 public class CloneOMaticScreen extends AbstractContainerScreen<CloneOMaticMenu> {
 
     private static final ResourceLocation GHOST_DNA_SAMPLE =
-            ResourceLocation.fromNamespaceAndPath("mobfarmingsupplies", "textures/item/dna_sample_ghost.png");
+            new ResourceLocation("mobfarmingsupplies", "textures/item/dna_sample_ghost.png");
 
     private final Dialog dialog;
 

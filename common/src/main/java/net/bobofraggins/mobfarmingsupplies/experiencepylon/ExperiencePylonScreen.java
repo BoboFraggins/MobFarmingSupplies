@@ -28,11 +28,11 @@ import net.minecraft.world.entity.player.Inventory;
 public class ExperiencePylonScreen extends AbstractContainerScreen<ExperiencePylonMenu> {
 
     private static final ResourceLocation GHOST_BUCKET  =
-            ResourceLocation.fromNamespaceAndPath("mobfarmingsupplies", "textures/item/bucket_ghost.png");
+            new ResourceLocation("mobfarmingsupplies", "textures/item/bucket_ghost.png");
     private static final ResourceLocation GHOST_BOTTLE  =
-            ResourceLocation.fromNamespaceAndPath("mobfarmingsupplies", "textures/item/glass_bottle_ghost.png");
+            new ResourceLocation("mobfarmingsupplies", "textures/item/glass_bottle_ghost.png");
     private static final ResourceLocation GHOST_SYRINGE =
-            ResourceLocation.fromNamespaceAndPath("mobfarmingsupplies", "textures/item/experience_syringe_ghost.png");
+            new ResourceLocation("mobfarmingsupplies", "textures/item/experience_syringe_ghost.png");
 
     // Column bounds within the 176 px panel; the rules sit on the boundaries.
     private static final int LEFT_RULE_X  = 61;

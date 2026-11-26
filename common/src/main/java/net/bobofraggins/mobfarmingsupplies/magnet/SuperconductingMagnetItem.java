@@ -35,7 +35,7 @@ public class SuperconductingMagnetItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipLines, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, @org.jetbrains.annotations.Nullable net.minecraft.world.level.Level context, List<Component> tooltipLines, TooltipFlag flag) {
         Consumer<Component> tooltip = tooltipLines::add;
         tooltip.accept(Component.translatable("item.mobfarmingsupplies.superconducting_magnet.tooltip",
                 MagnetPull.RANGE).withStyle(ChatFormatting.GRAY));

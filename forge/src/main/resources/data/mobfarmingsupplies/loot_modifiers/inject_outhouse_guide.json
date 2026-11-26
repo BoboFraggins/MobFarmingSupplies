@@ -1,0 +1,11 @@
+{
+  "type": "mobfarmingsupplies:add_table",
+  "conditions": [
+    {
+      "condition": "forge:loot_table_id",
+      "loot_table_id": "mobfarmingsupplies:chests/outhouse_shelf"
+    }
+  ],
+  "table": "mobfarmingsupplies:chests/inject/outhouse_guide",
+  "required_mod": "modonomicon"
+}

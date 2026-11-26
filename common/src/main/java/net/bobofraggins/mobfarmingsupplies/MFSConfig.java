@@ -38,9 +38,9 @@ public final class MFSConfig {
             "minecraft:pufferfish");
 
     public static final List<String> DEFAULT_RARE_HOSTILE = List.of(
-            "minecraft:breeze", "minecraft:evoker", "minecraft:phantom",
+            "minecraft:evoker", "minecraft:phantom",
             "minecraft:pillager", "minecraft:vindicator", "minecraft:cave_spider",
-            "minecraft:husk", "minecraft:bogged", "minecraft:ravager");
+            "minecraft:husk", "minecraft:ravager");
 
     public static final List<String> DEFAULT_NETHER = List.of(
             "minecraft:blaze", "minecraft:ghast", "minecraft:magma_cube",
@@ -48,12 +48,12 @@ public final class MFSConfig {
             "minecraft:zombified_piglin", "minecraft:zoglin", "minecraft:hoglin");
 
     public static final List<String> DEFAULT_RARE_PASSIVE = List.of(
-            "minecraft:goat", "minecraft:armadillo", "minecraft:donkey",
+            "minecraft:goat", "minecraft:donkey",
             "minecraft:horse", "minecraft:turtle");
 
     public static final List<String> DEFAULT_BABY = List.of(
             // Animals
-            "minecraft:armadillo", "minecraft:axolotl", "minecraft:bee",
+            "minecraft:axolotl", "minecraft:bee",
             "minecraft:camel", "minecraft:cat",
             "minecraft:chicken", "minecraft:cow", "minecraft:dolphin",
             "minecraft:donkey", "minecraft:fox", "minecraft:goat",

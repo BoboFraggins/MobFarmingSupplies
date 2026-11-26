@@ -42,12 +42,11 @@ public final class MagicHatTrinketSetup {
     public static void registerCommon() {
         TrinketsApi.registerTrinket(Registration.MAGIC_HAT_ITEM.get(), new Trinket() {
             @Override
-            public Multimap<Holder<Attribute>, AttributeModifier> getModifiers(
-                    ItemStack stack, SlotReference slot, LivingEntity entity, ResourceLocation slotIdentifier) {
-                Multimap<Holder<Attribute>, AttributeModifier> modifiers = Trinket.super.getModifiers(
-                        stack, slot, entity, slotIdentifier);
-                modifiers.put(Attributes.LUCK, new AttributeModifier(
-                        MagicHatItem.LUCK_MODIFIER_ID, 2.0, AttributeModifier.Operation.ADD_VALUE));
+            public Multimap<Attribute, AttributeModifier> getModifiers(
+                    ItemStack stack, SlotReference slot, LivingEntity entity, java.util.UUID uuid) {
+                Multimap<Attribute, AttributeModifier> modifiers = Trinket.super.getModifiers(stack, slot, entity, uuid);
+                modifiers.put(Attributes.LUCK, new AttributeModifier(uuid, MagicHatItem.LUCK_MODIFIER_ID.toString(), 2.0,
+                        AttributeModifier.Operation.ADDITION));
                 return modifiers;
             }
         });

@@ -1,12 +1,15 @@
 package net.bobofraggins.mobfarmingsupplies.tank;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.ImplicitComponents;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.DataComponentInput;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.MFSCodecs;
 import dev.architectury.fluid.FluidStack;
 import net.bobofraggins.mobfarmingsupplies.register.MFSRegistryHelper;
 import net.bobofraggins.mobfarmingsupplies.shared.nbt.ValueInput;
 import net.bobofraggins.mobfarmingsupplies.shared.nbt.ValueOutput;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.component.DataComponentMap;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.DataComponentMap;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -39,7 +42,7 @@ import java.util.List;
  * Direct {@link #insert} and {@link #extract} helpers are provided for
  * bucket/bottle interaction via {@link TankBlockEntityPlatform}.
  */
-public class TankBlockEntity extends BlockEntity implements MenuProvider {
+public class TankBlockEntity extends BlockEntity implements ImplicitComponents, MenuProvider {
 
     /** Fluid type key — always stored with amount=1. {@link FluidStack#empty()} means unlocked. */
     public FluidStack storedFluid = FluidStack.empty();
@@ -145,7 +148,7 @@ public class TankBlockEntity extends BlockEntity implements MenuProvider {
     public long insert(FluidStack fluid, long requested, boolean simulate) {
         if (fluid.isEmpty() || requested <= 0 || !canHold(fluid)) return 0;
         if (!storedFluid.isEmpty()
-                && (!storedFluid.isFluidEqual(fluid) || !storedFluid.isComponentEqual(fluid))) return 0;
+                && (!storedFluid.isFluidEqual(fluid) || !storedFluid.isTagEqual(fluid))) return 0;
 
         long space = Math.max(0, getCapacity() - amount); // never negative, even if the configured size was lowered
         long toInsert = Math.min(requested, space);
@@ -221,28 +224,28 @@ public class TankBlockEntity extends BlockEntity implements MenuProvider {
     private static final String TAG_TRANSFER = "Transfer";
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.saveAdditional(tag, registries);
-        ValueOutput output = new ValueOutput(tag, registries);
+    protected void saveAdditional(CompoundTag tag) {
+        super.saveAdditional(tag);
+        ValueOutput output = new ValueOutput(tag);
         if (!storedFluid.isEmpty()) {
-            output.store(TAG_FLUID, FluidStack.CODEC, storedFluid);
+            output.store(TAG_FLUID, MFSCodecs.FLUID_STACK, storedFluid);
         }
         output.putLong(TAG_AMOUNT, amount);
         List<ItemStack> stacks = new ArrayList<>(2);
         for (int i = 0; i < 2; i++) stacks.add(transferContainer.getItem(i));
-        output.store(TAG_TRANSFER, ItemStack.OPTIONAL_CODEC.listOf(), stacks);
+        output.store(TAG_TRANSFER, MFSCodecs.OPTIONAL_ITEM_STACK.listOf(), stacks);
     }
 
     @Override
-    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
-        ValueInput input = new ValueInput(tag, registries);
-        storedFluid = input.read(TAG_FLUID, FluidStack.CODEC)
+    public void load(CompoundTag tag) {
+        super.load(tag);
+        ValueInput input = new ValueInput(tag);
+        storedFluid = input.read(TAG_FLUID, MFSCodecs.FLUID_STACK)
                 .filter(f -> !f.isEmpty())
                 .map(f -> f.copyWithAmount(1))
                 .orElseGet(() -> fluidByName(tag.getCompound(TAG_FLUID)));
         amount = input.getLongOr(TAG_AMOUNT, 0L);
-        input.read(TAG_TRANSFER, ItemStack.OPTIONAL_CODEC.listOf()).ifPresent(list -> {
+        input.read(TAG_TRANSFER, MFSCodecs.OPTIONAL_ITEM_STACK.listOf()).ifPresent(list -> {
             for (int i = 0; i < Math.min(list.size(), 2); i++) {
                 transferContainer.setItem(i, list.get(i));
             }
@@ -265,16 +268,14 @@ public class TankBlockEntity extends BlockEntity implements MenuProvider {
     // ── Data component sync (item ↔ world) ─────────────────────────────────────
 
     @Override
-    protected void collectImplicitComponents(DataComponentMap.Builder components) {
-        super.collectImplicitComponents(components);
-        components.set(MFSRegistryHelper.getDataComponentType("tank_contents"),
+    public void collectImplicitComponents(DataComponentMap.Builder components) {
+        components.set(net.bobofraggins.mobfarmingsupplies.register.Registration.TANK_CONTENTS.get(),
                 new TankContents(storedFluid, amount));
     }
 
     @Override
-    protected void applyImplicitComponents(BlockEntity.DataComponentInput input) {
-        super.applyImplicitComponents(input);
-        TankContents contents = input.get(MFSRegistryHelper.<TankContents>getDataComponentType("tank_contents"));
+    public void applyImplicitComponents(DataComponentInput input) {
+        TankContents contents = input.get(net.bobofraggins.mobfarmingsupplies.register.Registration.TANK_CONTENTS.get());
         if (contents != null) {
             storedFluid = contents.storedFluid().isEmpty()
                     ? FluidStack.empty()
@@ -293,8 +294,8 @@ public class TankBlockEntity extends BlockEntity implements MenuProvider {
     // ── Client sync ────────────────────────────────────────────────────────────
 
     @Override
-    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
-        return saveWithoutMetadata(registries);
+    public CompoundTag getUpdateTag() {
+        return saveWithoutMetadata();
     }
 
     @Override

@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.filterscribingterminal;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.MFSPackets;
 import dev.architectury.networking.NetworkManager;
 import net.bobofraggins.mobfarmingsupplies.itemfilter.ItemMatcher;
 import net.bobofraggins.mobfarmingsupplies.itemfilter.ItemMatchers;
@@ -42,7 +43,7 @@ public class FilterScribingTerminalScreen extends AbstractContainerScreen<Filter
         ScribingControlsPane c = new ScribingControlsPane(
                 menu::getCarried,
                 item -> ItemMatchers.forItem(item, Minecraft.getInstance().level.registryAccess()).stream().map(ItemMatcher::listLabel).toList(),
-                pane -> NetworkManager.sendToServer(new SetScribingStatePacket(
+                pane -> MFSPackets.sendToServer(new SetScribingStatePacket(
                         menu.containerId, pane.getGhostItem(), pane.isNot(), pane.getSelectedRow())));
         Dialog d = new Dialog(c, new PlayerInventoryPane(FilterScribingTerminalMenu.INV_START_X));
         dialog = d;
@@ -111,9 +112,9 @@ public class FilterScribingTerminalScreen extends AbstractContainerScreen<Filter
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
-        if (dialog.mouseScrolled(mouseX, mouseY, scrollX, scrollY)) return true;
-        return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollY) {
+        if (dialog.mouseScrolled(mouseX, mouseY, scrollY)) return true;
+        return super.mouseScrolled(mouseX, mouseY, scrollY);
     }
 
     @Override

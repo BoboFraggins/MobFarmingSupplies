@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.magnet;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.ItemComponents;
 import dev.architectury.event.events.common.TickEvent;
 import net.bobofraggins.mobfarmingsupplies.picnicbasket.PicnicBasketAccessoryAvailability;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
@@ -61,7 +62,7 @@ public final class MagnetPull {
 
     public static boolean isOn(ItemStack stack) {
         return stack.is(Registration.SUPERCONDUCTING_MAGNET.get())
-                && stack.has(Registration.MAGNET_ON.get());
+                && ItemComponents.has(stack, Registration.MAGNET_ON.get());
     }
 
     /**
@@ -107,8 +108,8 @@ public final class MagnetPull {
     /** {@code stack} switched the other way, with a chime and a message for {@code player}. */
     public static ItemStack toggle(ServerPlayer player, ItemStack stack) {
         boolean on = !isOn(stack);
-        if (on) stack.set(Registration.MAGNET_ON.get(), Unit.INSTANCE);
-        else stack.remove(Registration.MAGNET_ON.get());
+        if (on) ItemComponents.set(stack, Registration.MAGNET_ON.get(), Unit.INSTANCE);
+        else ItemComponents.remove(stack, Registration.MAGNET_ON.get());
         player.level().playSound(null, player.getX(), player.getY(), player.getZ(),
                 SoundEvents.NOTE_BLOCK_BELL.value(), SoundSource.PLAYERS, 0.4f, on ? 1.6f : 0.9f);
         player.displayClientMessage(Component.translatable(on

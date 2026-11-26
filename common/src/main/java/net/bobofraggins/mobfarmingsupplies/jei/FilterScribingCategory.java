@@ -112,9 +112,9 @@ public class FilterScribingCategory implements IRecipeCategory<FilterScribingExa
     private static FilterScribingExamples.Example currentExample(FilterScribingExamples.Recipe recipe, IRecipeSlotsView slots) {
         var outputs = slots.getSlotViews(RecipeIngredientRole.OUTPUT);
         if (outputs.isEmpty()) return null;
-        ItemStack displayed = outputs.getFirst().getDisplayedItemStack().orElse(ItemStack.EMPTY);
+        ItemStack displayed = outputs.get(0).getDisplayedItemStack().orElse(ItemStack.EMPTY);
         for (var example : recipe.examples()) {
-            if (ItemStack.isSameItemSameComponents(example.filter(), displayed)) return example;
+            if (ItemStack.isSameItemSameTags(example.filter(), displayed)) return example;
         }
         return null;
     }

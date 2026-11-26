@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.logisticsorter;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.MFSPackets;
 import dev.architectury.networking.NetworkManager;
 import net.bobofraggins.mobfarmingsupplies.shared.ui.SideGridPane;
 import net.bobofraggins.mobfarmingsupplies.network.SetSorterConfigPacket;
@@ -68,6 +69,6 @@ final class SorterConfigView implements SideGridPane.Model {
 
     private void send() {
         lastLocalChange = System.currentTimeMillis();
-        NetworkManager.sendToServer(new SetSorterConfigPacket(pos, sides, andMode));
+        MFSPackets.sendToServer(new SetSorterConfigPacket(pos, sides, andMode));
     }
 }

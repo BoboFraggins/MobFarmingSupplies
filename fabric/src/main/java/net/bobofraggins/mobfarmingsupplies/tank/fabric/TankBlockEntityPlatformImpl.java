@@ -61,7 +61,7 @@ public final class TankBlockEntityPlatformImpl {
                 // Check tank fluid compatibility
                 if (!be.storedFluid.isEmpty()
                         && (!be.storedFluid.isFluidEqual(incoming)
-                                || !be.storedFluid.isComponentEqual(incoming))) {
+                                || !be.storedFluid.isTagEqual(incoming))) {
                     continue;
                 }
 

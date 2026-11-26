@@ -25,7 +25,7 @@ final class FluidGaugePane implements IDialogPane {
     private static final int GAUGE_H = 16;
 
     private static final ResourceLocation GHOST =
-            ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "textures/item/blank_filter_ghost.png");
+            new ResourceLocation(MobFarmingSuppliesCommon.MODID, "textures/item/blank_filter_ghost.png");
 
     private static final int COLOR_BORDER = 0xFF222222;
     private static final int COLOR_BG     = 0xFF4A4A4A;

@@ -96,7 +96,7 @@ public class DnaSamplePackItem extends Item implements IDnaSampleItem {
             // world; the pack decides baby/adult, and a jockey would be an extra, uncounted mob.
             SpawnGroupData groupData = mob instanceof Zombie ? new Zombie.ZombieGroupData(forceBaby, false) : null;
             mob.finalizeSpawn(level, level.getCurrentDifficultyAt(mob.blockPosition()),
-                    MobSpawnType.SPAWNER, groupData);
+                    MobSpawnType.SPAWNER, groupData, null);
         }
         applyBabyState(entity, forceBaby);
     }

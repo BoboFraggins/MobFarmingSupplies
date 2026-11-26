@@ -1,5 +1,8 @@
 package net.bobofraggins.mobfarmingsupplies.bridge;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.ImplicitComponents;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.DataComponentInput;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.ItemComponents;
 import net.bobofraggins.mobfarmingsupplies.shared.TransferSchedule;
 import net.bobofraggins.mobfarmingsupplies.advancement.MFSTriggers;
 import net.bobofraggins.mobfarmingsupplies.shared.sides.SideLayout;
@@ -20,7 +23,7 @@ import net.bobofraggins.mobfarmingsupplies.register.MFSRegistryHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.component.DataComponentMap;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
@@ -50,7 +53,7 @@ import org.jetbrains.annotations.Nullable;
  * ({@link BridgeChannelData}); each bridge keeps its own side configuration. Like the hopper it holds
  * nothing, so nothing is lost when a bridge unloads or breaks.
  */
-public class EinsteinRosenBridgeBlockEntity extends BlockEntity implements SideOriented, MenuProvider, HopperNode, HopperConfigurable {
+public class EinsteinRosenBridgeBlockEntity extends BlockEntity implements ImplicitComponents, SideOriented, MenuProvider, HopperNode, HopperConfigurable {
 
     /** How it was placed, for its side grid (null = placed before orientations existed; see {@link SideLayout}). */
     @Nullable private FrontAndTop sideOrientation;
@@ -285,33 +288,31 @@ public class EinsteinRosenBridgeBlockEntity extends BlockEntity implements SideO
     // ── Item components (the channel travels on the item) ──────────────────────────
 
     @Override
-    protected void applyImplicitComponents(BlockEntity.DataComponentInput components) {
-        super.applyImplicitComponents(components);
+    public void applyImplicitComponents(DataComponentInput components) {
         Integer fromItem = components.get(net.bobofraggins.mobfarmingsupplies.register.Registration.BRIDGE_CHANNEL.get());
         if (fromItem != null && fromItem != 0) setChannel(fromItem);
     }
 
     @Override
-    protected void collectImplicitComponents(DataComponentMap.Builder components) {
-        super.collectImplicitComponents(components);
+    public void collectImplicitComponents(DataComponentMap.Builder components) {
         if (channel != 0) components.set(net.bobofraggins.mobfarmingsupplies.register.Registration.BRIDGE_CHANNEL.get(), channel);
     }
 
     // ── NBT ──────────────────────────────────────────────────────────────────────
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.saveAdditional(tag, registries);
-        ValueOutput output = new ValueOutput(tag, registries);
+    protected void saveAdditional(CompoundTag tag) {
+        super.saveAdditional(tag);
+        ValueOutput output = new ValueOutput(tag);
         SideLayout.save(output, sideOrientation);
         output.putInt("Channel", channel);
         output.putInt("Sides", packedSides());
     }
 
     @Override
-    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
-        ValueInput input = new ValueInput(tag, registries);
+    public void load(CompoundTag tag) {
+        super.load(tag);
+        ValueInput input = new ValueInput(tag);
         sideOrientation = SideLayout.load(input);
         int loaded = input.getIntOr("Channel", 0);
         if (loaded != 0) channel = loaded; // joins its network on the next tick
@@ -324,8 +325,8 @@ public class EinsteinRosenBridgeBlockEntity extends BlockEntity implements SideO
     // ── Client sync ───────────────────────────────────────────────────────────────
 
     @Override
-    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
-        CompoundTag tag = saveWithoutMetadata(registries);
+    public CompoundTag getUpdateTag() {
+        CompoundTag tag = saveWithoutMetadata();
         if (level != null && !level.isClientSide() && channel != 0) tag.putBoolean("AndMode", settings().andMode());
         return tag;
     }

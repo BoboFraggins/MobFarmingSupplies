@@ -1,12 +1,15 @@
 package net.bobofraggins.mobfarmingsupplies.advancement;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.google.gson.JsonObject;
 import java.util.Optional;
+import net.minecraft.advancements.critereon.AbstractCriterionTriggerInstance;
 import net.minecraft.advancements.critereon.ContextAwarePredicate;
-import net.minecraft.advancements.critereon.EntityPredicate;
+import net.minecraft.advancements.critereon.DeserializationContext;
+import net.minecraft.advancements.critereon.SerializationContext;
 import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.GsonHelper;
 
 /**
  * A criterion trigger for one of the mod's own events (a bridge delivering across dimensions, a
@@ -17,17 +20,41 @@ import net.minecraft.server.level.ServerPlayer;
  */
 public class EventTrigger extends SimpleCriterionTrigger<EventTrigger.Instance> {
 
-    public record Instance(Optional<ContextAwarePredicate> player, Optional<String> variant)
-            implements SimpleCriterionTrigger.SimpleInstance {
-        public static final Codec<Instance> CODEC = RecordCodecBuilder.create(i -> i.group(
-                EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf("player").forGetter(Instance::player),
-                Codec.STRING.optionalFieldOf("variant").forGetter(Instance::variant)
-        ).apply(i, Instance::new));
+    private final ResourceLocation id;
+
+    public EventTrigger(ResourceLocation id) {
+        this.id = id;
+    }
+
+    public static class Instance extends AbstractCriterionTriggerInstance {
+        private final Optional<String> variant;
+
+        public Instance(ResourceLocation id, ContextAwarePredicate player, Optional<String> variant) {
+            super(id, player);
+            this.variant = variant;
+        }
+
+        public Optional<String> variant() {
+            return variant;
+        }
+
+        @Override
+        public JsonObject serializeToJson(SerializationContext context) {
+            JsonObject json = super.serializeToJson(context);
+            variant.ifPresent(v -> json.addProperty("variant", v));
+            return json;
+        }
     }
 
     @Override
-    public Codec<Instance> codec() {
-        return Instance.CODEC;
+    public ResourceLocation getId() {
+        return id;
+    }
+
+    @Override
+    protected Instance createInstance(JsonObject json, ContextAwarePredicate player, DeserializationContext context) {
+        return new Instance(id, player, json.has("variant")
+                ? Optional.of(GsonHelper.getAsString(json, "variant")) : Optional.empty());
     }
 
     public void trigger(ServerPlayer player) {

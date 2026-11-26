@@ -25,8 +25,13 @@ import net.minecraft.world.level.levelgen.structure.structures.JigsawStructure;
  */
 public class DryLandJigsawStructure extends Structure {
 
-    public static final MapCodec<DryLandJigsawStructure> CODEC =
-            JigsawStructure.CODEC.xmap(DryLandJigsawStructure::new, structure -> structure.jigsaw);
+    /**
+     * The jigsaw structure's own fields, inline (a structure type's codec must be a map codec under
+     * the hood, or the "type" dispatch nests the fields under "value"; 1.20.1 only exposes it as one).
+     */
+    public static final com.mojang.serialization.Codec<DryLandJigsawStructure> CODEC =
+            ((com.mojang.serialization.MapCodec.MapCodecCodec<JigsawStructure>) JigsawStructure.CODEC).codec()
+                    .xmap(DryLandJigsawStructure::new, structure -> structure.jigsaw).codec();
 
     /** How far from the centre to look for water: enough to cover the outhouses and the picnic. */
     private static final int REACH = 8;

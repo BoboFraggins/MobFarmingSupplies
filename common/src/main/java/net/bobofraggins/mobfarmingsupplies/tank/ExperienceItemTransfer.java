@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.tank;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.ItemComponents;
 import dev.architectury.fluid.FluidStack;
 import net.bobofraggins.mobfarmingsupplies.experiencepylon.PylonExperience;
 import net.bobofraggins.mobfarmingsupplies.experiencesyringe.ExperienceSyringeItem;
@@ -26,9 +27,9 @@ public final class ExperienceItemTransfer {
     /** Whether the held tank or syringe holds experience (so it would empty rather than fill). */
     public static boolean holdsExperience(ItemStack stack) {
         if (stack.getItem() instanceof ExperienceSyringeItem) {
-            return stack.getOrDefault(Registration.EXPERIENCE_SYRINGE_STORED_XP.get(), 0) > 0;
+            return ItemComponents.getOrDefault(stack, Registration.EXPERIENCE_SYRINGE_STORED_XP.get(), 0) > 0;
         }
-        return !stack.getOrDefault(Registration.TANK_CONTENTS.get(), TankContents.EMPTY).isEmpty();
+        return !ItemComponents.getOrDefault(stack, Registration.TANK_CONTENTS.get(), TankContents.EMPTY).isEmpty();
     }
 
     /**
@@ -46,21 +47,21 @@ public final class ExperienceItemTransfer {
     /** A bucket-mode tank's contents after emptying into or filling from the block. */
     @Nullable
     private static ItemStack withTank(TankBlockEntity be, ItemStack stack, boolean canTake) {
-        TankContents c = stack.getOrDefault(Registration.TANK_CONTENTS.get(), TankContents.EMPTY);
+        TankContents c = ItemComponents.getOrDefault(stack, Registration.TANK_CONTENTS.get(), TankContents.EMPTY);
         if (!c.bucketMode()) return null;
         ItemStack result = stack.copyWithCount(1);
         if (!c.isEmpty()) {
             long stored = be.insert(c.storedFluid(), c.amount(), false); // the block refuses anything but experience
             if (stored <= 0) return null;
             long left = c.amount() - stored;
-            result.set(Registration.TANK_CONTENTS.get(), left > 0
+            ItemComponents.set(result, Registration.TANK_CONTENTS.get(), left > 0
                     ? new TankContents(c.storedFluid(), left, true)
                     : new TankContents(FluidStack.empty(), 0, true));
         } else {
             if (!canTake) return null;
             FluidStack taken = be.extract(TankBlockItem.capacityOf(stack), false);
             if (taken.isEmpty()) return null;
-            result.set(Registration.TANK_CONTENTS.get(),
+            ItemComponents.set(result, Registration.TANK_CONTENTS.get(),
                     new TankContents(taken.copyWithAmount(1), taken.getAmount(), true));
         }
         return result;
@@ -72,7 +73,7 @@ public final class ExperienceItemTransfer {
      */
     @Nullable
     private static ItemStack withSyringe(TankBlockEntity be, ItemStack stack, boolean canTake) {
-        int stored = stack.getOrDefault(Registration.EXPERIENCE_SYRINGE_STORED_XP.get(), 0);
+        int stored = ItemComponents.getOrDefault(stack, Registration.EXPERIENCE_SYRINGE_STORED_XP.get(), 0);
         ItemStack result = stack.copyWithCount(1);
         if (stored > 0) {
             FluidStack fluid = be.isLocked() ? be.getStoredFluid() : FluidStack.create(Registration.XP_JUICE_SOURCE.get(), 1);
@@ -91,7 +92,7 @@ public final class ExperienceItemTransfer {
     }
 
     private static void setSyringeXp(ItemStack syringe, int xp) {
-        if (xp > 0) syringe.set(Registration.EXPERIENCE_SYRINGE_STORED_XP.get(), xp);
-        else syringe.remove(Registration.EXPERIENCE_SYRINGE_STORED_XP.get());
+        if (xp > 0) ItemComponents.set(syringe, Registration.EXPERIENCE_SYRINGE_STORED_XP.get(), xp);
+        else ItemComponents.remove(syringe, Registration.EXPERIENCE_SYRINGE_STORED_XP.get());
     }
 }

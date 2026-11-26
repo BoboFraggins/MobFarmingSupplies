@@ -1,0 +1,42 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SJV",
+    "LAH",
+    "XRP"
+  ],
+  "key": {
+    "S": {
+      "item": "minecraft:iron_sword"
+    },
+    "J": {
+      "item": "minecraft:jack_o_lantern"
+    },
+    "V": {
+      "item": "minecraft:iron_shovel"
+    },
+    "L": {
+      "item": "minecraft:lightning_rod"
+    },
+    "A": {
+      "item": "minecraft:armor_stand"
+    },
+    "H": {
+      "item": "minecraft:iron_hoe"
+    },
+    "X": {
+      "item": "minecraft:iron_axe"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    },
+    "P": {
+      "item": "minecraft:iron_pickaxe"
+    }
+  },
+  "result": {
+    "item": "mobfarmingsupplies:mob_harvester",
+    "count": 1
+  },
+  "category": "misc"
+}

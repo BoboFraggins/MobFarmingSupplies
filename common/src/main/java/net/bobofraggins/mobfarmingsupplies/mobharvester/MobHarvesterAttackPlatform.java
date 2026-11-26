@@ -3,7 +3,7 @@ package net.bobofraggins.mobfarmingsupplies.mobharvester;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommon;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.component.DataComponents;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -14,7 +14,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import org.jetbrains.annotations.Nullable;
 
@@ -70,9 +69,11 @@ public final class MobHarvesterAttackPlatform {
      * every hit dealt bare-hand damage. Safe to repeat: modifiers are keyed by id.
      */
     public static void applySwordAttributes(ServerPlayer fakePlayer, ItemStack sword) {
-        sword.forEachModifier(EquipmentSlot.MAINHAND, (attribute, modifier) -> {
+        sword.getAttributeModifiers(EquipmentSlot.MAINHAND).forEach((attribute, modifier) -> {
             AttributeInstance instance = fakePlayer.getAttribute(attribute);
-            if (instance != null) instance.addOrUpdateTransientModifier(modifier);
+            if (instance == null) return;
+            instance.removeModifier(modifier.getId());
+            instance.addTransientModifier(modifier);
         });
     }
 
@@ -87,7 +88,7 @@ public final class MobHarvesterAttackPlatform {
         DamageSource source = new DamageSource(level.registryAccess()
                 .lookupOrThrow(Registries.DAMAGE_TYPE).getOrThrow(DamageTypes.MOB_ATTACK_NO_AGGRO));
         for (LivingEntity target : targets) {
-            float damage = EnchantmentHelper.modifyDamage(level, sword, target, source, (float) base);
+            float damage = (float) base + EnchantmentHelper.getDamageBonus(sword, target.getMobType());
             target.hurt(source, damage);
         }
     }
@@ -95,13 +96,13 @@ public final class MobHarvesterAttackPlatform {
     /** A player's attack damage holding {@code sword}: base 1.0 plus the sword's main-hand modifiers. */
     private static double attackDamage(ItemStack sword) {
         double[] added = new double[3]; // add value, multiply base, multiply total
-        sword.getOrDefault(DataComponents.ATTRIBUTE_MODIFIERS, ItemAttributeModifiers.EMPTY)
-                .forEach(EquipmentSlot.MAINHAND, (attribute, modifier) -> {
-                    if (!attribute.is(Attributes.ATTACK_DAMAGE)) return;
-                    switch (modifier.operation()) {
-                        case ADD_VALUE -> added[0] += modifier.amount();
-                        case ADD_MULTIPLIED_BASE -> added[1] += modifier.amount();
-                        case ADD_MULTIPLIED_TOTAL -> added[2] = (1 + added[2]) * (1 + modifier.amount()) - 1;
+        sword.getAttributeModifiers(EquipmentSlot.MAINHAND)
+                .forEach((attribute, modifier) -> {
+                    if (attribute != Attributes.ATTACK_DAMAGE) return;
+                    switch (modifier.getOperation()) {
+                        case ADDITION -> added[0] += modifier.getAmount();
+                        case MULTIPLY_BASE -> added[1] += modifier.getAmount();
+                        case MULTIPLY_TOTAL -> added[2] = (1 + added[2]) * (1 + modifier.getAmount()) - 1;
                     }
                 });
         double base = 1.0 + added[0];

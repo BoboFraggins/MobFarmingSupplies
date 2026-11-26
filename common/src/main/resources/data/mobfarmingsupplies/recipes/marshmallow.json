@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SSS",
+    "SBS",
+    "SSS"
+  ],
+  "key": {
+    "S": {
+      "item": "minecraft:sugar"
+    },
+    "B": {
+      "item": "minecraft:experience_bottle"
+    }
+  },
+  "result": {
+    "item": "mobfarmingsupplies:marshmallow",
+    "count": 8
+  },
+  "category": "misc"
+}

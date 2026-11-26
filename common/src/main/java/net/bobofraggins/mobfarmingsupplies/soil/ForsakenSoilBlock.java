@@ -1,6 +1,5 @@
 package net.bobofraggins.mobfarmingsupplies.soil;
 
-import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -27,7 +26,6 @@ import net.minecraft.world.phys.AABB;
  */
 public class ForsakenSoilBlock extends Block {
 
-    public static final MapCodec<ForsakenSoilBlock> CODEC = simpleCodec(ForsakenSoilBlock::new);
 
     /** Hostile mobs within {@link #RANGE} blocks that stop it spawning more. */
     public static final int MOB_CAP = 16;
@@ -40,13 +38,9 @@ public class ForsakenSoilBlock extends Block {
         super(properties);
     }
 
-    @Override
-    protected MapCodec<ForsakenSoilBlock> codec() {
-        return CODEC;
-    }
 
     @Override
-    protected void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
+    public void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
         super.onPlace(state, level, pos, oldState, movedByPiston);
         if (!level.isClientSide() && !oldState.is(this)) schedule(level, pos, level.getRandom());
     }
@@ -56,7 +50,7 @@ public class ForsakenSoilBlock extends Block {
     }
 
     @Override
-    protected void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+    public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
         schedule(level, pos, random);
         BlockPos spawnPos = pos.above();
         if (level.getDifficulty() == Difficulty.PEACEFUL || !canBeDarkEnough(level, spawnPos)) return;
@@ -69,12 +63,12 @@ public class ForsakenSoilBlock extends Block {
         if (data == null) return;
         EntityType<?> type = data.type;
         // The mob's own natural spawn rules: darkness for monsters, swamps or slime chunks for slimes.
-        if (!SpawnPlacements.isSpawnPositionOk(type, level, spawnPos)
+        if (!net.minecraft.world.level.NaturalSpawner.isSpawnPositionOk(SpawnPlacements.getPlacementType(type), level, spawnPos, type)
                 || !SpawnPlacements.checkSpawnRules(type, level, MobSpawnType.NATURAL, spawnPos, random)) {
             return;
         }
         // Positions it on the block and rolls its gear and variant, as a spawner does.
-        var entity = type.create(level, null, spawnPos, MobSpawnType.SPAWNER, false, false);
+        var entity = type.create(level, (net.minecraft.nbt.CompoundTag) null, null, spawnPos, MobSpawnType.SPAWNER, false, false);
         if (entity == null) return;
         entity.setYRot(random.nextFloat() * 360f);
         if (!level.noCollision(entity) || level.containsAnyLiquid(entity.getBoundingBox())) {

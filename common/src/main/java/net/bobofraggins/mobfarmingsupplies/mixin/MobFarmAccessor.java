@@ -25,5 +25,5 @@ public interface MobFarmAccessor {
     void invokePopulateDefaultEquipmentSlots(RandomSource random, DifficultyInstance difficulty);
 
     @Invoker("populateDefaultEquipmentEnchantments")
-    void invokePopulateDefaultEquipmentEnchantments(ServerLevelAccessor level, RandomSource random, DifficultyInstance difficulty);
+    void invokePopulateDefaultEquipmentEnchantments(RandomSource random, DifficultyInstance difficulty);
 }

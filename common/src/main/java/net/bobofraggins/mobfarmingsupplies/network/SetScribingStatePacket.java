@@ -1,12 +1,13 @@
 package net.bobofraggins.mobfarmingsupplies.network;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.MFSStreamCodecs;
 import dev.architectury.networking.NetworkManager;
 import net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommon;
 import net.bobofraggins.mobfarmingsupplies.filterscribingterminal.FilterScribingTerminalMenu;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.network.FriendlyByteBuf;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.ByteBufCodecs;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.StreamCodec;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
@@ -23,12 +24,12 @@ public record SetScribingStatePacket(int containerId, ItemStack matcher, boolean
         implements CustomPacketPayload {
 
     public static final Type<SetScribingStatePacket> TYPE =
-            new Type<>(ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "set_scribing_state"));
+            new Type<>(new ResourceLocation(MobFarmingSuppliesCommon.MODID, "set_scribing_state"));
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, SetScribingStatePacket> STREAM_CODEC =
+    public static final StreamCodec<FriendlyByteBuf, SetScribingStatePacket> STREAM_CODEC =
             StreamCodec.composite(
                     ByteBufCodecs.VAR_INT,           SetScribingStatePacket::containerId,
-                    ItemStack.OPTIONAL_STREAM_CODEC, SetScribingStatePacket::matcher,
+                    MFSStreamCodecs.OPTIONAL_ITEM_STACK, SetScribingStatePacket::matcher,
                     ByteBufCodecs.BOOL,              SetScribingStatePacket::negate,
                     ByteBufCodecs.VAR_INT,           SetScribingStatePacket::selected,
                     SetScribingStatePacket::new);

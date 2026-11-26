@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.mixin;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.ItemComponents;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.sugar.Local;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
@@ -21,6 +22,6 @@ public abstract class BlockItemSilkSpawnerMixin {
             at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/world/level/block/entity/BlockEntity;onlyOpCanSetNbt()Z"))
     private static boolean mobfarmingsupplies$silkTouchedSpawner(boolean onlyOps, @Local(argsOnly = true) ItemStack stack) {
-        return onlyOps && !stack.has(Registration.SILK_TOUCHED_SPAWNER.get());
+        return onlyOps && !ItemComponents.has(stack, Registration.SILK_TOUCHED_SPAWNER.get());
     }
 }

@@ -1,5 +1,7 @@
 package net.bobofraggins.mobfarmingsupplies.mobharvester;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.ItemComponents;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.MFSCodecs;
 import net.bobofraggins.mobfarmingsupplies.register.MFSRegistryHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
@@ -67,7 +69,6 @@ public class MobHarvesterBlockEntity extends BlockEntity implements MenuProvider
     // ── State ─────────────────────────────────────────────────────────────────────
 
     private static net.minecraft.world.item.Item harvesterSwordItem = null;
-    private static net.minecraft.core.component.DataComponentType<Integer> beheadingLevelType = null;
 
     private ItemStack cachedSword = null;
     private boolean swordDirty = true;
@@ -117,21 +118,19 @@ public class MobHarvesterBlockEntity extends BlockEntity implements MenuProvider
 
         if (swordDirty) {
             if (harvesterSwordItem == null) harvesterSwordItem = MFSRegistryHelper.getItem("harvester_sword");
-            if (beheadingLevelType == null) beheadingLevelType = MFSRegistryHelper.getDataComponentType("beheading_level");
             ItemStack sword = new ItemStack(harvesterSwordItem);
             int sharpness = getUpgradeCount(HarvesterUpgradeItem.UpgradeType.SHARPNESS);
             int looting   = getUpgradeCount(HarvesterUpgradeItem.UpgradeType.LOOTING);
             int beheading = getUpgradeCount(HarvesterUpgradeItem.UpgradeType.BEHEADING);
             int smite     = getUpgradeCount(HarvesterUpgradeItem.UpgradeType.SMITE);
-            var enchReg = serverLevel.registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
             if (sharpness > 0)
-                sword.enchant(enchReg.getOrThrow(Enchantments.SHARPNESS), sharpness * 10);
+                sword.enchant(Enchantments.SHARPNESS, sharpness * 10);
             if (looting > 0)
-                sword.enchant(enchReg.getOrThrow(Enchantments.LOOTING), looting);
+                sword.enchant(Enchantments.MOB_LOOTING, looting);
             if (smite > 0) // extra damage against undead only, as the enchantment does
-                sword.enchant(enchReg.getOrThrow(Enchantments.SMITE), smite);
+                sword.enchant(Enchantments.SMITE, smite);
             if (beheading > 0)
-                sword.set(beheadingLevelType, beheading);
+                ItemComponents.set(sword, net.bobofraggins.mobfarmingsupplies.register.Registration.BEHEADING_LEVEL.get(), beheading);
             cachedSword = sword;
             swordDirty = false;
         }
@@ -183,20 +182,20 @@ public class MobHarvesterBlockEntity extends BlockEntity implements MenuProvider
     // ── NBT ───────────────────────────────────────────────────────────────────────
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.saveAdditional(tag, registries);
-        ValueOutput output = new ValueOutput(tag, registries);
+    protected void saveAdditional(CompoundTag tag) {
+        super.saveAdditional(tag);
+        ValueOutput output = new ValueOutput(tag);
         java.util.List<ItemStack> stacks = new java.util.ArrayList<>(UPGRADE_SLOTS);
         for (int i = 0; i < UPGRADE_SLOTS; i++) stacks.add(upgrades.getItem(i));
-        output.store("Upgrades", ItemStack.OPTIONAL_CODEC.listOf(), stacks);
+        output.store("Upgrades", MFSCodecs.OPTIONAL_ITEM_STACK.listOf(), stacks);
         output.putInt("AttackTick", attackTickCounter);
     }
 
     @Override
-    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
-        ValueInput input = new ValueInput(tag, registries);
-        input.read("Upgrades", ItemStack.OPTIONAL_CODEC.listOf()).ifPresent(loaded -> {
+    public void load(CompoundTag tag) {
+        super.load(tag);
+        ValueInput input = new ValueInput(tag);
+        input.read("Upgrades", MFSCodecs.OPTIONAL_ITEM_STACK.listOf()).ifPresent(loaded -> {
             for (int i = 0; i < Math.min(loaded.size(), UPGRADE_SLOTS); i++) {
                 upgrades.setItem(i, loaded.get(i));
             }
@@ -207,8 +206,8 @@ public class MobHarvesterBlockEntity extends BlockEntity implements MenuProvider
     // ── Client sync ───────────────────────────────────────────────────────────────
 
     @Override
-    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
-        return saveWithoutMetadata(registries);
+    public CompoundTag getUpdateTag() {
+        return saveWithoutMetadata();
     }
 
     @Override

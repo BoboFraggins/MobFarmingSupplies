@@ -1,7 +1,7 @@
 package net.bobofraggins.mobfarmingsupplies.disenchanter;
 
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.particle.FlyTowardsPositionParticle;
+import net.minecraft.client.particle.EnchantmentTableParticle;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
@@ -16,10 +16,10 @@ public class XpRuneProvider implements ParticleProvider<SimpleParticleType> {
 
     private static final float RED = 0x39 / 255f, GREEN = 1f, BLUE = 0x14 / 255f;
 
-    private final FlyTowardsPositionParticle.EnchantProvider vanilla;
+    private final EnchantmentTableParticle.Provider vanilla;
 
     public XpRuneProvider(SpriteSet sprites) {
-        this.vanilla = new FlyTowardsPositionParticle.EnchantProvider(sprites);
+        this.vanilla = new EnchantmentTableParticle.Provider(sprites);
     }
 
     @Nullable

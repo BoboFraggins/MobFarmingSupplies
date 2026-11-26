@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.omnihopper;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.ItemComponents;
 import java.util.function.Supplier;
 
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -7,7 +8,7 @@ import net.bobofraggins.mobfarmingsupplies.shared.render.SpecialModelRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.Direction;
-import net.minecraft.core.component.DataComponents;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.DataComponents;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
@@ -31,7 +32,7 @@ public class OmniHopperItemRenderer implements SpecialModelRenderer<BlockState> 
     @Override
     public BlockState extractArgument(ItemStack stack) {
         BlockState state = block.get().defaultBlockState();
-        var data = stack.get(DataComponents.BLOCK_ENTITY_DATA);
+        var data = ItemComponents.get(stack, DataComponents.BLOCK_ENTITY_DATA);
         if (data == null) return state;
         int sides = data.getUnsafe().getInt("Sides"); // read-only access
         for (Direction d : Direction.values()) {

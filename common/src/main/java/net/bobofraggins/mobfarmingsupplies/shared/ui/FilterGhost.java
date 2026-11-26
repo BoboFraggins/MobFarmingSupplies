@@ -12,9 +12,9 @@ import net.minecraft.world.Container;
 public final class FilterGhost {
 
     private static final ResourceLocation TEXTURE =
-            ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "textures/item/item_filter_ghost.png");
+            new ResourceLocation(MobFarmingSuppliesCommon.MODID, "textures/item/item_filter_ghost.png");
     private static final ResourceLocation BLANK_TEXTURE =
-            ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "textures/item/blank_filter_ghost.png");
+            new ResourceLocation(MobFarmingSuppliesCommon.MODID, "textures/item/blank_filter_ghost.png");
     /** The filters' textures are 32 px; they're drawn at a slot's 16. */
     private static final int TEXTURE_SIZE = 32;
 

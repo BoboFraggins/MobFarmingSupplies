@@ -1,5 +1,8 @@
 package net.bobofraggins.mobfarmingsupplies.loot;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.LootFunctions;
+import net.minecraft.util.GsonHelper;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.ItemComponents;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
@@ -19,16 +22,17 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
  */
 public class SetSyringeLevelsFunction extends LootItemConditionalFunction {
 
-    public static final MapCodec<SetSyringeLevelsFunction> CODEC = RecordCodecBuilder.mapCodec(i ->
-            commonFields(i).and(i.group(
-                    Codec.INT.fieldOf("min_levels").forGetter(f -> f.minLevels),
-                    Codec.INT.fieldOf("max_levels").forGetter(f -> f.maxLevels)
-            )).apply(i, SetSyringeLevelsFunction::new));
+    public static final LootItemConditionalFunction.Serializer<SetSyringeLevelsFunction> SERIALIZER =
+            LootFunctions.serializer((json, conditions) -> new SetSyringeLevelsFunction(conditions,
+                    GsonHelper.getAsInt(json, "min_levels"), GsonHelper.getAsInt(json, "max_levels")), (json, f) -> {
+                json.addProperty("min_levels", f.minLevels);
+                json.addProperty("max_levels", f.maxLevels);
+            });
 
     private final int minLevels;
     private final int maxLevels;
 
-    private SetSyringeLevelsFunction(List<LootItemCondition> predicates, int minLevels, int maxLevels) {
+    private SetSyringeLevelsFunction(LootItemCondition[] predicates, int minLevels, int maxLevels) {
         super(predicates);
         this.minLevels = minLevels;
         this.maxLevels = maxLevels;
@@ -37,7 +41,7 @@ public class SetSyringeLevelsFunction extends LootItemConditionalFunction {
     @Override
     protected ItemStack run(ItemStack stack, LootContext context) {
         int levels = minLevels + context.getRandom().nextInt(Math.max(1, maxLevels - minLevels + 1));
-        stack.set(Registration.EXPERIENCE_SYRINGE_STORED_XP.get(),
+        ItemComponents.set(stack, Registration.EXPERIENCE_SYRINGE_STORED_XP.get(),
                 Math.min(xpForLevels(levels), ExperienceSyringeItem.CAPACITY));
         return stack;
     }
@@ -50,7 +54,7 @@ public class SetSyringeLevelsFunction extends LootItemConditionalFunction {
     }
 
     @Override
-    public LootItemFunctionType<SetSyringeLevelsFunction> getType() {
+    public LootItemFunctionType getType() {
         return Registration.SET_SYRINGE_LEVELS.get();
     }
 }

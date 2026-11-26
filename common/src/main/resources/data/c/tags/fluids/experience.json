@@ -1,0 +1,9 @@
+{
+  "values": [
+    "mobfarmingsupplies:xp_juice",
+    {
+      "id": "#forge:experience",
+      "required": false
+    }
+  ]
+}

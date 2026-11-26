@@ -1,0 +1,37 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "PGP",
+    "PSP",
+    "PRP"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:plastics"
+    },
+    "G": [
+      {
+        "tag": "forge:glass/colorless"
+      },
+      {
+        "tag": "c:glass_blocks"
+      }
+    ],
+    "S": {
+      "tag": "c:plates/silicon"
+    },
+    "R": [
+      {
+        "tag": "forge:dusts/redstone"
+      },
+      {
+        "tag": "c:redstone_dusts"
+      }
+    ]
+  },
+  "result": {
+    "item": "mobfarmingsupplies:filter_scribing_terminal",
+    "count": 1
+  },
+  "category": "misc"
+}

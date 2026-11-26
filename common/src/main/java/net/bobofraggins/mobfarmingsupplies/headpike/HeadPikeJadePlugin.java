@@ -27,7 +27,7 @@ import snownee.jade.api.config.IPluginConfig;
 @WailaPlugin
 public class HeadPikeJadePlugin implements IWailaPlugin {
 
-    static final ResourceLocation PROVIDER = ResourceLocation.fromNamespaceAndPath("mobfarmingsupplies", "head_pike");
+    static final ResourceLocation PROVIDER = new ResourceLocation("mobfarmingsupplies", "head_pike");
 
     @Override
     public void registerClient(IWailaClientRegistration registration) {

@@ -29,21 +29,21 @@ import net.minecraft.resources.ResourceLocation;
 public class Dialog {
 
     private static final ResourceLocation TEX_TL =
-            ResourceLocation.fromNamespaceAndPath("mobfarmingsupplies", "textures/gui/dialog_corner_tl.png");
+            new ResourceLocation("mobfarmingsupplies", "textures/gui/dialog_corner_tl.png");
     private static final ResourceLocation TEX_TR =
-            ResourceLocation.fromNamespaceAndPath("mobfarmingsupplies", "textures/gui/dialog_corner_tr.png");
+            new ResourceLocation("mobfarmingsupplies", "textures/gui/dialog_corner_tr.png");
     private static final ResourceLocation TEX_BL =
-            ResourceLocation.fromNamespaceAndPath("mobfarmingsupplies", "textures/gui/dialog_corner_bl.png");
+            new ResourceLocation("mobfarmingsupplies", "textures/gui/dialog_corner_bl.png");
     private static final ResourceLocation TEX_BR =
-            ResourceLocation.fromNamespaceAndPath("mobfarmingsupplies", "textures/gui/dialog_corner_br.png");
+            new ResourceLocation("mobfarmingsupplies", "textures/gui/dialog_corner_br.png");
     private static final ResourceLocation TEX_TOP =
-            ResourceLocation.fromNamespaceAndPath("mobfarmingsupplies", "textures/gui/dialog_edge_top.png");
+            new ResourceLocation("mobfarmingsupplies", "textures/gui/dialog_edge_top.png");
     private static final ResourceLocation TEX_BOT =
-            ResourceLocation.fromNamespaceAndPath("mobfarmingsupplies", "textures/gui/dialog_edge_bottom.png");
+            new ResourceLocation("mobfarmingsupplies", "textures/gui/dialog_edge_bottom.png");
     private static final ResourceLocation TEX_LEFT =
-            ResourceLocation.fromNamespaceAndPath("mobfarmingsupplies", "textures/gui/dialog_edge_left.png");
+            new ResourceLocation("mobfarmingsupplies", "textures/gui/dialog_edge_left.png");
     private static final ResourceLocation TEX_RIGHT =
-            ResourceLocation.fromNamespaceAndPath("mobfarmingsupplies", "textures/gui/dialog_edge_right.png");
+            new ResourceLocation("mobfarmingsupplies", "textures/gui/dialog_edge_right.png");
 
     /** Height of the title bar area; panes are positioned below this. */
     public static final int TITLE_H = 17;
@@ -180,12 +180,12 @@ public class Dialog {
         return false;
     }
 
-    public boolean mouseScrolled(double mouseX, double mouseY, double dx, double dy) {
+    public boolean mouseScrolled(double mouseX, double mouseY, double dy) {
         for (int i = 0; i < panes.size(); i++) {
             int paneAbsY = getPaneAbsY(i);
             int paneH = panes.get(i).preferredHeight();
             if (mouseY >= paneAbsY && mouseY < paneAbsY + paneH) {
-                return panes.get(i).mouseScrolled(mouseX - x, mouseY - paneAbsY, dx, dy);
+                return panes.get(i).mouseScrolled(mouseX - x, mouseY - paneAbsY, dy);
             }
         }
         return false;

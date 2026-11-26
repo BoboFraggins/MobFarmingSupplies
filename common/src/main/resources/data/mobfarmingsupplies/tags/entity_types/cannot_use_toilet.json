@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:shulker",
+    "minecraft:wither",
+    "minecraft:ender_dragon"
+  ]
+}

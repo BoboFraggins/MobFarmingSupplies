@@ -54,7 +54,7 @@ public final class DnaCollectorEvents {
         player.getInventory().placeItemBackInInventory(sampleStack);
 
         // Consume one collector from the stack.
-        stack.consume(1, player);
+        if (!player.getAbilities().instabuild) stack.shrink(1);
 
         return EventResult.interruptTrue();
     }

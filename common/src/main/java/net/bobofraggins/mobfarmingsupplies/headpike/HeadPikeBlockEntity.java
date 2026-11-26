@@ -90,17 +90,56 @@ public class HeadPikeBlockEntity extends BaseContainerBlockEntity {
 
     @Override
     public boolean canPlaceItem(int slot, ItemStack stack) {
-        return stack.is(ItemTags.SKULLS);
+        return stack.is(net.bobofraggins.mobfarmingsupplies.register.MFSTags.SKULLS);
     }
 
-    @Override
     protected NonNullList<ItemStack> getItems() {
         return items;
     }
 
-    @Override
     protected void setItems(NonNullList<ItemStack> items) {
         this.items = items;
+    }
+
+    // 1.20.1's BaseContainerBlockEntity leaves the container methods to the subclass.
+
+    @Override
+    public boolean isEmpty() {
+        return items.stream().allMatch(ItemStack::isEmpty);
+    }
+
+    @Override
+    public ItemStack getItem(int slot) {
+        return items.get(slot);
+    }
+
+    @Override
+    public ItemStack removeItem(int slot, int amount) {
+        ItemStack removed = ContainerHelper.removeItem(items, slot, amount);
+        if (!removed.isEmpty()) setChanged();
+        return removed;
+    }
+
+    @Override
+    public ItemStack removeItemNoUpdate(int slot) {
+        return ContainerHelper.takeItem(items, slot);
+    }
+
+    @Override
+    public void setItem(int slot, ItemStack stack) {
+        items.set(slot, stack);
+        if (stack.getCount() > getMaxStackSize()) stack.setCount(getMaxStackSize());
+        setChanged();
+    }
+
+    @Override
+    public boolean stillValid(net.minecraft.world.entity.player.Player player) {
+        return net.minecraft.world.Container.stillValidBlockEntity(this, player);
+    }
+
+    @Override
+    public void clearContent() {
+        items.clear();
     }
 
     @Override
@@ -116,22 +155,22 @@ public class HeadPikeBlockEntity extends BaseContainerBlockEntity {
     // ── Saving and syncing ───────────────────────────────────────────────────
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.saveAdditional(tag, registries);
-        ContainerHelper.saveAllItems(tag, items, registries);
+    protected void saveAdditional(CompoundTag tag) {
+        super.saveAdditional(tag);
+        ContainerHelper.saveAllItems(tag, items);
     }
 
     @Override
-    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
+    public void load(CompoundTag tag) {
+        super.load(tag);
         items = NonNullList.withSize(SLOTS, ItemStack.EMPTY);
-        ContainerHelper.loadAllItems(tag, items, registries);
+        ContainerHelper.loadAllItems(tag, items);
         if (level instanceof ServerLevel serverLevel) HeadPikes.update(serverLevel, worldPosition, warded());
     }
 
     @Override
-    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
-        return saveWithoutMetadata(registries);
+    public CompoundTag getUpdateTag() {
+        return saveWithoutMetadata();
     }
 
     @Override

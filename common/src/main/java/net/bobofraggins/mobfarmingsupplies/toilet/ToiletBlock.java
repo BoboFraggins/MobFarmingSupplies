@@ -1,6 +1,7 @@
 package net.bobofraggins.mobfarmingsupplies.toilet;
 
-import com.mojang.serialization.MapCodec;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.BlockInteractions;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.ItemInteractionResult;
 import net.bobofraggins.mobfarmingsupplies.register.MFSTags;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.bobofraggins.mobfarmingsupplies.tank.TankBlockPlatform;
@@ -12,7 +13,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
+
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -60,7 +61,6 @@ import org.jetbrains.annotations.Nullable;
  */
 public class ToiletBlock extends Block implements EntityBlock {
 
-    public static final MapCodec<ToiletBlock> CODEC = simpleCodec(ToiletBlock::new);
 
     public static final EnumProperty<Direction> FACING = BlockStateProperties.HORIZONTAL_FACING;
     /** Lid up — someone is sitting on the toilet. */
@@ -90,10 +90,6 @@ public class ToiletBlock extends Block implements EntityBlock {
                 .setValue(OPEN, false));
     }
 
-    @Override
-    public MapCodec<ToiletBlock> codec() {
-        return CODEC;
-    }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
@@ -109,18 +105,18 @@ public class ToiletBlock extends Block implements EntityBlock {
     }
 
     @Override
-    protected BlockState rotate(BlockState state, Rotation rotation) {
+    public BlockState rotate(BlockState state, Rotation rotation) {
         // Keeps the bowl facing the right way when a structure is placed rotated.
         return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
     }
 
     @Override
-    protected BlockState mirror(BlockState state, Mirror mirror) {
+    public BlockState mirror(BlockState state, Mirror mirror) {
         return state.rotate(mirror.getRotation(state.getValue(FACING)));
     }
 
     @Override
-    protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext ctx) {
+    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext ctx) {
         return switch (state.getValue(FACING)) {
             case EAST -> SHAPE_EAST;
             case SOUTH -> SHAPE_SOUTH;
@@ -130,9 +126,15 @@ public class ToiletBlock extends Block implements EntityBlock {
     }
 
     // ── Interaction ──────────────────────────────────────────────────────────────
-
     @Override
-    protected ItemInteractionResult useItemOn(
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand,
+                                 BlockHitResult hit) {
+        return BlockInteractions.use(state, level, pos, player, hand, hit, this::useItemOn,
+                this::useWithoutItem);
+    }
+
+
+        public ItemInteractionResult useItemOn(
             ItemStack stack, BlockState state, Level level, BlockPos pos,
             Player player, InteractionHand hand, BlockHitResult hit) {
         if (level.isClientSide()) return ItemInteractionResult.SUCCESS;
@@ -142,8 +144,7 @@ public class ToiletBlock extends Block implements EntityBlock {
         return filled ? ItemInteractionResult.SUCCESS : ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
 
-    @Override
-    protected InteractionResult useWithoutItem(
+        public InteractionResult useWithoutItem(
             BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
         if (level.isClientSide()) return InteractionResult.SUCCESS;
         if (player.isPassenger()) return InteractionResult.PASS;
@@ -226,7 +227,7 @@ public class ToiletBlock extends Block implements EntityBlock {
     // Seats aren't saved, so after a reload (or anything else that loses the seat) the lid
     // would stay up for good - close it once nobody is sitting here.
     @Override
-    protected void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+    public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
         if (!state.getValue(OPEN)) return;
         if (ToiletSeatEntity.isOccupied(level, pos)) {
             level.scheduleTick(pos, this, RECHECK_TICKS);
@@ -236,7 +237,7 @@ public class ToiletBlock extends Block implements EntityBlock {
     }
 
     @Override
-    protected void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
+    public void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
         if (state.getValue(OPEN) && !level.isClientSide()) level.scheduleTick(pos, this, RECHECK_TICKS);
     }
 
@@ -258,7 +259,7 @@ public class ToiletBlock extends Block implements EntityBlock {
 
     /** Drawn from its block model (1.21.1's {@code BaseEntityBlock} defaults to invisible). */
     @Override
-    protected RenderShape getRenderShape(BlockState state) {
+    public RenderShape getRenderShape(BlockState state) {
         return RenderShape.MODEL;
     }
 }

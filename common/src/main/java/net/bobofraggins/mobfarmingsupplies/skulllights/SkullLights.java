@@ -1,12 +1,14 @@
 package net.bobofraggins.mobfarmingsupplies.skulllights;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.MFSCodecs;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.MFSStreamCodecs;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
 import java.util.List;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.FriendlyByteBuf;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.ByteBufCodecs;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.StreamCodec;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -21,13 +23,17 @@ public record SkullLights(List<ItemStack> skulls, DyeColor color) {
     public static final int PATTERN_SIZE = 3;
 
     public static final Codec<SkullLights> CODEC = RecordCodecBuilder.create(i -> i.group(
-            ItemStack.CODEC.listOf(1, PATTERN_SIZE).fieldOf("skulls").forGetter(SkullLights::skulls),
+            MFSCodecs.OPTIONAL_ITEM_STACK.listOf().flatXmap(
+                    list -> list.isEmpty() || list.size() > PATTERN_SIZE
+                            ? com.mojang.serialization.DataResult.<List<ItemStack>>error(() -> "1 to " + PATTERN_SIZE + " skulls")
+                            : com.mojang.serialization.DataResult.success(list),
+                    com.mojang.serialization.DataResult::success).fieldOf("skulls").forGetter(SkullLights::skulls),
             DyeColor.CODEC.fieldOf("color").forGetter(SkullLights::color)
     ).apply(i, SkullLights::new));
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, SkullLights> STREAM_CODEC = StreamCodec.composite(
-            ItemStack.STREAM_CODEC.apply(ByteBufCodecs.list(PATTERN_SIZE)), SkullLights::skulls,
-            DyeColor.STREAM_CODEC.<ByteBuf>cast(), SkullLights::color,
+    public static final StreamCodec<FriendlyByteBuf, SkullLights> STREAM_CODEC = StreamCodec.composite(
+            MFSStreamCodecs.ITEM_STACK.apply(ByteBufCodecs.list(PATTERN_SIZE)), SkullLights::skulls,
+            MFSStreamCodecs.DYE_COLOR, SkullLights::color,
             SkullLights::new);
 
     public SkullLights {
@@ -52,11 +58,19 @@ public record SkullLights(List<ItemStack> skulls, DyeColor color) {
     // ItemStack has no equals, so the record's own would compare the stacks by identity.
     @Override
     public boolean equals(Object o) {
-        return o instanceof SkullLights other && color == other.color && ItemStack.listMatches(skulls, other.skulls);
+        if (!(o instanceof SkullLights other) || color != other.color || skulls.size() != other.skulls.size()) return false;
+        for (int i = 0; i < skulls.size(); i++) {
+            if (!ItemStack.matches(skulls.get(i), other.skulls.get(i))) return false;
+        }
+        return true;
     }
 
     @Override
     public int hashCode() {
-        return 31 * ItemStack.hashStackList(skulls) + color.hashCode();
+        int hash = 0;
+        for (ItemStack stack : skulls) {
+            hash = 31 * hash + (stack.isEmpty() ? 0 : 31 * stack.getItem().hashCode() + java.util.Objects.hashCode(stack.getTag()));
+        }
+        return 31 * hash + color.hashCode();
     }
 }

@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.filterscribingterminal;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.MFSCodecs;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.bobofraggins.mobfarmingsupplies.register.MFSRegistryHelper;
@@ -46,17 +47,17 @@ public class FilterScribingTerminalBlockEntity extends BlockEntity {
     public void removeInputListener(Runnable listener) { inputListeners.remove(listener); }
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.saveAdditional(tag, registries);
-        ValueOutput output = new ValueOutput(tag, registries);
-        output.store(TAG_INPUT, ItemStack.OPTIONAL_CODEC, input.getItem(0));
+    protected void saveAdditional(CompoundTag tag) {
+        super.saveAdditional(tag);
+        ValueOutput output = new ValueOutput(tag);
+        output.store(TAG_INPUT, MFSCodecs.OPTIONAL_ITEM_STACK, input.getItem(0));
     }
 
     @Override
-    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
-        ValueInput in = new ValueInput(tag, registries);
-        input.setItem(0, in.read(TAG_INPUT, ItemStack.OPTIONAL_CODEC).orElse(ItemStack.EMPTY));
+    public void load(CompoundTag tag) {
+        super.load(tag);
+        ValueInput in = new ValueInput(tag);
+        input.setItem(0, in.read(TAG_INPUT, MFSCodecs.OPTIONAL_ITEM_STACK).orElse(ItemStack.EMPTY));
     }
 
     /** Called by the block when it is removed (see its {@code onRemove}). */

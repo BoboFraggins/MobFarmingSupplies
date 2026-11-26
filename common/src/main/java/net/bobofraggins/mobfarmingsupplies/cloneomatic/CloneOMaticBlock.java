@@ -1,6 +1,7 @@
 package net.bobofraggins.mobfarmingsupplies.cloneomatic;
 
-import com.mojang.serialization.MapCodec;
+import net.minecraft.world.InteractionHand;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.BlockInteractions;
 import dev.architectury.registry.menu.MenuRegistry;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.minecraft.core.BlockPos;
@@ -29,7 +30,7 @@ import org.jetbrains.annotations.Nullable;
  * Clone-O-Matic block.
  *
  * <p>Spawns mobs from its DNA slots when continuously powered by redstone.
- * Spawn attempts are gated by {@link net.bobofraggins.mobfarmingsupplies.neoforge.MFSServerConfig#CLONE_O_MATIC_SPAWN_INTERVAL}.
+ * Spawn attempts are gated by {@link net.bobofraggins.mobfarmingsupplies.forge.MFSServerConfig#CLONE_O_MATIC_SPAWN_INTERVAL}.
  * The block has a single block-state property, {@link #POWERED}, that mirrors the
  * incoming redstone signal; actual spawn logic runs only when {@code POWERED=true}.
  *
@@ -39,7 +40,6 @@ import org.jetbrains.annotations.Nullable;
  */
 public class CloneOMaticBlock extends BaseEntityBlock {
 
-    public static final MapCodec<CloneOMaticBlock> CODEC = simpleCodec(CloneOMaticBlock::new);
 
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
 
@@ -48,10 +48,6 @@ public class CloneOMaticBlock extends BaseEntityBlock {
         registerDefaultState(stateDefinition.any().setValue(POWERED, false));
     }
 
-    @Override
-    protected MapCodec<? extends BaseEntityBlock> codec() {
-        return CODEC;
-    }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
@@ -69,17 +65,17 @@ public class CloneOMaticBlock extends BaseEntityBlock {
     // ── Redstone ────────────────────────────────────────────────────────────────
 
     @Override
-    protected boolean isSignalSource(BlockState state) {
+    public boolean isSignalSource(BlockState state) {
         return true;
     }
 
     @Override
-    protected int getSignal(BlockState state, BlockGetter level, BlockPos pos, Direction dir) {
+    public int getSignal(BlockState state, BlockGetter level, BlockPos pos, Direction dir) {
         return state.getValue(POWERED) ? 15 : 0;
     }
 
     @Override
-    protected void neighborChanged(
+    public void neighborChanged(
             BlockState state, Level level, BlockPos pos,
             Block sourceBlock, BlockPos neighborPos, boolean isMoving) {
         if (level.isClientSide()) return;
@@ -111,9 +107,15 @@ public class CloneOMaticBlock extends BaseEntityBlock {
     }
 
     // ── GUI ─────────────────────────────────────────────────────────────────────
-
     @Override
-    protected InteractionResult useWithoutItem(
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand,
+                                 BlockHitResult hit) {
+        return BlockInteractions.use(state, level, pos, player, hand, hit, null,
+                this::useWithoutItem);
+    }
+
+
+        public InteractionResult useWithoutItem(
             BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
         if (!level.isClientSide()) {
             if (level.getBlockEntity(pos) instanceof CloneOMaticBlockEntity be
@@ -125,7 +127,7 @@ public class CloneOMaticBlock extends BaseEntityBlock {
     }
 
     @Override
-    protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
+    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
         if (!state.is(newState.getBlock()) && level.getBlockEntity(pos) instanceof CloneOMaticBlockEntity be) {
             be.preRemoveSideEffects(pos, state);
         }
@@ -134,7 +136,7 @@ public class CloneOMaticBlock extends BaseEntityBlock {
 
     /** Drawn from its block model (1.21.1's {@code BaseEntityBlock} defaults to invisible). */
     @Override
-    protected RenderShape getRenderShape(BlockState state) {
+    public RenderShape getRenderShape(BlockState state) {
         return RenderShape.MODEL;
     }
 }

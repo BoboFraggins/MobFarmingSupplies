@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.jei;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.ItemComponents;
 import dev.architectury.fluid.FluidStack;
 import java.util.List;
 import mezz.jei.api.helpers.IGuiHelper;
@@ -73,7 +74,7 @@ public final class XpJuiceGuide {
     static ItemStack tankOfXpJuice() {
         ItemStack stack = new ItemStack(Registration.TANK_ITEM.get());
         FluidStack fluid = FluidStack.create(Registration.XP_JUICE_SOURCE.get(), 1);
-        stack.set(Registration.TANK_CONTENTS.get(), new TankContents(fluid, TankTier.BASIC.capacity()));
+        ItemComponents.set(stack, Registration.TANK_CONTENTS.get(), new TankContents(fluid, TankTier.BASIC.capacity()));
         return stack;
     }
 }

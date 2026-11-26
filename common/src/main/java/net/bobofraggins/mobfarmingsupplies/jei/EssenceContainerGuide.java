@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.jei;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.ItemComponents;
 import dev.architectury.fluid.FluidStack;
 import java.util.Arrays;
 import java.util.List;
@@ -75,7 +76,7 @@ public final class EssenceContainerGuide {
     private static ItemStack tankOf(Essence essence) {
         ItemStack stack = new ItemStack(Registration.TANK_ITEM.get());
         FluidStack fluid = FluidStack.create(Registration.ESSENCE_SOURCES.get(essence).get(), 1);
-        stack.set(Registration.TANK_CONTENTS.get(), new TankContents(fluid, TankTier.BASIC.capacity()));
+        ItemComponents.set(stack, Registration.TANK_CONTENTS.get(), new TankContents(fluid, TankTier.BASIC.capacity()));
         return stack;
     }
 }

@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.omnihopper;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.MFSPackets;
 import dev.architectury.networking.NetworkManager;
 import net.bobofraggins.mobfarmingsupplies.shared.ui.SideGridPane;
 import net.bobofraggins.mobfarmingsupplies.network.SetOmniHopperConfigPacket;
@@ -68,6 +69,6 @@ public final class HopperConfigView implements SideGridPane.Model {
 
     private void send() {
         lastLocalChange = System.currentTimeMillis();
-        NetworkManager.sendToServer(new SetOmniHopperConfigPacket(pos, sides, andMode));
+        MFSPackets.sendToServer(new SetOmniHopperConfigPacket(pos, sides, andMode));
     }
 }

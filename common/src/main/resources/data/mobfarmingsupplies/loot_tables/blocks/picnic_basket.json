@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "mobfarmingsupplies:picnic_basket",
+          "functions": [
+            {
+              "function": "mobfarmingsupplies:copy_components",
+              "include": [
+                "minecraft:block_entity_data"
+              ],
+              "source": "block_entity"
+            }
+          ]
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ]
+    }
+  ]
+}

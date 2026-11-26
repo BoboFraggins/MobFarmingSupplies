@@ -1,0 +1,31 @@
+{
+  "replace": false,
+  "values": [
+    "mobfarmingsupplies:dna_sample",
+    "mobfarmingsupplies:dna_sample_common_passive",
+    "mobfarmingsupplies:dna_sample_common_hostile",
+    "mobfarmingsupplies:dna_sample_aquatic",
+    "mobfarmingsupplies:dna_sample_rare",
+    "mobfarmingsupplies:dna_sample_passive_rare",
+    "mobfarmingsupplies:dna_sample_nether",
+    "mobfarmingsupplies:dna_sample_baby",
+    "mobfarmingsupplies:dna_sample_wrong",
+    {
+      "id": "mobfarmingsupplies:dna_booster_pack_aquaculture",
+      "required": false
+    },
+    {
+      "id": "mobfarmingsupplies:dna_booster_pack_aether_passive",
+      "required": false
+    },
+    {
+      "id": "mobfarmingsupplies:dna_booster_pack_aether_hostile",
+      "required": false
+    },
+    {
+      "id": "mobfarmingsupplies:dna_booster_pack_evilcraft",
+      "required": false
+    },
+    "minecraft:dragon_head"
+  ]
+}

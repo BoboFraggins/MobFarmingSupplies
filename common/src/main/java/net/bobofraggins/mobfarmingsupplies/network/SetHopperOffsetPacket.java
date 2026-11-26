@@ -1,13 +1,14 @@
 package net.bobofraggins.mobfarmingsupplies.network;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.MFSStreamCodecs;
 import dev.architectury.networking.NetworkManager;
 import net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommon;
 import net.bobofraggins.mobfarmingsupplies.absorptionhopper.IAbsorptionHopperBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.ByteBufCodecs;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.StreamCodec;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -22,11 +23,11 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 public record SetHopperOffsetPacket(BlockPos pos, int axis, int delta) implements CustomPacketPayload {
 
     public static final Type<SetHopperOffsetPacket> TYPE =
-            new Type<>(ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "set_hopper_offset"));
+            new Type<>(new ResourceLocation(MobFarmingSuppliesCommon.MODID, "set_hopper_offset"));
 
     public static final StreamCodec<FriendlyByteBuf, SetHopperOffsetPacket> STREAM_CODEC =
             StreamCodec.composite(
-                    BlockPos.STREAM_CODEC, SetHopperOffsetPacket::pos,
+                    MFSStreamCodecs.BLOCK_POS, SetHopperOffsetPacket::pos,
                     ByteBufCodecs.INT,     SetHopperOffsetPacket::axis,
                     ByteBufCodecs.INT,     SetHopperOffsetPacket::delta,
                     SetHopperOffsetPacket::new);

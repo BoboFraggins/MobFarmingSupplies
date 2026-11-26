@@ -16,18 +16,18 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class PotionBrewingMixin {
 
     @Inject(method = "isIngredient", at = @At("HEAD"), cancellable = true)
-    private void mobfarmingsupplies$isIngredient(ItemStack ingredient, CallbackInfoReturnable<Boolean> cir) {
+    private static void mobfarmingsupplies$isIngredient(ItemStack ingredient, CallbackInfoReturnable<Boolean> cir) {
         if (MFSBrewing.isIngredient(ingredient)) cir.setReturnValue(true);
     }
 
     @Inject(method = "hasMix", at = @At("HEAD"), cancellable = true)
-    private void mobfarmingsupplies$hasMix(ItemStack input, ItemStack ingredient, CallbackInfoReturnable<Boolean> cir) {
+    private static void mobfarmingsupplies$hasMix(ItemStack input, ItemStack ingredient, CallbackInfoReturnable<Boolean> cir) {
         if (!MFSBrewing.mix(input, ingredient).isEmpty()) cir.setReturnValue(true);
     }
 
     /** Note vanilla's argument order: the ingredient first, then the bottle. */
     @Inject(method = "mix", at = @At("HEAD"), cancellable = true)
-    private void mobfarmingsupplies$mix(ItemStack ingredient, ItemStack input, CallbackInfoReturnable<ItemStack> cir) {
+    private static void mobfarmingsupplies$mix(ItemStack ingredient, ItemStack input, CallbackInfoReturnable<ItemStack> cir) {
         ItemStack output = MFSBrewing.mix(input, ingredient);
         if (!output.isEmpty()) cir.setReturnValue(output);
     }

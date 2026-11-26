@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.bridge;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.ItemComponents;
 import java.util.List;
 import java.util.function.Consumer;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
@@ -28,13 +29,13 @@ public class EinsteinRosenBridgeBlockItem extends OrientedBlockItem {
 
     @Override
     public Component getName(ItemStack stack) {
-        return nameFor(stack.getOrDefault(Registration.BRIDGE_CHANNEL.get(), 0));
+        return nameFor(ItemComponents.getOrDefault(stack, Registration.BRIDGE_CHANNEL.get(), 0));
     }
 
     @SuppressWarnings("deprecation")
     @Override
     public void appendHoverText(
-            ItemStack stack, Item.TooltipContext ctx, List<Component> consumerLines, TooltipFlag flag) {
+            ItemStack stack, @org.jetbrains.annotations.Nullable net.minecraft.world.level.Level ctx, List<Component> consumerLines, TooltipFlag flag) {
         Consumer<Component> consumer = consumerLines::add;
         super.appendHoverText(stack, ctx, consumerLines, flag);
         consumer.accept(Component.translatable("item.mobfarmingsupplies.einstein_rosen_bridge.tooltip")

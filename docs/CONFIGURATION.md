@@ -2,8 +2,10 @@
 
 Mob Farming Supplies writes a server config file the first time it loads. On NeoForge it is
 `config/mobfarmingsupplies-server.toml`, and on Fabric it is
-`config/mobfarmingsupplies-server.json`. Edit it while
-the game or server is stopped, then restart.
+`config/mobfarmingsupplies-server.json`. On Minecraft 1.20.1 with Forge it is kept per world, in
+`<world>/serverconfig/mobfarmingsupplies-server.toml` (a copy in `defaultconfigs/` is used for new
+worlds); where this page says NeoForge, it means Forge there too. Edit it while the game or server
+is stopped, then restart.
 
 The keys are the same on both loaders, with a few differences noted below: the layout of the DNA
 pack mob lists, and the hoppers' energy and chemical rates, which only exist on
@@ -117,7 +119,7 @@ Logistic Sorter moves only items, and the Absorption Hopper pushes items and XP 
 | `hoppers.fluidPerTick` | `1000` | 1 or more | Fluid in mB moved per side each tick. |
 | `hoppers.essencePerDeath` | `100` | 1 to 16000 | Essence in mB an Essence Hopper extracts from each mob that dies in its zone. |
 | `hoppers.energyPerTick` | `10000` | 1 or more | Energy in FE moved per input side each tick by the Omnidirectional Hopper and Bridge. NeoForge only. |
-| `hoppers.chemicalPerTick` | `1000` | 1 or more | Mekanism chemicals in mB moved per input side each tick by the Omnidirectional Hopper and Bridge. NeoForge only, and only with Mekanism installed. |
+| `hoppers.chemicalPerTick` | `1000` | 1 or more | Mekanism chemicals in mB moved per input side each tick by the Omnidirectional Hopper and Bridge. NeoForge only, and only with Mekanism installed (not on 1.20.1). |
 
 A hopper that tries to move something and moves nothing, because the destination is full or the
 source is empty, waits a little longer before trying that material again: one transfer, then two,

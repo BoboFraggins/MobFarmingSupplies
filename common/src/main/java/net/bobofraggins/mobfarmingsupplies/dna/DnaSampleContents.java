@@ -1,11 +1,12 @@
 package net.bobofraggins.mobfarmingsupplies.dna;
 
+import net.minecraft.network.FriendlyByteBuf;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.ByteBufCodecs;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.StreamCodec;
 
 /**
  * Data component that attaches mob identity to a {@link DnaSampleItem}.
@@ -29,10 +30,10 @@ public record DnaSampleContents(CompoundTag entityNbt, String mobName) {
      * Stream codec for network synchronisation.
      * Both {@code ByteBufCodecs.COMPOUND_TAG} and {@code STRING_UTF8} operate on
      * plain {@link ByteBuf}, which satisfies the
-     * {@code StreamCodec<? super RegistryFriendlyByteBuf, T>} bound required by
+     * {@code StreamCodec<? super FriendlyByteBuf, T>} bound required by
      * {@link net.minecraft.core.component.DataComponentType.Builder#networkSynchronized}.
      */
-    public static final StreamCodec<ByteBuf, DnaSampleContents> STREAM_CODEC =
+    public static final StreamCodec<FriendlyByteBuf, DnaSampleContents> STREAM_CODEC =
             StreamCodec.composite(
                     ByteBufCodecs.COMPOUND_TAG, DnaSampleContents::entityNbt,
                     ByteBufCodecs.STRING_UTF8,   DnaSampleContents::mobName,

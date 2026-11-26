@@ -1,6 +1,7 @@
 package net.bobofraggins.mobfarmingsupplies.upgradestation;
 
-import com.mojang.serialization.MapCodec;
+import net.minecraft.world.InteractionHand;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.BlockInteractions;
 import dev.architectury.registry.menu.MenuRegistry;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.minecraft.core.BlockPos;
@@ -35,7 +36,6 @@ import org.jetbrains.annotations.Nullable;
  */
 public class UpgradeStationBlock extends BaseEntityBlock {
 
-    public static final MapCodec<UpgradeStationBlock> CODEC = simpleCodec(UpgradeStationBlock::new);
 
     /** The way the front (the side the lid lifts from) faces: towards whoever placed it. */
     public static final EnumProperty<Direction> FACING = BlockStateProperties.HORIZONTAL_FACING;
@@ -47,10 +47,6 @@ public class UpgradeStationBlock extends BaseEntityBlock {
         registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH));
     }
 
-    @Override
-    public MapCodec<UpgradeStationBlock> codec() {
-        return CODEC;
-    }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
@@ -63,17 +59,17 @@ public class UpgradeStationBlock extends BaseEntityBlock {
     }
 
     @Override
-    protected BlockState rotate(BlockState state, Rotation rotation) {
+    public BlockState rotate(BlockState state, Rotation rotation) {
         return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
     }
 
     @Override
-    protected BlockState mirror(BlockState state, Mirror mirror) {
+    public BlockState mirror(BlockState state, Mirror mirror) {
         return state.rotate(mirror.getRotation(state.getValue(FACING)));
     }
 
     @Override
-    protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         return SHAPE;
     }
 
@@ -98,7 +94,13 @@ public class UpgradeStationBlock extends BaseEntityBlock {
 
     /** Opens the window, and with it the lid. */
     @Override
-    protected InteractionResult useWithoutItem(
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand,
+                                 BlockHitResult hit) {
+        return BlockInteractions.use(state, level, pos, player, hand, hit, null,
+                this::useWithoutItem);
+    }
+
+        public InteractionResult useWithoutItem(
             BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
         if (!level.isClientSide() && level.getBlockEntity(pos) instanceof UpgradeStationBlockEntity be
                 && player instanceof ServerPlayer sp) {
@@ -109,7 +111,7 @@ public class UpgradeStationBlock extends BaseEntityBlock {
 
     /** The block doesn't drop its contents by itself on this version. */
     @Override
-    protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
+    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
         if (!state.is(newState.getBlock()) && level.getBlockEntity(pos) instanceof UpgradeStationBlockEntity be) {
             be.preRemoveSideEffects(pos, state);
         }

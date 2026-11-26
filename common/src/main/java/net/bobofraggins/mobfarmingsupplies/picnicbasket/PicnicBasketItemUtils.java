@@ -1,10 +1,11 @@
 package net.bobofraggins.mobfarmingsupplies.picnicbasket;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.ItemComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.component.DataComponents;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.DataComponents;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
@@ -29,17 +30,15 @@ public final class PicnicBasketItemUtils {
     public static PicnicBasketBlockEntity readBasketData(Player player, ItemStack stack) {
         PicnicBasketBlockEntity temp = new PicnicBasketBlockEntity(
                 BlockPos.ZERO, Registration.PICNIC_BASKET.get().defaultBlockState());
-        var data = stack.get(DataComponents.BLOCK_ENTITY_DATA);
+        var data = ItemComponents.get(stack, DataComponents.BLOCK_ENTITY_DATA);
         if (data == null) return temp;
-        HolderLookup.Provider registries = player.level().registryAccess();
-        temp.loadCustomOnly(data.copyTag(), registries);
+        temp.load(data.copyTag());
         return temp;
     }
 
     /** Encodes {@code temp}'s current state back into {@code stack}'s block-entity data. */
     public static void writeBasketData(Player player, ItemStack stack, PicnicBasketBlockEntity temp) {
-        HolderLookup.Provider registries = player.level().registryAccess();
-        CompoundTag output = temp.saveCustomOnly(registries);
+        CompoundTag output = temp.saveWithoutMetadata();
         BlockItem.setBlockEntityData(stack, temp.getType(), output);
     }
 

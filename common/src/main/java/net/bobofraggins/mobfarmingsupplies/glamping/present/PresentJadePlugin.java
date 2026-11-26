@@ -15,7 +15,7 @@ import snownee.jade.api.ITooltip;
 import snownee.jade.api.IWailaClientRegistration;
 import snownee.jade.api.IWailaCommonRegistration;
 import snownee.jade.api.IWailaPlugin;
-import snownee.jade.api.JadeIds;
+import snownee.jade.api.Identifiers;
 import snownee.jade.api.WailaPlugin;
 import snownee.jade.api.config.IPluginConfig;
 
@@ -27,7 +27,7 @@ import snownee.jade.api.config.IPluginConfig;
 @WailaPlugin
 public class PresentJadePlugin implements IWailaPlugin {
 
-    static final ResourceLocation PROVIDER = ResourceLocation.fromNamespaceAndPath("mobfarmingsupplies", "present");
+    static final ResourceLocation PROVIDER = new ResourceLocation("mobfarmingsupplies", "present");
 
     private static final String KEY_WRAPPED_BLOCK = "WrappedBlock";
 
@@ -76,7 +76,7 @@ public class PresentJadePlugin implements IWailaPlugin {
             Component wrappedName = item == Items.AIR ? block.getName() : item.getName(new ItemStack(item));
 
             Component baseName = Component.translatable(accessor.getBlock().getDescriptionId());
-            tooltip.remove(JadeIds.MC_BLOCK_DISPLAY);
+            tooltip.remove(Identifiers.MC_BLOCK_DISPLAY);
             tooltip.add(0, Component.empty().append(baseName).append(" (").append(wrappedName).append(")"));
         }
 

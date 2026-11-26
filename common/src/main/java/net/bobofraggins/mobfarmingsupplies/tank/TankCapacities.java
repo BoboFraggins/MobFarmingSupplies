@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.tank;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.MFSPackets;
 import dev.architectury.event.events.common.LifecycleEvent;
 import dev.architectury.event.events.common.PlayerEvent;
 import dev.architectury.networking.NetworkManager;
@@ -27,7 +28,7 @@ public final class TankCapacities {
         LifecycleEvent.SERVER_STARTED.register(server ->
                 set(MFSConfig.getTankBaseCapacity(), MFSConfig.getTankUpgradeMultiplier()));
         PlayerEvent.PLAYER_JOIN.register(player ->
-                NetworkManager.sendToPlayer(player, new TankCapacitiesPacket(baseBuckets(), multiplier)));
+                MFSPackets.sendToPlayer(player, new TankCapacitiesPacket(baseBuckets(), multiplier)));
     }
 
     /** Sets the basic tank's size in buckets and the multiplier per upgrade tier. */

@@ -93,7 +93,7 @@ public class PicnicBasketItem extends BlockItem {
     @Override
     public void appendHoverText(
             ItemStack stack,
-            TooltipContext context,
+            @org.jetbrains.annotations.Nullable net.minecraft.world.level.Level context,
             List<Component> tooltipAdderLines, TooltipFlag flag) {
         Consumer<Component> tooltipAdder = tooltipAdderLines::add;
         tooltipAdder.accept(Component.translatable("item.mobfarmingsupplies.picnic_basket.tooltip"));

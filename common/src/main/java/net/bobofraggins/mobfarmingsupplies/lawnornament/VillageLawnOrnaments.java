@@ -76,7 +76,7 @@ public final class VillageLawnOrnaments {
         Registry<StructureTemplatePool> pools = registries.registryOrThrow(Registries.TEMPLATE_POOL);
         for (String village : VILLAGES) {
             StructureTemplatePool pool = pools.get(
-                    ResourceLocation.withDefaultNamespace("village/" + village + "/houses"));
+                    new ResourceLocation("village/" + village + "/houses"));
             if (pool == null) continue; // removed by a datapack
             String location = MobFarmingSuppliesCommon.MODID + ":village/halloween_lawn";
             ObjectArrayList<StructurePoolElement> templates = ((StructureTemplatePoolAccessor) pool).getTemplates();

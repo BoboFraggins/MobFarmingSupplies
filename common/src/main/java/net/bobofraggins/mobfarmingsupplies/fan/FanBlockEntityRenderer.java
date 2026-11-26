@@ -46,7 +46,7 @@ public class FanBlockEntityRenderer
 
     /** Id of the spinning turbine (shaft + blades) overlay model. */
     public static final ResourceLocation TURBINE_MODEL_ID =
-            ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "block/fan_turbine");
+            new ResourceLocation(MobFarmingSuppliesCommon.MODID, "block/fan_turbine");
 
     /** Seconds per full revolution when the fan is powered. */
     private static final float SECS_PER_REV = 2f;
@@ -230,7 +230,7 @@ public class FanBlockEntityRenderer
         float len = Mth.sqrt(dx * dx + dy * dy + dz * dz);
         if (len < 1e-5f) return;
         dx /= len; dy /= len; dz /= len;
-        vc.addVertex(mat, x0, y0, z0).setColor(r, g, b, a).setNormal(dx, dy, dz);
-        vc.addVertex(mat, x1, y1, z1).setColor(r, g, b, a).setNormal(dx, dy, dz);
+        vc.vertex(mat, x0, y0, z0).color(r, g, b, a).normal(dx, dy, dz).endVertex();
+        vc.vertex(mat, x1, y1, z1).color(r, g, b, a).normal(dx, dy, dz).endVertex();
     }
 }

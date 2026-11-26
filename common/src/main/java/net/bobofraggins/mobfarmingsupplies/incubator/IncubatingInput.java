@@ -2,7 +2,7 @@ package net.bobofraggins.mobfarmingsupplies.incubator;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeInput;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.RecipeInput;
 
 /**
  * What an incubator row offers a recipe: the shared sample, the row's input, and where the

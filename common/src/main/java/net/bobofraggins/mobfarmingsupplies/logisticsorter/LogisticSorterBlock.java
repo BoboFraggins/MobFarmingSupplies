@@ -1,6 +1,7 @@
 package net.bobofraggins.mobfarmingsupplies.logisticsorter;
 
-import com.mojang.serialization.MapCodec;
+import net.minecraft.world.InteractionHand;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.BlockInteractions;
 import dev.architectury.registry.menu.MenuRegistry;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.bobofraggins.mobfarmingsupplies.shared.TransferSchedule;
@@ -40,7 +41,6 @@ import java.util.Map;
  */
 public class LogisticSorterBlock extends BaseEntityBlock {
 
-    public static final MapCodec<LogisticSorterBlock> CODEC = simpleCodec(LogisticSorterBlock::new);
 
     public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
     public static final Map<Direction, EnumProperty<SideMode>> SIDES = new EnumMap<>(Direction.class);
@@ -63,10 +63,6 @@ public class LogisticSorterBlock extends BaseEntityBlock {
         SIDES.values().forEach(builder::add);
     }
 
-    @Override
-    protected MapCodec<? extends BaseEntityBlock> codec() {
-        return CODEC;
-    }
 
     // ── Drops — keep configuration and filters on the item ─────────────────────
 
@@ -77,7 +73,7 @@ public class LogisticSorterBlock extends BaseEntityBlock {
         if (be instanceof LogisticSorterBlockEntity sorter) {
             for (ItemStack drop : drops) {
                 if (drop.getItem() instanceof BlockItem) {
-                    CompoundTag beOut = sorter.saveCustomOnly(params.getLevel().registryAccess());
+                    CompoundTag beOut = sorter.saveWithoutMetadata();
                     BlockItem.setBlockEntityData(drop, sorter.getType(), beOut);
                 }
             }
@@ -96,7 +92,7 @@ public class LogisticSorterBlock extends BaseEntityBlock {
     @Nullable
     /** A neighbour changed: try moving things again straight away (see {@link TransferSchedule}). */
     @Override
-    protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block block,
+    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block,
                                    BlockPos neighborPos, boolean movedByPiston) {
         super.neighborChanged(state, level, pos, block, neighborPos, movedByPiston);
         TransferSchedule.resetAt(level, pos);
@@ -111,9 +107,15 @@ public class LogisticSorterBlock extends BaseEntityBlock {
     }
 
     // ── Interaction ─────────────────────────────────────────────────────────────
-
     @Override
-    protected InteractionResult useWithoutItem(
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand,
+                                 BlockHitResult hit) {
+        return BlockInteractions.use(state, level, pos, player, hand, hit, null,
+                this::useWithoutItem);
+    }
+
+
+        public InteractionResult useWithoutItem(
             BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
         if (!level.isClientSide()
                 && level.getBlockEntity(pos) instanceof LogisticSorterBlockEntity be
@@ -125,7 +127,7 @@ public class LogisticSorterBlock extends BaseEntityBlock {
 
     /** Drawn from its block model (1.21.1's {@code BaseEntityBlock} defaults to invisible). */
     @Override
-    protected RenderShape getRenderShape(BlockState state) {
+    public RenderShape getRenderShape(BlockState state) {
         return RenderShape.MODEL;
     }
 }

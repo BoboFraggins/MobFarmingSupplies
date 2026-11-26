@@ -25,11 +25,11 @@ import net.minecraft.world.entity.player.Inventory;
 public class TankScreen extends AbstractContainerScreen<TankMenu> {
 
     private static final ResourceLocation GHOST_BUCKET  =
-            ResourceLocation.fromNamespaceAndPath("mobfarmingsupplies", "textures/item/bucket_ghost.png");
+            new ResourceLocation("mobfarmingsupplies", "textures/item/bucket_ghost.png");
     private static final ResourceLocation GHOST_BOTTLE  =
-            ResourceLocation.fromNamespaceAndPath("mobfarmingsupplies", "textures/item/glass_bottle_ghost.png");
+            new ResourceLocation("mobfarmingsupplies", "textures/item/glass_bottle_ghost.png");
     private static final ResourceLocation GHOST_SYRINGE =
-            ResourceLocation.fromNamespaceAndPath("mobfarmingsupplies", "textures/item/experience_syringe_ghost.png");
+            new ResourceLocation("mobfarmingsupplies", "textures/item/experience_syringe_ghost.png");
 
     private static final int SETTINGS_PANE_H = 71;
 

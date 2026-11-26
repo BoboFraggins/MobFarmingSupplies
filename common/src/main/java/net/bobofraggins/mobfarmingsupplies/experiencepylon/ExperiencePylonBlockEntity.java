@@ -21,7 +21,7 @@ import net.minecraft.world.level.material.Fluid;
 public class ExperiencePylonBlockEntity extends TankBlockEntity {
 
     public static final TagKey<Fluid> EXPERIENCE =
-            TagKey.create(Registries.FLUID, ResourceLocation.fromNamespaceAndPath("c", "experience"));
+            TagKey.create(Registries.FLUID, new ResourceLocation("c", "experience"));
 
     /** The most an int can count, in mB. */
     public static final long CAPACITY = Integer.MAX_VALUE;

@@ -47,7 +47,8 @@ public class GiantFigureModel extends Model {
     }
 
     @Override
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int light, int overlay, int color) {
-        root.render(poseStack, buffer, light, overlay, color);
+    public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int light, int overlay,
+                               float red, float green, float blue, float alpha) {
+        root.render(poseStack, buffer, light, overlay, red, green, blue, alpha);
     }
 }

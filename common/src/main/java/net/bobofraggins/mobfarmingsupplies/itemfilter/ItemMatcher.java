@@ -1,15 +1,17 @@
 package net.bobofraggins.mobfarmingsupplies.itemfilter;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.MFSCodecs;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.MFSStreamCodecs;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.architectury.platform.Platform;
-import net.minecraft.core.component.DataComponents;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.ByteBufCodecs;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.StringRepresentable;
@@ -37,9 +39,22 @@ import org.jetbrains.annotations.Nullable;
 public record ItemMatcher(Kind kind, ItemStack item, String key) {
 
     private static final TagKey<Item> MELEE_WEAPONS =
-            TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "tools/melee_weapon"));
+            TagKey.create(Registries.ITEM, new ResourceLocation("c", "tools/melee_weapon"));
     private static final TagKey<Item> RANGED_WEAPONS =
-            TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "tools/ranged_weapon"));
+            TagKey.create(Registries.ITEM, new ResourceLocation("c", "tools/ranged_weapon"));
+
+    /**
+     * 1.20.1 has no {@code c:tools/*_weapon} tags of its own (the mod ships them, see
+     * {@code data/c/tags/items/tools}), and modded weapons often join no tag at all, so weapons
+     * are also recognised by type.
+     */
+    private static boolean isWeaponType(ItemStack stack) {
+        var item = stack.getItem();
+        return item instanceof net.minecraft.world.item.SwordItem
+                || item instanceof net.minecraft.world.item.AxeItem
+                || item instanceof net.minecraft.world.item.TridentItem
+                || item instanceof net.minecraft.world.item.ProjectileWeaponItem;
+    }
 
     public enum Kind implements StringRepresentable {
         EXACT, ITEM, MOD, TAG, PROPERTY;
@@ -55,9 +70,9 @@ public record ItemMatcher(Kind kind, ItemStack item, String key) {
      * if unavailable, in which case registry-based checks don't match).
      */
     public enum Property {
-        WEAPON("weapon", (s, r) -> s.is(MELEE_WEAPONS) || s.is(RANGED_WEAPONS)),
+        WEAPON("weapon", (s, r) -> s.is(MELEE_WEAPONS) || s.is(RANGED_WEAPONS) || isWeaponType(s)),
         // Only offered when the item actually carries enchantments (incl. enchanted books).
-        ENCHANTED("enchanted", (s, r) -> s.isEnchanted() || s.has(DataComponents.STORED_ENCHANTMENTS)),
+        ENCHANTED("enchanted", (s, r) -> s.isEnchanted() || !net.minecraft.world.item.EnchantedBookItem.getEnchantments(s).isEmpty()),
         // Asks the enchantments rather than checking the ENCHANTABLE component: some mods (e.g.
         // Apothic Enchanting) give every item a default Enchantable component, which would make
         // everything — even Oak Planks — count as enchantable.
@@ -87,13 +102,13 @@ public record ItemMatcher(Kind kind, ItemStack item, String key) {
 
     public static final Codec<ItemMatcher> CODEC = RecordCodecBuilder.create(i -> i.group(
                     StringRepresentable.fromEnum(Kind::values).fieldOf("kind").forGetter(ItemMatcher::kind),
-                    ItemStack.OPTIONAL_CODEC.optionalFieldOf("item", ItemStack.EMPTY).forGetter(ItemMatcher::item),
+                    MFSCodecs.OPTIONAL_ITEM_STACK.optionalFieldOf("item", ItemStack.EMPTY).forGetter(ItemMatcher::item),
                     Codec.STRING.optionalFieldOf("key", "").forGetter(ItemMatcher::key))
             .apply(i, ItemMatcher::new));
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, ItemMatcher> STREAM_CODEC = StreamCodec.composite(
+    public static final StreamCodec<FriendlyByteBuf, ItemMatcher> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.idMapper(ord -> Kind.values()[ord], Kind::ordinal), ItemMatcher::kind,
-            ItemStack.OPTIONAL_STREAM_CODEC, ItemMatcher::item,
+            MFSStreamCodecs.OPTIONAL_ITEM_STACK, ItemMatcher::item,
             ByteBufCodecs.STRING_UTF8, ItemMatcher::key,
             ItemMatcher::new);
 
@@ -115,7 +130,7 @@ public record ItemMatcher(Kind kind, ItemStack item, String key) {
     public boolean test(ItemStack stack, @Nullable HolderLookup.Provider registries) {
         if (stack.isEmpty()) return false;
         return switch (kind) {
-            case EXACT -> ItemStack.isSameItemSameComponents(stack, item);
+            case EXACT -> ItemStack.isSameItemSameTags(stack, item);
             case ITEM -> stack.is(item.getItem());
             case MOD -> BuiltInRegistries.ITEM.getKey(stack.getItem()).getNamespace().equals(key);
             case TAG -> {
@@ -131,9 +146,7 @@ public record ItemMatcher(Kind kind, ItemStack item, String key) {
 
     /** True if at least one registered enchantment can be applied to {@code stack} (e.g. at an anvil). */
     private static boolean anyEnchantmentSupports(ItemStack stack, @Nullable HolderLookup.Provider registries) {
-        if (registries == null) return false;
-        return registries.lookupOrThrow(Registries.ENCHANTMENT).listElements()
-                .anyMatch(enchantment -> enchantment.value().isSupportedItem(stack));
+        return BuiltInRegistries.ENCHANTMENT.stream().anyMatch(enchantment -> enchantment.canEnchant(stack));
     }
 
     // ── Text ──────────────────────────────────────────────────────────────────────

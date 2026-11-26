@@ -19,6 +19,12 @@ loom {
             server()
             programArg '--nogui'
         }
+        // Loads the mod and its data, runs the game tests (none yet) and stops.
+        gameTestServer {
+            server()
+            property 'fabric-api.gametest'
+            runDir 'run/gametest'
+        }
     }
 }
 
@@ -27,10 +33,10 @@ dependencies {
     modApi "net.fabricmc.fabric-api:fabric-api:${fabric_api_version}"
     modApi "dev.architectury:architectury-fabric:${architectury_version}"
 
-    modCompileOnly "maven.modrinth:jade:15.10.6+fabric"
-    modCompileOnly "maven.modrinth:trinkets:3.10.0"
+    modCompileOnly "maven.modrinth:jade:11.13.3+fabric"
+    modCompileOnly "maven.modrinth:trinkets:3.7.2"
     // Trinkets' API types extend Cardinal Components ones.
-    modCompileOnly "org.ladysnake.cardinal-components-api:cardinal-components-base:6.1.2"
+    modCompileOnly "dev.onyxstudios.cardinal-components-api:cardinal-components-base:5.2.2"
 
     common(project(path: ':common', configuration: 'namedElements')) { transitive false }
     shadowCommon(project(path: ':common', configuration: 'transformProductionFabric')) { transitive false }
@@ -54,10 +60,14 @@ tasks.withType(ProcessResources).configureEach {
     }
 }
 
-// 1.21.1 is obfuscated: the shadow jar holds development (Mojang) names, and remapJar turns it into
+// 1.20.1 is obfuscated: the shadow jar holds development (Mojang) names, and remapJar turns it into
 // the release jar, mobfarmingsupplies-<version>-fabric.jar.
 shadowJar {
-    exclude 'META-INF/neoforge.mods.toml'
+    exclude 'META-INF/mods.toml'
+    // Game tests and their structure are development only.
+    exclude 'net/bobofraggins/mobfarmingsupplies/gametest/**'
+    exclude 'net/bobofraggins/mobfarmingsupplies/*/gametest/**'
+    exclude 'data/mobfarmingsupplies/structures/gametest/**'
     exclude 'architectury.common.json'
     configurations = [project.configurations.shadowCommon]
     archiveBaseName = mod_id

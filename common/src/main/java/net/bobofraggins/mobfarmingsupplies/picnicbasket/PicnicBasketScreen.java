@@ -89,9 +89,9 @@ public class PicnicBasketScreen extends AbstractContainerScreen<PicnicBasketMenu
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
-        if (dialog.mouseScrolled(mouseX, mouseY, scrollX, scrollY)) return true;
-        return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollY) {
+        if (dialog.mouseScrolled(mouseX, mouseY, scrollY)) return true;
+        return super.mouseScrolled(mouseX, mouseY, scrollY);
     }
 
     @Override

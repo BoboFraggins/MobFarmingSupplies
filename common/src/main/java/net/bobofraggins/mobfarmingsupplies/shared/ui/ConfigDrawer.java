@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.shared.ui;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.GuiSprites;
 import java.util.List;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -33,20 +34,20 @@ public class ConfigDrawer {
     private static final int COLOR_BODY = 0xFFC6C6C6;
 
     private static final ResourceLocation BUTTON_NORMAL =
-            ResourceLocation.fromNamespaceAndPath("mobfarmingsupplies", "widget/button_config");
+            new ResourceLocation("mobfarmingsupplies", "widget/button_config");
     private static final ResourceLocation BUTTON_HOVER =
-            ResourceLocation.fromNamespaceAndPath("mobfarmingsupplies", "widget/button_config_focused");
+            new ResourceLocation("mobfarmingsupplies", "widget/button_config_focused");
 
     private static final ResourceLocation TEX_TL =
-            ResourceLocation.fromNamespaceAndPath("mobfarmingsupplies", "textures/gui/dialog_corner_tl.png");
+            new ResourceLocation("mobfarmingsupplies", "textures/gui/dialog_corner_tl.png");
     private static final ResourceLocation TEX_BL =
-            ResourceLocation.fromNamespaceAndPath("mobfarmingsupplies", "textures/gui/dialog_corner_bl.png");
+            new ResourceLocation("mobfarmingsupplies", "textures/gui/dialog_corner_bl.png");
     private static final ResourceLocation TEX_TOP =
-            ResourceLocation.fromNamespaceAndPath("mobfarmingsupplies", "textures/gui/dialog_edge_top.png");
+            new ResourceLocation("mobfarmingsupplies", "textures/gui/dialog_edge_top.png");
     private static final ResourceLocation TEX_BOT =
-            ResourceLocation.fromNamespaceAndPath("mobfarmingsupplies", "textures/gui/dialog_edge_bottom.png");
+            new ResourceLocation("mobfarmingsupplies", "textures/gui/dialog_edge_bottom.png");
     private static final ResourceLocation TEX_LEFT =
-            ResourceLocation.fromNamespaceAndPath("mobfarmingsupplies", "textures/gui/dialog_edge_left.png");
+            new ResourceLocation("mobfarmingsupplies", "textures/gui/dialog_edge_left.png");
 
     private final List<IDialogPane> panes;
     private final int[] paneYOffsets;
@@ -160,7 +161,7 @@ public class ConfigDrawer {
 
         if (showTabButton) {
             boolean hovered = mouseX >= tabX && mouseX < tabX + TAB_W + 1 && mouseY >= tabY && mouseY < tabY + TAB_H;
-            g.blitSprite(hovered ? BUTTON_HOVER : BUTTON_NORMAL, tabX + 4, tabY + 3, 16, 16);
+            GuiSprites.blitSprite(g, hovered ? BUTTON_HOVER : BUTTON_NORMAL, tabX + 4, tabY + 3, 16, 16);
         }
     }
 

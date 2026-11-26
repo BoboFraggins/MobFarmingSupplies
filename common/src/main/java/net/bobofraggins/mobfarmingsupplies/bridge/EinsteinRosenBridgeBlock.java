@@ -1,6 +1,8 @@
 package net.bobofraggins.mobfarmingsupplies.bridge;
 
-import com.mojang.serialization.MapCodec;
+import net.minecraft.world.InteractionHand;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.BlockInteractions;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.ItemComponents;
 import dev.architectury.registry.menu.MenuRegistry;
 import java.util.List;
 import java.util.Map;
@@ -43,7 +45,6 @@ import org.jetbrains.annotations.Nullable;
  */
 public class EinsteinRosenBridgeBlock extends BaseEntityBlock {
 
-    public static final MapCodec<EinsteinRosenBridgeBlock> CODEC = simpleCodec(EinsteinRosenBridgeBlock::new);
 
     private static final Map<Direction, EnumProperty<HopperSide>> SIDES = OmniHopperBlock.SIDES;
 
@@ -59,10 +60,6 @@ public class EinsteinRosenBridgeBlock extends BaseEntityBlock {
         SIDES.values().forEach(builder::add);
     }
 
-    @Override
-    protected MapCodec<? extends BaseEntityBlock> codec() {
-        return CODEC;
-    }
 
     // ── Drops — keep the channel and side configuration on the item ───────────
 
@@ -73,9 +70,9 @@ public class EinsteinRosenBridgeBlock extends BaseEntityBlock {
         if (be instanceof EinsteinRosenBridgeBlockEntity bridge) {
             for (ItemStack drop : drops) {
                 if (drop.getItem() instanceof BlockItem) {
-                    CompoundTag beOut = bridge.saveCustomOnly(params.getLevel().registryAccess());
+                    CompoundTag beOut = bridge.saveWithoutMetadata();
                     BlockItem.setBlockEntityData(drop, bridge.getType(), beOut);
-                    if (bridge.getChannel() != 0) drop.set(Registration.BRIDGE_CHANNEL.get(), bridge.getChannel());
+                    if (bridge.getChannel() != 0) ItemComponents.set(drop, Registration.BRIDGE_CHANNEL.get(), bridge.getChannel());
                 }
             }
         }
@@ -85,10 +82,10 @@ public class EinsteinRosenBridgeBlock extends BaseEntityBlock {
     // ── Pick block (and Jade's name) — show the channel ─────────────────────────
 
     @Override
-    public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state) {
+    public ItemStack getCloneItemStack(net.minecraft.world.level.BlockGetter level, BlockPos pos, BlockState state) {
         ItemStack stack = super.getCloneItemStack(level, pos, state);
         if (level.getBlockEntity(pos) instanceof EinsteinRosenBridgeBlockEntity bridge && bridge.getChannel() != 0) {
-            stack.set(Registration.BRIDGE_CHANNEL.get(), bridge.getChannel());
+            ItemComponents.set(stack, Registration.BRIDGE_CHANNEL.get(), bridge.getChannel());
         }
         return stack;
     }
@@ -126,7 +123,7 @@ public class EinsteinRosenBridgeBlock extends BaseEntityBlock {
     @Nullable
     /** A neighbour changed: try moving things again straight away (see {@link TransferSchedule}). */
     @Override
-    protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block block,
+    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block,
                                    BlockPos neighborPos, boolean movedByPiston) {
         super.neighborChanged(state, level, pos, block, neighborPos, movedByPiston);
         TransferSchedule.resetAt(level, pos);
@@ -134,12 +131,12 @@ public class EinsteinRosenBridgeBlock extends BaseEntityBlock {
 
     /** Its OUTPUT sides give off the redstone its channel's INPUT sides receive. */
     @Override
-    protected boolean isSignalSource(BlockState state) {
+    public boolean isSignalSource(BlockState state) {
         return true;
     }
 
     @Override
-    protected int getSignal(BlockState state, BlockGetter level, BlockPos pos, Direction direction) {
+    public int getSignal(BlockState state, BlockGetter level, BlockPos pos, Direction direction) {
         // direction points from the bridge to the block asking, so the bridge's side is its opposite.
         return level.getBlockEntity(pos) instanceof EinsteinRosenBridgeBlockEntity bridge
                 ? bridge.redstoneOut(direction.getOpposite()) : 0;
@@ -153,9 +150,15 @@ public class EinsteinRosenBridgeBlock extends BaseEntityBlock {
     }
 
     // ── Interaction ─────────────────────────────────────────────────────────────
-
     @Override
-    protected InteractionResult useWithoutItem(
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand,
+                                 BlockHitResult hit) {
+        return BlockInteractions.use(state, level, pos, player, hand, hit, null,
+                this::useWithoutItem);
+    }
+
+
+        public InteractionResult useWithoutItem(
             BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
         if (!level.isClientSide()
                 && level.getBlockEntity(pos) instanceof EinsteinRosenBridgeBlockEntity be
@@ -167,7 +170,7 @@ public class EinsteinRosenBridgeBlock extends BaseEntityBlock {
 
     /** Drawn from its block model (1.21.1's {@code BaseEntityBlock} defaults to invisible). */
     @Override
-    protected RenderShape getRenderShape(BlockState state) {
+    public RenderShape getRenderShape(BlockState state) {
         return RenderShape.MODEL;
     }
 }

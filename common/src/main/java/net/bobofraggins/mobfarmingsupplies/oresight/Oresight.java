@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.oresight;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.MFSPackets;
 import dev.architectury.event.events.common.PlayerEvent;
 import dev.architectury.event.events.common.TickEvent;
 import dev.architectury.networking.NetworkManager;
@@ -32,8 +33,8 @@ public final class Oresight {
         PlayerEvent.PLAYER_JOIN.register(player -> send(player, target(player)));
     }
 
-    public static Holder<MobEffect> effect() {
-        return BuiltInRegistries.MOB_EFFECT.wrapAsHolder(Registration.ORESIGHT.get());
+    public static MobEffect effect() {
+        return Registration.ORESIGHT.get();
     }
 
     /** Points {@code player}'s Oresight at {@code block}, replacing whatever it showed. */
@@ -68,6 +69,6 @@ public final class Oresight {
     }
 
     private static void send(ServerPlayer player, @Nullable Block block) {
-        NetworkManager.sendToPlayer(player, new OresightPacket(Optional.ofNullable(block)));
+        MFSPackets.sendToPlayer(player, new OresightPacket(Optional.ofNullable(block)));
     }
 }

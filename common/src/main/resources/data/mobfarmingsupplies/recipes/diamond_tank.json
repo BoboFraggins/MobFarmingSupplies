@@ -1,0 +1,21 @@
+{
+  "type": "mobfarmingsupplies:tank_upgrade",
+  "pattern": [
+    "MMM",
+    "MTM",
+    "MMM"
+  ],
+  "key": {
+    "M": {
+      "item": "minecraft:diamond"
+    },
+    "T": {
+      "item": "mobfarmingsupplies:gold_tank"
+    }
+  },
+  "result": {
+    "item": "mobfarmingsupplies:diamond_tank",
+    "count": 1
+  },
+  "category": "misc"
+}

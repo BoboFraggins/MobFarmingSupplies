@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.shared.ui;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.GuiSprites;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.bobofraggins.mobfarmingsupplies.shared.sides.SideLayout;
 import net.bobofraggins.mobfarmingsupplies.shared.sides.SideOriented;
@@ -130,7 +131,7 @@ public class SideGridPane implements IDialogPane {
             g.fill(bx, by + BUTTON_SIZE, bx + BUTTON_SIZE + 1, by + BUTTON_SIZE + 1, COLOR_DARK);
             g.fill(bx + BUTTON_SIZE, by, bx + BUTTON_SIZE + 1, by + BUTTON_SIZE, COLOR_DARK);
             if (style.sprite() != null) {
-                g.blitSprite(style.sprite(), bx + 1, by + 1, BUTTON_SIZE - 2, BUTTON_SIZE - 2);
+                GuiSprites.blitSprite(g, style.sprite(), bx + 1, by + 1, BUTTON_SIZE - 2, BUTTON_SIZE - 2);
             } else {
                 g.fill(bx + 1, by + 1, bx + BUTTON_SIZE - 1, by + BUTTON_SIZE - 1,
                         style.fillColor() == 0 ? COLOR_BODY : style.fillColor());

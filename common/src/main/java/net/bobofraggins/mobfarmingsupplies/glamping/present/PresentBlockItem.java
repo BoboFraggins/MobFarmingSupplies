@@ -1,9 +1,10 @@
 package net.bobofraggins.mobfarmingsupplies.glamping.present;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.ItemComponents;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
-import net.minecraft.core.component.DataComponents;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -56,7 +57,7 @@ public class PresentBlockItem extends BlockItem {
     @Override
     public void appendHoverText(
             ItemStack stack,
-            Item.TooltipContext context,
+            @org.jetbrains.annotations.Nullable net.minecraft.world.level.Level context,
             List<Component> tooltipAdderLines, TooltipFlag flag) {
         Consumer<Component> tooltipAdder = tooltipAdderLines::add;
         super.appendHoverText(stack, context, tooltipAdderLines, flag);
@@ -76,7 +77,7 @@ public class PresentBlockItem extends BlockItem {
     }
 
     private static Optional<String> wrappedBlockId(ItemStack stack) {
-        var data = stack.get(DataComponents.BLOCK_ENTITY_DATA);
+        var data = ItemComponents.get(stack, DataComponents.BLOCK_ENTITY_DATA);
         if (data == null) return Optional.empty();
         CompoundTag wrapped = data.copyTag().getCompound(PresentBlockEntity.TAG_WRAPPED_STATE);
         // NbtUtils.writeBlockState() writes the registry id under "Name" in MC 26.1.2 (it

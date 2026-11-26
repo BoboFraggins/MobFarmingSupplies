@@ -27,7 +27,7 @@ import org.joml.Quaternionf;
 public class PresentRenderer extends StateBlockEntityRenderer<PresentBlockEntity, PresentRenderer.State> {
 
     public static final ResourceLocation MODEL_ID =
-            ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "block/present");
+            new ResourceLocation(MobFarmingSuppliesCommon.MODID, "block/present");
 
     private static final Quaternionf YAW_QUAT = new Quaternionf();
 

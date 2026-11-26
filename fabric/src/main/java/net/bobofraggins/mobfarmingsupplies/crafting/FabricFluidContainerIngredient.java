@@ -14,8 +14,8 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.FriendlyByteBuf;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -46,7 +46,7 @@ import java.util.List;
 public class FabricFluidContainerIngredient implements CustomIngredient {
 
     public static final ResourceLocation ID =
-            ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "fluid_container");
+            new ResourceLocation(MobFarmingSuppliesCommon.MODID, "fluid_container");
 
     public static final MapCodec<FabricFluidContainerIngredient> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(
@@ -59,14 +59,14 @@ public class FabricFluidContainerIngredient implements CustomIngredient {
                             .forGetter(i -> i.amount)
             ).apply(instance, FabricFluidContainerIngredient::new));
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, FabricFluidContainerIngredient> PACKET_CODEC =
+    public static final StreamCodec<FriendlyByteBuf, FabricFluidContainerIngredient> PACKET_CODEC =
             StreamCodec.of(
                     (buf, val) -> {
                         buf.writeUtf(val.fluidTag.location().toString());
                         buf.writeVarInt(val.amount);
                     },
                     buf -> new FabricFluidContainerIngredient(
-                            TagKey.create(Registries.FLUID, ResourceLocation.parse(buf.readUtf())),
+                            TagKey.create(Registries.FLUID, new ResourceLocation(buf.readUtf())),
                             buf.readVarInt()
                     )
             );
@@ -77,11 +77,25 @@ public class FabricFluidContainerIngredient implements CustomIngredient {
                 public ResourceLocation getIdentifier() { return ID; }
 
                 @Override
-                public MapCodec<FabricFluidContainerIngredient> getCodec(boolean allowEmpty) { return CODEC; }
+                public FabricFluidContainerIngredient read(com.google.gson.JsonObject json) {
+                    return CODEC.codec().parse(com.mojang.serialization.JsonOps.INSTANCE, json)
+                            .getOrThrow(false, msg -> {});
+                }
 
                 @Override
-                public StreamCodec<RegistryFriendlyByteBuf, FabricFluidContainerIngredient> getPacketCodec() {
-                    return PACKET_CODEC;
+                public void write(com.google.gson.JsonObject json, FabricFluidContainerIngredient ingredient) {
+                    CODEC.codec().encodeStart(com.mojang.serialization.JsonOps.INSTANCE, ingredient).result()
+                            .ifPresent(e -> e.getAsJsonObject().entrySet().forEach(x -> json.add(x.getKey(), x.getValue())));
+                }
+
+                @Override
+                public FabricFluidContainerIngredient read(FriendlyByteBuf buf) {
+                    return PACKET_CODEC.decode(buf);
+                }
+
+                @Override
+                public void write(FriendlyByteBuf buf, FabricFluidContainerIngredient ingredient) {
+                    PACKET_CODEC.encode(buf, ingredient);
                 }
             };
 

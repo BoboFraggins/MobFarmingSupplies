@@ -1,6 +1,7 @@
 package net.bobofraggins.mobfarmingsupplies.colorworkstation;
 
-import com.mojang.serialization.MapCodec;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.BlockInteractions;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.ItemInteractionResult;
 import dev.architectury.registry.menu.MenuRegistry;
 import java.util.EnumMap;
 import java.util.Map;
@@ -10,7 +11,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
+
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -48,7 +49,6 @@ import org.jetbrains.annotations.Nullable;
  */
 public class ColorWorkstationBlock extends BaseEntityBlock {
 
-    public static final MapCodec<ColorWorkstationBlock> CODEC = simpleCodec(ColorWorkstationBlock::new);
     public static final EnumProperty<DoubleBlockHalf> HALF = BlockStateProperties.DOUBLE_BLOCK_HALF;
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
 
@@ -70,10 +70,6 @@ public class ColorWorkstationBlock extends BaseEntityBlock {
         registerDefaultState(stateDefinition.any().setValue(HALF, DoubleBlockHalf.LOWER).setValue(FACING, Direction.NORTH));
     }
 
-    @Override
-    protected MapCodec<? extends BaseEntityBlock> codec() {
-        return CODEC;
-    }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
@@ -93,12 +89,12 @@ public class ColorWorkstationBlock extends BaseEntityBlock {
     }
 
     @Override
-    protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         return state.getValue(HALF) == DoubleBlockHalf.LOWER ? LOWER.get(state.getValue(FACING)) : UPPER;
     }
 
     @Override
-    protected VoxelShape getOcclusionShape(BlockState state, BlockGetter level, BlockPos pos) {
+    public VoxelShape getOcclusionShape(BlockState state, BlockGetter level, BlockPos pos) {
         return Shapes.empty();
     }
 
@@ -117,14 +113,14 @@ public class ColorWorkstationBlock extends BaseEntityBlock {
     }
 
     @Override
-    protected boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
+    public boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
         if (state.getValue(HALF) == DoubleBlockHalf.LOWER) return true;
         BlockState below = level.getBlockState(pos.below());
         return below.is(this) && below.getValue(HALF) == DoubleBlockHalf.LOWER;
     }
 
     @Override
-    protected BlockState updateShape(BlockState state, Direction direction, BlockState neighborState,
+    public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState,
                                      LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
         DoubleBlockHalf half = state.getValue(HALF);
         if (direction.getAxis() == Direction.Axis.Y && (half == DoubleBlockHalf.LOWER) == (direction == Direction.UP)) {
@@ -136,7 +132,7 @@ public class ColorWorkstationBlock extends BaseEntityBlock {
     }
 
     @Override
-    public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
+    public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
         // A creative player breaking the top half shouldn't get a workstation from the bottom half.
         if (!level.isClientSide() && player.isCreative() && state.getValue(HALF) == DoubleBlockHalf.UPPER) {
             BlockPos below = pos.below();
@@ -146,12 +142,18 @@ public class ColorWorkstationBlock extends BaseEntityBlock {
                 level.levelEvent(player, 2001, below, Block.getId(belowState));
             }
         }
-        return super.playerWillDestroy(level, pos, state, player);
+        super.playerWillDestroy(level, pos, state, player);
+    }
+    @Override
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand,
+                                 BlockHitResult hit) {
+        return BlockInteractions.use(state, level, pos, player, hand, hit, this::useItemOn,
+                this::useWithoutItem);
     }
 
-    @Override
-    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
-        if (!level.isClientSide() && blockEntity(level, pos, state) instanceof ColorWorkstationBlockEntity be
+
+        public InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
+        if (!level.isClientSide() && (Object) blockEntity(level, pos, state) instanceof ColorWorkstationBlockEntity be
                 && player instanceof ServerPlayer sp) {
             BlockPos lower = be.getBlockPos();
             MenuRegistry.openExtendedMenu(sp, be, buf -> buf.writeBlockPos(lower));
@@ -160,8 +162,7 @@ public class ColorWorkstationBlock extends BaseEntityBlock {
     }
 
     /** A bucket (or other container) of Essence of Color pours in; anything else opens it. */
-    @Override
-    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos,
+        public ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos,
                                               Player player, InteractionHand hand, BlockHitResult hit) {
         if (stack.is(Items.BUCKET)) return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         if (level.isClientSide()) return ItemInteractionResult.SUCCESS;
@@ -170,12 +171,12 @@ public class ColorWorkstationBlock extends BaseEntityBlock {
     }
 
     @Override
-    protected BlockState rotate(BlockState state, Rotation rotation) {
+    public BlockState rotate(BlockState state, Rotation rotation) {
         return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
     }
 
     @Override
-    protected BlockState mirror(BlockState state, Mirror mirror) {
+    public BlockState mirror(BlockState state, Mirror mirror) {
         return state.rotate(mirror.getRotation(state.getValue(FACING)));
     }
 

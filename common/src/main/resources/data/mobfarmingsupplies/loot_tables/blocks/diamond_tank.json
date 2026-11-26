@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "mobfarmingsupplies:diamond_tank",
+          "functions": [
+            {
+              "function": "mobfarmingsupplies:copy_components",
+              "include": [
+                "mobfarmingsupplies:tank_contents"
+              ],
+              "source": "block_entity"
+            }
+          ]
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ]
+    }
+  ]
+}

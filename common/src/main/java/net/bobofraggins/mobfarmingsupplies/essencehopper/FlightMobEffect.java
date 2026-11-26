@@ -30,7 +30,7 @@ public class FlightMobEffect extends MobEffect {
     private static void onPlayerTick(Player player) {
         if (!(player instanceof ServerPlayer serverPlayer)) return;
         Abilities abilities = serverPlayer.getAbilities();
-        boolean hasEffect = serverPlayer.hasEffect(BuiltInRegistries.MOB_EFFECT.wrapAsHolder(Registration.FLIGHT.get()));
+        boolean hasEffect = serverPlayer.hasEffect(Registration.FLIGHT.get());
         if (hasEffect) {
             if (!abilities.mayfly) {
                 abilities.mayfly = true;

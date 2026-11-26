@@ -1,11 +1,11 @@
 package net.bobofraggins.mobfarmingsupplies.mobharvester;
 
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.EquipmentSlotGroup;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.EquipmentSlotGroup;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.component.ItemAttributeModifiers;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.ItemAttributeModifiers;
 
 /**
  * Internal weapon held by the Mob Harvester's fake player during attacks.
@@ -21,23 +21,31 @@ import net.minecraft.world.item.component.ItemAttributeModifiers;
 public class HarvesterSword extends Item {
 
     private static final ResourceLocation DAMAGE_ID =
-            ResourceLocation.fromNamespaceAndPath("mobfarmingsupplies", "harvester_sword_damage");
+            new ResourceLocation("mobfarmingsupplies", "harvester_sword_damage");
     private static final ResourceLocation SPEED_ID =
-            ResourceLocation.fromNamespaceAndPath("mobfarmingsupplies", "harvester_sword_distance");
+            new ResourceLocation("mobfarmingsupplies", "harvester_sword_distance");
 
     public HarvesterSword(Properties props) {
-        super(props.attributes(buildAttributes()));
+        super(props);
     }
+
+    @Override
+    public com.google.common.collect.Multimap<net.minecraft.world.entity.ai.attributes.Attribute,
+            net.minecraft.world.entity.ai.attributes.AttributeModifier> getDefaultAttributeModifiers(net.minecraft.world.entity.EquipmentSlot slot) {
+        return ATTRIBUTES.forSlot(slot);
+    }
+
+    private static final ItemAttributeModifiers ATTRIBUTES = buildAttributes();
 
     private static ItemAttributeModifiers buildAttributes() {
         return ItemAttributeModifiers.builder()
                 .add(Attributes.ATTACK_DAMAGE,
-                        new AttributeModifier(DAMAGE_ID, 3.0f,
-                                AttributeModifier.Operation.ADD_VALUE),
+                        ItemAttributeModifiers.modifier(DAMAGE_ID, 3.0f,
+                                AttributeModifier.Operation.ADDITION),
                         EquipmentSlotGroup.MAINHAND)
                 .add(Attributes.ATTACK_SPEED,
-                        new AttributeModifier(SPEED_ID, -2.4f,
-                                AttributeModifier.Operation.ADD_VALUE),
+                        ItemAttributeModifiers.modifier(SPEED_ID, -2.4f,
+                                AttributeModifier.Operation.ADDITION),
                         EquipmentSlotGroup.MAINHAND)
                 .build();
     }

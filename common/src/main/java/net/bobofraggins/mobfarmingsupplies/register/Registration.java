@@ -3,7 +3,7 @@ package net.bobofraggins.mobfarmingsupplies.register;
 import java.util.Map;
 import java.util.EnumMap;
 import com.mojang.serialization.MapCodec;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 import net.bobofraggins.mobfarmingsupplies.essencehopper.EssenceTrailOptions;
 import com.mojang.serialization.Codec;
 import dev.architectury.registry.menu.MenuRegistry;
@@ -139,11 +139,11 @@ import net.bobofraggins.mobfarmingsupplies.upgradestation.UpgradingRecipe;
 import net.bobofraggins.mobfarmingsupplies.vectorplate.VectorPlateBlock;
 import net.bobofraggins.mobfarmingsupplies.witherproofglass.WitherProofGlassBlock;
 import net.bobofraggins.mobfarmingsupplies.xpjuice.XpJuicePlatformHelper;
-import net.minecraft.core.component.DataComponentType;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.codec.ByteBufCodecs;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.ByteBufCodecs;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.TagKey;
@@ -156,7 +156,7 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.util.Unit;
-import net.minecraft.network.codec.StreamCodec;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.StreamCodec;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -186,7 +186,7 @@ public final class Registration {
     // ── Fluid tags ──────────────────────────────────────────────────────────────
 
     public static final TagKey<Fluid> TAG_EXPERIENCE_FLUID =
-            TagKey.create(Registries.FLUID, ResourceLocation.fromNamespaceAndPath("c", "experience"));
+            TagKey.create(Registries.FLUID, new ResourceLocation("c", "experience"));
 
     // ── Deferred registers ──────────────────────────────────────────────────────
 
@@ -205,8 +205,9 @@ public final class Registration {
     public static final DeferredRegister<EntityType<?>> ENTITY_TYPES =
             DeferredRegister.create(MobFarmingSuppliesCommon.MODID, Registries.ENTITY_TYPE);
 
-    public static final DeferredRegister<DataComponentType<?>> DATA_COMPONENTS =
-            DeferredRegister.create(MobFarmingSuppliesCommon.MODID, Registries.DATA_COMPONENT_TYPE);
+    /** Item data, kept in item NBT on 1.20.1 (see {@link DataComponentType}). */
+    public static final DataComponentType.Register DATA_COMPONENTS =
+            new DataComponentType.Register(MobFarmingSuppliesCommon.MODID);
 
     public static final DeferredRegister<Fluid> FLUIDS =
             DeferredRegister.create(MobFarmingSuppliesCommon.MODID, Registries.FLUID);
@@ -220,7 +221,7 @@ public final class Registration {
     public static final DeferredRegister<RecipeType<?>> RECIPE_TYPES =
             DeferredRegister.create(MobFarmingSuppliesCommon.MODID, Registries.RECIPE_TYPE);
 
-    public static final DeferredRegister<LootItemFunctionType<?>> LOOT_FUNCTIONS =
+    public static final DeferredRegister<LootItemFunctionType> LOOT_FUNCTIONS =
             DeferredRegister.create(MobFarmingSuppliesCommon.MODID, Registries.LOOT_FUNCTION_TYPE);
 
     public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS =
@@ -234,6 +235,13 @@ public final class Registration {
 
     public static final DeferredRegister<net.minecraft.world.effect.MobEffect> MOB_EFFECTS =
             DeferredRegister.create(MobFarmingSuppliesCommon.MODID, Registries.MOB_EFFECT);
+
+    public static final DeferredRegister<net.minecraft.world.item.enchantment.Enchantment> ENCHANTMENTS =
+            DeferredRegister.create(MobFarmingSuppliesCommon.MODID, Registries.ENCHANTMENT);
+
+    /** Sword enchantment that drops heads (1.20.5+ defines it in data). */
+    public static final RegistrySupplier<net.minecraft.world.item.enchantment.Enchantment> GUILLOTINE =
+            ENCHANTMENTS.register("guillotine", net.bobofraggins.mobfarmingsupplies.mobhead.GuillotineEnchantment::new);
 
     /** Creative-style flight, from a Potion of Flight. */
     public static final RegistrySupplier<net.minecraft.world.effect.MobEffect> FLIGHT =
@@ -249,15 +257,11 @@ public final class Registration {
 
     /** Essence flying from a dead mob to an Essence Hopper. */
     public static final RegistrySupplier<ParticleType<EssenceTrailOptions>> ESSENCE_TRAIL =
-            PARTICLE_TYPES.register("essence_trail", () -> new ParticleType<EssenceTrailOptions>(false) {
+            PARTICLE_TYPES.register("essence_trail", () -> new ParticleType<EssenceTrailOptions>(false,
+                    EssenceTrailOptions.DESERIALIZER) {
                 @Override
-                public MapCodec<EssenceTrailOptions> codec() {
-                    return EssenceTrailOptions.MAP_CODEC;
-                }
-
-                @Override
-                public StreamCodec<? super RegistryFriendlyByteBuf, EssenceTrailOptions> streamCodec() {
-                    return EssenceTrailOptions.STREAM_CODEC;
+                public Codec<EssenceTrailOptions> codec() {
+                    return EssenceTrailOptions.MAP_CODEC.codec();
                 }
             });
 
@@ -311,86 +315,98 @@ public final class Registration {
     /** Shaped recipe that upgrades a tank a tier and keeps its contents. */
     public static final RegistrySupplier<RecipeSerializer<TankUpgradeRecipe>> TANK_UPGRADE_SERIALIZER =
             RECIPE_SERIALIZERS.register("tank_upgrade",
-                    () -> new SimpleRecipeSerializer<>(TankUpgradeRecipe.MAP_CODEC, TankUpgradeRecipe.STREAM_CODEC));
+                    () -> TankUpgradeRecipe.SERIALIZER);
 
     /** Shaped recipe that makes a block from a tank (Experience Pylon, Incubator), moving the tank's experience into it. */
     public static final RegistrySupplier<RecipeSerializer<ExperienceTankRecipe>> EXPERIENCE_TANK_SERIALIZER =
             RECIPE_SERIALIZERS.register("experience_tank",
-                    () -> new SimpleRecipeSerializer<>(ExperienceTankRecipe.MAP_CODEC, ExperienceTankRecipe.STREAM_CODEC));
+                    () -> ExperienceTankRecipe.SERIALIZER);
 
     /** Shapeless recipe that uses up an empty tank (the Color Workstation). */
     public static final RegistrySupplier<RecipeSerializer<net.bobofraggins.mobfarmingsupplies.tank.EmptyTankRecipe>> EMPTY_TANK_SERIALIZER =
             RECIPE_SERIALIZERS.register("empty_tank",
-                    () -> new SimpleRecipeSerializer<>(net.bobofraggins.mobfarmingsupplies.tank.EmptyTankRecipe.MAP_CODEC,
-                            net.bobofraggins.mobfarmingsupplies.tank.EmptyTankRecipe.STREAM_CODEC));
+                    () -> net.bobofraggins.mobfarmingsupplies.tank.EmptyTankRecipe.SERIALIZER);
 
     public static final RegistrySupplier<RecipeSerializer<SkullLightsRecipe>> SKULL_LIGHTS_SERIALIZER =
             RECIPE_SERIALIZERS.register("skull_lights",
-                    () -> new SimpleRecipeSerializer<>(SkullLightsRecipe.MAP_CODEC, SkullLightsRecipe.STREAM_CODEC));
+                    () -> SkullLightsRecipe.SERIALIZER);
 
     /** Recolours a String of Skull Lights with a dye, keeping its skulls. */
     public static final RegistrySupplier<RecipeSerializer<SkullLightsDyeRecipe>> SKULL_LIGHTS_DYE_SERIALIZER =
             RECIPE_SERIALIZERS.register("skull_lights_dye",
-                    () -> new SimpleRecipeSerializer<>(SkullLightsDyeRecipe.MAP_CODEC, SkullLightsDyeRecipe.STREAM_CODEC));
+                    () -> SkullLightsDyeRecipe.SERIALIZER);
+
+    /** A shapeless recipe whose result keeps its NBT (the guide book's book id), on both loaders. */
+    public static final RegistrySupplier<RecipeSerializer<net.minecraft.world.item.crafting.ShapelessRecipe>> SHAPELESS_NBT_SERIALIZER =
+            RECIPE_SERIALIZERS.register("shapeless_nbt",
+                    net.bobofraggins.mobfarmingsupplies.shared.recipe.ShapedRecipeCodecs::shapelessWithNbt);
 
     /** Shaped recipe for a linked pair of Einstein-Rosen Bridges on a new random channel. */
     public static final RegistrySupplier<RecipeSerializer<BridgePairRecipe>> BRIDGE_PAIR_SERIALIZER =
             RECIPE_SERIALIZERS.register("bridge_pair",
-                    () -> new SimpleRecipeSerializer<>(BridgePairRecipe.MAP_CODEC, BridgePairRecipe.STREAM_CODEC));
+                    () -> BridgePairRecipe.SERIALIZER);
 
     /** Shapeless recipe adding another Einstein-Rosen Bridge to an existing bridge's channel. */
     public static final RegistrySupplier<RecipeSerializer<BridgeLinkRecipe>> BRIDGE_LINK_SERIALIZER =
             RECIPE_SERIALIZERS.register("bridge_link",
-                    () -> new SimpleRecipeSerializer<>(BridgeLinkRecipe.MAP_CODEC, BridgeLinkRecipe.STREAM_CODEC));
+                    () -> BridgeLinkRecipe.SERIALIZER);
 
     // ── Loot functions (chest loot) ───────────────────────────────────────────────
 
-    public static final RegistrySupplier<LootItemFunctionType<SetSyringeLevelsFunction>> SET_SYRINGE_LEVELS =
-            LOOT_FUNCTIONS.register("set_syringe_levels", () -> new LootItemFunctionType<>(SetSyringeLevelsFunction.CODEC));
+    public static final RegistrySupplier<LootItemFunctionType> SET_SYRINGE_LEVELS =
+            LOOT_FUNCTIONS.register("set_syringe_levels", () -> new LootItemFunctionType(SetSyringeLevelsFunction.SERIALIZER));
 
-    public static final RegistrySupplier<LootItemFunctionType<SetBridgeChannelFunction>> SET_BRIDGE_CHANNEL =
-            LOOT_FUNCTIONS.register("set_bridge_channel", () -> new LootItemFunctionType<>(SetBridgeChannelFunction.CODEC));
+    public static final RegistrySupplier<LootItemFunctionType> SET_BRIDGE_CHANNEL =
+            LOOT_FUNCTIONS.register("set_bridge_channel", () -> new LootItemFunctionType(SetBridgeChannelFunction.SERIALIZER));
 
-    public static final RegistrySupplier<LootItemFunctionType<net.bobofraggins.mobfarmingsupplies.loot.SetDnaSampleFunction>> SET_DNA_SAMPLE =
-            LOOT_FUNCTIONS.register("set_dna_sample", () -> new LootItemFunctionType<>(net.bobofraggins.mobfarmingsupplies.loot.SetDnaSampleFunction.CODEC));
+    /** Puts a block entity's item data on the dropped item (1.20.5+'s {@code minecraft:copy_components}). */
+    public static final RegistrySupplier<LootItemFunctionType> COPY_COMPONENTS =
+            LOOT_FUNCTIONS.register("copy_components", () -> new LootItemFunctionType(net.bobofraggins.mobfarmingsupplies.loot.CopyComponentsFunction.SERIALIZER));
+
+    /** Turns loot into another mod's item when it's installed (1.20.1 loot tables can't depend on mods). */
+    public static final RegistrySupplier<LootItemFunctionType> SET_ITEM =
+            LOOT_FUNCTIONS.register("set_item", () -> new LootItemFunctionType(net.bobofraggins.mobfarmingsupplies.loot.SetItemFunction.SERIALIZER));
+
+    public static final RegistrySupplier<LootItemFunctionType> SET_DNA_SAMPLE =
+            LOOT_FUNCTIONS.register("set_dna_sample", () -> new LootItemFunctionType(net.bobofraggins.mobfarmingsupplies.loot.SetDnaSampleFunction.SERIALIZER));
 
     // ── Sound events ─────────────────────────────────────────────────────────────
 
     public static final RegistrySupplier<SoundEvent> RED_ALERT_SOUND =
             SOUND_EVENTS.register("red_alert",
                     () -> SoundEvent.createVariableRangeEvent(
-                            ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "red_alert")));
+                            new ResourceLocation(MobFarmingSuppliesCommon.MODID, "red_alert")));
 
     public static final RegistrySupplier<SoundEvent> DRAMATIC_SOUND =
             SOUND_EVENTS.register("dramatic",
                     () -> SoundEvent.createVariableRangeEvent(
-                            ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "dramatic")));
+                            new ResourceLocation(MobFarmingSuppliesCommon.MODID, "dramatic")));
 
     public static final RegistrySupplier<SoundEvent> RIMSHOT_SOUND =
             SOUND_EVENTS.register("rimshot",
                     () -> SoundEvent.createVariableRangeEvent(
-                            ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "rimshot")));
+                            new ResourceLocation(MobFarmingSuppliesCommon.MODID, "rimshot")));
 
     public static final RegistrySupplier<SoundEvent> WILHELM_SOUND =
             SOUND_EVENTS.register("wilhelm",
                     () -> SoundEvent.createVariableRangeEvent(
-                            ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "wilhelm")));
+                            new ResourceLocation(MobFarmingSuppliesCommon.MODID, "wilhelm")));
 
     public static final RegistrySupplier<SoundEvent> TOILET_FLUSH_SOUND =
             SOUND_EVENTS.register("flush",
                     () -> SoundEvent.createVariableRangeEvent(
-                            ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "flush")));
+                            new ResourceLocation(MobFarmingSuppliesCommon.MODID, "flush")));
 
     // ── Data components ─────────────────────────────────────────────────────────
 
-    public static final RegistrySupplier<DataComponentType<DnaSampleContents>> DNA_SAMPLE_CONTENTS =
+    public static final java.util.function.Supplier<DataComponentType<DnaSampleContents>> DNA_SAMPLE_CONTENTS =
             DATA_COMPONENTS.register("dna_sample_contents",
                     () -> DataComponentType.<DnaSampleContents>builder()
                             .persistent(DnaSampleContents.CODEC)
                             .networkSynchronized(DnaSampleContents.STREAM_CODEC)
                             .build());
 
-    public static final RegistrySupplier<DataComponentType<Integer>> BEHEADING_LEVEL =
+    public static final java.util.function.Supplier<DataComponentType<Integer>> BEHEADING_LEVEL =
             DATA_COMPONENTS.register("beheading_level",
                     () -> DataComponentType.<Integer>builder()
                             .persistent(Codec.INT)
@@ -398,14 +414,14 @@ public final class Registration {
                             .build());
 
     /** Present on a Superconducting Magnet while it's switched on. */
-    public static final RegistrySupplier<DataComponentType<net.minecraft.util.Unit>> MAGNET_ON =
+    public static final java.util.function.Supplier<DataComponentType<net.minecraft.util.Unit>> MAGNET_ON =
             DATA_COMPONENTS.register("magnet_on",
                     () -> DataComponentType.<net.minecraft.util.Unit>builder()
-                            .persistent(net.minecraft.util.Unit.CODEC)
-                            .networkSynchronized(net.minecraft.network.codec.StreamCodec.unit(net.minecraft.util.Unit.INSTANCE))
+                            .persistent(com.mojang.serialization.Codec.unit(net.minecraft.util.Unit.INSTANCE))
+                            .networkSynchronized(net.bobofraggins.mobfarmingsupplies.shared.compat.StreamCodec.unit(net.minecraft.util.Unit.INSTANCE))
                             .build());
 
-    public static final RegistrySupplier<DataComponentType<Integer>> EXPERIENCE_SYRINGE_STORED_XP =
+    public static final java.util.function.Supplier<DataComponentType<Integer>> EXPERIENCE_SYRINGE_STORED_XP =
             DATA_COMPONENTS.register("experience_syringe_stored_xp",
                     () -> DataComponentType.<Integer>builder()
                             .persistent(Codec.intRange(0, ExperienceSyringeItem.CAPACITY))
@@ -416,15 +432,15 @@ public final class Registration {
      * Marks a spawner the Block Breaker took with Silk Touch: placing it keeps its mob, though
      * vanilla only lets operators place spawners with their data (see BlockItemSilkSpawnerMixin).
      */
-    public static final RegistrySupplier<DataComponentType<Unit>> SILK_TOUCHED_SPAWNER =
+    public static final java.util.function.Supplier<DataComponentType<Unit>> SILK_TOUCHED_SPAWNER =
             DATA_COMPONENTS.register("silk_touched_spawner",
                     () -> DataComponentType.<Unit>builder()
-                            .persistent(Unit.CODEC)
+                            .persistent(Codec.unit(Unit.INSTANCE))
                             .networkSynchronized(StreamCodec.unit(Unit.INSTANCE))
                             .build());
 
     /** Which mob a Mob Head is the head of. */
-    public static final RegistrySupplier<DataComponentType<EntityType<?>>> MOB_HEAD_TYPE =
+    public static final java.util.function.Supplier<DataComponentType<EntityType<?>>> MOB_HEAD_TYPE =
             DATA_COMPONENTS.register("mob_head_type",
                     () -> DataComponentType.<EntityType<?>>builder()
                             .persistent(BuiltInRegistries.ENTITY_TYPE.byNameCodec())
@@ -432,14 +448,14 @@ public final class Registration {
                             .build());
 
     /** The Einstein-Rosen Bridge channel a bridge item is on (a random 32-bit number). */
-    public static final RegistrySupplier<DataComponentType<Integer>> BRIDGE_CHANNEL =
+    public static final java.util.function.Supplier<DataComponentType<Integer>> BRIDGE_CHANNEL =
             DATA_COMPONENTS.register("bridge_channel",
                     () -> DataComponentType.<Integer>builder()
                             .persistent(Codec.INT)
                             .networkSynchronized(ByteBufCodecs.INT)
                             .build());
 
-    public static final RegistrySupplier<DataComponentType<TankContents>> TANK_CONTENTS =
+    public static final java.util.function.Supplier<DataComponentType<TankContents>> TANK_CONTENTS =
             DATA_COMPONENTS.register("tank_contents",
                     () -> DataComponentType.<TankContents>builder()
                             .persistent(TankContents.CODEC)
@@ -447,14 +463,14 @@ public final class Registration {
                             .build());
 
     /** The block a Bucket of Oresight shows. */
-    public static final RegistrySupplier<DataComponentType<net.minecraft.world.level.block.Block>> ORESIGHT_BLOCK =
+    public static final java.util.function.Supplier<DataComponentType<net.minecraft.world.level.block.Block>> ORESIGHT_BLOCK =
             DATA_COMPONENTS.register("oresight_block",
                     () -> DataComponentType.<net.minecraft.world.level.block.Block>builder()
                             .persistent(net.minecraft.core.registries.BuiltInRegistries.BLOCK.byNameCodec())
-                            .networkSynchronized(net.minecraft.network.codec.ByteBufCodecs.registry(Registries.BLOCK))
+                            .networkSynchronized(net.bobofraggins.mobfarmingsupplies.shared.compat.ByteBufCodecs.registry(Registries.BLOCK))
                             .build());
 
-    public static final RegistrySupplier<DataComponentType<SkullLights>> SKULL_LIGHTS =
+    public static final java.util.function.Supplier<DataComponentType<SkullLights>> SKULL_LIGHTS =
             DATA_COMPONENTS.register("skull_lights",
                     () -> DataComponentType.<SkullLights>builder()
                             .persistent(SkullLights.CODEC)
@@ -462,14 +478,14 @@ public final class Registration {
                             .build());
 
     /** Where a String of Skull Lights being hung was started. */
-    public static final RegistrySupplier<DataComponentType<StringOfSkullLightsItem.Start>> SKULL_LIGHTS_START =
+    public static final java.util.function.Supplier<DataComponentType<StringOfSkullLightsItem.Start>> SKULL_LIGHTS_START =
             DATA_COMPONENTS.register("skull_lights_start",
                     () -> DataComponentType.<StringOfSkullLightsItem.Start>builder()
                             .persistent(StringOfSkullLightsItem.Start.CODEC)
                             .networkSynchronized(StringOfSkullLightsItem.Start.STREAM_CODEC)
                             .build());
 
-    public static final RegistrySupplier<DataComponentType<ItemFilterData>> ITEM_FILTER_DATA =
+    public static final java.util.function.Supplier<DataComponentType<ItemFilterData>> ITEM_FILTER_DATA =
             DATA_COMPONENTS.register("item_filter",
                     () -> DataComponentType.<ItemFilterData>builder()
                             .persistent(ItemFilterData.CODEC)
@@ -493,8 +509,7 @@ public final class Registration {
     public static final RegistrySupplier<MagicHatItem> MAGIC_HAT_ITEM =
             ITEMS.register("magic_hat",
                     () -> new MagicHatItem(new Item.Properties()
-                            .stacksTo(1)
-                            .attributes(MagicHatItem.DEFAULT_MODIFIERS)));
+                            .stacksTo(1)));
 
     // ── Present ──────────────────────────────────────────────────────────────────
 
@@ -1217,10 +1232,10 @@ public final class Registration {
     // ── S'mores ───────────────────────────────────────────────────────────────────
 
     private static final FoodProperties SNACK_FOOD =
-            new FoodProperties.Builder().nutrition(2).saturationModifier(0.25f).build();
+            new FoodProperties.Builder().nutrition(2).saturationMod(0.25f).build();
 
     private static final FoodProperties SMORE_FOOD =
-            new FoodProperties.Builder().nutrition(10).saturationModifier(0.25f).build();
+            new FoodProperties.Builder().nutrition(10).saturationMod(0.25f).build();
 
     public static final RegistrySupplier<Item> GRAHAM_CRACKER =
             ITEMS.register("graham_cracker",
@@ -1371,10 +1386,9 @@ public final class Registration {
     public static final RegistrySupplier<MobHeadItem> MOB_HEAD_ITEM =
             ITEMS.register("mob_head",
                     () -> new MobHeadItem(MOB_HEAD.get(), MOB_WALL_HEAD.get(), new Item.Properties()
-                            .rarity(Rarity.UNCOMMON)
+                            .rarity(Rarity.UNCOMMON)));
                             // Worn, a head protects like an Iron Helmet and takes helmet
                             // enchantments, but has no durability so heads still stack.
-                            .attributes(MobHeadItem.ATTRIBUTES)));
 
     public static final RegistrySupplier<BlockEntityType<MobHeadBlockEntity>> MOB_HEAD_BE_TYPE =
             BLOCK_ENTITIES.register("mob_head",
@@ -1462,7 +1476,7 @@ public final class Registration {
 
     /** Swaps one block of a structure for another as it's placed (the village yards' Herobrine). */
     public static final RegistrySupplier<StructureProcessorType<OrnamentSwapProcessor>> ORNAMENT_SWAP_PROCESSOR =
-            STRUCTURE_PROCESSORS.register("ornament_swap", () -> () -> OrnamentSwapProcessor.CODEC);
+            STRUCTURE_PROCESSORS.register("ornament_swap", () -> () -> OrnamentSwapProcessor.CODEC.codec());
 
     // ── Head Pike ────────────────────────────────────────────────────────────────
 
@@ -1639,7 +1653,7 @@ public final class Registration {
                         output.accept(GIANT_PLAYER_ORNAMENT_ITEM.get());
                         output.accept(GIANT_HEROBRINE_ORNAMENT_ITEM.get());
                         ItemStack skullLights = new ItemStack(STRING_OF_SKULL_LIGHTS.get());
-                        skullLights.set(SKULL_LIGHTS.get(), SkullLights.defaultLights());
+                        net.bobofraggins.mobfarmingsupplies.shared.compat.ItemComponents.set(skullLights, SKULL_LIGHTS.get(), SkullLights.defaultLights());
                         output.accept(skullLights);
                         output.accept(HEAD_PIKE_ITEM.get());
                         // A Mob Head for every mob without a vanilla head (the ones Beheading drops).
@@ -1669,7 +1683,7 @@ public final class Registration {
     /**
      * Subscribes all common DeferredRegisters to the platform's registry events.
      * Called from both the NeoForge and Fabric entry points.
-     * NeoForgeOnlyRegistration adds its entries to these registers before calling
+     * ForgeOnlyRegistration adds its entries to these registers before calling
      * this method, so all entries (common + NeoForge-only) are submitted together.
      */
     public static void register() {
@@ -1679,7 +1693,7 @@ public final class Registration {
         BLOCK_ENTITIES.register();
         ENTITY_TYPES.register();
         MENUS.register();
-        DATA_COMPONENTS.register();
+        ENCHANTMENTS.register();
         CREATIVE_TABS.register();
         SOUND_EVENTS.register();
         RECIPE_TYPES.register();

@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "minecraft:comparator"
+    },
+    {
+      "item": "mobfarmingsupplies:blank_upgrade"
+    }
+  ],
+  "result": {
+    "item": "mobfarmingsupplies:blank_filter",
+    "count": 1
+  }
+}

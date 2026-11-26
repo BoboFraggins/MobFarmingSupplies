@@ -1,14 +1,15 @@
 package net.bobofraggins.mobfarmingsupplies.advancement;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import java.util.Optional;
-import net.minecraft.advancements.AdvancementHolder;
+import com.google.gson.JsonObject;
+import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.critereon.AbstractCriterionTriggerInstance;
 import net.minecraft.advancements.critereon.ContextAwarePredicate;
-import net.minecraft.advancements.critereon.EntityPredicate;
+import net.minecraft.advancements.critereon.DeserializationContext;
+import net.minecraft.advancements.critereon.SerializationContext;
 import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.GsonHelper;
 
 /**
  * Matches once a player has collected at least {@code min} different heads.
@@ -21,19 +22,42 @@ import net.minecraft.server.level.ServerPlayer;
  */
 public class HeadsCollectedTrigger extends SimpleCriterionTrigger<HeadsCollectedTrigger.Instance> {
 
-    public static final ResourceLocation TRACKER = ResourceLocation.fromNamespaceAndPath("mobfarmingsupplies", "mob_farming/head_tracker");
+    public static final ResourceLocation TRACKER = new ResourceLocation("mobfarmingsupplies", "mob_farming/head_tracker");
 
-    public record Instance(Optional<ContextAwarePredicate> player, int min)
-            implements SimpleCriterionTrigger.SimpleInstance {
-        public static final Codec<Instance> CODEC = RecordCodecBuilder.create(i -> i.group(
-                EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf("player").forGetter(Instance::player),
-                Codec.INT.fieldOf("min").forGetter(Instance::min)
-        ).apply(i, Instance::new));
+    private final ResourceLocation id;
+
+    public HeadsCollectedTrigger(ResourceLocation id) {
+        this.id = id;
+    }
+
+    public static class Instance extends AbstractCriterionTriggerInstance {
+        private final int min;
+
+        public Instance(ResourceLocation id, ContextAwarePredicate player, int min) {
+            super(id, player);
+            this.min = min;
+        }
+
+        public int min() {
+            return min;
+        }
+
+        @Override
+        public JsonObject serializeToJson(SerializationContext context) {
+            JsonObject json = super.serializeToJson(context);
+            json.addProperty("min", min);
+            return json;
+        }
     }
 
     @Override
-    public Codec<Instance> codec() {
-        return Instance.CODEC;
+    public ResourceLocation getId() {
+        return id;
+    }
+
+    @Override
+    protected Instance createInstance(JsonObject json, ContextAwarePredicate player, DeserializationContext context) {
+        return new Instance(id, player, GsonHelper.getAsInt(json, "min"));
     }
 
     public void trigger(ServerPlayer player) {
@@ -43,7 +67,7 @@ public class HeadsCollectedTrigger extends SimpleCriterionTrigger<HeadsCollected
 
     /** How many different heads {@code player} has had. */
     public static int collected(ServerPlayer player) {
-        AdvancementHolder tracker = player.level().getServer().getAdvancements().get(TRACKER);
+        Advancement tracker = player.level().getServer().getAdvancements().getAdvancement(TRACKER);
         if (tracker == null) return 0;
         int count = 0;
         for (String ignored : player.getAdvancements().getOrStartProgress(tracker).getCompletedCriteria()) count++;

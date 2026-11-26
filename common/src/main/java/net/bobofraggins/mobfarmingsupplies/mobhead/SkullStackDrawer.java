@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.mobhead;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.ItemComponents;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import java.util.Map;
@@ -12,7 +13,7 @@ import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.SkullBlockRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.core.component.DataComponents;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.DataComponents;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -41,7 +42,7 @@ public final class SkullStackDrawer {
      */
     public void submit(ItemStack stack, PoseStack poseStack, MultiBufferSource buffers, int light, int tint) {
         poseStack.pushPose();
-        EntityType<?> mob = stack.get(Registration.MOB_HEAD_TYPE.get());
+        EntityType<?> mob = ItemComponents.get(stack, Registration.MOB_HEAD_TYPE.get());
         SkullModelBase model = stack.getItem() instanceof BlockItem item && item.getBlock() instanceof AbstractSkullBlock block
                 ? skullModels.get(block.getType()) : null;
         if (mob != null) {
@@ -52,8 +53,8 @@ public final class SkullStackDrawer {
             SkullBlock.Type type = ((AbstractSkullBlock) ((BlockItem) stack.getItem()).getBlock()).getType();
             poseStack.scale(-1f, -1f, 1f);
             model.setupAnim(0f, 0f, 0f);
-            model.renderToBuffer(poseStack,
-                    buffers.getBuffer(SkullBlockRenderer.getRenderType(type, stack.get(DataComponents.PROFILE))),
+            net.bobofraggins.mobfarmingsupplies.shared.compat.ModelRendering.render(model, poseStack,
+                    buffers.getBuffer(SkullBlockRenderer.getRenderType(type, ItemComponents.get(stack, DataComponents.PROFILE))),
                     light, OverlayTexture.NO_OVERLAY, tint);
         } else {
             Minecraft mc = Minecraft.getInstance();

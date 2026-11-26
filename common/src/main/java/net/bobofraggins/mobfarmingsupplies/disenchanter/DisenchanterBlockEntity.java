@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.disenchanter;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.MFSCodecs;
 import dev.architectury.fluid.FluidStack;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import java.util.ArrayList;
@@ -10,7 +11,7 @@ import net.bobofraggins.mobfarmingsupplies.tank.TankBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.component.DataComponents;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -24,10 +25,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.entity.EnchantingTableBlockEntity;
+import net.minecraft.world.level.block.entity.EnchantmentTableBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.bobofraggins.mobfarmingsupplies.shared.nbt.ValueInput;
 import net.bobofraggins.mobfarmingsupplies.shared.nbt.ValueOutput;
@@ -99,7 +99,7 @@ public class DisenchanterBlockEntity extends TankBlockEntity {
     };
 
     /** Client only: a vanilla enchanting table's book animation, which the renderer draws. */
-    @Nullable private EnchantingTableBlockEntity book;
+    @Nullable private EnchantmentTableBlockEntity book;
 
     public DisenchanterBlockEntity(BlockPos pos, BlockState state) {
         super(MFSRegistryHelper.getBEType("disenchanter"), pos, state);
@@ -128,9 +128,8 @@ public class DisenchanterBlockEntity extends TankBlockEntity {
     }
 
     /** The item's enchantments, or an enchanted book's stored ones. */
-    private static ItemEnchantments enchantments(ItemStack stack) {
-        return stack.getOrDefault(stack.is(Items.ENCHANTED_BOOK) ? DataComponents.STORED_ENCHANTMENTS
-                : DataComponents.ENCHANTMENTS, ItemEnchantments.EMPTY);
+    private static java.util.Map<Enchantment, Integer> enchantments(ItemStack stack) {
+        return EnchantmentHelper.getEnchantments(stack);
     }
 
     /** Whether there's nothing left worth pulling: no enchantments, or an enchanted book's last one. */
@@ -207,28 +206,26 @@ public class DisenchanterBlockEntity extends TankBlockEntity {
 
     /** Takes a random enchantment off {@code item} and returns it on an enchanted book. */
     private ItemStack pullEnchantment(Level level, ItemStack item) {
-        List<Object2IntMap.Entry<Holder<Enchantment>>> all = new ArrayList<>(enchantments(item).entrySet());
-        Object2IntMap.Entry<Holder<Enchantment>> chosen = all.get(level.getRandom().nextInt(all.size()));
-        Holder<Enchantment> enchantment = chosen.getKey();
-        EnchantmentHelper.updateEnchantments(item, enchantments -> enchantments.removeIf(enchantment::equals));
-        ItemEnchantments.Mutable onBook = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
-        onBook.set(enchantment, chosen.getIntValue());
-        ItemStack book = new ItemStack(Items.ENCHANTED_BOOK);
-        book.set(DataComponents.STORED_ENCHANTMENTS, onBook.toImmutable());
-        return book;
+        java.util.Map<Enchantment, Integer> all = enchantments(item);
+        List<Enchantment> keys = new ArrayList<>(all.keySet());
+        Enchantment enchantment = keys.get(level.getRandom().nextInt(keys.size()));
+        int enchantmentLevel = all.remove(enchantment);
+        EnchantmentHelper.setEnchantments(all, item);
+        return net.minecraft.world.item.EnchantedBookItem.createForEnchantment(
+                new net.minecraft.world.item.enchantment.EnchantmentInstance(enchantment, enchantmentLevel));
     }
 
     public static void clientTick(Level level, BlockPos pos, BlockState state, DisenchanterBlockEntity be) {
         if (be.book == null) {
-            be.book = new EnchantingTableBlockEntity(pos, Blocks.ENCHANTING_TABLE.defaultBlockState());
+            be.book = new EnchantmentTableBlockEntity(pos, Blocks.ENCHANTING_TABLE.defaultBlockState());
             be.book.setLevel(level);
         }
-        EnchantingTableBlockEntity.bookAnimationTick(level, pos, state, be.book);
+        EnchantmentTableBlockEntity.bookAnimationTick(level, pos, state, be.book);
     }
 
     /** The floating book's animation, for the renderer; null until the first client tick. */
     @Nullable
-    EnchantingTableBlockEntity book() {
+    EnchantmentTableBlockEntity book() {
         return book;
     }
 
@@ -250,21 +247,21 @@ public class DisenchanterBlockEntity extends TankBlockEntity {
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.saveAdditional(tag, registries);
-        ValueOutput output = new ValueOutput(tag, registries);
+    protected void saveAdditional(CompoundTag tag) {
+        super.saveAdditional(tag);
+        ValueOutput output = new ValueOutput(tag);
         List<ItemStack> stacks = new ArrayList<>(SLOTS);
         for (int i = 0; i < SLOTS; i++) stacks.add(items.getItem(i));
-        output.store(TAG_ITEMS, ItemStack.OPTIONAL_CODEC.listOf(), stacks);
+        output.store(TAG_ITEMS, MFSCodecs.OPTIONAL_ITEM_STACK.listOf(), stacks);
         output.putInt(TAG_PROGRESS, progress);
         output.putInt(TAG_PAID, paid);
     }
 
     @Override
-    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
-        ValueInput input = new ValueInput(tag, registries);
-        input.read(TAG_ITEMS, ItemStack.OPTIONAL_CODEC.listOf()).ifPresent(list -> {
+    public void load(CompoundTag tag) {
+        super.load(tag);
+        ValueInput input = new ValueInput(tag);
+        input.read(TAG_ITEMS, MFSCodecs.OPTIONAL_ITEM_STACK.listOf()).ifPresent(list -> {
             for (int i = 0; i < Math.min(list.size(), SLOTS); i++) items.setItem(i, list.get(i));
         });
         progress = input.getIntOr(TAG_PROGRESS, 0);
@@ -274,7 +271,7 @@ public class DisenchanterBlockEntity extends TankBlockEntity {
 
     /** Clients only need to know whether it's working (for the runes); the window sends the rest. */
     @Override
-    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+    public CompoundTag getUpdateTag() {
         CompoundTag tag = new CompoundTag();
         tag.putBoolean(TAG_WORKING, working);
         return tag;

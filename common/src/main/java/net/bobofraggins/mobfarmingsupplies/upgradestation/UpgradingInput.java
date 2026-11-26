@@ -1,7 +1,7 @@
 package net.bobofraggins.mobfarmingsupplies.upgradestation;
 
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeInput;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.RecipeInput;
 
 /** What an Upgrade Station offers a recipe: the item in its top slot, and its input. */
 public record UpgradingInput(ItemStack item, ItemStack input) implements RecipeInput {

@@ -24,7 +24,7 @@ public class ToiletBlockEntityRenderer
         extends StateBlockEntityRenderer<ToiletBlockEntity, ToiletBlockEntityRenderer.ToiletState> {
 
     public static final ResourceLocation LID_MODEL_ID =
-            ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "block/toilet_lid");
+            new ResourceLocation(MobFarmingSuppliesCommon.MODID, "block/toilet_lid");
 
     // Hinge, in north-facing model space: the lid's back top edge, just in front of the cistern.
     // Swinging 90 degrees about X stands the lid up at z 10-11, y 6-16.

@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.logisticsorter;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.MFSCodecs;
 import net.bobofraggins.mobfarmingsupplies.shared.TransferSchedule;
 import net.bobofraggins.mobfarmingsupplies.MFSConfig;
 import net.bobofraggins.mobfarmingsupplies.shared.sides.SideLayout;
@@ -204,28 +205,28 @@ public class LogisticSorterBlockEntity extends BlockEntity implements SideOrient
     // ── NBT ──────────────────────────────────────────────────────────────────────
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.saveAdditional(tag, registries);
-        ValueOutput output = new ValueOutput(tag, registries);
+    protected void saveAdditional(CompoundTag tag) {
+        super.saveAdditional(tag);
+        ValueOutput output = new ValueOutput(tag);
         SideLayout.save(output, sideOrientation);
         output.putInt("Sides", packedSides());
         output.putBoolean("AndMode", andMode);
         List<ItemStack> stacks = new ArrayList<>(FILTER_SLOTS);
         for (int i = 0; i < FILTER_SLOTS; i++) stacks.add(filters.getItem(i));
-        output.store("Filters", ItemStack.OPTIONAL_CODEC.listOf(), stacks);
+        output.store("Filters", MFSCodecs.OPTIONAL_ITEM_STACK.listOf(), stacks);
     }
 
     @Override
-    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
-        ValueInput input = new ValueInput(tag, registries);
+    public void load(CompoundTag tag) {
+        super.load(tag);
+        ValueInput input = new ValueInput(tag);
         sideOrientation = SideLayout.load(input);
         int packed = input.getIntOr("Sides", 0);
         for (Direction d : Direction.values()) sides[d.get3DDataValue()] = unpackSide(packed, d);
         andMode = input.getBooleanOr("AndMode", true);
-        input.read("Filters", ItemStack.OPTIONAL_CODEC.listOf()).ifPresent(loaded -> {
+        input.read("Filters", MFSCodecs.OPTIONAL_ITEM_STACK.listOf()).ifPresent(loaded -> {
             for (int i = 0; i < FILTER_SLOTS; i++) {
-                filters.getItems().set(i, i < loaded.size() ? loaded.get(i) : ItemStack.EMPTY);
+                net.bobofraggins.mobfarmingsupplies.shared.compat.Containers.backing(filters).set(i, i < loaded.size() ? loaded.get(i) : ItemStack.EMPTY);
             }
         });
         stateDirty = true; // block state is re-synced on the next server tick
@@ -234,8 +235,8 @@ public class LogisticSorterBlockEntity extends BlockEntity implements SideOrient
     // ── Client sync ───────────────────────────────────────────────────────────────
 
     @Override
-    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
-        return saveWithoutMetadata(registries);
+    public CompoundTag getUpdateTag() {
+        return saveWithoutMetadata();
     }
 
     @Override

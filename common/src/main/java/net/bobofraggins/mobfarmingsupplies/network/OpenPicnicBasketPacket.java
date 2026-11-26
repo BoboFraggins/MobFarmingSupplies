@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.network;
 
+import net.minecraft.network.FriendlyByteBuf;
 import dev.architectury.networking.NetworkManager;
 import net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommon;
 import net.bobofraggins.mobfarmingsupplies.picnicbasket.PicnicBasketItemContainer;
@@ -7,8 +8,8 @@ import net.bobofraggins.mobfarmingsupplies.picnicbasket.PicnicBasketItemUtils;
 import net.bobofraggins.mobfarmingsupplies.picnicbasket.PicnicBasketLocator;
 import net.bobofraggins.mobfarmingsupplies.picnicbasket.PicnicBasketMenu;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.StreamCodec;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.SimpleMenuProvider;
@@ -25,7 +26,7 @@ import java.util.Optional;
 public record OpenPicnicBasketPacket() implements CustomPacketPayload {
 
     public static final Type<OpenPicnicBasketPacket> TYPE =
-            new Type<>(ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "open_picnic_basket"));
+            new Type<>(new ResourceLocation(MobFarmingSuppliesCommon.MODID, "open_picnic_basket"));
 
     public static final StreamCodec<net.minecraft.network.FriendlyByteBuf, OpenPicnicBasketPacket> STREAM_CODEC =
             StreamCodec.unit(new OpenPicnicBasketPacket());

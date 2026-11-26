@@ -1,6 +1,7 @@
 package net.bobofraggins.mobfarmingsupplies.experiencepylon;
 
-import com.mojang.serialization.MapCodec;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.BlockInteractions;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.ItemInteractionResult;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import dev.architectury.registry.menu.MenuRegistry;
 import net.bobofraggins.mobfarmingsupplies.shared.TallBlock;
@@ -21,7 +22,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
+
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUtils;
@@ -51,7 +52,6 @@ import org.jetbrains.annotations.Nullable;
  */
 public class ExperiencePylonBlock extends BaseEntityBlock {
 
-    public static final MapCodec<ExperiencePylonBlock> CODEC = simpleCodec(ExperiencePylonBlock::new);
 
     // The base plate and rim, then the pylon, which reaches 27 pixels up (plus 1 when bobbing):
     // the first 13 pixels of it in the lower half, the rest in the upper half.
@@ -66,10 +66,6 @@ public class ExperiencePylonBlock extends BaseEntityBlock {
         registerDefaultState(stateDefinition.any().setValue(TallBlock.HALF, DoubleBlockHalf.LOWER));
     }
 
-    @Override
-    public MapCodec<ExperiencePylonBlock> codec() {
-        return CODEC;
-    }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
@@ -109,31 +105,31 @@ public class ExperiencePylonBlock extends BaseEntityBlock {
     }
 
     @Override
-    protected boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
+    public boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
         return TallBlock.canSurvive(state, level, pos);
     }
 
     @Override
-    protected BlockState updateShape(BlockState state, Direction direction, BlockState neighborState,
+    public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState,
                                      LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
         BlockState updated = TallBlock.updateShape(state, direction, neighborState);
         return updated != state ? updated : super.updateShape(state, direction, neighborState, level, pos, neighborPos);
     }
 
     @Override
-    public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
+    public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
         TallBlock.playerWillDestroy(level, pos, state, player);
-        return super.playerWillDestroy(level, pos, state, player);
+        super.playerWillDestroy(level, pos, state, player);
     }
 
     @Override
-    protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
+    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
         TallBlock.onRemove(state, level, pos, newState);
         super.onRemove(state, level, pos, newState, movedByPiston);
     }
 
     @Override
-    protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         return TallBlock.isUpper(state) ? UPPER : LOWER;
     }
 
@@ -153,9 +149,15 @@ public class ExperiencePylonBlock extends BaseEntityBlock {
 
     /** Opens the UI: with an empty hand, or anything the pylon doesn't trade experience with. */
     @Override
-    protected InteractionResult useWithoutItem(
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand,
+                                 BlockHitResult hit) {
+        return BlockInteractions.use(state, level, pos, player, hand, hit, this::useItemOn,
+                this::useWithoutItem);
+    }
+
+        public InteractionResult useWithoutItem(
             BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
-        if (!level.isClientSide() && blockEntity(level, pos, state) instanceof ExperiencePylonBlockEntity be
+        if (!level.isClientSide() && (Object) blockEntity(level, pos, state) instanceof ExperiencePylonBlockEntity be
                 && player instanceof ServerPlayer sp) {
             BlockPos lower = be.getBlockPos();
             MenuRegistry.openExtendedMenu(sp, be, buf -> buf.writeBlockPos(lower));
@@ -163,8 +165,7 @@ public class ExperiencePylonBlock extends BaseEntityBlock {
         return InteractionResult.SUCCESS;
     }
 
-    @Override
-    protected ItemInteractionResult useItemOn(
+        public ItemInteractionResult useItemOn(
             ItemStack stack,
             BlockState state,
             Level level,

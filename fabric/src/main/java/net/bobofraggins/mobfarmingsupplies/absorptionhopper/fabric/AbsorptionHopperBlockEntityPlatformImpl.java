@@ -75,7 +75,7 @@ public final class AbsorptionHopperBlockEntityPlatformImpl {
 
     private static boolean pushFluid(AbsorptionHopperBlockEntity be, Storage<FluidVariant> dest) {
         long toSend = Math.min(TransferSchedule.perTransfer(MFSConfig.getHopperFluidPerTick()), be.tankAmount);
-        FluidVariant variant = FluidVariant.of(be.tankFluid.getFluid(), be.tankFluid.getPatch());
+        FluidVariant variant = FluidVariant.of(be.tankFluid.getFluid(), be.tankFluid.getTag());
         long sent;
         try (Transaction tx = Transaction.openOuter()) {
             sent = FabricFluidUnits.insertMb(dest, variant, toSend, tx); // mB in, mB out

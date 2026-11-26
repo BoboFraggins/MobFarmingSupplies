@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.mobhead;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.ItemComponents;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
@@ -19,7 +20,7 @@ public class MobHeadItemRenderer implements SpecialModelRenderer<EntityType<?>> 
     @Nullable
     @Override
     public EntityType<?> extractArgument(ItemStack stack) {
-        return stack.get(Registration.MOB_HEAD_TYPE.get());
+        return ItemComponents.get(stack, Registration.MOB_HEAD_TYPE.get());
     }
 
     @Override

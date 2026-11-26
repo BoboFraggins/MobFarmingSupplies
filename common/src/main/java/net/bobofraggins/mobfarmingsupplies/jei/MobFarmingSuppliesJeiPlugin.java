@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.jei;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.ItemComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.EntityType;
 import mezz.jei.api.ingredients.subtypes.UidContext;
@@ -46,7 +47,7 @@ import net.minecraft.world.item.ItemStack;
 public class MobFarmingSuppliesJeiPlugin implements IModPlugin {
 
     private static final ResourceLocation PLUGIN_ID =
-            ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "jei_plugin");
+            new ResourceLocation(MobFarmingSuppliesCommon.MODID, "jei_plugin");
 
     @Override
     public ResourceLocation getPluginUid() {
@@ -96,12 +97,12 @@ public class MobFarmingSuppliesJeiPlugin implements IModPlugin {
         reg.registerSubtypeInterpreter(Registration.MOB_HEAD_ITEM.get(), new ISubtypeInterpreter<>() {
             @Override
             public Object getSubtypeData(ItemStack stack, UidContext context) {
-                return stack.get(Registration.MOB_HEAD_TYPE.get());
+                return ItemComponents.get(stack, Registration.MOB_HEAD_TYPE.get());
             }
 
             @Override
             public String getLegacyStringSubtypeInfo(ItemStack stack, UidContext context) {
-                EntityType<?> type = stack.get(Registration.MOB_HEAD_TYPE.get());
+                EntityType<?> type = ItemComponents.get(stack, Registration.MOB_HEAD_TYPE.get());
                 return type == null ? "" : BuiltInRegistries.ENTITY_TYPE.getKey(type).toString();
             }
         });
@@ -126,7 +127,7 @@ public class MobFarmingSuppliesJeiPlugin implements IModPlugin {
     /** Our own crafting recipes that JEI's crafting page needs help showing. */
     @Override
     public void registerVanillaCategoryExtensions(IVanillaCategoryExtensionRegistration reg) {
-        reg.getCraftingCategory().addExtension(SkullLightsRecipe.class, new SkullLightsCraftingExtension());
+        reg.getCraftingCategory().addCategoryExtension(SkullLightsRecipe.class, SkullLightsCraftingExtension::new);
     }
 
     @Override
@@ -168,22 +169,18 @@ public class MobFarmingSuppliesJeiPlugin implements IModPlugin {
         }
     }
 
-    /** The Upgrade Station's recipes the server sent this client (1.21.1 sends every recipe). */
+    /** The Upgrade Station's recipes the server sent this client (1.20.1 sends every recipe). */
     private static List<net.bobofraggins.mobfarmingsupplies.upgradestation.UpgradingRecipe> upgradingRecipes() {
         var level = net.minecraft.client.Minecraft.getInstance().level;
         if (level == null) return List.of();
-        return level.getRecipeManager().getAllRecipesFor(Registration.UPGRADING_TYPE.get()).stream()
-                .map(holder -> holder.value())
-                .toList();
+        return level.getRecipeManager().getAllRecipesFor(Registration.UPGRADING_TYPE.get()).stream().toList();
     }
 
-    /** The incubating recipes the server sent this client (1.21.1 sends every recipe). */
+    /** The incubating recipes the server sent this client (1.20.1 sends every recipe). */
     private static List<IncubatingRecipe> incubatingRecipes() {
         var level = net.minecraft.client.Minecraft.getInstance().level;
         if (level == null) return List.of();
-        return level.getRecipeManager().getAllRecipesFor(Registration.INCUBATING_TYPE.get()).stream()
-                .map(holder -> holder.value())
-                .toList();
+        return level.getRecipeManager().getAllRecipesFor(Registration.INCUBATING_TYPE.get()).stream().toList();
     }
 
     /** Lets the dev command runner open a recipe or uses page ({@code RECIPES <item>}, {@code USES <item>}). */

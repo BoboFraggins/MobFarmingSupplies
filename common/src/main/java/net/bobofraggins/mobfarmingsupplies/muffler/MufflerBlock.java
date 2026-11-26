@@ -1,6 +1,7 @@
 package net.bobofraggins.mobfarmingsupplies.muffler;
 
-import com.mojang.serialization.MapCodec;
+import net.minecraft.world.InteractionHand;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.BlockInteractions;
 import dev.architectury.registry.menu.MenuRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
@@ -23,7 +24,6 @@ import net.minecraft.world.phys.shapes.VoxelShape;
  */
 public class MufflerBlock extends Block implements EntityBlock {
 
-    public static final MapCodec<MufflerBlock> CODEC = simpleCodec(MufflerBlock::new);
 
     private static final VoxelShape SHAPE = Block.box(4, 4, 4, 12, 12, 12);
 
@@ -31,13 +31,9 @@ public class MufflerBlock extends Block implements EntityBlock {
         super(props);
     }
 
-    @Override
-    protected MapCodec<MufflerBlock> codec() {
-        return CODEC;
-    }
 
     @Override
-    protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         return SHAPE;
     }
 
@@ -45,9 +41,15 @@ public class MufflerBlock extends Block implements EntityBlock {
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new MufflerBlockEntity(pos, state);
     }
-
     @Override
-    protected InteractionResult useWithoutItem(
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand,
+                                 BlockHitResult hit) {
+        return BlockInteractions.use(state, level, pos, player, hand, hit, null,
+                this::useWithoutItem);
+    }
+
+
+        public InteractionResult useWithoutItem(
             BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
         if (!level.isClientSide() && level.getBlockEntity(pos) instanceof MufflerBlockEntity be
                 && player instanceof ServerPlayer sp) {

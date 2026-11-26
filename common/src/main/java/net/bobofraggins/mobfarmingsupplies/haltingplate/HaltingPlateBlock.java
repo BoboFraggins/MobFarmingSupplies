@@ -1,6 +1,5 @@
 package net.bobofraggins.mobfarmingsupplies.haltingplate;
 
-import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -27,7 +26,6 @@ import net.minecraft.world.phys.shapes.VoxelShape;
  */
 public class HaltingPlateBlock extends Block {
 
-    public static final MapCodec<HaltingPlateBlock> CODEC = simpleCodec(HaltingPlateBlock::new);
 
     /**
      * Movement multiplier while standing on the plate - next to nothing. Not zero: Entity#move only
@@ -54,10 +52,6 @@ public class HaltingPlateBlock extends Block {
         super(props);
     }
 
-    @Override
-    public MapCodec<HaltingPlateBlock> codec() {
-        return CODEC;
-    }
 
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext ctx) {
@@ -65,7 +59,7 @@ public class HaltingPlateBlock extends Block {
     }
 
     @Override
-    protected void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
+    public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
         if (!(entity instanceof LivingEntity) || entity.isShiftKeyDown()) return;
         // Judged by where the entity was at the start of this tick, not after this tick's move:
         // a hard push can carry it past the edge (and off the ground) within that one move.
@@ -101,7 +95,7 @@ public class HaltingPlateBlock extends Block {
         double newX = entity.xo;
         double newZ = entity.zo;
         if (toCenter > 1.0E-6) {
-            double along = Math.clamp((moveX * inX + moveZ * inZ) / toCenter, 0.0, toCenter);
+            double along = net.minecraft.util.Mth.clamp((moveX * inX + moveZ * inZ) / toCenter, 0.0, toCenter);
             newX += inX / toCenter * along;
             newZ += inZ / toCenter * along;
         }

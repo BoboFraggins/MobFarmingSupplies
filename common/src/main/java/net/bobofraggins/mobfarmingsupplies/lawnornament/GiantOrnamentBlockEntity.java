@@ -1,10 +1,13 @@
 package net.bobofraggins.mobfarmingsupplies.lawnornament;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.ImplicitComponents;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.ItemComponents;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.DataComponentInput;
 import net.bobofraggins.mobfarmingsupplies.register.MFSRegistryHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.component.DataComponentMap;
-import net.minecraft.core.component.DataComponents;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.DataComponentMap;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -15,7 +18,7 @@ import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.item.component.ResolvableProfile;
+import com.mojang.authlib.GameProfile;
 import net.minecraft.world.level.block.state.BlockState;
 import net.bobofraggins.mobfarmingsupplies.shared.nbt.ValueInput;
 import net.bobofraggins.mobfarmingsupplies.shared.nbt.ValueOutput;
@@ -33,7 +36,7 @@ import org.jetbrains.annotations.Nullable;
  * {@code giant_skeleton_lawn_ornament}: that id is already saved in worlds and in the village
  * yard template.
  */
-public class GiantOrnamentBlockEntity extends BlockEntity {
+public class GiantOrnamentBlockEntity extends BlockEntity implements ImplicitComponents {
 
     /** How near a player must be to be watched. */
     static final double WATCH_RANGE = 8.0;
@@ -46,7 +49,7 @@ public class GiantOrnamentBlockEntity extends BlockEntity {
     /** The NBT key of the owner, also written by {@link OrnamentSwapProcessor}. */
     static final String TAG_PROFILE = "profile";
 
-    @Nullable private ResolvableProfile owner;
+    @Nullable private GameProfile owner;
 
     private float headYaw, headPitch;
     private float prevHeadYaw, prevHeadPitch;
@@ -86,12 +89,12 @@ public class GiantOrnamentBlockEntity extends BlockEntity {
     }
 
     @Nullable
-    public ResolvableProfile owner() {
+    public GameProfile owner() {
         return owner;
     }
 
     /** Gives the ornament an owner, once (a Giant Player Lawn Ornament keeps its first). */
-    void claim(ResolvableProfile profile) {
+    void claim(GameProfile profile) {
         if (owner != null) return;
         owner = profile;
         setChanged();
@@ -99,29 +102,27 @@ public class GiantOrnamentBlockEntity extends BlockEntity {
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.saveAdditional(tag, registries);
-        ValueOutput output = new ValueOutput(tag, registries);
-        if (owner != null) output.store(TAG_PROFILE, ResolvableProfile.CODEC, owner);
+    protected void saveAdditional(CompoundTag tag) {
+        super.saveAdditional(tag);
+        ValueOutput output = new ValueOutput(tag);
+        if (owner != null) output.store(TAG_PROFILE, net.bobofraggins.mobfarmingsupplies.shared.compat.MFSCodecs.GAME_PROFILE, owner);
     }
 
     @Override
-    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
-        ValueInput input = new ValueInput(tag, registries);
-        owner = input.read(TAG_PROFILE, ResolvableProfile.CODEC).orElse(null);
+    public void load(CompoundTag tag) {
+        super.load(tag);
+        ValueInput input = new ValueInput(tag);
+        owner = input.read(TAG_PROFILE, net.bobofraggins.mobfarmingsupplies.shared.compat.MFSCodecs.GAME_PROFILE).orElse(null);
     }
 
     @Override
-    protected void collectImplicitComponents(DataComponentMap.Builder components) {
-        super.collectImplicitComponents(components);
+    public void collectImplicitComponents(DataComponentMap.Builder components) {
         if (owner != null) components.set(DataComponents.PROFILE, owner);
     }
 
     @Override
-    protected void applyImplicitComponents(BlockEntity.DataComponentInput input) {
-        super.applyImplicitComponents(input);
-        ResolvableProfile profile = input.get(DataComponents.PROFILE);
+    public void applyImplicitComponents(DataComponentInput input) {
+        GameProfile profile = input.get(DataComponents.PROFILE);
         if (profile != null) owner = profile;
     }
 
@@ -132,8 +133,8 @@ public class GiantOrnamentBlockEntity extends BlockEntity {
     }
 
     @Override
-    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
-        return saveWithoutMetadata(registries);
+    public CompoundTag getUpdateTag() {
+        return saveWithoutMetadata();
     }
 
     @Override

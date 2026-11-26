@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.mobhead;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.ItemComponents;
 import dev.architectury.event.EventResult;
 import dev.architectury.event.events.common.EntityEvent;
 import net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommon;
@@ -26,9 +27,6 @@ import net.minecraft.world.level.GameRules;
  */
 public final class BeheadingDrops {
 
-    public static final ResourceKey<Enchantment> GUILLOTINE = ResourceKey.create(Registries.ENCHANTMENT,
-            ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "guillotine"));
-
     private BeheadingDrops() {}
 
     public static void register() {
@@ -41,7 +39,7 @@ public final class BeheadingDrops {
         ItemStack weapon = killer.getMainHandItem();
         boolean harvester = weapon.getItem() instanceof HarvesterSword;
         int beheadingLevel = harvester
-                ? weapon.getOrDefault(Registration.BEHEADING_LEVEL.get(), 0)
+                ? ItemComponents.getOrDefault(weapon, Registration.BEHEADING_LEVEL.get(), 0)
                 : guillotineLevel(level, weapon, source, killer);
         if (beheadingLevel <= 0 || level.getRandom().nextInt(10) >= beheadingLevel) return EventResult.pass();
         // Mobs follow the mob-loot rule; players always lose their head.
@@ -55,8 +53,6 @@ public final class BeheadingDrops {
     /** The Guillotine level of {@code weapon}, if {@code killer} struck the killing blow with it (not, say, an arrow). */
     private static int guillotineLevel(ServerLevel level, ItemStack weapon, DamageSource source, Player killer) {
         if (source.getDirectEntity() != killer) return 0;
-        return level.registryAccess().registryOrThrow(Registries.ENCHANTMENT).getHolder(GUILLOTINE)
-                .map(guillotine -> EnchantmentHelper.getItemEnchantmentLevel(guillotine, weapon))
-                .orElse(0);
+        return EnchantmentHelper.getItemEnchantmentLevel(Registration.GUILLOTINE.get(), weapon);
     }
 }

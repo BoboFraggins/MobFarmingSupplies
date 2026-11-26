@@ -1,0 +1,141 @@
+apply plugin: 'io.github.goooler.shadow'
+
+architectury {
+    forge()
+}
+
+configurations {
+    common
+    shadowCommon
+    compileClasspath.extendsFrom common
+    runtimeClasspath.extendsFrom common
+    developmentForge.extendsFrom common
+
+    // Local mods added here show up in dev runs without being a compile dependency
+    localRuntime
+    runtimeClasspath.extendsFrom localRuntime
+}
+
+loom {
+    forge {
+        mixinConfig 'mobfarmingsupplies-common.mixins.json', 'mobfarmingsupplies-forge.mixins.json'
+    }
+    runs {
+        client {
+            client()
+            property 'forge.enabledGameTestNamespaces', mod_id
+        }
+        server {
+            server()
+            programArg '--nogui'
+            property 'forge.enabledGameTestNamespaces', mod_id
+        }
+        // Loads the mod and its data, runs the game tests (gametest.MFSGameTests) and stops.
+        gameTestServer {
+            server()
+            property 'forge.enableGameTest', 'true'
+            property 'forge.gameTestServer', 'true'
+            property 'forge.enabledGameTestNamespaces', mod_id
+        }
+        configureEach {
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+        }
+    }
+}
+
+sourceSets.main.resources { srcDir 'src/generated/resources' }
+
+repositories {
+    maven {
+        name = 'Curios Maven'
+        url = 'https://maven.theillusivec4.top'
+        content {
+            includeGroup 'top.theillusivec4.curios'
+        }
+    }
+}
+
+dependencies {
+    forge "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+
+    modApi "dev.architectury:architectury-forge:${architectury_version}"
+
+    // Forge 1.20.1 doesn't ship MixinExtras (the common mixins use it): bundled in the jar.
+    compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:${mixinextras_version}"))
+    implementation(include("io.github.llamalad7:mixinextras-forge:${mixinextras_version}"))
+
+    modCompileOnly "maven.modrinth:jade:11.13.3+forge"
+    modCompileOnly "maven.modrinth:jei:yLc3MV2y"
+
+    // Curios soft dependency.
+    modCompileOnly "top.theillusivec4.curios:curios-forge:5.14.1+1.20.1:api"
+
+
+    common(project(path: ':common', configuration: 'namedElements')) { transitive false }
+    shadowCommon(project(path: ':common', configuration: 'transformProductionForge')) { transitive false }
+}
+
+tasks.withType(ProcessResources).configureEach {
+    var replaceProperties = [
+        minecraft_version      : minecraft_version,
+        minecraft_version_range: minecraft_version_range,
+        forge_version          : forge_version,
+        forge_version_min      : forge_version_min,
+        loader_version_range   : forge_loader_version_range,
+        mod_id                 : mod_id,
+        mod_name               : mod_name,
+        mod_license            : mod_license,
+        mod_version            : mod_version,
+        architectury_version   : architectury_version,
+        architectury_version_min: architectury_version_min,
+    ]
+    inputs.properties replaceProperties
+    filesMatching('META-INF/mods.toml') {
+        expand replaceProperties
+    }
+}
+
+// 1.20.1 is obfuscated: the shadow jar holds development (Mojang) names, and remapJar turns it into
+// the release jar, mobfarmingsupplies-<version>-forge.jar.
+shadowJar {
+    exclude 'fabric.mod.json'
+    // Game tests and their structure are development only.
+    exclude 'net/bobofraggins/mobfarmingsupplies/gametest/**'
+    exclude 'net/bobofraggins/mobfarmingsupplies/*/gametest/**'
+    exclude 'data/mobfarmingsupplies/structures/gametest/**'
+    exclude 'architectury.common.json'
+    configurations = [project.configurations.shadowCommon]
+    archiveBaseName = mod_id
+    archiveClassifier = 'dev-shadow'
+}
+
+remapJar {
+    inputFile.set shadowJar.archiveFile
+    dependsOn shadowJar
+    archiveBaseName = mod_id
+    archiveClassifier = 'forge'
+}
+
+jar {
+    archiveClassifier = 'dev'
+}
+
+sourcesJar {
+    def commonSources = project(':common').sourcesJar
+    dependsOn commonSources
+    from commonSources.archiveFile.map { zipTree(it) }
+}
+
+publishing {
+    publications {
+        register('mavenForge', MavenPublication) {
+            artifactId = "${mod_id}-forge"
+            artifact(remapJar) { classifier null }
+            artifact(sourcesJar) { classifier 'sources' }
+        }
+    }
+    repositories {
+        maven { url "file://${project.projectDir}/../repo" }
+    }
+}

@@ -4,13 +4,12 @@ import dev.architectury.fluid.FluidStack;
 import net.bobofraggins.mobfarmingsupplies.essencehopper.Essence;
 import net.bobofraggins.mobfarmingsupplies.essencehopper.EssenceBottleItem;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
-import net.minecraft.core.component.DataComponents;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
@@ -31,7 +30,7 @@ public final class TankBottleTransfer {
 
     private static final long BOTTLE_MB = 250;
     private static final TagKey<Fluid> EXPERIENCE_TAG =
-            TagKey.create(Registries.FLUID, ResourceLocation.fromNamespaceAndPath("c", "experience"));
+            TagKey.create(Registries.FLUID, new ResourceLocation("c", "experience"));
 
     private TankBottleTransfer() {}
 
@@ -61,7 +60,7 @@ public final class TankBottleTransfer {
             if (simulated.getAmount() >= BOTTLE_MB) {
                 if (simulated.getRawFluid() == Fluids.WATER) {
                     be.extract(BOTTLE_MB, false);
-                    return PotionContents.createItemStack(Items.POTION, Potions.WATER);
+                    return net.minecraft.world.item.alchemy.PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.WATER);
                 }
                 if (simulated.getFluid().builtInRegistryHolder().is(EXPERIENCE_TAG)) {
                     be.extract(BOTTLE_MB, false);
@@ -77,8 +76,7 @@ public final class TankBottleTransfer {
         }
 
         if (input.is(Items.POTION)) {
-            PotionContents contents = input.get(DataComponents.POTION_CONTENTS);
-            if (contents == null || !contents.is(Potions.WATER)) return null;
+            if (net.minecraft.world.item.alchemy.PotionUtils.getPotion(input) != Potions.WATER) return null;
             FluidStack water = FluidStack.create(Fluids.WATER, BOTTLE_MB);
             long inserted = be.insert(water, BOTTLE_MB, true);
             if (inserted >= BOTTLE_MB) {

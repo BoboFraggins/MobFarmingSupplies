@@ -17,7 +17,7 @@ public class BiosludgeItem extends Item {
 
     @SuppressWarnings("deprecation")
     @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipAdderLines, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, @org.jetbrains.annotations.Nullable net.minecraft.world.level.Level context, List<Component> tooltipAdderLines, TooltipFlag flag) {
         Consumer<Component> tooltipAdder = tooltipAdderLines::add;
         super.appendHoverText(stack, context, tooltipAdderLines, flag);
         tooltipAdder.accept(Component.translatable("item.mobfarmingsupplies.biosludge.tooltip")

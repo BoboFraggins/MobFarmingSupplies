@@ -96,7 +96,7 @@ public class ColorWorkstationBlockEntity extends TankBlockEntity {
         }
 
         private int count() {
-            return Math.min(dyesAvailable(), DYES.get(0).getDefaultMaxStackSize());
+            return Math.min(dyesAvailable(), DYES.get(0).getMaxStackSize());
         }
 
         @Override

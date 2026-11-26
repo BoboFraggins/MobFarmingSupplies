@@ -1,5 +1,7 @@
 package net.bobofraggins.mobfarmingsupplies.blockbreaker;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.ItemComponents;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.MFSCodecs;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -16,7 +18,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.FrontAndTop;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.component.DataComponents;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -34,7 +36,6 @@ import net.minecraft.util.Unit;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.component.Tool;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
@@ -114,7 +115,7 @@ public class BlockBreakerBlockEntity extends BlockEntity implements SideOriented
         if (targetBe instanceof Container) return;
         if (!allowsBlock(state, level, target)) return;
         ItemStack tool = tool(level);
-        if (state.requiresCorrectToolForDrops() && !tool.isCorrectToolForDrops(state)) return;
+        if (state.requiresCorrectToolForDrops() && !canHarvest(state)) return;
         List<ItemStack> drops = silkTouch && targetBe instanceof SpawnerBlockEntity spawner
                 ? new ArrayList<>(List.of(silkTouchedSpawner(level, spawner)))
                 : Block.getDrops(state, level, target, targetBe, null, tool);
@@ -126,23 +127,25 @@ public class BlockBreakerBlockEntity extends BlockEntity implements SideOriented
 
     /**
      * The tool its drops are worked out with: a netherite pickaxe (so loot tables that look for a
-     * pickaxe, or for Silk Touch, see one), whose tool rules make it the right tool for every block
-     * mined with a pickaxe, axe, shovel or hoe, of any tier. Tiers are tags of blocks a tool can't
-     * harvest ({@code incorrect_for_netherite_tool} and modded ones above it); with no such rule
-     * nothing is too hard for it. Enchanted with Silk Touch when that's on.
+     * pickaxe, or for Silk Touch, see one), enchanted with Silk Touch when that's on.
      */
     private ItemStack tool(Level level) {
         ItemStack tool = new ItemStack(Items.NETHERITE_PICKAXE);
-        List<Tool.Rule> rules = new ArrayList<>();
+        if (silkTouch) tool.enchant(Enchantments.SILK_TOUCH, 1);
+        return tool;
+    }
+
+    /**
+     * Whether the breaker counts as the right tool for {@code state}: it is for every block mined
+     * with a pickaxe, axe, shovel or hoe, of any tier (1.20.5+ gives the tool rules saying so;
+     * 1.20.1 has no tool component, so it's checked here).
+     */
+    private static boolean canHarvest(BlockState state) {
         for (TagKey<Block> mineable : List.of(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.MINEABLE_WITH_AXE,
                 BlockTags.MINEABLE_WITH_SHOVEL, BlockTags.MINEABLE_WITH_HOE)) {
-            rules.add(Tool.Rule.minesAndDrops(mineable, 9f));
+            if (state.is(mineable)) return true;
         }
-        tool.set(DataComponents.TOOL, new Tool(rules, 1f, 1));
-        if (silkTouch) {
-            tool.enchant(level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.SILK_TOUCH), 1);
-        }
-        return tool;
+        return false;
     }
 
     /**
@@ -151,8 +154,8 @@ public class BlockBreakerBlockEntity extends BlockEntity implements SideOriented
      */
     private static ItemStack silkTouchedSpawner(Level level, SpawnerBlockEntity spawner) {
         ItemStack item = new ItemStack(Items.SPAWNER);
-        BlockItem.setBlockEntityData(item, spawner.getType(), spawner.saveCustomOnly(level.registryAccess()));
-        item.set(net.bobofraggins.mobfarmingsupplies.register.Registration.SILK_TOUCHED_SPAWNER.get(), Unit.INSTANCE);
+        BlockItem.setBlockEntityData(item, spawner.getType(), spawner.saveWithoutMetadata());
+        ItemComponents.set(item, net.bobofraggins.mobfarmingsupplies.register.Registration.SILK_TOUCHED_SPAWNER.get(), Unit.INSTANCE);
         return item;
     }
 
@@ -253,30 +256,30 @@ public class BlockBreakerBlockEntity extends BlockEntity implements SideOriented
     // ── NBT ──────────────────────────────────────────────────────────────────────
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.saveAdditional(tag, registries);
-        ValueOutput output = new ValueOutput(tag, registries);
+    protected void saveAdditional(CompoundTag tag) {
+        super.saveAdditional(tag);
+        ValueOutput output = new ValueOutput(tag);
         SideLayout.save(output, sideOrientation);
         output.putInt("Sides", packedSides());
         output.putBoolean("AndMode", andMode);
         output.putBoolean("SilkTouch", silkTouch);
         List<ItemStack> stacks = new ArrayList<>(FILTER_SLOTS);
         for (int i = 0; i < FILTER_SLOTS; i++) stacks.add(filters.getItem(i));
-        output.store("Filters", ItemStack.OPTIONAL_CODEC.listOf(), stacks);
+        output.store("Filters", MFSCodecs.OPTIONAL_ITEM_STACK.listOf(), stacks);
     }
 
     @Override
-    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
-        ValueInput input = new ValueInput(tag, registries);
+    public void load(CompoundTag tag) {
+        super.load(tag);
+        ValueInput input = new ValueInput(tag);
         sideOrientation = SideLayout.load(input);
         int packed = input.getIntOr("Sides", 0);
         for (Direction d : Direction.values()) sides[d.get3DDataValue()] = OmniHopperBlockEntity.unpackSide(packed, d);
         andMode = input.getBooleanOr("AndMode", true);
         silkTouch = input.getBooleanOr("SilkTouch", false);
-        input.read("Filters", ItemStack.OPTIONAL_CODEC.listOf()).ifPresent(loaded -> {
+        input.read("Filters", MFSCodecs.OPTIONAL_ITEM_STACK.listOf()).ifPresent(loaded -> {
             for (int i = 0; i < FILTER_SLOTS; i++) {
-                filters.getItems().set(i, i < loaded.size() ? loaded.get(i) : ItemStack.EMPTY);
+                filters.setItem(i, i < loaded.size() ? loaded.get(i) : ItemStack.EMPTY);
             }
         });
         stateDirty = true; // block state is re-synced on the next server tick
@@ -285,8 +288,8 @@ public class BlockBreakerBlockEntity extends BlockEntity implements SideOriented
     // ── Client sync ───────────────────────────────────────────────────────────────
 
     @Override
-    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
-        return saveWithoutMetadata(registries);
+    public CompoundTag getUpdateTag() {
+        return saveWithoutMetadata();
     }
 
     @Override

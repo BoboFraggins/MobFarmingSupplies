@@ -1,21 +1,23 @@
 package net.bobofraggins.mobfarmingsupplies.skulllights;
 
+import net.minecraft.resources.ResourceLocation;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.ItemComponents;
 import com.mojang.serialization.MapCodec;
 import java.util.ArrayList;
 import java.util.List;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.bobofraggins.mobfarmingsupplies.shared.recipe.ShapedRecipeCodecs;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.FriendlyByteBuf;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.StreamCodec;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
-import net.minecraft.world.item.crafting.CraftingInput;
+import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
-import net.minecraft.world.item.crafting.ShapedRecipePattern;
+import net.bobofraggins.mobfarmingsupplies.shared.recipe.ShapedRecipeCodecs.ShapedRecipePattern;
 
 /**
  * The String of Skull Lights recipe: shaped (skulls along the top, a dye in the middle), and the
@@ -26,16 +28,14 @@ import net.minecraft.world.item.crafting.ShapedRecipePattern;
  */
 public class SkullLightsRecipe extends ShapedRecipe implements ShapedRecipeCodecs.Shaped {
 
-    public static final MapCodec<SkullLightsRecipe> MAP_CODEC = ShapedRecipeCodecs.mapCodec(SkullLightsRecipe::new);
-    public static final StreamCodec<RegistryFriendlyByteBuf, SkullLightsRecipe> STREAM_CODEC =
-            ShapedRecipeCodecs.streamCodec(SkullLightsRecipe::new);
+    public static final RecipeSerializer<SkullLightsRecipe> SERIALIZER = ShapedRecipeCodecs.serializer(SkullLightsRecipe::new);
 
     private final ShapedRecipePattern pattern;
     private final ItemStack result;
 
-    public SkullLightsRecipe(String group, CraftingBookCategory category, ShapedRecipePattern pattern,
+    public SkullLightsRecipe(ResourceLocation id, String group, CraftingBookCategory category, ShapedRecipePattern pattern,
                              ItemStack result, boolean showNotification) {
-        super(group, category, pattern, result, showNotification);
+        super(id, group, category, pattern.width(), pattern.height(), pattern.ingredients(), result, showNotification);
         this.pattern = pattern;
         this.result = result;
     }
@@ -51,13 +51,13 @@ public class SkullLightsRecipe extends ShapedRecipe implements ShapedRecipeCodec
     }
 
     @Override
-    public ItemStack assemble(CraftingInput input, HolderLookup.Provider registries) {
+    public ItemStack assemble(CraftingContainer input, net.minecraft.core.RegistryAccess registries) {
         // The grid is the 3x3 pattern exactly: skulls on row 0, the dye at the centre.
         List<ItemStack> skulls = new ArrayList<>(SkullLights.PATTERN_SIZE);
-        for (int x = 0; x < SkullLights.PATTERN_SIZE; x++) skulls.add(input.getItem(x, 0));
-        DyeColor color = input.getItem(1, 1).getItem() instanceof DyeItem dye ? dye.getDyeColor() : DyeColor.WHITE;
+        for (int x = 0; x < SkullLights.PATTERN_SIZE; x++) skulls.add(input.getItem(x + 0 * input.getWidth()));
+        DyeColor color = input.getItem(1 + 1 * input.getWidth()).getItem() instanceof DyeItem dye ? dye.getDyeColor() : DyeColor.WHITE;
         ItemStack string = result.copy();
-        string.set(Registration.SKULL_LIGHTS.get(), new SkullLights(skulls, color));
+        ItemComponents.set(string, Registration.SKULL_LIGHTS.get(), new SkullLights(skulls, color));
         return string;
     }
 

@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.absorptionhopper;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.MFSCodecs;
 import net.bobofraggins.mobfarmingsupplies.shared.TransferSchedule;
 import net.bobofraggins.mobfarmingsupplies.MFSConfig;
 import net.bobofraggins.mobfarmingsupplies.shared.sides.SideLayout;
@@ -214,7 +215,7 @@ public class AbsorptionHopperBlockEntity extends BlockEntity implements SideOrie
         for (int i = 0; i < SLOT_COUNT; i++) {
             ItemStack existing = inventory.getItem(i);
             if (existing.isEmpty()) return true;
-            if (ItemStack.isSameItemSameComponents(existing, incoming)
+            if (ItemStack.isSameItemSameTags(existing, incoming)
                     && existing.getCount() < existing.getMaxStackSize()) return true;
         }
         return false;
@@ -223,7 +224,7 @@ public class AbsorptionHopperBlockEntity extends BlockEntity implements SideOrie
     private void insertItem(ItemStack incoming) {
         for (int i = 0; i < SLOT_COUNT && !incoming.isEmpty(); i++) {
             ItemStack existing = inventory.getItem(i);
-            if (!existing.isEmpty() && ItemStack.isSameItemSameComponents(existing, incoming)) {
+            if (!existing.isEmpty() && ItemStack.isSameItemSameTags(existing, incoming)) {
                 int space = existing.getMaxStackSize() - existing.getCount();
                 if (space > 0) {
                     int take = Math.min(incoming.getCount(), space);
@@ -340,16 +341,16 @@ public class AbsorptionHopperBlockEntity extends BlockEntity implements SideOrie
     // ── NBT ──────────────────────────────────────────────────────────────────────
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.saveAdditional(tag, registries);
-        ValueOutput output = new ValueOutput(tag, registries);
+    protected void saveAdditional(CompoundTag tag) {
+        super.saveAdditional(tag);
+        ValueOutput output = new ValueOutput(tag);
         SideLayout.save(output, sideOrientation);
         java.util.List<ItemStack> stacks = new java.util.ArrayList<>(SLOT_COUNT);
         for (int i = 0; i < SLOT_COUNT; i++) stacks.add(inventory.getItem(i));
-        output.store("Items", ItemStack.OPTIONAL_CODEC.listOf(), stacks);
+        output.store("Items", MFSCodecs.OPTIONAL_ITEM_STACK.listOf(), stacks);
 
         if (!tankFluid.isEmpty()) {
-            output.store("TankFluid", FluidStack.CODEC, tankFluid);
+            output.store("TankFluid", MFSCodecs.FLUID_STACK, tankFluid);
         }
         output.putInt("TankAmount", tankAmount);
 
@@ -361,17 +362,17 @@ public class AbsorptionHopperBlockEntity extends BlockEntity implements SideOrie
     }
 
     @Override
-    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
-        ValueInput input = new ValueInput(tag, registries);
+    public void load(CompoundTag tag) {
+        super.load(tag);
+        ValueInput input = new ValueInput(tag);
         sideOrientation = SideLayout.load(input);
-        input.read("Items", ItemStack.OPTIONAL_CODEC.listOf()).ifPresent(loaded -> {
+        input.read("Items", MFSCodecs.OPTIONAL_ITEM_STACK.listOf()).ifPresent(loaded -> {
             for (int i = 0; i < Math.min(loaded.size(), SLOT_COUNT); i++) {
                 inventory.setItem(i, loaded.get(i));
             }
         });
 
-        tankFluid = input.read("TankFluid", FluidStack.CODEC)
+        tankFluid = input.read("TankFluid", MFSCodecs.FLUID_STACK)
                 .filter(f -> !f.isEmpty())
                 .map(f -> f.copyWithAmount(1))
                 .orElse(FluidStack.empty());
@@ -388,8 +389,8 @@ public class AbsorptionHopperBlockEntity extends BlockEntity implements SideOrie
     // ── Client sync ───────────────────────────────────────────────────────────────
 
     @Override
-    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
-        return saveWithoutMetadata(registries);
+    public CompoundTag getUpdateTag() {
+        return saveWithoutMetadata();
     }
 
     @Override

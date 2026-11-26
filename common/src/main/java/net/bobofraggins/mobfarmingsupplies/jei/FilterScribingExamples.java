@@ -1,10 +1,11 @@
 package net.bobofraggins.mobfarmingsupplies.jei;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.ItemComponents;
 import net.bobofraggins.mobfarmingsupplies.itemfilter.ItemFilterData;
 import net.bobofraggins.mobfarmingsupplies.itemfilter.ItemMatcher;
 import net.bobofraggins.mobfarmingsupplies.itemfilter.ItemMatchers;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
-import net.minecraft.core.component.DataComponents;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -34,7 +35,7 @@ public final class FilterScribingExamples {
 
     public static Recipe create() {
         ItemStack excalibur = new ItemStack(Items.DIAMOND_SWORD);
-        excalibur.set(DataComponents.CUSTOM_NAME, Component.literal("Excalibur"));
+        excalibur.setHoverName(Component.literal("Excalibur"));
 
         // Is / Is Not is varied across the list so both toggle states are shown.
         List<Spec> specs = List.of(
@@ -65,7 +66,7 @@ public final class FilterScribingExamples {
             }
             if (row < 0) continue; // e.g. a tag another mod removed — just skip this example
             ItemStack filter = new ItemStack(Registration.ITEM_FILTER.get());
-            filter.set(Registration.ITEM_FILTER_DATA.get(), new ItemFilterData(matchers.get(row), spec.negate()));
+            ItemComponents.set(filter, Registration.ITEM_FILTER_DATA.get(), new ItemFilterData(matchers.get(row), spec.negate()));
             examples.add(new Example(spec.item(), matchers.stream().map(ItemMatcher::listLabel).toList(),
                     row, spec.negate(), filter));
         }

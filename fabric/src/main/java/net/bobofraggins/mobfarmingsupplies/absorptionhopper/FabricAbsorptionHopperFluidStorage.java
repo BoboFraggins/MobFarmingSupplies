@@ -62,9 +62,9 @@ public final class FabricAbsorptionHopperFluidStorage
         if (resource.isBlank() || maxAmount <= 0) return 0;
         if (!resource.getFluid().is(Registration.TAG_EXPERIENCE_FLUID)) return 0;
 
-        FluidStack incoming = FluidStack.create(resource.getFluid(), 1, resource.getComponents());
+        FluidStack incoming = FluidStack.create(resource.getFluid(), 1, resource.getNbt());
         if (!be.tankFluid.isEmpty()
-                && (!be.tankFluid.isFluidEqual(incoming) || !be.tankFluid.isComponentEqual(incoming))) {
+                && (!be.tankFluid.isFluidEqual(incoming) || !be.tankFluid.isTagEqual(incoming))) {
             return 0;
         }
         long space = AbsorptionHopperBlockEntity.TANK_CAPACITY - be.tankAmount;
@@ -80,8 +80,8 @@ public final class FabricAbsorptionHopperFluidStorage
     @Override
     public long extract(FluidVariant resource, long maxAmount, TransactionContext transaction) {
         if (resource.isBlank() || maxAmount <= 0 || be.tankFluid.isEmpty()) return 0;
-        FluidStack req = FluidStack.create(resource.getFluid(), 1, resource.getComponents());
-        if (!be.tankFluid.isFluidEqual(req) || !be.tankFluid.isComponentEqual(req)) return 0;
+        FluidStack req = FluidStack.create(resource.getFluid(), 1, resource.getNbt());
+        if (!be.tankFluid.isFluidEqual(req) || !be.tankFluid.isTagEqual(req)) return 0;
         long toExtract = Math.min(FabricFluidUnits.toMb(maxAmount), be.tankAmount);
         if (toExtract <= 0) return 0;
 
@@ -102,11 +102,11 @@ public final class FabricAbsorptionHopperFluidStorage
     // ── Conversion helpers ──────────────────────────────────────────────────────
 
     static FluidStack fromFabric(FluidVariant variant) {
-        return FluidStack.create(variant.getFluid(), 1, variant.getComponents());
+        return FluidStack.create(variant.getFluid(), 1, variant.getNbt());
     }
 
     static FluidVariant toFabric(FluidStack fluid) {
-        return FluidVariant.of(fluid.getFluid(), fluid.getPatch());
+        return FluidVariant.of(fluid.getFluid(), fluid.getTag());
     }
 
     // ── Inner view ──────────────────────────────────────────────────────────────

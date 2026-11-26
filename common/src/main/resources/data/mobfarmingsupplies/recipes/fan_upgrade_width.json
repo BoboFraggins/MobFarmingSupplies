@@ -1,0 +1,18 @@
+{
+  "type": "mobfarmingsupplies:upgrading",
+  "item": [
+    {
+      "tag": "forge:fences"
+    },
+    {
+      "tag": "c:fences"
+    }
+  ],
+  "input": {
+    "item": "mobfarmingsupplies:blank_upgrade"
+  },
+  "result": {
+    "item": "mobfarmingsupplies:fan_upgrade_width",
+    "count": 1
+  }
+}

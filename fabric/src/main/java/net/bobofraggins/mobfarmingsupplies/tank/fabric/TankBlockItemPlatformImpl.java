@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.tank.fabric;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.ItemComponents;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.bobofraggins.mobfarmingsupplies.tank.TankContents;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
@@ -25,7 +26,7 @@ public final class TankBlockItemPlatformImpl {
 
     public static ItemStack tryPlaceFluidInWorld(
             ItemStack stack, Player player, Level level, InteractionHand hand, BlockPos pos) {
-        TankContents c = stack.getOrDefault(Registration.TANK_CONTENTS.get(), TankContents.EMPTY);
+        TankContents c = ItemComponents.getOrDefault(stack, Registration.TANK_CONTENTS.get(), TankContents.EMPTY);
         if (c.storedFluid().isEmpty() || c.amount() < BUCKET_VOLUME) return null;
         Fluid fluid = c.storedFluid().getFluid();
         if (!(fluid instanceof FlowingFluid flowing)) return null;
@@ -33,7 +34,7 @@ public final class TankBlockItemPlatformImpl {
         BlockState state = level.getBlockState(pos);
         boolean placed;
         if (state.getBlock() instanceof LiquidBlockContainer lbc) {
-            if (!lbc.canPlaceLiquid(player, level, pos, state, fluid)) return null;
+            if (!lbc.canPlaceLiquid(level, pos, state, fluid)) return null;
             lbc.placeLiquid(level, pos, state, flowing.getSource(false));
             placed = true;
         } else if (level.isEmptyBlock(pos) || state.canBeReplaced()) {
@@ -46,7 +47,7 @@ public final class TankBlockItemPlatformImpl {
 
         if (placed) {
             ItemStack newStack = stack.copy();
-            newStack.set(Registration.TANK_CONTENTS.get(),
+            ItemComponents.set(newStack, Registration.TANK_CONTENTS.get(),
                     new TankContents(c.storedFluid(), c.amount() - BUCKET_VOLUME, c.bucketMode()));
             return newStack;
         }

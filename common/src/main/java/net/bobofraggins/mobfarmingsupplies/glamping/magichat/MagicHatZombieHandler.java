@@ -1,9 +1,10 @@
 package net.bobofraggins.mobfarmingsupplies.glamping.magichat;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.ItemComponents;
 import net.bobofraggins.mobfarmingsupplies.MFSConfig;
 import net.bobofraggins.mobfarmingsupplies.glamping.NaturalSpawnRolls;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
-import net.minecraft.core.component.DataComponents;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
@@ -11,7 +12,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.component.CustomData;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.CustomData;
 import net.minecraft.world.level.Level;
 
 /**
@@ -56,7 +57,7 @@ public final class MagicHatZombieHandler {
         wrapper.put(MagicHatItem.MOB_KEY, mobTag);
 
         ItemStack hat = new ItemStack(Registration.MAGIC_HAT_ITEM.get());
-        hat.set(DataComponents.CUSTOM_DATA, CustomData.of(wrapper));
+        ItemComponents.set(hat, DataComponents.CUSTOM_DATA, CustomData.of(wrapper));
 
         zombie.setItemSlot(EquipmentSlot.HEAD, hat);
         zombie.setDropChance(EquipmentSlot.HEAD, 1.0f);

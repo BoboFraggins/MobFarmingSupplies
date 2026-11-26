@@ -28,7 +28,7 @@ public final class MFSBrewing {
 
     /** What an Essence of Sight bottle takes to make Oresight: ores, raw ores, gems and dusts. */
     public static final TagKey<Item> ORESIGHT_INPUTS =
-            TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("mobfarmingsupplies", "oresight_inputs"));
+            TagKey.create(Registries.ITEM, new ResourceLocation("mobfarmingsupplies", "oresight_inputs"));
 
     private MFSBrewing() {}
 

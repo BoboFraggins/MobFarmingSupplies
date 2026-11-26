@@ -1,0 +1,42 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "GIG",
+    "ICI",
+    "GRG"
+  ],
+  "key": {
+    "G": [
+      {
+        "tag": "forge:nuggets/gold"
+      },
+      {
+        "tag": "c:gold_nuggets"
+      }
+    ],
+    "I": [
+      {
+        "tag": "forge:ingots/iron"
+      },
+      {
+        "tag": "c:iron_ingots"
+      }
+    ],
+    "C": [
+      {
+        "tag": "forge:ingots/copper"
+      },
+      {
+        "tag": "c:copper_ingots"
+      }
+    ],
+    "R": {
+      "item": "minecraft:redstone"
+    }
+  },
+  "result": {
+    "item": "mobfarmingsupplies:fan",
+    "count": 1
+  },
+  "category": "misc"
+}

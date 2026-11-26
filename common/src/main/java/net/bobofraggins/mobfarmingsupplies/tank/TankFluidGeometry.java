@@ -85,9 +85,9 @@ public final class TankFluidGeometry {
             float x3, float y3, float z3,
             float nx, float ny, float nz) {
         Matrix4f mat = pose.pose();
-        vc.addVertex(mat, x0, y0, z0).setColor(r, g, b, a).setUv(uLeft,  vBottom).setOverlay(overlay).setLight(light).setNormal(pose, nx, ny, nz);
-        vc.addVertex(mat, x1, y1, z1).setColor(r, g, b, a).setUv(uRight, vBottom).setOverlay(overlay).setLight(light).setNormal(pose, nx, ny, nz);
-        vc.addVertex(mat, x2, y2, z2).setColor(r, g, b, a).setUv(uRight, vTop).setOverlay(overlay).setLight(light).setNormal(pose, nx, ny, nz);
-        vc.addVertex(mat, x3, y3, z3).setColor(r, g, b, a).setUv(uLeft,  vTop).setOverlay(overlay).setLight(light).setNormal(pose, nx, ny, nz);
+        vc.vertex(mat, x0, y0, z0).color(r, g, b, a).uv(uLeft,  vBottom).overlayCoords(overlay).uv2(light).normal(pose.normal(), nx, ny, nz).endVertex();
+        vc.vertex(mat, x1, y1, z1).color(r, g, b, a).uv(uRight, vBottom).overlayCoords(overlay).uv2(light).normal(pose.normal(), nx, ny, nz).endVertex();
+        vc.vertex(mat, x2, y2, z2).color(r, g, b, a).uv(uRight, vTop).overlayCoords(overlay).uv2(light).normal(pose.normal(), nx, ny, nz).endVertex();
+        vc.vertex(mat, x3, y3, z3).color(r, g, b, a).uv(uLeft,  vTop).overlayCoords(overlay).uv2(light).normal(pose.normal(), nx, ny, nz).endVertex();
     }
 }

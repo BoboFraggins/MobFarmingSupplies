@@ -1,6 +1,7 @@
 package net.bobofraggins.mobfarmingsupplies.fan;
 
-import com.mojang.serialization.MapCodec;
+import net.minecraft.world.InteractionHand;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.BlockInteractions;
 import dev.architectury.registry.menu.MenuRegistry;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.minecraft.core.BlockPos;
@@ -42,7 +43,6 @@ import java.util.List;
  */
 public class FanBlock extends DirectionalBlock implements EntityBlock {
 
-    public static final MapCodec<FanBlock> CODEC = simpleCodec(FanBlock::new);
 
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
 
@@ -53,10 +53,6 @@ public class FanBlock extends DirectionalBlock implements EntityBlock {
                 .setValue(POWERED, false));
     }
 
-    @Override
-    public MapCodec<FanBlock> codec() {
-        return CODEC;
-    }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
@@ -81,7 +77,7 @@ public class FanBlock extends DirectionalBlock implements EntityBlock {
     // ── Redstone ───────────────────────────────────────────────────────────────
 
     @Override
-    protected void neighborChanged(BlockState state, Level level, BlockPos pos,
+    public void neighborChanged(BlockState state, Level level, BlockPos pos,
                                    Block sourceBlock, BlockPos neighborPos, boolean isMoving) {
         if (level.isClientSide()) return;
         boolean powered = level.hasNeighborSignal(pos);
@@ -103,7 +99,7 @@ public class FanBlock extends DirectionalBlock implements EntityBlock {
         if (be instanceof FanBlockEntity fan) {
             for (ItemStack drop : drops) {
                 if (drop.getItem() instanceof BlockItem) {
-                    CompoundTag beOut = fan.saveCustomOnly(params.getLevel().registryAccess());
+                    CompoundTag beOut = fan.saveWithoutMetadata();
                     BlockItem.setBlockEntityData(drop, fan.getType(), beOut);
                 }
             }
@@ -127,9 +123,15 @@ public class FanBlock extends DirectionalBlock implements EntityBlock {
     }
 
     // ── GUI ────────────────────────────────────────────────────────────────────
-
     @Override
-    protected InteractionResult useWithoutItem(
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand,
+                                 BlockHitResult hit) {
+        return BlockInteractions.use(state, level, pos, player, hand, hit, null,
+                this::useWithoutItem);
+    }
+
+
+        public InteractionResult useWithoutItem(
             BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
         if (!level.isClientSide()) {
             if (level.getBlockEntity(pos) instanceof FanBlockEntity be
@@ -142,7 +144,7 @@ public class FanBlock extends DirectionalBlock implements EntityBlock {
 
     /** Drawn from its block model (1.21.1's {@code BaseEntityBlock} defaults to invisible). */
     @Override
-    protected RenderShape getRenderShape(BlockState state) {
+    public RenderShape getRenderShape(BlockState state) {
         return RenderShape.MODEL;
     }
 }

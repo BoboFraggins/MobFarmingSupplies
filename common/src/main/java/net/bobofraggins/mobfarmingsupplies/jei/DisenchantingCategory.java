@@ -64,15 +64,18 @@ public final class DisenchantingCategory implements IRecipeCategory<Disenchantin
         var level = Minecraft.getInstance().level;
         if (level == null) return List.of();
         List<Display> out = new ArrayList<>();
-        level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT).listElements().forEach(enchantment -> {
-            List<Holder<net.minecraft.world.item.Item>> supported = new ArrayList<>();
-            enchantment.value().getSupportedItems().forEach(supported::add);
+        net.minecraft.core.registries.BuiltInRegistries.ENCHANTMENT.entrySet().forEach(entry -> {
+            net.minecraft.world.item.enchantment.Enchantment enchantment = entry.getValue();
+            List<net.minecraft.world.item.Item> supported = new ArrayList<>();
+            for (net.minecraft.world.item.Item item : net.minecraft.core.registries.BuiltInRegistries.ITEM) {
+                if (item != net.minecraft.world.item.Items.BOOK && enchantment.canEnchant(new ItemStack(item))) supported.add(item);
+            }
             if (supported.isEmpty()) return;
             // The same "random" order every time, different for each enchantment.
-            Collections.shuffle(supported, new Random(enchantment.key().location().hashCode()));
-            for (int lvl = enchantment.value().getMinLevel(); lvl <= enchantment.value().getMaxLevel(); lvl++) {
+            Collections.shuffle(supported, new Random(entry.getKey().location().hashCode()));
+            for (int lvl = enchantment.getMinLevel(); lvl <= enchantment.getMaxLevel(); lvl++) {
                 List<ItemStack> items = new ArrayList<>();
-                for (Holder<net.minecraft.world.item.Item> item : supported) {
+                for (net.minecraft.world.item.Item item : supported) {
                     ItemStack stack = new ItemStack(item);
                     stack.enchant(enchantment, lvl);
                     items.add(stack);

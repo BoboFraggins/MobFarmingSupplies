@@ -1,6 +1,7 @@
 package net.bobofraggins.mobfarmingsupplies.blockbreaker;
 
-import com.mojang.serialization.MapCodec;
+import net.minecraft.world.InteractionHand;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.BlockInteractions;
 import dev.architectury.registry.menu.MenuRegistry;
 import java.util.List;
 import net.bobofraggins.mobfarmingsupplies.omnihopper.HopperSide;
@@ -37,7 +38,6 @@ import org.jetbrains.annotations.Nullable;
  */
 public class BlockBreakerBlock extends BaseEntityBlock {
 
-    public static final MapCodec<BlockBreakerBlock> CODEC = simpleCodec(BlockBreakerBlock::new);
 
     public BlockBreakerBlock(BlockBehaviour.Properties props) {
         super(props);
@@ -51,10 +51,6 @@ public class BlockBreakerBlock extends BaseEntityBlock {
         OmniHopperBlock.SIDES.values().forEach(builder::add);
     }
 
-    @Override
-    protected MapCodec<? extends BaseEntityBlock> codec() {
-        return CODEC;
-    }
 
     /** Keeps its sides, Silk Touch and filters on the item, as the Omnidirectional Hopper does. */
     @Override
@@ -64,7 +60,7 @@ public class BlockBreakerBlock extends BaseEntityBlock {
         if (be instanceof BlockBreakerBlockEntity breaker) {
             for (ItemStack drop : drops) {
                 if (drop.getItem() instanceof BlockItem) {
-                    CompoundTag beOut = breaker.saveCustomOnly(params.getLevel().registryAccess());
+                    CompoundTag beOut = breaker.saveWithoutMetadata();
                     BlockItem.setBlockEntityData(drop, breaker.getType(), beOut);
                 }
             }
@@ -74,7 +70,7 @@ public class BlockBreakerBlock extends BaseEntityBlock {
 
     /** Drawn from its block model (1.21.1's {@code BaseEntityBlock} defaults to invisible). */
     @Override
-    protected RenderShape getRenderShape(BlockState state) {
+    public RenderShape getRenderShape(BlockState state) {
         return RenderShape.MODEL;
     }
 
@@ -91,9 +87,15 @@ public class BlockBreakerBlock extends BaseEntityBlock {
         if (level.isClientSide()) return null;
         return createTickerHelper(beType, Registration.BLOCK_BREAKER_BE_TYPE.get(), BlockBreakerBlockEntity::serverTick);
     }
-
     @Override
-    protected InteractionResult useWithoutItem(
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand,
+                                 BlockHitResult hit) {
+        return BlockInteractions.use(state, level, pos, player, hand, hit, null,
+                this::useWithoutItem);
+    }
+
+
+        public InteractionResult useWithoutItem(
             BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
         if (!level.isClientSide()
                 && level.getBlockEntity(pos) instanceof BlockBreakerBlockEntity be

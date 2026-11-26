@@ -1,6 +1,5 @@
 package net.bobofraggins.mobfarmingsupplies.essencehopper;
 
-import com.mojang.serialization.MapCodec;
 import net.bobofraggins.mobfarmingsupplies.absorptionhopper.AbsorptionHopperBlock;
 import net.bobofraggins.mobfarmingsupplies.absorptionhopper.AbsorptionHopperBlockEntity;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
@@ -16,16 +15,11 @@ import org.jetbrains.annotations.Nullable;
 /** The Essence Hopper: an Absorption Hopper that keeps only a tank, for a fluid it collects. */
 public class EssenceHopperBlock extends AbsorptionHopperBlock {
 
-    public static final MapCodec<EssenceHopperBlock> CODEC = simpleCodec(EssenceHopperBlock::new);
 
     public EssenceHopperBlock(Properties props) {
         super(props);
     }
 
-    @Override
-    protected MapCodec<? extends BaseEntityBlock> codec() {
-        return CODEC;
-    }
 
     @Nullable
     @Override
@@ -42,7 +36,7 @@ public class EssenceHopperBlock extends AbsorptionHopperBlock {
     }
 
     @Override
-    protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
+    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
         if (!state.is(newState.getBlock()) && level.getBlockEntity(pos) instanceof EssenceHopperBlockEntity be) {
             be.preRemoveSideEffects();
         }

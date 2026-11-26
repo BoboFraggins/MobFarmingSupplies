@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "mobfarmingsupplies:experience_syringe",
+          "functions": [
+            {
+              "function": "mobfarmingsupplies:set_syringe_levels",
+              "min_levels": 3,
+              "max_levels": 7
+            }
+          ]
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:random_chance",
+          "chance": 0.25
+        }
+      ]
+    }
+  ]
+}

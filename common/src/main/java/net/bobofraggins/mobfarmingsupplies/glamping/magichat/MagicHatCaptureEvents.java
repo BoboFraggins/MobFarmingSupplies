@@ -1,8 +1,9 @@
 package net.bobofraggins.mobfarmingsupplies.glamping.magichat;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.ItemComponents;
 import dev.architectury.event.EventResult;
 import dev.architectury.event.events.common.InteractionEvent;
-import net.minecraft.core.component.DataComponents;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -11,7 +12,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.component.CustomData;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.CustomData;
 
 /**
  * Wires the Magic Hat's mob-capture logic into {@link InteractionEvent#INTERACT_ENTITY}, which
@@ -56,7 +57,7 @@ public final class MagicHatCaptureEvents {
         CompoundTag mobTag = tagOut;
         CompoundTag wrapper = new CompoundTag();
         wrapper.put(MagicHatItem.MOB_KEY, mobTag);
-        stack.set(DataComponents.CUSTOM_DATA, CustomData.of(wrapper));
+        ItemComponents.set(stack, DataComponents.CUSTOM_DATA, CustomData.of(wrapper));
         player.setItemInHand(hand, stack);
         target.discard();
         player.level().playSound(

@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.absorptionhopper;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.MFSPackets;
 import net.bobofraggins.mobfarmingsupplies.network.SetHopperOffsetPacket;
 import net.bobofraggins.mobfarmingsupplies.shared.ui.Dialog;
 import net.bobofraggins.mobfarmingsupplies.shared.ui.IDialogPane;
@@ -132,7 +133,7 @@ public class AbsorptionHopperScreen extends AbstractContainerScreen<AbsorptionHo
     }
 
     private void sendOffset(int axis, int delta) {
-        NetworkManager.sendToServer(new SetHopperOffsetPacket(menu.getPos(), axis, delta));
+        MFSPackets.sendToServer(new SetHopperOffsetPacket(menu.getPos(), axis, delta));
     }
 
     @Nullable
@@ -219,9 +220,9 @@ public class AbsorptionHopperScreen extends AbstractContainerScreen<AbsorptionHo
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
-        if (dialog.mouseScrolled(mouseX, mouseY, scrollX, scrollY)) return true;
-        return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollY) {
+        if (dialog.mouseScrolled(mouseX, mouseY, scrollY)) return true;
+        return super.mouseScrolled(mouseX, mouseY, scrollY);
     }
 
     @Override

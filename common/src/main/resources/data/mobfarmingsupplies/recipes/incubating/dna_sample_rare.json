@@ -1,0 +1,12 @@
+{
+  "type": "mobfarmingsupplies:incubating",
+  "sample": {
+    "item": "mobfarmingsupplies:dna_sample_rare"
+  },
+  "input": {
+    "tag": "mobfarmingsupplies:incubator_inputs"
+  },
+  "experience": 250,
+  "time": 300,
+  "result": "sampled_spawn_egg"
+}

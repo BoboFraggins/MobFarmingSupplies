@@ -1,15 +1,16 @@
 package net.bobofraggins.mobfarmingsupplies.lawnornament;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.ItemComponents;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.bobofraggins.mobfarmingsupplies.shared.render.SpecialModelRenderer;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.core.component.DataComponents;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.DataComponents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.component.ResolvableProfile;
+import com.mojang.authlib.GameProfile;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -26,7 +27,7 @@ public class GiantOrnamentItemRenderer implements SpecialModelRenderer<GiantOrna
     private static final int CROSSFADE_STEPS = 64;
 
     /** What an item is drawn from: its owner, and for an ownerless player ornament how far it has faded to Alex. */
-    public record Argument(@Nullable ResolvableProfile owner, int alexStep) {}
+    public record Argument(@Nullable GameProfile owner, int alexStep) {}
 
     /** A figure is about two blocks tall; as an item it fits in one. */
     private static final float ITEM_SCALE = 0.5f;
@@ -40,7 +41,7 @@ public class GiantOrnamentItemRenderer implements SpecialModelRenderer<GiantOrna
 
     @Override
     public Argument extractArgument(ItemStack stack) {
-        ResolvableProfile owner = stack.get(DataComponents.PROFILE);
+        GameProfile owner = ItemComponents.get(stack, DataComponents.PROFILE);
         if (ornament != GiantOrnament.PLAYER || owner != null) return new Argument(owner, 0);
         float alex = (1f - Mth.cos(Util.getMillis() / CROSSFADE_CYCLE_MS * Mth.TWO_PI)) / 2f;
         return new Argument(null, Math.round(alex * CROSSFADE_STEPS));
@@ -49,7 +50,7 @@ public class GiantOrnamentItemRenderer implements SpecialModelRenderer<GiantOrna
     @Override
     public void submit(@Nullable Argument argument, ItemDisplayContext context, PoseStack poseStack,
                        MultiBufferSource buffers, int packedLight, int packedOverlay, boolean hasFoil) {
-        ResolvableProfile owner = argument == null ? null : argument.owner();
+        GameProfile owner = argument == null ? null : argument.owner();
         if (models == null) {
             models = GiantOrnamentRenderer.Models.bake(Minecraft.getInstance().getEntityModels()::bakeLayer);
         }

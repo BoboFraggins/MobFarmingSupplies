@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.upgradestation;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.MFSCodecs;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -85,8 +86,8 @@ public class UpgradeStationBlockEntity extends BlockEntity implements MenuProvid
         ItemStack item = items.getItem(ITEM_SLOT), input = items.getItem(INPUT_SLOT);
         UpgradingInput in = new UpgradingInput(item, input);
         ItemStack result = item.isEmpty() || input.isEmpty() ? ItemStack.EMPTY
-                : recipes().getRecipeFor(in, server).map(found -> found.value().assemble(in, server.registryAccess())).orElse(ItemStack.EMPTY);
-        items.getItems().set(OUTPUT_SLOT, result);
+                : recipes().getRecipeFor(in, server).map(found -> found.assemble(in, server.registryAccess())).orElse(ItemStack.EMPTY);
+        net.bobofraggins.mobfarmingsupplies.shared.compat.Containers.backing(items).set(OUTPUT_SLOT, result);
     }
 
     private RecipeManager.CachedCheck<UpgradingInput, UpgradingRecipe> recipes() {
@@ -149,18 +150,18 @@ public class UpgradeStationBlockEntity extends BlockEntity implements MenuProvid
     // ── Saving and syncing ─────────────────────────────────────────────────────
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.saveAdditional(tag, registries);
-        ValueOutput output = new ValueOutput(tag, registries);
-        output.store(TAG_ITEMS, ItemStack.OPTIONAL_CODEC.listOf(),
+    protected void saveAdditional(CompoundTag tag) {
+        super.saveAdditional(tag);
+        ValueOutput output = new ValueOutput(tag);
+        output.store(TAG_ITEMS, MFSCodecs.OPTIONAL_ITEM_STACK.listOf(),
                 List.of(items.getItem(ITEM_SLOT), items.getItem(INPUT_SLOT)));
     }
 
     @Override
-    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
-        ValueInput input = new ValueInput(tag, registries);
-        input.read(TAG_ITEMS, ItemStack.OPTIONAL_CODEC.listOf()).ifPresent(list -> {
+    public void load(CompoundTag tag) {
+        super.load(tag);
+        ValueInput input = new ValueInput(tag);
+        input.read(TAG_ITEMS, MFSCodecs.OPTIONAL_ITEM_STACK.listOf()).ifPresent(list -> {
             for (int i = 0; i < Math.min(list.size(), OUTPUT_SLOT); i++) items.setItem(i, list.get(i));
         });
         // Only update packets carry this.
@@ -169,7 +170,7 @@ public class UpgradeStationBlockEntity extends BlockEntity implements MenuProvid
 
     /** What clients need: whether the lid is open. The window sends the slots. */
     @Override
-    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+    public CompoundTag getUpdateTag() {
         CompoundTag tag = new CompoundTag();
         tag.putBoolean(TAG_OPEN, open);
         return tag;

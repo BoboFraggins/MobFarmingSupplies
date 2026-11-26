@@ -1,12 +1,13 @@
 package net.bobofraggins.mobfarmingsupplies.logisticsorter;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.ItemComponents;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.bobofraggins.mobfarmingsupplies.shared.render.SpecialModelRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.Direction;
-import net.minecraft.core.component.DataComponents;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -25,7 +26,7 @@ public class LogisticSorterItemRenderer implements SpecialModelRenderer<BlockSta
     @Override
     public BlockState extractArgument(ItemStack stack) {
         BlockState state = Registration.LOGISTIC_SORTER.get().defaultBlockState();
-        var data = stack.get(DataComponents.BLOCK_ENTITY_DATA);
+        var data = ItemComponents.get(stack, DataComponents.BLOCK_ENTITY_DATA);
         if (data == null) return state;
         CompoundTag tag = data.getUnsafe(); // read-only access
         int sides = tag.getInt("Sides");

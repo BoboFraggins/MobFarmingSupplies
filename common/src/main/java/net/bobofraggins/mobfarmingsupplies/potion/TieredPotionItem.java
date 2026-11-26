@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.potion;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.ItemComponents;
 import java.util.List;
 import net.bobofraggins.mobfarmingsupplies.oresight.Oresight;
 import net.bobofraggins.mobfarmingsupplies.oresight.OresightTargets;
@@ -79,7 +80,7 @@ public class TieredPotionItem extends Item {
     /** A Potion of Oresight of {@code tier} for {@code ore}. */
     public static ItemStack oresight(PotionTier tier, Block ore) {
         ItemStack stack = new ItemStack(Registration.ORESIGHT_POTIONS.get(tier).get());
-        stack.set(Registration.ORESIGHT_BLOCK.get(), ore);
+        ItemComponents.set(stack, Registration.ORESIGHT_BLOCK.get(), ore);
         return stack;
     }
 
@@ -88,22 +89,22 @@ public class TieredPotionItem extends Item {
         return switch (kind) {
             case FLIGHT -> flight(next);
             case ORESIGHT -> {
-                Block ore = stack.get(Registration.ORESIGHT_BLOCK.get());
+                Block ore = ItemComponents.get(stack, Registration.ORESIGHT_BLOCK.get());
                 yield ore == null ? ItemStack.EMPTY : oresight(next, ore);
             }
         };
     }
 
-    private Holder<MobEffect> effect() {
+    private MobEffect effect() {
         return switch (kind) {
-            case FLIGHT -> BuiltInRegistries.MOB_EFFECT.wrapAsHolder(Registration.FLIGHT.get());
+            case FLIGHT -> Registration.FLIGHT.get();
             case ORESIGHT -> Oresight.effect();
         };
     }
 
     @Nullable
     private Block ore(ItemStack stack) {
-        return stack.get(Registration.ORESIGHT_BLOCK.get());
+        return ItemComponents.get(stack, Registration.ORESIGHT_BLOCK.get());
     }
 
     @Override
@@ -130,7 +131,7 @@ public class TieredPotionItem extends Item {
     }
 
     @Override
-    public int getUseDuration(ItemStack stack, LivingEntity entity) {
+    public int getUseDuration(ItemStack stack) {
         return 32;
     }
 
@@ -148,10 +149,10 @@ public class TieredPotionItem extends Item {
         Player player = entity instanceof Player p ? p : null;
         if (player != null) {
             player.awardStat(Stats.ITEM_USED.get(this));
-            stack.consume(1, player);
+            if (!player.getAbilities().instabuild) stack.shrink(1);
         }
         entity.gameEvent(GameEvent.DRINK);
-        if (player == null || !player.hasInfiniteMaterials()) {
+        if (player == null || !player.getAbilities().instabuild) {
             if (stack.isEmpty()) return new ItemStack(Items.GLASS_BOTTLE);
             if (player != null) player.getInventory().add(new ItemStack(Items.GLASS_BOTTLE));
         }
@@ -160,11 +161,11 @@ public class TieredPotionItem extends Item {
 
     /** "Flight (03:00)" in blue, as a vanilla potion shows its effect. */
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, @org.jetbrains.annotations.Nullable net.minecraft.world.level.Level context, List<Component> tooltip, TooltipFlag flag) {
         if (kind == Kind.ORESIGHT && ore(stack) == null) return;
         tooltip.add(Component.translatable("potion.withDuration",
-                        Component.translatable(effect().value().getDescriptionId()),
-                        StringUtil.formatTickDuration(tier.durationTicks(), 20f))
+                        Component.translatable(effect().getDescriptionId()),
+                        StringUtil.formatTickDuration(tier.durationTicks()))
                 .withStyle(ChatFormatting.BLUE));
     }
 }

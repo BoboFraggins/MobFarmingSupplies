@@ -10,7 +10,7 @@ import net.minecraft.world.entity.player.Inventory;
 public class HeadPikeScreen extends AbstractContainerScreen<HeadPikeMenu> {
 
     private static final ResourceLocation BACKGROUND =
-            ResourceLocation.fromNamespaceAndPath("mobfarmingsupplies", "textures/gui/head_pike.png");
+            new ResourceLocation("mobfarmingsupplies", "textures/gui/head_pike.png");
     /** The colour inside an empty slot, to cover the ghost skull behind a real one. */
     private static final int SLOT_COLOR = 0xFF8B8B8B;
 

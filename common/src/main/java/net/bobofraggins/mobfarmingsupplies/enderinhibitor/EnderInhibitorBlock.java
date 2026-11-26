@@ -1,6 +1,7 @@
 package net.bobofraggins.mobfarmingsupplies.enderinhibitor;
 
-import com.mojang.serialization.MapCodec;
+import net.minecraft.world.InteractionHand;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.BlockInteractions;
 import dev.architectury.registry.menu.MenuRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -43,7 +44,6 @@ import net.minecraft.world.phys.shapes.VoxelShape;
  */
 public class EnderInhibitorBlock extends Block implements EntityBlock {
 
-    public static final MapCodec<EnderInhibitorBlock> CODEC = simpleCodec(EnderInhibitorBlock::new);
 
     /** Direction the block points <em>away</em> from its support. */
     public static final EnumProperty<Direction> FACING = BlockStateProperties.FACING;
@@ -71,10 +71,6 @@ public class EnderInhibitorBlock extends Block implements EntityBlock {
         registerDefaultState(stateDefinition.any().setValue(FACING, Direction.UP));
     }
 
-    @Override
-    public MapCodec<? extends EnderInhibitorBlock> codec() {
-        return CODEC;
-    }
 
     // ── Block-state definition ───────────────────────────────────────────────────
 
@@ -99,7 +95,7 @@ public class EnderInhibitorBlock extends Block implements EntityBlock {
     // ── Survival ─────────────────────────────────────────────────────────────────
 
     @Override
-    protected boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
+    public boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
         Direction facing   = state.getValue(FACING);
         BlockPos  support  = pos.relative(facing.getOpposite());
         // Require a center-sturdy face on the side we attach to
@@ -109,7 +105,7 @@ public class EnderInhibitorBlock extends Block implements EntityBlock {
     // ── Torch-like pop-off when support breaks ───────────────────────────────────
 
     @Override
-    protected BlockState updateShape(
+    public BlockState updateShape(
             BlockState state,
             Direction direction,
             BlockState neighborState,
@@ -160,7 +156,7 @@ public class EnderInhibitorBlock extends Block implements EntityBlock {
     // ── VoxelShape ───────────────────────────────────────────────────────────────
 
     @Override
-    protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos,
+    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos,
                                    CollisionContext context) {
         return switch (state.getValue(FACING)) {
             case DOWN  -> SHAPE_DOWN;
@@ -181,9 +177,15 @@ public class EnderInhibitorBlock extends Block implements EntityBlock {
     }
 
     // ── Interaction ─────────────────────────────────────────────────────────────
-
     @Override
-    protected InteractionResult useWithoutItem(
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand,
+                                 BlockHitResult hit) {
+        return BlockInteractions.use(state, level, pos, player, hand, hit, null,
+                this::useWithoutItem);
+    }
+
+
+        public InteractionResult useWithoutItem(
             BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
         if (!level.isClientSide()) {
             if (level.getBlockEntity(pos) instanceof EnderInhibitorBlockEntity be
@@ -197,17 +199,17 @@ public class EnderInhibitorBlock extends Block implements EntityBlock {
     // ── Structure rotation / mirror support ──────────────────────────────────────
 
     @Override
-    protected BlockState rotate(BlockState state, Rotation rotation) {
+    public BlockState rotate(BlockState state, Rotation rotation) {
         return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
     }
 
     @Override
-    protected BlockState mirror(BlockState state, Mirror mirror) {
+    public BlockState mirror(BlockState state, Mirror mirror) {
         return state.setValue(FACING, mirror.mirror(state.getValue(FACING)));
     }
 
     @Override
-    protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
+    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
         if (!state.is(newState.getBlock()) && level.getBlockEntity(pos) instanceof EnderInhibitorBlockEntity be) {
             be.preRemoveSideEffects(pos, state);
         }
@@ -216,7 +218,7 @@ public class EnderInhibitorBlock extends Block implements EntityBlock {
 
     /** Drawn from its block model (1.21.1's {@code BaseEntityBlock} defaults to invisible). */
     @Override
-    protected RenderShape getRenderShape(BlockState state) {
+    public RenderShape getRenderShape(BlockState state) {
         return RenderShape.MODEL;
     }
 }

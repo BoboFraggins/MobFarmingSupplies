@@ -1,6 +1,7 @@
 package net.bobofraggins.mobfarmingsupplies.disenchanter;
 
-import com.mojang.serialization.MapCodec;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.BlockInteractions;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.ItemInteractionResult;
 import dev.architectury.registry.menu.MenuRegistry;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.bobofraggins.mobfarmingsupplies.tank.ExperienceFill;
@@ -8,14 +9,14 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
+
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.BaseEntityBlock;
-import net.minecraft.world.level.block.EnchantingTableBlock;
+import net.minecraft.world.level.block.EnchantmentTableBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -35,7 +36,6 @@ import org.jetbrains.annotations.Nullable;
  */
 public class DisenchanterBlock extends BaseEntityBlock {
 
-    public static final MapCodec<DisenchanterBlock> CODEC = simpleCodec(DisenchanterBlock::new);
 
     /** An enchanting table's shape: 12 pixels tall. */
     private static final VoxelShape SHAPE = Block.box(0, 0, 0, 16, 12, 16);
@@ -44,18 +44,14 @@ public class DisenchanterBlock extends BaseEntityBlock {
         super(props);
     }
 
-    @Override
-    public MapCodec<DisenchanterBlock> codec() {
-        return CODEC;
-    }
 
     @Override
-    protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         return SHAPE;
     }
 
     @Override
-    protected boolean useShapeForLightOcclusion(BlockState state) {
+    public boolean useShapeForLightOcclusion(BlockState state) {
         return true;
     }
 
@@ -87,7 +83,7 @@ public class DisenchanterBlock extends BaseEntityBlock {
     @Override
     public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
         if (!(level.getBlockEntity(pos) instanceof DisenchanterBlockEntity be) || !be.isWorking()) return;
-        for (BlockPos offset : EnchantingTableBlock.BOOKSHELF_OFFSETS) {
+        for (BlockPos offset : EnchantmentTableBlock.BOOKSHELF_OFFSETS) {
             if (random.nextInt(16) != 0) continue;
             level.addParticle(Registration.XP_RUNE.get(),
                     pos.getX() + 0.5, pos.getY() + 2.0, pos.getZ() + 0.5,
@@ -96,16 +92,21 @@ public class DisenchanterBlock extends BaseEntityBlock {
                     offset.getZ() + random.nextFloat() - 0.5);
         }
     }
-
     @Override
-    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos,
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand,
+                                 BlockHitResult hit) {
+        return BlockInteractions.use(state, level, pos, player, hand, hit, this::useItemOn,
+                this::useWithoutItem);
+    }
+
+
+        public ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos,
                                           Player player, InteractionHand hand, BlockHitResult hit) {
         if (!(level.getBlockEntity(pos) instanceof DisenchanterBlockEntity be)) return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         return ExperienceFill.useItemOn(be, stack, level, pos, player, hand);
     }
 
-    @Override
-    protected InteractionResult useWithoutItem(
+        public InteractionResult useWithoutItem(
             BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
         if (!level.isClientSide() && level.getBlockEntity(pos) instanceof DisenchanterBlockEntity be
                 && player instanceof ServerPlayer sp) {
@@ -115,7 +116,7 @@ public class DisenchanterBlock extends BaseEntityBlock {
     }
 
     @Override
-    protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
+    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
         if (!state.is(newState.getBlock()) && level.getBlockEntity(pos) instanceof DisenchanterBlockEntity be) {
             be.preRemoveSideEffects(pos, state);
         }

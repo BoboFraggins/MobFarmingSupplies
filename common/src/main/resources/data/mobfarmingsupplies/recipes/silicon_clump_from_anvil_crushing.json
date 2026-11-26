@@ -1,0 +1,9 @@
+{
+  "type": "mobfarmingsupplies:anvil_crushing",
+  "ingredient": {
+    "item": "minecraft:quartz"
+  },
+  "result": {
+    "item": "mobfarmingsupplies:silicon_clump"
+  }
+}

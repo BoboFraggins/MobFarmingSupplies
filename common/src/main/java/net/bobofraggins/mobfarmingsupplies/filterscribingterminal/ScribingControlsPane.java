@@ -192,7 +192,7 @@ public class ScribingControlsPane implements IDialogPane {
     }
 
     @Override
-    public boolean mouseScrolled(double x, double y, double dx, double dy) {
+    public boolean mouseScrolled(double x, double y, double dy) {
         if (!inList(x, y) || dy == 0) return false;
         scrollOffset = Mth.clamp(scrollOffset - (int) Math.signum(dy), 0, maxScroll());
         return true;

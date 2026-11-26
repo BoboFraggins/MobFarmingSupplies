@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.blockbreaker;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.MFSPackets;
 import dev.architectury.networking.NetworkManager;
 import net.bobofraggins.mobfarmingsupplies.network.SetBlockBreakerSilkTouchPacket;
 import net.bobofraggins.mobfarmingsupplies.shared.ui.IDialogPane;
@@ -55,7 +56,7 @@ class BlockBreakerSilkTouchPane implements IDialogPane {
         if (be == null) return false;
         boolean on = !be.isSilkTouch();
         be.setSilkTouch(on); // show the change now; the server's block update confirms it
-        NetworkManager.sendToServer(new SetBlockBreakerSilkTouchPacket(pos, on));
+        MFSPackets.sendToServer(new SetBlockBreakerSilkTouchPacket(pos, on));
         Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0f));
         return true;
     }

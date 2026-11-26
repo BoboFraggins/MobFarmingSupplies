@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.fan;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.MFSCodecs;
 import net.bobofraggins.mobfarmingsupplies.MFSConfig;
 import net.bobofraggins.mobfarmingsupplies.register.MFSRegistryHelper;
 import net.bobofraggins.mobfarmingsupplies.shared.ForcedMovement;
@@ -229,19 +230,19 @@ public class FanBlockEntity extends BlockEntity implements MenuProvider {
     // ── NBT ──────────────────────────────────────────────────────────────────────
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.saveAdditional(tag, registries);
-        ValueOutput output = new ValueOutput(tag, registries);
+    protected void saveAdditional(CompoundTag tag) {
+        super.saveAdditional(tag);
+        ValueOutput output = new ValueOutput(tag);
         List<ItemStack> stacks = new ArrayList<>(UPGRADE_SLOTS);
         for (int i = 0; i < UPGRADE_SLOTS; i++) stacks.add(upgrades.getItem(i));
-        output.store("Upgrades", ItemStack.OPTIONAL_CODEC.listOf(), stacks);
+        output.store("Upgrades", MFSCodecs.OPTIONAL_ITEM_STACK.listOf(), stacks);
     }
 
     @Override
-    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
-        ValueInput input = new ValueInput(tag, registries);
-        input.read("Upgrades", ItemStack.OPTIONAL_CODEC.listOf()).ifPresent(loaded -> {
+    public void load(CompoundTag tag) {
+        super.load(tag);
+        ValueInput input = new ValueInput(tag);
+        input.read("Upgrades", MFSCodecs.OPTIONAL_ITEM_STACK.listOf()).ifPresent(loaded -> {
             for (int i = 0; i < Math.min(loaded.size(), UPGRADE_SLOTS); i++) {
                 upgrades.setItem(i, loaded.get(i));
             }
@@ -251,8 +252,8 @@ public class FanBlockEntity extends BlockEntity implements MenuProvider {
     // ── Client sync ───────────────────────────────────────────────────────────────
 
     @Override
-    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
-        return saveWithoutMetadata(registries);
+    public CompoundTag getUpdateTag() {
+        return saveWithoutMetadata();
     }
 
     @Override

@@ -1,13 +1,14 @@
 package net.bobofraggins.mobfarmingsupplies.network;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.MFSStreamCodecs;
 import dev.architectury.networking.NetworkManager;
 import net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommon;
 import net.bobofraggins.mobfarmingsupplies.absorptionhopper.IAbsorptionHopperBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.ByteBufCodecs;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.StreamCodec;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -16,11 +17,11 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 public record SetVoidExcessPacket(BlockPos pos, boolean on) implements CustomPacketPayload {
 
     public static final Type<SetVoidExcessPacket> TYPE =
-            new Type<>(ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "set_void_excess"));
+            new Type<>(new ResourceLocation(MobFarmingSuppliesCommon.MODID, "set_void_excess"));
 
     public static final StreamCodec<FriendlyByteBuf, SetVoidExcessPacket> STREAM_CODEC =
             StreamCodec.composite(
-                    BlockPos.STREAM_CODEC, SetVoidExcessPacket::pos,
+                    MFSStreamCodecs.BLOCK_POS, SetVoidExcessPacket::pos,
                     ByteBufCodecs.BOOL,    SetVoidExcessPacket::on,
                     SetVoidExcessPacket::new);
 

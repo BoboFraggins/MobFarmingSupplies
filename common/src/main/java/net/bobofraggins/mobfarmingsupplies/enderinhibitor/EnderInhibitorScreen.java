@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.enderinhibitor;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.MFSPackets;
 import dev.architectury.networking.NetworkManager;
 import net.bobofraggins.mobfarmingsupplies.network.SetInhibitorOffsetPacket;
 import net.bobofraggins.mobfarmingsupplies.shared.ui.Dialog;
@@ -99,7 +100,7 @@ public class EnderInhibitorScreen extends AbstractContainerScreen<EnderInhibitor
     }
 
     private void sendOffset(int axis, int delta) {
-        NetworkManager.sendToServer(new SetInhibitorOffsetPacket(menu.getPos(), axis, delta));
+        MFSPackets.sendToServer(new SetInhibitorOffsetPacket(menu.getPos(), axis, delta));
     }
 
     @Nullable
@@ -141,9 +142,9 @@ public class EnderInhibitorScreen extends AbstractContainerScreen<EnderInhibitor
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
-        if (dialog.mouseScrolled(mouseX, mouseY, scrollX, scrollY)) return true;
-        return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollY) {
+        if (dialog.mouseScrolled(mouseX, mouseY, scrollY)) return true;
+        return super.mouseScrolled(mouseX, mouseY, scrollY);
     }
 
     @Override

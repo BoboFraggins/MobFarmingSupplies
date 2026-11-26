@@ -1,6 +1,8 @@
 package net.bobofraggins.mobfarmingsupplies.xpanvil;
 
-import com.mojang.serialization.MapCodec;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.BlockInteractions;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.ItemInteractionResult;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.MFSCodecs;
 import dev.architectury.registry.menu.MenuRegistry;
 import net.bobofraggins.mobfarmingsupplies.experiencepylon.PylonExperience;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
@@ -20,7 +22,7 @@ import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
+
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -64,7 +66,6 @@ public class XpAnvilBlock extends BaseEntityBlock implements Fallable {
     /** Points of experience a millibucket of it is worth, as the syringe counts it, for spilling orbs. */
     private static final long MB_PER_XP = PylonExperience.MB_PER_XP;
 
-    public static final MapCodec<XpAnvilBlock> CODEC = simpleCodec(XpAnvilBlock::new);
 
     /** The way its placer was looking. The model's long side runs east-west when this is north. */
     public static final EnumProperty<Direction> FACING = BlockStateProperties.HORIZONTAL_FACING;
@@ -87,10 +88,6 @@ public class XpAnvilBlock extends BaseEntityBlock implements Fallable {
         registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH));
     }
 
-    @Override
-    public MapCodec<XpAnvilBlock> codec() {
-        return CODEC;
-    }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
@@ -103,36 +100,36 @@ public class XpAnvilBlock extends BaseEntityBlock implements Fallable {
     }
 
     @Override
-    protected BlockState rotate(BlockState state, Rotation rotation) {
+    public BlockState rotate(BlockState state, Rotation rotation) {
         return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
     }
 
     @Override
-    protected BlockState mirror(BlockState state, Mirror mirror) {
+    public BlockState mirror(BlockState state, Mirror mirror) {
         return state.rotate(mirror.getRotation(state.getValue(FACING)));
     }
 
     // ── Falling, as a vanilla anvil does ─────────────────────────────────────
 
     @Override
-    protected void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
+    public void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
         level.scheduleTick(pos, this, 2);
     }
 
     @Override
-    protected BlockState updateShape(BlockState state, Direction direction, BlockState neighbourState,
+    public BlockState updateShape(BlockState state, Direction direction, BlockState neighbourState,
                                      LevelAccessor level, BlockPos pos, BlockPos neighbourPos) {
         level.scheduleTick(pos, this, 2);
         return super.updateShape(state, direction, neighbourState, level, pos, neighbourPos);
     }
 
     @Override
-    protected void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+    public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
         if (!FallingBlock.isFree(level.getBlockState(pos.below())) || pos.getY() < level.getMinBuildHeight()) return;
         // Take the tank and slots along, and don't spill them as the block leaves.
         CompoundTag carried = null;
         if (level.getBlockEntity(pos) instanceof XpAnvilBlockEntity be) {
-            carried = be.saveWithoutMetadata(level.registryAccess());
+            carried = be.saveWithoutMetadata();
             be.startFalling();
         }
         FallingBlockEntity falling = FallingBlockEntity.fall(level, pos, state);
@@ -154,7 +151,7 @@ public class XpAnvilBlock extends BaseEntityBlock implements Fallable {
         if (!falling.isSilent()) level.levelEvent(LevelEvent.SOUND_ANVIL_BROKEN, pos, 0);
         if (!(level instanceof ServerLevel server) || falling.blockData == null) return;
         falling.blockData.getList("Items", Tag.TAG_COMPOUND).forEach(tag ->
-                ItemStack.OPTIONAL_CODEC.parse(server.registryAccess().createSerializationContext(NbtOps.INSTANCE), tag)
+                MFSCodecs.OPTIONAL_ITEM_STACK.parse(NbtOps.INSTANCE, tag)
                         .result().filter(stack -> !stack.isEmpty())
                         .ifPresent(stack -> Containers.dropItemStack(server, pos.getX(), pos.getY(), pos.getZ(), stack)));
         long mb = falling.blockData.getLong("Amount");
@@ -167,7 +164,7 @@ public class XpAnvilBlock extends BaseEntityBlock implements Fallable {
     }
 
     @Override
-    protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         return state.getValue(FACING).getAxis() == Direction.Axis.Z ? SHAPE_X : SHAPE_Z;
     }
 
@@ -190,16 +187,21 @@ public class XpAnvilBlock extends BaseEntityBlock implements Fallable {
         BlockEntityTicker<XpAnvilBlockEntity> ticker = XpAnvilBlockEntity::serverTick;
         return (BlockEntityTicker<T>) ticker;
     }
-
     @Override
-    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos,
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand,
+                                 BlockHitResult hit) {
+        return BlockInteractions.use(state, level, pos, player, hand, hit, this::useItemOn,
+                this::useWithoutItem);
+    }
+
+
+        public ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos,
                                           Player player, InteractionHand hand, BlockHitResult hit) {
         if (!(level.getBlockEntity(pos) instanceof XpAnvilBlockEntity be)) return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         return ExperienceFill.useItemOn(be, stack, level, pos, player, hand);
     }
 
-    @Override
-    protected InteractionResult useWithoutItem(
+        public InteractionResult useWithoutItem(
             BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
         if (!level.isClientSide() && level.getBlockEntity(pos) instanceof XpAnvilBlockEntity be
                 && player instanceof ServerPlayer sp) {
@@ -209,7 +211,7 @@ public class XpAnvilBlock extends BaseEntityBlock implements Fallable {
     }
 
     @Override
-    protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
+    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
         if (!state.is(newState.getBlock()) && level.getBlockEntity(pos) instanceof XpAnvilBlockEntity be) {
             be.preRemoveSideEffects(pos, state);
         }

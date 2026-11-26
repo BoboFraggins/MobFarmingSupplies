@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.tank;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.ItemComponents;
 import dev.architectury.fluid.FluidStack;
 import net.bobofraggins.mobfarmingsupplies.fluid.fabric.FabricFluidUnits;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
@@ -42,13 +43,13 @@ public final class FabricTankItemFluidStorage implements Storage<FluidVariant> {
 
     private TankContents contents() {
         ItemStack stack = ctx.getItemVariant().toStack((int) ctx.getAmount());
-        TankContents c = stack.get(Registration.TANK_CONTENTS.get());
+        TankContents c = ItemComponents.get(stack, Registration.TANK_CONTENTS.get());
         return c != null ? c : TankContents.EMPTY;
     }
 
     private boolean updateContents(TankContents updated, TransactionContext tx) {
         ItemStack stack = ctx.getItemVariant().toStack((int) ctx.getAmount());
-        stack.set(Registration.TANK_CONTENTS.get(), updated);
+        ItemComponents.set(stack, Registration.TANK_CONTENTS.get(), updated);
         long inserted = ctx.exchange(ItemVariant.of(stack), 1, tx);
         return inserted > 0;
     }
@@ -67,7 +68,7 @@ public final class FabricTankItemFluidStorage implements Storage<FluidVariant> {
         TankContents c = contents();
         FluidStack incoming = FabricTankFluidStorage.fromFabric(resource, 1);
         if (!c.storedFluid().isEmpty()
-                && (!c.storedFluid().isFluidEqual(incoming) || !c.storedFluid().isComponentEqual(incoming))) {
+                && (!c.storedFluid().isFluidEqual(incoming) || !c.storedFluid().isTagEqual(incoming))) {
             return 0;
         }
         long space = Math.max(0, capacity() - c.amount());
@@ -85,7 +86,7 @@ public final class FabricTankItemFluidStorage implements Storage<FluidVariant> {
         TankContents c = contents();
         if (c.storedFluid().isEmpty()) return 0;
         FluidStack req = FabricTankFluidStorage.fromFabric(resource, 1);
-        if (!c.storedFluid().isFluidEqual(req) || !c.storedFluid().isComponentEqual(req)) return 0;
+        if (!c.storedFluid().isFluidEqual(req) || !c.storedFluid().isTagEqual(req)) return 0;
         long toDrain = Math.min(FabricFluidUnits.toMb(maxAmount), c.amount());
         if (toDrain <= 0) return 0;
 

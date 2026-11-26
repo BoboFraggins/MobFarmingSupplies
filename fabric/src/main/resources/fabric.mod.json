@@ -21,6 +21,9 @@
       "net.bobofraggins.mobfarmingsupplies.glamping.present.PresentJadePlugin",
       "net.bobofraggins.mobfarmingsupplies.bridge.PickedNameJadePlugin",
       "net.bobofraggins.mobfarmingsupplies.headpike.HeadPikeJadePlugin"
+    ],
+    "fabric-gametest": [
+      "net.bobofraggins.mobfarmingsupplies.fabric.gametest.LoadGameTest"
     ]
   },
   "mixins": [

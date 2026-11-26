@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.itemfilter;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.ItemComponents;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
@@ -19,7 +20,7 @@ public class ItemFilterItem extends Item {
 
     @Override
     public Component getName(ItemStack stack) {
-        ItemFilterData data = stack.get(Registration.ITEM_FILTER_DATA.get());
+        ItemFilterData data = ItemComponents.get(stack, Registration.ITEM_FILTER_DATA.get());
         if (data == null) return super.getName(stack);
         return Component.translatable("item.mobfarmingsupplies.item_filter.configured", data.description());
     }

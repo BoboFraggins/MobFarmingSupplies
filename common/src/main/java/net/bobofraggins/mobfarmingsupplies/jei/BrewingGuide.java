@@ -60,6 +60,6 @@ final class BrewingGuide {
     }
 
     private static ResourceLocation id(String path) {
-        return ResourceLocation.fromNamespaceAndPath("mobfarmingsupplies", "brewing/" + path);
+        return new ResourceLocation("mobfarmingsupplies", "brewing/" + path);
     }
 }

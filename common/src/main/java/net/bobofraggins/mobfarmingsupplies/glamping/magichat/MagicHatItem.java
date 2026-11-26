@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.glamping.magichat;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.ItemComponents;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.Equipable;
 import java.util.List;
@@ -8,7 +9,7 @@ import net.bobofraggins.mobfarmingsupplies.advancement.MFSTriggers;
 import net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommon;
 import java.util.Optional;
 import java.util.function.Consumer;
-import net.minecraft.core.component.DataComponents;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -21,15 +22,15 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EquipmentSlotGroup;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.EquipmentSlotGroup;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.CustomData;
-import net.minecraft.world.item.component.ItemAttributeModifiers;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.CustomData;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.ItemAttributeModifiers;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -51,17 +52,23 @@ public class MagicHatItem extends Item implements Equipable {
     public static final String MOB_KEY = "CapturedMob";
 
     public static final ResourceLocation LUCK_MODIFIER_ID =
-            ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "magic_hat_luck");
+            new ResourceLocation(MobFarmingSuppliesCommon.MODID, "magic_hat_luck");
 
     public static final ItemAttributeModifiers DEFAULT_MODIFIERS = ItemAttributeModifiers.builder()
             .add(
                     Attributes.LUCK,
-                    new AttributeModifier(LUCK_MODIFIER_ID, 2.0, AttributeModifier.Operation.ADD_VALUE),
+                    ItemAttributeModifiers.modifier(LUCK_MODIFIER_ID, 2.0, AttributeModifier.Operation.ADDITION),
                     EquipmentSlotGroup.HEAD)
             .build();
 
     public MagicHatItem(Properties properties) {
         super(properties);
+    }
+
+    @Override
+    public com.google.common.collect.Multimap<net.minecraft.world.entity.ai.attributes.Attribute,
+            net.minecraft.world.entity.ai.attributes.AttributeModifier> getDefaultAttributeModifiers(EquipmentSlot slot) {
+        return DEFAULT_MODIFIERS.forSlot(slot);
     }
 
     @Override
@@ -98,7 +105,7 @@ public class MagicHatItem extends Item implements Equipable {
 
     private static void releaseMob(ItemStack stack, Player player, Level level) {
         if (!(level instanceof ServerLevel serverLevel)) return;
-        CustomData customData = stack.get(DataComponents.CUSTOM_DATA);
+        CustomData customData = ItemComponents.get(stack, DataComponents.CUSTOM_DATA);
         if (customData == null) return;
         CompoundTag wrapper = customData.copyTag();
         if (!wrapper.contains(MOB_KEY)) return;
@@ -127,9 +134,9 @@ public class MagicHatItem extends Item implements Equipable {
         // Clear mob data from the item
         wrapper.remove(MOB_KEY);
         if (wrapper.isEmpty()) {
-            stack.remove(DataComponents.CUSTOM_DATA);
+            ItemComponents.remove(stack, DataComponents.CUSTOM_DATA);
         } else {
-            stack.set(DataComponents.CUSTOM_DATA, CustomData.of(wrapper));
+            ItemComponents.set(stack, DataComponents.CUSTOM_DATA, CustomData.of(wrapper));
         }
     }
 
@@ -141,7 +148,7 @@ public class MagicHatItem extends Item implements Equipable {
     public Component getName(ItemStack stack) {
         Component base = super.getName(stack);
         if (!hasMob(stack)) return base;
-        CustomData data = stack.get(DataComponents.CUSTOM_DATA);
+        CustomData data = ItemComponents.get(stack, DataComponents.CUSTOM_DATA);
         if (data == null) return base;
         Optional<String> idString = Optional.of(data.copyTag().getCompound(MOB_KEY).getString("id")).filter(id -> !id.isEmpty());
         if (idString.isEmpty()) return base;
@@ -155,7 +162,7 @@ public class MagicHatItem extends Item implements Equipable {
     @Override
     public void appendHoverText(
             ItemStack stack,
-            Item.TooltipContext context,
+            @org.jetbrains.annotations.Nullable net.minecraft.world.level.Level context,
             List<Component> tooltipAdderLines, TooltipFlag flag) {
         Consumer<Component> tooltipAdder = tooltipAdderLines::add;
         super.appendHoverText(stack, context, tooltipAdderLines, flag);
@@ -171,7 +178,7 @@ public class MagicHatItem extends Item implements Equipable {
     // -------------------------------------------------------------------------
 
     public static boolean hasMob(ItemStack stack) {
-        CustomData data = stack.get(DataComponents.CUSTOM_DATA);
+        CustomData data = ItemComponents.get(stack, DataComponents.CUSTOM_DATA);
         return data != null && data.copyTag().contains(MOB_KEY);
     }
 }

@@ -24,10 +24,10 @@ import net.minecraft.world.entity.player.Inventory;
 public class UpgradeStationScreen extends AbstractContainerScreen<UpgradeStationMenu> {
 
     private static final ResourceLocation GHOST =
-            ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "textures/item/blank_filter_ghost.png");
+            new ResourceLocation(MobFarmingSuppliesCommon.MODID, "textures/item/blank_filter_ghost.png");
 
     /** Vanilla's furnace, for its empty arrow. */
-    private static final ResourceLocation FURNACE = ResourceLocation.withDefaultNamespace("textures/gui/container/furnace.png");
+    private static final ResourceLocation FURNACE = new ResourceLocation("textures/gui/container/furnace.png");
     private static final int ARROW_U = 79, ARROW_V = 34, ARROW_W = 24, ARROW_H = 17;
 
     private final Dialog dialog;

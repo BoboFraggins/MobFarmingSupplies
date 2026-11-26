@@ -4,10 +4,10 @@ import dev.architectury.networking.NetworkManager;
 import java.util.Optional;
 import net.bobofraggins.mobfarmingsupplies.oresight.OresightClient;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.network.FriendlyByteBuf;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.ByteBufCodecs;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.StreamCodec;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 
@@ -15,9 +15,9 @@ import net.minecraft.world.level.block.Block;
 public record OresightPacket(Optional<Block> block) implements CustomPacketPayload {
 
     public static final Type<OresightPacket> TYPE =
-            new Type<>(ResourceLocation.fromNamespaceAndPath("mobfarmingsupplies", "oresight"));
+            new Type<>(new ResourceLocation("mobfarmingsupplies", "oresight"));
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, OresightPacket> STREAM_CODEC = StreamCodec.composite(
+    public static final StreamCodec<FriendlyByteBuf, OresightPacket> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.optional(ByteBufCodecs.registry(Registries.BLOCK)), OresightPacket::block,
             OresightPacket::new);
 

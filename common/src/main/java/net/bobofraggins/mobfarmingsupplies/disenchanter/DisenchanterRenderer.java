@@ -5,7 +5,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.EnchantTableRenderer;
-import net.minecraft.world.level.block.entity.EnchantingTableBlockEntity;
+import net.minecraft.world.level.block.entity.EnchantmentTableBlockEntity;
 
 /**
  * The XP Powered Disenchanter's floating book: vanilla's enchanting table renderer, drawing the
@@ -23,7 +23,7 @@ public class DisenchanterRenderer implements BlockEntityRenderer<DisenchanterBlo
     @Override
     public void render(DisenchanterBlockEntity be, float partialTick, PoseStack poseStack, MultiBufferSource buffers,
                        int light, int overlay) {
-        EnchantingTableBlockEntity book = be.book();
+        EnchantmentTableBlockEntity book = be.book();
         if (book != null) vanilla.render(book, partialTick, poseStack, buffers, light, overlay);
     }
 }

@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.cloneomatic;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.MFSCodecs;
 import net.bobofraggins.mobfarmingsupplies.advancement.MFSTriggers;
 import net.bobofraggins.mobfarmingsupplies.MFSConfig;
 import net.bobofraggins.mobfarmingsupplies.dna.IDnaSampleItem;
@@ -167,7 +168,7 @@ public class CloneOMaticBlockEntity extends BlockEntity implements MenuProvider 
             // Only block geometry is checked here (not entities) - a busy farm full of
             // mobs awaiting harvest must not block new spawns just because something
             // else is standing nearby.
-            if (!noBlockCollision(serverLevel, entity.getType().getSpawnAABB(sx, sy, sz))) continue;
+            if (!noBlockCollision(serverLevel, entity.getType().getAABB(sx, sy, sz))) continue;
 
             if (entity instanceof Squid || entity instanceof GlowSquid) {
                 AquaticFarmMobHelper.suppressSwimmingAI((Mob) entity);
@@ -284,20 +285,20 @@ public class CloneOMaticBlockEntity extends BlockEntity implements MenuProvider 
     // ── NBT ──────────────────────────────────────────────────────────────────────
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.saveAdditional(tag, registries);
-        ValueOutput output = new ValueOutput(tag, registries);
+    protected void saveAdditional(CompoundTag tag) {
+        super.saveAdditional(tag);
+        ValueOutput output = new ValueOutput(tag);
         java.util.List<ItemStack> stacks = new java.util.ArrayList<>(DNA_SLOTS);
         for (int i = 0; i < DNA_SLOTS; i++) stacks.add(dnaSlots.getItem(i));
-        output.store("DnaSlots", ItemStack.OPTIONAL_CODEC.listOf(), stacks);
+        output.store("DnaSlots", MFSCodecs.OPTIONAL_ITEM_STACK.listOf(), stacks);
         output.putInt("SpawnTick", spawnTickCounter);
     }
 
     @Override
-    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
-        ValueInput input = new ValueInput(tag, registries);
-        input.read("DnaSlots", ItemStack.OPTIONAL_CODEC.listOf()).ifPresent(loaded -> {
+    public void load(CompoundTag tag) {
+        super.load(tag);
+        ValueInput input = new ValueInput(tag);
+        input.read("DnaSlots", MFSCodecs.OPTIONAL_ITEM_STACK.listOf()).ifPresent(loaded -> {
             for (int i = 0; i < Math.min(loaded.size(), DNA_SLOTS); i++) {
                 dnaSlots.setItem(i, loaded.get(i));
             }
@@ -308,8 +309,8 @@ public class CloneOMaticBlockEntity extends BlockEntity implements MenuProvider 
     // ── Client sync ───────────────────────────────────────────────────────────────
 
     @Override
-    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
-        return saveWithoutMetadata(registries);
+    public CompoundTag getUpdateTag() {
+        return saveWithoutMetadata();
     }
 
     @Override

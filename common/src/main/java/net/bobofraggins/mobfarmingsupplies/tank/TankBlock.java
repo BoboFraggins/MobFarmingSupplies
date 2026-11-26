@@ -1,5 +1,8 @@
 package net.bobofraggins.mobfarmingsupplies.tank;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.BlockInteractions;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.ItemInteractionResult;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.ItemComponents;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.architectury.registry.menu.MenuRegistry;
@@ -11,7 +14,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
+
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUtils;
@@ -29,9 +32,6 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class TankBlock extends BaseEntityBlock {
 
-    public static final MapCodec<TankBlock> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            TankTier.CODEC.fieldOf("tier").forGetter(TankBlock::tier),
-            propertiesCodec()).apply(i, TankBlock::new));
 
     private final TankTier tier;
 
@@ -44,10 +44,6 @@ public class TankBlock extends BaseEntityBlock {
         return tier;
     }
 
-    @Override
-    public MapCodec<TankBlock> codec() {
-        return CODEC;
-    }
 
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
@@ -68,12 +64,18 @@ public class TankBlock extends BaseEntityBlock {
     }
 
     @Override
-    protected VoxelShape getOcclusionShape(BlockState state, BlockGetter level, BlockPos pos) {
+    public VoxelShape getOcclusionShape(BlockState state, BlockGetter level, BlockPos pos) {
         return Shapes.empty();
     }
-
     @Override
-    protected InteractionResult useWithoutItem(
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand,
+                                 BlockHitResult hit) {
+        return BlockInteractions.use(state, level, pos, player, hand, hit, this::useItemOn,
+                this::useWithoutItem);
+    }
+
+
+        public InteractionResult useWithoutItem(
             BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
         if (!level.isClientSide() && level.getBlockEntity(pos) instanceof TankBlockEntity be
                 && player instanceof ServerPlayer sp) {
@@ -82,8 +84,7 @@ public class TankBlock extends BaseEntityBlock {
         return InteractionResult.SUCCESS;
     }
 
-    @Override
-    protected ItemInteractionResult useItemOn(
+        public ItemInteractionResult useItemOn(
             ItemStack stack,
             BlockState state,
             Level level,
@@ -112,7 +113,7 @@ public class TankBlock extends BaseEntityBlock {
         if (stack.is(Items.BUCKET)) {
             filling = true;
         } else if (stack.getItem() instanceof TankBlockItem) {
-            TankContents tankContents = stack.getOrDefault(Registration.TANK_CONTENTS.get(), TankContents.EMPTY);
+            TankContents tankContents = ItemComponents.getOrDefault(stack, Registration.TANK_CONTENTS.get(), TankContents.EMPTY);
             filling = tankContents.amount() == 0;
         } else {
             filling = false;

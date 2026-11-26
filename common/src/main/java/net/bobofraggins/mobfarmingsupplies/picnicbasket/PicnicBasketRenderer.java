@@ -30,11 +30,11 @@ public class PicnicBasketRenderer
         extends StateBlockEntityRenderer<PicnicBasketBlockEntity, PicnicBasketRenderer.State> {
 
     public static final ResourceLocation BODY_MODEL_ID =
-            ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "block/picnic_basket_body");
+            new ResourceLocation(MobFarmingSuppliesCommon.MODID, "block/picnic_basket_body");
     public static final ResourceLocation LEFT_LID_MODEL_ID =
-            ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "block/picnic_basket_left_lid");
+            new ResourceLocation(MobFarmingSuppliesCommon.MODID, "block/picnic_basket_left_lid");
     public static final ResourceLocation RIGHT_LID_MODEL_ID =
-            ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "block/picnic_basket_right_lid");
+            new ResourceLocation(MobFarmingSuppliesCommon.MODID, "block/picnic_basket_right_lid");
 
     // Scratch quaternions reused every frame (submit runs single-threaded).
     private static final Quaternionf YAW_QUAT = new Quaternionf();

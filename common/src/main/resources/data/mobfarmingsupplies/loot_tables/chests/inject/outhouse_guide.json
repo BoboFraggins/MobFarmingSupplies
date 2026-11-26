@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:book",
+          "functions": [
+            {
+              "function": "mobfarmingsupplies:set_item",
+              "item": "modonomicon:modonomicon",
+              "nbt": "{\"modonomicon:book_id\":\"mobfarmingsupplies:guide\"}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

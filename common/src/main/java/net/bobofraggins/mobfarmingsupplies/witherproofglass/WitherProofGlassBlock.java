@@ -1,7 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.witherproofglass;
 
 import net.minecraft.world.level.LevelAccessor;
-import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
@@ -32,7 +31,6 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
  */
 public class WitherProofGlassBlock extends HalfTransparentBlock {
 
-    public static final MapCodec<WitherProofGlassBlock> CODEC = simpleCodec(WitherProofGlassBlock::new);
 
     // ── Connection properties ──────────────────────────────────────────────────
     public static final BooleanProperty UP    = BlockStateProperties.UP;
@@ -53,10 +51,6 @@ public class WitherProofGlassBlock extends HalfTransparentBlock {
                 .setValue(WEST,  false));
     }
 
-    @Override
-    public MapCodec<WitherProofGlassBlock> codec() {
-        return CODEC;
-    }
 
     // ── Block state definition ─────────────────────────────────────────────────
 
@@ -83,7 +77,7 @@ public class WitherProofGlassBlock extends HalfTransparentBlock {
     // ── Neighbour update ───────────────────────────────────────────────────────
 
     @Override
-    protected BlockState updateShape(
+    public BlockState updateShape(
             BlockState state,
             Direction dir,
             BlockState neighbourState,
@@ -113,12 +107,12 @@ public class WitherProofGlassBlock extends HalfTransparentBlock {
     // ── Light blocking ─────────────────────────────────────────────────────────
 
     @Override
-    protected int getLightBlock(BlockState state, BlockGetter level, BlockPos pos) {
+    public int getLightBlock(BlockState state, BlockGetter level, BlockPos pos) {
         return 15;
     }
 
     @Override
-    protected boolean propagatesSkylightDown(BlockState state, BlockGetter level, BlockPos pos) {
+    public boolean propagatesSkylightDown(BlockState state, BlockGetter level, BlockPos pos) {
         return false;
     }
 

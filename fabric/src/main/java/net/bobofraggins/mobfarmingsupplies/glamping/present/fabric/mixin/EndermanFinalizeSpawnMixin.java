@@ -21,7 +21,7 @@ public abstract class EndermanFinalizeSpawnMixin {
 
     @Inject(
             method = "finalizeSpawn(Lnet/minecraft/world/level/ServerLevelAccessor;Lnet/minecraft/world/DifficultyInstance;"
-                    + "Lnet/minecraft/world/entity/MobSpawnType;Lnet/minecraft/world/entity/SpawnGroupData;)"
+                    + "Lnet/minecraft/world/entity/MobSpawnType;Lnet/minecraft/world/entity/SpawnGroupData;Lnet/minecraft/nbt/CompoundTag;)"
                     + "Lnet/minecraft/world/entity/SpawnGroupData;",
             at = @At("TAIL"))
     private void mobfarmingsupplies$maybeGivePresent(
@@ -29,6 +29,7 @@ public abstract class EndermanFinalizeSpawnMixin {
             DifficultyInstance difficulty,
             MobSpawnType spawnReason,
             SpawnGroupData spawnGroupData,
+            @org.jetbrains.annotations.Nullable net.minecraft.nbt.CompoundTag spawnTag,
             CallbackInfoReturnable<SpawnGroupData> cir) {
         if (!((Object) this instanceof EnderMan enderman)) return;
         if (spawnReason == MobSpawnType.COMMAND

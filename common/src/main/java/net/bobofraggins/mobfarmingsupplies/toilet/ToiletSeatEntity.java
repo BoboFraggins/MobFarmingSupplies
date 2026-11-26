@@ -2,7 +2,6 @@ package net.bobofraggins.mobfarmingsupplies.toilet;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.particles.ColorParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
@@ -34,8 +33,8 @@ import org.jetbrains.annotations.Nullable;
  */
 public class ToiletSeatEntity extends Entity {
 
-    /** The swirls a potion effect gives off, in blue. */
-    private static final ColorParticleOption BUBBLES = ColorParticleOption.create(ParticleTypes.ENTITY_EFFECT, 0xFF4A8FE7);
+    /** The swirls a potion effect gives off, in blue (1.20.1 takes the colour as the particle's speed). */
+    private static final int BUBBLE_COLOR = 0x4A8FE7;
     /** On average, one swirl every this many ticks while seated. */
     private static final int BUBBLE_EVERY_TICKS = 3;
 
@@ -112,11 +111,11 @@ public class ToiletSeatEntity extends Entity {
         RandomSource random = level().getRandom();
         if (random.nextInt(BUBBLE_EVERY_TICKS) != 0) return;
         BlockPos toilet = toiletPos();
-        level().addParticle(BUBBLES,
+        level().addParticle(ParticleTypes.ENTITY_EFFECT,
                 toilet.getX() + 0.5 + (random.nextDouble() - 0.5) * 0.4,
                 toilet.getY() + 0.45,
                 toilet.getZ() + 0.5 + (random.nextDouble() - 0.5) * 0.4,
-                0.0, 0.0, 0.0);
+                (BUBBLE_COLOR >> 16 & 0xFF) / 255.0, (BUBBLE_COLOR >> 8 & 0xFF) / 255.0, (BUBBLE_COLOR & 0xFF) / 255.0);
     }
 
     @Override
@@ -173,11 +172,6 @@ public class ToiletSeatEntity extends Entity {
         clampRotation(passenger);
     }
 
-    @Override
-    protected Vec3 getPassengerAttachmentPoint(Entity passenger, EntityDimensions dimensions, float scale) {
-        return Vec3.ZERO; // the seat entity's own position is the seat point
-    }
-
     /** A player turning their view while seated (called client-side as they turn). */
     @Override
     public void onPassengerTurned(Entity passenger) {
@@ -217,7 +211,7 @@ public class ToiletSeatEntity extends Entity {
     // ── Nothing to sync, save or damage ─────────────────────────────────────────
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder builder) {}
+    protected void defineSynchedData() {}
 
     @Override
     public boolean hurt(DamageSource source, float damage) {

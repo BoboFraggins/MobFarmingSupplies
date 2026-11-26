@@ -99,7 +99,7 @@ public class InhibitorItemRenderer implements SpecialModelRenderer<Void> {
         if (sprites == null) {
             TextureAtlas atlas = (TextureAtlas) Minecraft.getInstance().getTextureManager().getTexture(TextureAtlas.LOCATION_PARTICLES);
             sprites = new TextureAtlasSprite[8];
-            for (int i = 0; i < 8; i++) sprites[i] = atlas.getSprite(ResourceLocation.withDefaultNamespace("generic_" + i));
+            for (int i = 0; i < 8; i++) sprites[i] = atlas.getSprite(new ResourceLocation("generic_" + i));
         }
         TextureAtlasSprite[] generic = sprites;
         Geometry.custom(poseStack, buffers, PARTICLE_TYPE, (pose, vc) -> {
@@ -174,8 +174,8 @@ public class InhibitorItemRenderer implements SpecialModelRenderer<Void> {
 
     private static void vertex(VertexConsumer vc, PoseStack.Pose pose, float x, float y, float z,
                                float u, float v, float r, float g, float b, int light) {
-        vc.addVertex(pose, x, y, z).setColor(r, g, b, 1f).setUv(u, v)
-                .setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(pose, 0f, 1f, 0f);
+        vc.vertex(pose.pose(), x, y, z).color(r, g, b, 1f).uv(u, v)
+                .overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(pose.normal(), 0f, 1f, 0f).endVertex();
     }
 
     /** A number in [0, 1) fixed by slot, turn and which value of the particle it is. */

@@ -17,7 +17,7 @@ public class HeadPikeBlockItem extends BlockItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext ctx, List<Component> lines, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, @org.jetbrains.annotations.Nullable net.minecraft.world.level.Level ctx, List<Component> lines, TooltipFlag flag) {
         super.appendHoverText(stack, ctx, lines, flag);
         lines.add(Component.translatable("item.mobfarmingsupplies.head_pike.tooltip")
                 .withStyle(ChatFormatting.GRAY));

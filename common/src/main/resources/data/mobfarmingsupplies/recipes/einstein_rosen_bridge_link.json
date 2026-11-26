@@ -1,0 +1,19 @@
+{
+  "type": "mobfarmingsupplies:bridge_link",
+  "ingredients": [
+    {
+      "item": "mobfarmingsupplies:einstein_rosen_bridge"
+    },
+    {
+      "item": "minecraft:ender_pearl"
+    },
+    {
+      "item": "mobfarmingsupplies:omnidirectional_hopper"
+    }
+  ],
+  "result": {
+    "item": "mobfarmingsupplies:einstein_rosen_bridge",
+    "count": 2
+  },
+  "category": "misc"
+}

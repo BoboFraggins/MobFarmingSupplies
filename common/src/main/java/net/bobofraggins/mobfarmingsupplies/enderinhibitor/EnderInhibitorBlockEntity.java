@@ -121,18 +121,18 @@ public class EnderInhibitorBlockEntity extends BlockEntity implements MenuProvid
     // ── NBT ──────────────────────────────────────────────────────────────────────
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.saveAdditional(tag, registries);
-        ValueOutput output = new ValueOutput(tag, registries);
+    protected void saveAdditional(CompoundTag tag) {
+        super.saveAdditional(tag);
+        ValueOutput output = new ValueOutput(tag);
         output.putInt("OffsetX", offsetX);
         output.putInt("OffsetY", offsetY);
         output.putInt("OffsetZ", offsetZ);
     }
 
     @Override
-    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
-        ValueInput input = new ValueInput(tag, registries);
+    public void load(CompoundTag tag) {
+        super.load(tag);
+        ValueInput input = new ValueInput(tag);
         offsetX = input.getIntOr("OffsetX", 0);
         offsetY = input.getIntOr("OffsetY", 0);
         offsetZ = input.getIntOr("OffsetZ", 0);
@@ -141,8 +141,8 @@ public class EnderInhibitorBlockEntity extends BlockEntity implements MenuProvid
     // ── Client sync ───────────────────────────────────────────────────────────────
 
     @Override
-    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
-        return saveWithoutMetadata(registries);
+    public CompoundTag getUpdateTag() {
+        return saveWithoutMetadata();
     }
 
     @Override

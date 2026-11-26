@@ -20,7 +20,7 @@ import org.jetbrains.annotations.Nullable;
 public class IncubatorItemRenderer implements SpecialModelRenderer<Void> {
 
     public static final ResourceLocation BASE_MODEL_ID =
-            ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "block/incubator_base");
+            new ResourceLocation(MobFarmingSuppliesCommon.MODID, "block/incubator_base");
 
     @Nullable
     @Override

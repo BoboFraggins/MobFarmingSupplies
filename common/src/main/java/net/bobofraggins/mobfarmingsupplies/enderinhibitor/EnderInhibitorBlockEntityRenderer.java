@@ -246,7 +246,7 @@ public class EnderInhibitorBlockEntityRenderer<T extends EnderInhibitorBlockEnti
         float len = Mth.sqrt(dx * dx + dy * dy + dz * dz);
         if (len < 1e-5f) return;
         dx /= len; dy /= len; dz /= len;
-        vc.addVertex(mat, x0, y0, z0).setColor(r, g, b, a).setNormal(dx, dy, dz);
-        vc.addVertex(mat, x1, y1, z1).setColor(r, g, b, a).setNormal(dx, dy, dz);
+        vc.vertex(mat, x0, y0, z0).color(r, g, b, a).normal(dx, dy, dz).endVertex();
+        vc.vertex(mat, x1, y1, z1).color(r, g, b, a).normal(dx, dy, dz).endVertex();
     }
 }

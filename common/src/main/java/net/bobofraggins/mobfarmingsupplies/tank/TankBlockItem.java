@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.tank;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.ItemComponents;
 import java.util.List;
 import net.bobofraggins.mobfarmingsupplies.experiencepylon.ExperiencePylonBlock;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
@@ -49,11 +50,11 @@ public class TankBlockItem extends BlockItem {
     @Override
     public void appendHoverText(
             ItemStack stack,
-            Item.TooltipContext context,
+            @org.jetbrains.annotations.Nullable net.minecraft.world.level.Level context,
             List<Component> tooltipAdderLines, TooltipFlag flag) {
         Consumer<Component> tooltipAdder = tooltipAdderLines::add;
         super.appendHoverText(stack, context, tooltipAdderLines, flag);
-        TankContents contents = stack.getOrDefault(Registration.TANK_CONTENTS.get(), TankContents.EMPTY);
+        TankContents contents = ItemComponents.getOrDefault(stack, Registration.TANK_CONTENTS.get(), TankContents.EMPTY);
         if (contents.isLocked()) {
             tooltipAdder.accept(Component.translatable(
                             "item.mobfarmingsupplies.tank.tooltip",
@@ -71,7 +72,7 @@ public class TankBlockItem extends BlockItem {
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
-        TankContents c = stack.getOrDefault(Registration.TANK_CONTENTS.get(), TankContents.EMPTY);
+        TankContents c = ItemComponents.getOrDefault(stack, Registration.TANK_CONTENTS.get(), TankContents.EMPTY);
 
         BlockHitResult hit = getPlayerPOVHitResult(
                 level, player, c.bucketMode() ? ClipContext.Fluid.SOURCE_ONLY : ClipContext.Fluid.NONE);
@@ -79,7 +80,7 @@ public class TankBlockItem extends BlockItem {
         if (hit.getType() == HitResult.Type.MISS) {
             if (!level.isClientSide()) {
                 boolean newBucketMode = !c.bucketMode();
-                stack.set(Registration.TANK_CONTENTS.get(),
+                ItemComponents.set(stack, Registration.TANK_CONTENTS.get(),
                         new TankContents(c.storedFluid(), c.amount(), newBucketMode));
                 player.displayClientMessage(Component.translatable(newBucketMode
                         ? "item.mobfarmingsupplies.tank.mode_bucket"
@@ -103,17 +104,17 @@ public class TankBlockItem extends BlockItem {
                     dev.architectury.fluid.FluidStack.create(worldFluid, BUCKET_VOLUME);
             boolean canAccept = c.storedFluid().isEmpty()
                     || (c.storedFluid().isFluidEqual(archWorldFluid)
-                            && c.storedFluid().isComponentEqual(archWorldFluid));
+                            && c.storedFluid().isTagEqual(archWorldFluid));
 
             if (canAccept && capacityOf(stack) - c.amount() >= BUCKET_VOLUME) {
                 if (!level.isClientSide()) {
                     Optional<SoundEvent> sound = bucketPickup.getPickupSound();
-                    ItemStack picked = bucketPickup.pickupBlock(player, level, pos, state);
+                    ItemStack picked = bucketPickup.pickupBlock(level, pos, state);
                     if (!picked.isEmpty()) {
                         dev.architectury.fluid.FluidStack newType = c.storedFluid().isEmpty()
                                 ? archWorldFluid
                                 : c.storedFluid();
-                        stack.set(Registration.TANK_CONTENTS.get(),
+                        ItemComponents.set(stack, Registration.TANK_CONTENTS.get(),
                                 new TankContents(newType, c.amount() + BUCKET_VOLUME, true));
                         sound.ifPresent(s -> player.playSound(s, 1.0F, 1.0F));
                         level.gameEvent(player, GameEvent.FLUID_PICKUP, pos);
@@ -127,7 +128,7 @@ public class TankBlockItem extends BlockItem {
         if (!c.storedFluid().isEmpty() && c.amount() >= BUCKET_VOLUME) {
             Fluid fluid = c.storedFluid().getFluid();
             boolean isLiquidContainer = state.getBlock() instanceof LiquidBlockContainer lbc
-                    && lbc.canPlaceLiquid(player, level, pos, state, fluid);
+                    && lbc.canPlaceLiquid(level, pos, state, fluid);
             BlockPos targetPos = isLiquidContainer ? pos : pos.relative(face);
 
             if (!level.isClientSide()) {
@@ -148,7 +149,7 @@ public class TankBlockItem extends BlockItem {
     @Override
     public InteractionResult useOn(UseOnContext context) {
         ItemStack stack = context.getItemInHand();
-        TankContents c = stack.getOrDefault(Registration.TANK_CONTENTS.get(), TankContents.EMPTY);
+        TankContents c = ItemComponents.getOrDefault(stack, Registration.TANK_CONTENTS.get(), TankContents.EMPTY);
 
         if (c.bucketMode()) {
             return InteractionResult.PASS;

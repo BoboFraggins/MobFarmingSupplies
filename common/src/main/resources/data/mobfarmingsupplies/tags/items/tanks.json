@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "mobfarmingsupplies:tank",
+    "mobfarmingsupplies:gold_tank",
+    "mobfarmingsupplies:diamond_tank",
+    "mobfarmingsupplies:emerald_tank"
+  ]
+}

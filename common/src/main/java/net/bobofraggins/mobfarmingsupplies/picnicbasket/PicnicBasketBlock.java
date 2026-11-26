@@ -1,7 +1,8 @@
 package net.bobofraggins.mobfarmingsupplies.picnicbasket;
 
+import net.minecraft.world.InteractionHand;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.BlockInteractions;
 import net.minecraft.nbt.CompoundTag;
-import com.mojang.serialization.MapCodec;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -50,17 +51,12 @@ public class PicnicBasketBlock extends BaseEntityBlock {
 
     private static final VoxelShape SHAPE = Block.box(3, 0, 4, 13, 10, 12);
 
-    public static final MapCodec<PicnicBasketBlock> CODEC = simpleCodec(PicnicBasketBlock::new);
 
     public PicnicBasketBlock(BlockBehaviour.Properties props) {
         super(props);
         registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH));
     }
 
-    @Override
-    protected MapCodec<PicnicBasketBlock> codec() {
-        return CODEC;
-    }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
@@ -73,12 +69,12 @@ public class PicnicBasketBlock extends BaseEntityBlock {
     }
 
     @Override
-    protected BlockState rotate(BlockState state, Rotation rotation) {
+    public BlockState rotate(BlockState state, Rotation rotation) {
         return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
     }
 
     @Override
-    protected BlockState mirror(BlockState state, Mirror mirror) {
+    public BlockState mirror(BlockState state, Mirror mirror) {
         return state.rotate(mirror.getRotation(state.getValue(FACING)));
     }
 
@@ -93,7 +89,7 @@ public class PicnicBasketBlock extends BaseEntityBlock {
     }
 
     @Override
-    protected VoxelShape getOcclusionShape(BlockState state, BlockGetter level, BlockPos pos) {
+    public VoxelShape getOcclusionShape(BlockState state, BlockGetter level, BlockPos pos) {
         return Shapes.empty();
     }
 
@@ -121,9 +117,15 @@ public class PicnicBasketBlock extends BaseEntityBlock {
     }
 
     // ── Interaction ─────────────────────────────────────────────────────────────
-
     @Override
-    protected InteractionResult useWithoutItem(
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand,
+                                 BlockHitResult hit) {
+        return BlockInteractions.use(state, level, pos, player, hand, hit, null,
+                this::useWithoutItem);
+    }
+
+
+        public InteractionResult useWithoutItem(
             BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
         if (!level.isClientSide()) {
             if (level.getBlockEntity(pos) instanceof PicnicBasketBlockEntity be
@@ -154,7 +156,7 @@ public class PicnicBasketBlock extends BaseEntityBlock {
             basket.unpackLootTable(params.getOptionalParameter(LootContextParams.THIS_ENTITY) instanceof Player p ? p : null);
             for (ItemStack drop : drops) {
                 if (drop.getItem() instanceof BlockItem) {
-                    CompoundTag beOut = basket.saveCustomOnly(params.getLevel().registryAccess());
+                    CompoundTag beOut = basket.saveWithoutMetadata();
                     BlockItem.setBlockEntityData(drop, basket.getType(), beOut);
                 }
             }

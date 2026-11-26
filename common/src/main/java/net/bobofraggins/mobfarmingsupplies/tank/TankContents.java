@@ -4,9 +4,9 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.architectury.fluid.FluidStack;
 import net.bobofraggins.mobfarmingsupplies.fluid.FluidStacks;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.FriendlyByteBuf;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.ByteBufCodecs;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.StreamCodec;
 
 /**
  * Data component storing the fluid type and amount for a Tank block item.
@@ -28,7 +28,7 @@ public record TankContents(FluidStack storedFluid, long amount, boolean bucketMo
                     Codec.BOOL.optionalFieldOf("bucket_mode", false).forGetter(TankContents::bucketMode))
             .apply(instance, TankContents::new));
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, TankContents> STREAM_CODEC =
+    public static final StreamCodec<FriendlyByteBuf, TankContents> STREAM_CODEC =
             StreamCodec.composite(
                     FluidStacks.OPTIONAL_STREAM_CODEC, TankContents::storedFluid,
                     ByteBufCodecs.VAR_LONG,            TankContents::amount,

@@ -16,7 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.item.component.ResolvableProfile;
+import com.mojang.authlib.GameProfile;
 import net.minecraft.world.level.storage.LevelResource;
 
 /**
@@ -69,12 +69,12 @@ public final class KnownPlayers {
      * One of the known players, at random, as a profile the client looks up for its name and skin,
      * or empty when nobody has connected yet.
      */
-    public static Optional<ResolvableProfile> random(RandomSource random) {
+    public static Optional<GameProfile> random(RandomSource random) {
         List<Map.Entry<UUID, String>> players = new ArrayList<>(PLAYERS.entrySet());
         if (players.isEmpty()) return Optional.empty();
         Map.Entry<UUID, String> player = players.get(random.nextInt(players.size()));
         return Optional.of(player.getValue().isEmpty()
-                ? new ResolvableProfile(Optional.empty(), Optional.of(player.getKey()), new PropertyMap())
-                : new ResolvableProfile(Optional.of(player.getValue()), Optional.empty(), new PropertyMap()));
+                ? new GameProfile(player.getKey(), null)
+                : new GameProfile(null, player.getValue()));
     }
 }

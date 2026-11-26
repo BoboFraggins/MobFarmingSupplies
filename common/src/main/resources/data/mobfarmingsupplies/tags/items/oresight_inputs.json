@@ -1,0 +1,21 @@
+{
+  "values": [
+    { "id": "#forge:ores", "required": false },
+    { "id": "#forge:raw_materials", "required": false },
+    { "id": "#forge:gems/diamond", "required": false },
+    { "id": "#forge:gems/emerald", "required": false },
+    { "id": "#forge:gems/lapis", "required": false },
+    { "id": "#forge:gems/quartz", "required": false },
+    { "id": "#forge:dusts/redstone", "required": false },
+    { "id": "#c:ores", "required": false },
+    { "id": "#c:raw_ores", "required": false },
+    { "id": "#c:diamonds", "required": false },
+    { "id": "#c:emeralds", "required": false },
+    { "id": "#c:lapis", "required": false },
+    { "id": "#c:quartz", "required": false },
+    { "id": "#c:redstone_dusts", "required": false },
+    "minecraft:netherite_scrap",
+    "minecraft:ancient_debris",
+    "minecraft:coal"
+  ]
+}

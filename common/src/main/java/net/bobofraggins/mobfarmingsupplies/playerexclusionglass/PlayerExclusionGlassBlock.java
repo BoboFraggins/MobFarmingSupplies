@@ -1,6 +1,5 @@
 package net.bobofraggins.mobfarmingsupplies.playerexclusionglass;
 
-import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
@@ -40,7 +39,6 @@ import net.minecraft.world.phys.shapes.VoxelShape;
  */
 public class PlayerExclusionGlassBlock extends HalfTransparentBlock {
 
-    public static final MapCodec<PlayerExclusionGlassBlock> CODEC = simpleCodec(PlayerExclusionGlassBlock::new);
 
     // ── Connection properties ──────────────────────────────────────────────────
     public static final BooleanProperty UP    = BlockStateProperties.UP;
@@ -61,10 +59,6 @@ public class PlayerExclusionGlassBlock extends HalfTransparentBlock {
                 .setValue(WEST,  false));
     }
 
-    @Override
-    public MapCodec<PlayerExclusionGlassBlock> codec() {
-        return CODEC;
-    }
 
     // ── Block state definition ─────────────────────────────────────────────────
 
@@ -91,7 +85,7 @@ public class PlayerExclusionGlassBlock extends HalfTransparentBlock {
     // ── Neighbour update ───────────────────────────────────────────────────────
 
     @Override
-    protected BlockState updateShape(
+    public BlockState updateShape(
             BlockState state,
             Direction dir,
             BlockState neighbourState,
@@ -121,12 +115,12 @@ public class PlayerExclusionGlassBlock extends HalfTransparentBlock {
     // ── Light blocking ─────────────────────────────────────────────────────────
 
     @Override
-    protected int getLightBlock(BlockState state, BlockGetter level, BlockPos pos) {
+    public int getLightBlock(BlockState state, BlockGetter level, BlockPos pos) {
         return 15;
     }
 
     @Override
-    protected boolean propagatesSkylightDown(BlockState state, BlockGetter level, BlockPos pos) {
+    public boolean propagatesSkylightDown(BlockState state, BlockGetter level, BlockPos pos) {
         return false;
     }
 
@@ -139,7 +133,7 @@ public class PlayerExclusionGlassBlock extends HalfTransparentBlock {
      * {@code minecraft:prevent_mob_spawning_inside} tag.
      */
     @Override
-    protected VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+    public VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         if (context instanceof EntityCollisionContext entityContext
                 && entityContext.getEntity() instanceof Player) {
             return Shapes.block();
@@ -149,7 +143,7 @@ public class PlayerExclusionGlassBlock extends HalfTransparentBlock {
 
     /** Still a full face to build on, though most entities have no collision with it. */
     @Override
-    protected VoxelShape getBlockSupportShape(BlockState state, BlockGetter level, BlockPos pos) {
+    public VoxelShape getBlockSupportShape(BlockState state, BlockGetter level, BlockPos pos) {
         return Shapes.block();
     }
 

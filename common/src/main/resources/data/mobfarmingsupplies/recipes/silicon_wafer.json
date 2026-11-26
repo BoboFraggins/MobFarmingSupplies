@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "mobfarmingsupplies:silicon"
+  },
+  "result": "mobfarmingsupplies:silicon_wafer",
+  "count": 9
+}

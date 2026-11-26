@@ -25,7 +25,7 @@ public final class GuideBook {
         JsonObject json = new JsonObject();
         json.addProperty("id", "modonomicon:modonomicon");
         json.add("components", components);
-        return ItemStack.CODEC.parse(registries.createSerializationContext(JsonOps.INSTANCE), json)
+        return ItemStack.CODEC.parse(JsonOps.INSTANCE, json)
                 .result().orElse(ItemStack.EMPTY);
     }
 }

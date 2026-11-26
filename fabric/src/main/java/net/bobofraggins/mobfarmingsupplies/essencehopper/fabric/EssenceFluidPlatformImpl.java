@@ -31,8 +31,8 @@ public final class EssenceFluidPlatformImpl {
     private static ArchitecturyFluidAttributes attributes(Essence essence) {
         return ATTRIBUTES.computeIfAbsent(essence, e -> SimpleArchitecturyFluidAttributes
                 .of(() -> Registration.ESSENCE_FLOWING.get(e).get(), () -> Registration.ESSENCE_SOURCES.get(e).get())
-                .sourceTexture(ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "block/" + e.fluidId() + "_still"))
-                .flowingTexture(ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "block/" + e.fluidId() + "_flow"))
+                .sourceTexture(new ResourceLocation(MobFarmingSuppliesCommon.MODID, "block/" + e.fluidId() + "_still"))
+                .flowingTexture(new ResourceLocation(MobFarmingSuppliesCommon.MODID, "block/" + e.fluidId() + "_flow"))
                 .color(0xFFFFFFFF) // no tint: the textures are coloured themselves
                 .block(Registration.ESSENCE_BLOCKS.get(e))
                 .bucketItem(() -> Registration.ESSENCE_BUCKETS.get(e).toOptional().map(item -> (Item) item))

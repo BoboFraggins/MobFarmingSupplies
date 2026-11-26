@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.magnet;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.MFSPackets;
 import com.mojang.blaze3d.platform.InputConstants;
 import dev.architectury.event.events.client.ClientTickEvent;
 import dev.architectury.networking.NetworkManager;
@@ -23,7 +24,7 @@ public final class MagnetKeybinds {
         KeyMappingRegistry.register(TOGGLE_MAGNET);
         ClientTickEvent.CLIENT_POST.register(mc -> {
             while (TOGGLE_MAGNET.consumeClick()) {
-                NetworkManager.sendToServer(new ToggleMagnetPacket());
+                MFSPackets.sendToServer(new ToggleMagnetPacket());
             }
         });
     }

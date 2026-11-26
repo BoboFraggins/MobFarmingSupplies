@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.skulllights;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.ItemComponents;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -193,7 +194,7 @@ public class SkullLightHookBlockEntity extends BlockEntity {
         lit.clear();
         if (!dropNothing && lights != null) {
             ItemStack string = new ItemStack(net.bobofraggins.mobfarmingsupplies.register.Registration.STRING_OF_SKULL_LIGHTS.get());
-            string.set(net.bobofraggins.mobfarmingsupplies.register.Registration.SKULL_LIGHTS.get(), lights);
+            ItemComponents.set(string, net.bobofraggins.mobfarmingsupplies.register.Registration.SKULL_LIGHTS.get(), lights);
             Containers.dropItemStack(level, dropAt.getX() + 0.5, dropAt.getY() + 0.5, dropAt.getZ() + 0.5, string);
         }
         if (end != null && !end.equals(dropAt) && level.getBlockEntity(end) instanceof SkullLightHookBlockEntity endHook) {
@@ -211,9 +212,9 @@ public class SkullLightHookBlockEntity extends BlockEntity {
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.saveAdditional(tag, registries);
-        ValueOutput output = new ValueOutput(tag, registries);
+    protected void saveAdditional(CompoundTag tag) {
+        super.saveAdditional(tag);
+        ValueOutput output = new ValueOutput(tag);
         if (end != null) output.store("End", BlockPos.CODEC, end);
         if (lights != null) output.store("Lights", SkullLights.CODEC, lights);
         if (!lit.isEmpty()) output.store("Lit", BlockPos.CODEC.listOf(), List.copyOf(lit));
@@ -222,9 +223,9 @@ public class SkullLightHookBlockEntity extends BlockEntity {
     }
 
     @Override
-    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
-        ValueInput input = new ValueInput(tag, registries);
+    public void load(CompoundTag tag) {
+        super.load(tag);
+        ValueInput input = new ValueInput(tag);
         end = input.read("End", BlockPos.CODEC).orElse(null);
         lights = input.read("Lights", SkullLights.CODEC).orElse(null);
         lit.clear();
@@ -234,8 +235,8 @@ public class SkullLightHookBlockEntity extends BlockEntity {
     }
 
     @Override
-    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
-        return saveWithoutMetadata(registries);
+    public CompoundTag getUpdateTag() {
+        return saveWithoutMetadata();
     }
 
     @Override

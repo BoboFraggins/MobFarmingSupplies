@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.experiencepylon;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.ItemComponents;
 import java.util.List;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.bobofraggins.mobfarmingsupplies.tank.TankContents;
@@ -21,11 +22,11 @@ public class ExperiencePylonBlockItem extends BlockItem {
     @Override
     public void appendHoverText(
             ItemStack stack,
-            Item.TooltipContext context,
+            @org.jetbrains.annotations.Nullable net.minecraft.world.level.Level context,
             List<Component> tooltip,
             TooltipFlag flag) {
         super.appendHoverText(stack, context, tooltip, flag);
-        TankContents contents = stack.getOrDefault(Registration.TANK_CONTENTS.get(), TankContents.EMPTY);
+        TankContents contents = ItemComponents.getOrDefault(stack, Registration.TANK_CONTENTS.get(), TankContents.EMPTY);
         if (!contents.isEmpty()) {
             tooltip.add(Component.translatable(
                             "item.mobfarmingsupplies.tank.tooltip",

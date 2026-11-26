@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.filterscribingterminal;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.ItemComponents;
 import net.bobofraggins.mobfarmingsupplies.itemfilter.ItemFilterData;
 import net.bobofraggins.mobfarmingsupplies.itemfilter.ItemMatcher;
 import net.bobofraggins.mobfarmingsupplies.itemfilter.ItemMatchers;
@@ -162,7 +163,7 @@ public class FilterScribingTerminalMenu extends AbstractContainerMenu {
         List<ItemMatcher> matchers = ItemMatchers.forItem(matcherItem, registries);
         if (selected < 0 || selected >= matchers.size()) return ItemStack.EMPTY;
         ItemStack filter = new ItemStack(Registration.ITEM_FILTER.get());
-        filter.set(Registration.ITEM_FILTER_DATA.get(), new ItemFilterData(matchers.get(selected), negate));
+        ItemComponents.set(filter, Registration.ITEM_FILTER_DATA.get(), new ItemFilterData(matchers.get(selected), negate));
         return filter;
     }
 

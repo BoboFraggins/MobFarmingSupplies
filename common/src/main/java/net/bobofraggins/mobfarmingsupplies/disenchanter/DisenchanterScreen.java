@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.disenchanter;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.GuiSprites;
 import net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommon;
 import net.bobofraggins.mobfarmingsupplies.shared.ui.Dialog;
 import net.bobofraggins.mobfarmingsupplies.shared.ui.PlayerInventoryPane;
@@ -18,11 +19,11 @@ import net.minecraft.world.entity.player.Inventory;
 public class DisenchanterScreen extends AbstractContainerScreen<DisenchanterMenu> {
 
     private static final ResourceLocation GHOST_BOOK =
-            ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "textures/item/book_ghost.png");
+            new ResourceLocation(MobFarmingSuppliesCommon.MODID, "textures/item/book_ghost.png");
 
     /** Vanilla's furnace: its empty arrow (in the screen texture) and the arrow that fills it (a sprite). */
-    private static final ResourceLocation FURNACE = ResourceLocation.withDefaultNamespace("textures/gui/container/furnace.png");
-    private static final ResourceLocation ARROW_FILL = ResourceLocation.withDefaultNamespace("container/furnace/burn_progress");
+    private static final ResourceLocation FURNACE = new ResourceLocation("textures/gui/container/furnace.png");
+    private static final ResourceLocation ARROW_FILL = new ResourceLocation("container/furnace/burn_progress");
     private static final int ARROW_U = 79, ARROW_V = 34, ARROW_W = 24, ARROW_H = 17;
 
     /** XP Juice's green, and a lighter stripe down the gauge's left side. */
@@ -70,7 +71,7 @@ public class DisenchanterScreen extends AbstractContainerScreen<DisenchanterMenu
         g.blit(FURNACE, arrowX, arrowY, ARROW_U, ARROW_V, ARROW_W, ARROW_H, 256, 256);
         int filled = Mth.ceil(menu.progress() * ARROW_W);
         if (filled > 0) {
-            g.blitSprite(ARROW_FILL, ARROW_W, 16, 0, 0, arrowX, arrowY, filled, 16);
+            GuiSprites.blitSprite(g, ARROW_FILL, ARROW_W, 16, 0, 0, arrowX, arrowY, filled, 16);
         }
         drawGauge(g, x + DisenchanterMenu.GAUGE_X, y + DisenchanterMenu.GAUGE_Y);
     }

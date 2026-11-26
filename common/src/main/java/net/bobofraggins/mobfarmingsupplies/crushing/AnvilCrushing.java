@@ -5,8 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.item.crafting.SingleRecipeInput;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.SingleRecipeInput;
 import net.minecraft.world.phys.AABB;
 
 import java.util.List;
@@ -27,11 +26,11 @@ public final class AnvilCrushing {
         for (ItemEntity ie : items) {
             ItemStack stack = ie.getItem();
             SingleRecipeInput input = new SingleRecipeInput(stack);
-            Optional<RecipeHolder<AnvilCrushingRecipe>> match = level.getRecipeManager()
+            Optional<AnvilCrushingRecipe> match = level.getRecipeManager()
                     .getRecipeFor(Registration.ANVIL_CRUSHING_TYPE.get(), input, level);
             if (match.isEmpty()) continue;
 
-            AnvilCrushingRecipe recipe = match.get().value();
+            AnvilCrushingRecipe recipe = match.get();
             ItemStack result = recipe.assemble(input, level.registryAccess());
             int remaining = stack.getCount() * recipe.resultCountPerItem();
             ie.discard();

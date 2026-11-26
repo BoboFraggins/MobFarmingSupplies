@@ -22,7 +22,7 @@ public abstract class ZombieFinalizeSpawnMixin {
 
     @Inject(
             method = "finalizeSpawn(Lnet/minecraft/world/level/ServerLevelAccessor;Lnet/minecraft/world/DifficultyInstance;"
-                    + "Lnet/minecraft/world/entity/MobSpawnType;Lnet/minecraft/world/entity/SpawnGroupData;)"
+                    + "Lnet/minecraft/world/entity/MobSpawnType;Lnet/minecraft/world/entity/SpawnGroupData;Lnet/minecraft/nbt/CompoundTag;)"
                     + "Lnet/minecraft/world/entity/SpawnGroupData;",
             at = @At("TAIL"))
     private void mobfarmingsupplies$maybeEquipMagicHat(
@@ -30,6 +30,7 @@ public abstract class ZombieFinalizeSpawnMixin {
             DifficultyInstance difficulty,
             MobSpawnType spawnReason,
             SpawnGroupData spawnGroupData,
+            @org.jetbrains.annotations.Nullable net.minecraft.nbt.CompoundTag spawnTag,
             CallbackInfoReturnable<SpawnGroupData> cir) {
         if (spawnReason == MobSpawnType.COMMAND
                 || spawnReason == MobSpawnType.SPAWN_EGG

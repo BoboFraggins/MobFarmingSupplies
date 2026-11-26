@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.xpanvil;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.MFSCodecs;
 import dev.architectury.fluid.FluidStack;
 import java.util.ArrayList;
 import java.util.List;
@@ -141,26 +142,26 @@ public class XpAnvilBlockEntity extends TankBlockEntity {
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.saveAdditional(tag, registries);
-        ValueOutput output = new ValueOutput(tag, registries);
+    protected void saveAdditional(CompoundTag tag) {
+        super.saveAdditional(tag);
+        ValueOutput output = new ValueOutput(tag);
         List<ItemStack> stacks = new ArrayList<>(2);
         for (int i = 0; i < 2; i++) stacks.add(items.getItem(i));
-        output.store(TAG_ITEMS, ItemStack.OPTIONAL_CODEC.listOf(), stacks);
+        output.store(TAG_ITEMS, MFSCodecs.OPTIONAL_ITEM_STACK.listOf(), stacks);
     }
 
     @Override
-    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
-        ValueInput input = new ValueInput(tag, registries);
-        input.read(TAG_ITEMS, ItemStack.OPTIONAL_CODEC.listOf()).ifPresent(list -> {
+    public void load(CompoundTag tag) {
+        super.load(tag);
+        ValueInput input = new ValueInput(tag);
+        input.read(TAG_ITEMS, MFSCodecs.OPTIONAL_ITEM_STACK.listOf()).ifPresent(list -> {
             for (int i = 0; i < Math.min(list.size(), 2); i++) items.setItem(i, list.get(i));
         });
     }
 
     /** Clients need nothing from it: the window sends the slots and the tank. */
     @Override
-    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+    public CompoundTag getUpdateTag() {
         return new CompoundTag();
     }
 }

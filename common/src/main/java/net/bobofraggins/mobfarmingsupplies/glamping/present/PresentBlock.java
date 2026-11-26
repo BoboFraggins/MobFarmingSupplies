@@ -1,6 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.glamping.present;
 
-import com.mojang.serialization.MapCodec;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.BlockInteractions;
 import java.util.List;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.minecraft.core.BlockPos;
@@ -59,17 +59,12 @@ public class PresentBlock extends BaseEntityBlock {
 
     private static final VoxelShape SHAPE = Block.box(0, 0, 0, 16, 16, 16);
 
-    public static final MapCodec<PresentBlock> CODEC = simpleCodec(PresentBlock::new);
 
     public PresentBlock(BlockBehaviour.Properties props) {
         super(props);
         registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(SURPRISE, false));
     }
 
-    @Override
-    protected MapCodec<PresentBlock> codec() {
-        return CODEC;
-    }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
@@ -87,12 +82,12 @@ public class PresentBlock extends BaseEntityBlock {
     }
 
     @Override
-    protected BlockState rotate(BlockState state, Rotation rotation) {
+    public BlockState rotate(BlockState state, Rotation rotation) {
         return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
     }
 
     @Override
-    protected BlockState mirror(BlockState state, Mirror mirror) {
+    public BlockState mirror(BlockState state, Mirror mirror) {
         return state.rotate(mirror.getRotation(state.getValue(FACING)));
     }
 
@@ -107,16 +102,22 @@ public class PresentBlock extends BaseEntityBlock {
     }
 
     @Override
-    protected VoxelShape getOcclusionShape(BlockState state, BlockGetter level, BlockPos pos) {
+    public VoxelShape getOcclusionShape(BlockState state, BlockGetter level, BlockPos pos) {
         return Shapes.empty();
     }
 
     // -------------------------------------------------------------------------
     // Unwrapping — shift-right-click to restore wrapped block in place
     // -------------------------------------------------------------------------
-
     @Override
-    protected InteractionResult useWithoutItem(
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand,
+                                 BlockHitResult hit) {
+        return BlockInteractions.use(state, level, pos, player, hand, hit, null,
+                this::useWithoutItem);
+    }
+
+
+        public InteractionResult useWithoutItem(
             BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
         if (!player.isCrouching()) return InteractionResult.PASS;
         if (level.isClientSide()) return InteractionResult.SUCCESS;
@@ -143,7 +144,7 @@ public class PresentBlock extends BaseEntityBlock {
         if (entityData != null) {
             BlockEntity newBe = level.getBlockEntity(pos);
             if (newBe != null) {
-                newBe.loadCustomOnly(entityData, level.registryAccess());
+                newBe.load(entityData);
                 newBe.setChanged();
             }
         }
@@ -175,7 +176,7 @@ public class PresentBlock extends BaseEntityBlock {
         if (present != null) {
             for (ItemStack drop : drops) {
                 if (drop.getItem() instanceof BlockItem) {
-                    CompoundTag beOut = present.saveCustomOnly(params.getLevel().registryAccess());
+                    CompoundTag beOut = present.saveWithoutMetadata();
                     BlockItem.setBlockEntityData(drop, present.getType(), beOut);
                 }
             }
@@ -188,14 +189,14 @@ public class PresentBlock extends BaseEntityBlock {
     // -------------------------------------------------------------------------
 
     @Override
-    protected void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
+    public void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
         super.onPlace(state, level, pos, oldState, movedByPiston);
         // Next tick: the block entity may not exist yet while the block is being placed.
         if (state.getValue(SURPRISE) && !level.isClientSide()) level.scheduleTick(pos, this, 1);
     }
 
     @Override
-    protected void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+    public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
         if (!state.getValue(SURPRISE)) return;
         if (level.getBlockEntity(pos) instanceof PresentBlockEntity present && !present.hasWrappedBlock()) {
             present.setWrappedBlock(PresentEndermanHandler.rollContents(random), null);
@@ -208,10 +209,10 @@ public class PresentBlock extends BaseEntityBlock {
     // -------------------------------------------------------------------------
 
     @Override
-    public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state) {
+    public ItemStack getCloneItemStack(net.minecraft.world.level.BlockGetter level, BlockPos pos, BlockState state) {
         ItemStack stack = super.getCloneItemStack(level, pos, state);
         if (level.getBlockEntity(pos) instanceof PresentBlockEntity present && present.hasWrappedBlock()) {
-            CompoundTag beOut = present.saveCustomOnly(level.registryAccess());
+            CompoundTag beOut = present.saveWithoutMetadata();
             BlockItem.setBlockEntityData(stack, present.getType(), beOut);
         }
         return stack;

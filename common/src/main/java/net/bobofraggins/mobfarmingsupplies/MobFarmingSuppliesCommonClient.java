@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.ItemComponents;
 import dev.architectury.registry.client.rendering.RenderTypeRegistry;
 import dev.architectury.registry.item.ItemPropertiesRegistry;
 import dev.architectury.registry.menu.MenuRegistry;
@@ -46,6 +47,20 @@ import net.bobofraggins.mobfarmingsupplies.disenchanter.DisenchanterScreen;
 public final class MobFarmingSuppliesCommonClient {
 
     private MobFarmingSuppliesCommonClient() {}
+
+    private static boolean keybindsRegistered;
+
+    /**
+     * Registers the mod's keys. Forge calls this from the mod's constructor, because its key
+     * registration event has already fired by client setup (Architectury then warns and patches the
+     * key in late); {@link #init} calls it too, for Fabric, and a second call does nothing.
+     */
+    public static void initKeybinds() {
+        if (keybindsRegistered) return;
+        keybindsRegistered = true;
+        PicnicBasketKeybinds.init();
+        net.bobofraggins.mobfarmingsupplies.magnet.MagnetKeybinds.init();
+    }
 
     public static void init() {
         // Development only: renders block icons for the docs when MFS_RENDER_ICONS is set.
@@ -107,8 +122,7 @@ public final class MobFarmingSuppliesCommonClient {
         MenuRegistry.registerScreenFactory(
                 Registration.PICNIC_BASKET_MENU.get(),
                 PicnicBasketScreen::new);
-        PicnicBasketKeybinds.init();
-        net.bobofraggins.mobfarmingsupplies.magnet.MagnetKeybinds.init();
+        initKeybinds();
         MenuRegistry.registerScreenFactory(
                 Registration.FILTER_SCRIBING_TERMINAL_MENU.get(),
                 FilterScribingTerminalScreen::new);
@@ -127,8 +141,8 @@ public final class MobFarmingSuppliesCommonClient {
         registerRenderLayers();
         // The Superconducting Magnet's on/off look (its model's override predicate).
         ItemPropertiesRegistry.register(Registration.SUPERCONDUCTING_MAGNET.get(),
-                ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "magnet_on"),
-                (stack, level, entity, seed) -> stack.has(Registration.MAGNET_ON.get()) ? 1f : 0f);
+                new ResourceLocation(MobFarmingSuppliesCommon.MODID, "magnet_on"),
+                (stack, level, entity, seed) -> ItemComponents.has(stack, Registration.MAGNET_ON.get()) ? 1f : 0f);
     }
 
     /**

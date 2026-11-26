@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.dna;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.ItemComponents;
 import net.bobofraggins.mobfarmingsupplies.mixin.MobFarmAccessor;
 import net.bobofraggins.mobfarmingsupplies.register.MFSTags;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
@@ -93,12 +94,12 @@ public class DnaSampleItem extends Item implements IDnaSampleItem {
                 ? entity.getCustomName().getString()
                 : entity.getType().getDescription().getString();
         ItemStack sample = new ItemStack(Registration.DNA_SAMPLE.get());
-        sample.set(Registration.DNA_SAMPLE_CONTENTS.get(), new DnaSampleContents(entityNbt, mobName));
+        ItemComponents.set(sample, Registration.DNA_SAMPLE_CONTENTS.get(), new DnaSampleContents(entityNbt, mobName));
         return sample;
     }
 
     public static DnaSampleContents getContents(ItemStack stack) {
-        return stack.get(Registration.DNA_SAMPLE_CONTENTS.get());
+        return ItemComponents.get(stack, Registration.DNA_SAMPLE_CONTENTS.get());
     }
 
     /** The sampled mob, or none for an empty sample (or one of a mob that can't be sampled any more). */
@@ -142,7 +143,7 @@ public class DnaSampleItem extends Item implements IDnaSampleItem {
             DifficultyInstance difficulty = level.getCurrentDifficultyAt(pos);
             MobFarmAccessor acc = (MobFarmAccessor) mob;
             acc.invokePopulateDefaultEquipmentSlots(random, difficulty);
-            acc.invokePopulateDefaultEquipmentEnchantments(level, random, difficulty);
+            acc.invokePopulateDefaultEquipmentEnchantments(random, difficulty);
         }
         return entity;
     }

@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.jei;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.ItemComponents;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -74,7 +75,7 @@ public final class DnaSamplingGuide implements IRecipeCategory<DnaSamplingGuide.
         CompoundTag nbt = new CompoundTag();
         nbt.putString("id", BuiltInRegistries.ENTITY_TYPE.getKey(type).toString());
         ItemStack sample = new ItemStack(Registration.DNA_SAMPLE.get());
-        sample.set(Registration.DNA_SAMPLE_CONTENTS.get(),
+        ItemComponents.set(sample, Registration.DNA_SAMPLE_CONTENTS.get(),
                 new DnaSampleContents(nbt, type.getDescription().getString()));
         return sample;
     }

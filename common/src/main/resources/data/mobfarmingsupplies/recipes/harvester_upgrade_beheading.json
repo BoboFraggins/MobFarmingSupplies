@@ -1,0 +1,13 @@
+{
+  "type": "mobfarmingsupplies:upgrading",
+  "item": {
+    "item": "minecraft:iron_helmet"
+  },
+  "input": {
+    "item": "mobfarmingsupplies:blank_upgrade"
+  },
+  "result": {
+    "item": "mobfarmingsupplies:harvester_upgrade_beheading",
+    "count": 1
+  }
+}

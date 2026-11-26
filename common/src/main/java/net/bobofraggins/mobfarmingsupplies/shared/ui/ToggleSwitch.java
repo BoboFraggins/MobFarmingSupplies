@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.shared.ui;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.GuiSprites;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -19,9 +20,9 @@ public final class ToggleSwitch {
     public static final int HEIGHT = 16;
 
     private static final ResourceLocation KNOB_LEFT =
-            ResourceLocation.fromNamespaceAndPath("mobfarmingsupplies", "widget/toggle_left");
+            new ResourceLocation("mobfarmingsupplies", "widget/toggle_left");
     private static final ResourceLocation KNOB_RIGHT =
-            ResourceLocation.fromNamespaceAndPath("mobfarmingsupplies", "widget/toggle_right");
+            new ResourceLocation("mobfarmingsupplies", "widget/toggle_right");
 
     // Label area (x range, inclusive) inside each image, measured from the art.
     private static final int KNOB_RIGHT_LABEL_MIN = 1;
@@ -34,7 +35,7 @@ public final class ToggleSwitch {
     private ToggleSwitch() {}
 
     public static void draw(GuiGraphics g, Font font, int x, int y, boolean knobRight, Component label) {
-        g.blitSprite(knobRight ? KNOB_RIGHT : KNOB_LEFT, x, y, WIDTH, HEIGHT);
+        GuiSprites.blitSprite(g, knobRight ? KNOB_RIGHT : KNOB_LEFT, x, y, WIDTH, HEIGHT);
         int min = knobRight ? KNOB_RIGHT_LABEL_MIN : KNOB_LEFT_LABEL_MIN;
         int max = knobRight ? KNOB_RIGHT_LABEL_MAX : KNOB_LEFT_LABEL_MAX;
         int centreX = x + (min + max + 1) / 2;

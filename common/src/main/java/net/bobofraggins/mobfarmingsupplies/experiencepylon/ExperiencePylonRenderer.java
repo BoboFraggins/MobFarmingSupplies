@@ -24,7 +24,7 @@ public class ExperiencePylonRenderer
         extends StateBlockEntityRenderer<ExperiencePylonBlockEntity, ExperiencePylonRenderer.PylonState> {
 
     public static final ResourceLocation PYLON_MODEL_ID =
-            ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "block/experience_pylon_pylon");
+            new ResourceLocation(MobFarmingSuppliesCommon.MODID, "block/experience_pylon_pylon");
 
     private static final float BOB_PERIOD_TICKS = 200f; // 10 seconds
     private static final float BOB_HEIGHT = 1f / 16f;   // one pixel each way

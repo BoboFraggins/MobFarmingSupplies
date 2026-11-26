@@ -1,0 +1,45 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "fabric:type": "mobfarmingsupplies:fluid_container",
+      "fluid_tag": "c:experience",
+      "amount": 1000
+    },
+    "E": {
+      "item": "minecraft:spider_eye"
+    },
+    "G": [
+      {
+        "tag": "forge:gunpowder"
+      },
+      {
+        "tag": "c:gunpowder"
+      }
+    ],
+    "R": {
+      "item": "minecraft:rotten_flesh"
+    },
+    "D": {
+      "item": "mobfarmingsupplies:dna_collector"
+    },
+    "X": [
+      {
+        "tag": "forge:bones"
+      },
+      {
+        "tag": "c:bones"
+      }
+    ]
+  },
+  "pattern": [
+    "BEB",
+    "RDX",
+    "BGB"
+  ],
+  "result": {
+    "item": "mobfarmingsupplies:dna_sample_common_hostile",
+    "count": 1
+  }
+}

@@ -1,5 +1,10 @@
 package net.bobofraggins.mobfarmingsupplies.incubator;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.EntitySet;
+import net.bobofraggins.mobfarmingsupplies.shared.recipe.IdentifiedRecipe;
+import net.minecraft.resources.ResourceLocation;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.MFSCodecs;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.MFSStreamCodecs;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
@@ -13,9 +18,9 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.RegistryCodecs;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.FriendlyByteBuf;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.ByteBufCodecs;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.StreamCodec;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.RandomSource;
@@ -47,7 +52,19 @@ import net.minecraft.world.level.Level;
  * row's output, if it's one of them, so the outputs stack). The optional {@code "mobs"} (entity
  * ids or a tag) limits which sampled mobs the recipe takes.
  */
-public class IncubatingRecipe implements Recipe<IncubatingInput> {
+public class IncubatingRecipe implements Recipe<IncubatingInput>, IdentifiedRecipe {
+
+    private ResourceLocation id = new ResourceLocation("mobfarmingsupplies", "unnamed");
+
+    @Override
+    public ResourceLocation getId() {
+        return id;
+    }
+
+    @Override
+    public void setId(ResourceLocation id) {
+        this.id = id;
+    }
 
     /** The {@code "result"} that means "the sampled mob's spawn egg". */
     public static final String SAMPLED_SPAWN_EGG = "sampled_spawn_egg";
@@ -56,37 +73,37 @@ public class IncubatingRecipe implements Recipe<IncubatingInput> {
                     Codec.STRING.comapFlatMap(s -> s.equals(SAMPLED_SPAWN_EGG)
                             ? DataResult.success(s)
                             : DataResult.error(() -> "Not a result: " + s), s -> s),
-                    ItemStack.STRICT_CODEC)
+                    MFSCodecs.RESULT_STACK)
             .xmap(either -> either.right(), fixed -> fixed.<Either<String, ItemStack>>map(Either::right)
                     .orElse(Either.left(SAMPLED_SPAWN_EGG)));
 
     public static final MapCodec<IncubatingRecipe> MAP_CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            Ingredient.CODEC_NONEMPTY.fieldOf("sample").forGetter(IncubatingRecipe::sample),
-            RegistryCodecs.homogeneousList(Registries.ENTITY_TYPE).optionalFieldOf("mobs").forGetter(r -> r.mobs),
-            Ingredient.CODEC_NONEMPTY.fieldOf("input").forGetter(IncubatingRecipe::input),
+            MFSCodecs.INGREDIENT_NONEMPTY.fieldOf("sample").forGetter(IncubatingRecipe::sample),
+            EntitySet.CODEC.optionalFieldOf("mobs").forGetter(r -> r.mobs),
+            MFSCodecs.INGREDIENT_NONEMPTY.fieldOf("input").forGetter(IncubatingRecipe::input),
             ExtraCodecs.NON_NEGATIVE_INT.fieldOf("experience").forGetter(IncubatingRecipe::experience),
             ExtraCodecs.POSITIVE_INT.fieldOf("time").forGetter(IncubatingRecipe::time),
             RESULT_CODEC.fieldOf("result").forGetter(r -> r.result)
     ).apply(i, IncubatingRecipe::new));
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, IncubatingRecipe> STREAM_CODEC = StreamCodec.composite(
-            Ingredient.CONTENTS_STREAM_CODEC, IncubatingRecipe::sample,
-            ByteBufCodecs.optional(ByteBufCodecs.holderSet(Registries.ENTITY_TYPE)), r -> r.mobs,
-            Ingredient.CONTENTS_STREAM_CODEC, IncubatingRecipe::input,
+    public static final StreamCodec<FriendlyByteBuf, IncubatingRecipe> STREAM_CODEC = StreamCodec.composite(
+            MFSStreamCodecs.INGREDIENT, IncubatingRecipe::sample,
+            ByteBufCodecs.optional(EntitySet.STREAM_CODEC), r -> r.mobs,
+            MFSStreamCodecs.INGREDIENT, IncubatingRecipe::input,
             ByteBufCodecs.VAR_INT, IncubatingRecipe::experience,
             ByteBufCodecs.VAR_INT, IncubatingRecipe::time,
-            ByteBufCodecs.optional(ItemStack.STREAM_CODEC), r -> r.result,
+            ByteBufCodecs.optional(MFSStreamCodecs.ITEM_STACK), r -> r.result,
             IncubatingRecipe::new);
 
     private final Ingredient sample;
-    private final Optional<HolderSet<EntityType<?>>> mobs;
+    private final Optional<EntitySet> mobs;
     private final Ingredient input;
     private final int experience;
     private final int time;
     /** The fixed result, or empty for {@link #SAMPLED_SPAWN_EGG}. */
     private final Optional<ItemStack> result;
 
-    public IncubatingRecipe(Ingredient sample, Optional<HolderSet<EntityType<?>>> mobs, Ingredient input,
+    public IncubatingRecipe(Ingredient sample, Optional<EntitySet> mobs, Ingredient input,
                             int experience, int time, Optional<ItemStack> result) {
         this.sample = sample;
         this.mobs = mobs;
@@ -122,7 +139,7 @@ public class IncubatingRecipe implements Recipe<IncubatingInput> {
     /** Whether the recipe takes this mob (always, unless it lists {@code "mobs"}). */
     @SuppressWarnings("deprecation") // builtInRegistryHolder(): no direct EntityType.is(HolderSet)
     public boolean takesMob(EntityType<?> type) {
-        return mobs.map(set -> set.contains(type.builtInRegistryHolder())).orElse(true);
+        return mobs.map(set -> set.contains(type)).orElse(true);
     }
 
     /** The mobs the sample could hatch that this recipe takes and that have a spawn egg. */
@@ -160,13 +177,13 @@ public class IncubatingRecipe implements Recipe<IncubatingInput> {
     boolean fits(IncubatingInput in, ServerLevel level, ItemStack output) {
         if (output.isEmpty()) return true;
         if (output.getCount() >= output.getMaxStackSize()) return false;
-        if (result.isPresent()) return ItemStack.isSameItemSameComponents(output, result.get());
+        if (result.isPresent()) return ItemStack.isSameItemSameTags(output, result.get());
         return candidates(in, level).stream().anyMatch(type -> spawns(output, type));
     }
 
     /** Only the fixed result can be known without the incubator; a sampled egg is picked as it's made. */
     @Override
-    public ItemStack assemble(IncubatingInput in, HolderLookup.Provider registries) {
+    public ItemStack assemble(IncubatingInput in, net.minecraft.core.RegistryAccess registries) {
         return result.map(ItemStack::copy).orElse(ItemStack.EMPTY);
     }
 
@@ -176,7 +193,7 @@ public class IncubatingRecipe implements Recipe<IncubatingInput> {
     }
 
     @Override
-    public ItemStack getResultItem(HolderLookup.Provider registries) {
+    public ItemStack getResultItem(net.minecraft.core.RegistryAccess registries) {
         return result.map(ItemStack::copy).orElse(ItemStack.EMPTY);
     }
 
@@ -187,7 +204,7 @@ public class IncubatingRecipe implements Recipe<IncubatingInput> {
 
     /** Whether {@code stack} is a spawn egg of {@code type}. */
     static boolean spawns(ItemStack stack, EntityType<?> type) {
-        return stack.getItem() instanceof SpawnEggItem egg && egg.getType(stack) == type;
+        return stack.getItem() instanceof SpawnEggItem egg && egg.getType(stack.getTag()) == type;
     }
 
     @Override

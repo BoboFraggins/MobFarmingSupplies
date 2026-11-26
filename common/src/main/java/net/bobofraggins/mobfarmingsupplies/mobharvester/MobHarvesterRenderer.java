@@ -63,19 +63,19 @@ public class MobHarvesterRenderer
     // ── Arm/head extra block model ids ──────────────────────────────────────────────
 
     public static final ResourceLocation LEFT_ARM_FRONT_MODEL_ID =
-            ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "block/mob_harvester_left_arm_front");
+            new ResourceLocation(MobFarmingSuppliesCommon.MODID, "block/mob_harvester_left_arm_front");
     public static final ResourceLocation LEFT_ARM_SIDE_MODEL_ID =
-            ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "block/mob_harvester_left_arm_side");
+            new ResourceLocation(MobFarmingSuppliesCommon.MODID, "block/mob_harvester_left_arm_side");
     public static final ResourceLocation LEFT_ARM_REAR_MODEL_ID =
-            ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "block/mob_harvester_left_arm_rear");
+            new ResourceLocation(MobFarmingSuppliesCommon.MODID, "block/mob_harvester_left_arm_rear");
     public static final ResourceLocation RIGHT_ARM_FRONT_MODEL_ID =
-            ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "block/mob_harvester_right_arm_front");
+            new ResourceLocation(MobFarmingSuppliesCommon.MODID, "block/mob_harvester_right_arm_front");
     public static final ResourceLocation RIGHT_ARM_SIDE_MODEL_ID =
-            ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "block/mob_harvester_right_arm_side");
+            new ResourceLocation(MobFarmingSuppliesCommon.MODID, "block/mob_harvester_right_arm_side");
     public static final ResourceLocation RIGHT_ARM_REAR_MODEL_ID =
-            ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "block/mob_harvester_right_arm_rear");
+            new ResourceLocation(MobFarmingSuppliesCommon.MODID, "block/mob_harvester_right_arm_rear");
     public static final ResourceLocation HEAD_MODEL_ID =
-            ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "block/mob_harvester_head");
+            new ResourceLocation(MobFarmingSuppliesCommon.MODID, "block/mob_harvester_head");
 
     // ── Weapons ───────────────────────────────────────────────────────────────────
 

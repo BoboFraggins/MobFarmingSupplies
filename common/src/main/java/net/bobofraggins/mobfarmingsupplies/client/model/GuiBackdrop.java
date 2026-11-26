@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.client.model;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.ItemComponents;
 import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.Set;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
@@ -17,7 +18,7 @@ import net.minecraft.world.item.ItemStack;
 public final class GuiBackdrop {
 
     private static final ResourceLocation TEXTURE =
-            ResourceLocation.fromNamespaceAndPath("mobfarmingsupplies", "textures/item/gui_backdrop.png");
+            new ResourceLocation("mobfarmingsupplies", "textures/item/gui_backdrop.png");
     /** Mob Heads dark enough to need it. */
     private static final Set<EntityType<?>> DARK_HEADS = Set.of(EntityType.CAT, EntityType.ENDERMAN, EntityType.BAT,
             EntityType.SPIDER, EntityType.CAVE_SPIDER, EntityType.MAGMA_CUBE);
@@ -29,7 +30,7 @@ public final class GuiBackdrop {
         Item item = stack.getItem();
         if (item == Registration.MOB_HEAD_ITEM.get()) {
             // A head with no mob (as JEI shows the skull tag) has nothing to look dark against.
-            var type = stack.get(Registration.MOB_HEAD_TYPE.get());
+            var type = ItemComponents.get(stack, Registration.MOB_HEAD_TYPE.get());
             return type != null && DARK_HEADS.contains(type);
         }
         return item == Registration.WITHER_PROOF_GLASS_ITEM.get() || item == Registration.MOB_EXCLUSION_GLASS_ITEM.get()

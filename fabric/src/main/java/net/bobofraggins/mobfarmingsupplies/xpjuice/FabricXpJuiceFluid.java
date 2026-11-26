@@ -24,8 +24,8 @@ public final class FabricXpJuiceFluid {
 
     private static final ArchitecturyFluidAttributes ATTRIBUTES = SimpleArchitecturyFluidAttributes
             .of(() -> Registration.XP_JUICE_FLOWING.get(), () -> Registration.XP_JUICE_SOURCE.get())
-            .sourceTexture(ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "block/xp_juice_still"))
-            .flowingTexture(ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "block/xp_juice_flow"))
+            .sourceTexture(new ResourceLocation(MobFarmingSuppliesCommon.MODID, "block/xp_juice_still"))
+            .flowingTexture(new ResourceLocation(MobFarmingSuppliesCommon.MODID, "block/xp_juice_flow"))
             .color(0xFFFFFFFF) // no tint: the textures are green themselves, as on NeoForge
             .block(Registration.XP_JUICE_BLOCK)
             .bucketItem(() -> Registration.XP_JUICE_BUCKET.toOptional().map(item -> (Item) item))

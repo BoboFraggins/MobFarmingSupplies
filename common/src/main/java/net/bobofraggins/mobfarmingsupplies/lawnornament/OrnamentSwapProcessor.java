@@ -10,7 +10,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.item.component.ResolvableProfile;
+import com.mojang.authlib.GameProfile;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -66,10 +66,9 @@ public class OrnamentSwapProcessor extends StructureProcessor {
         if (random.nextFloat() >= chance) return processed;
         CompoundTag nbt = processed.nbt() == null ? new CompoundTag() : processed.nbt().copy();
         if (ownedByKnownPlayer) {
-            Optional<ResolvableProfile> owner = KnownPlayers.random(random);
+            Optional<GameProfile> owner = KnownPlayers.random(random);
             if (owner.isEmpty()) return processed;
-            ResolvableProfile.CODEC.encodeStart(NbtOps.INSTANCE, owner.get())
-                    .ifSuccess(tag -> nbt.put(GiantOrnamentBlockEntity.TAG_PROFILE, tag));
+            nbt.put(GiantOrnamentBlockEntity.TAG_PROFILE, net.minecraft.nbt.NbtUtils.writeGameProfile(new CompoundTag(), owner.get()));
         }
         BlockState swapped = to.defaultBlockState();
         for (Property<?> property : processed.state().getProperties()) {

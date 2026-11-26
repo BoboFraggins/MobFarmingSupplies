@@ -1,6 +1,5 @@
 package net.bobofraggins.mobfarmingsupplies.skulllights;
 
-import com.mojang.serialization.MapCodec;
 import java.util.EnumMap;
 import java.util.Map;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
@@ -35,7 +34,6 @@ import org.jetbrains.annotations.Nullable;
  */
 public class SkullLightHookBlock extends Block implements EntityBlock {
 
-    public static final MapCodec<SkullLightHookBlock> CODEC = simpleCodec(SkullLightHookBlock::new);
     /** The way the hook sticks out of its wall: the face of the block it's on. */
     public static final EnumProperty<Direction> FACING = BlockStateProperties.FACING;
 
@@ -52,10 +50,6 @@ public class SkullLightHookBlock extends Block implements EntityBlock {
         registerDefaultState(stateDefinition.any().setValue(FACING, Direction.UP));
     }
 
-    @Override
-    protected MapCodec<? extends Block> codec() {
-        return CODEC;
-    }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
@@ -63,7 +57,7 @@ public class SkullLightHookBlock extends Block implements EntityBlock {
     }
 
     @Override
-    protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         return SHAPES.get(state.getValue(FACING));
     }
 
@@ -74,12 +68,12 @@ public class SkullLightHookBlock extends Block implements EntityBlock {
     }
 
     @Override
-    protected boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
+    public boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
         return canHang(level, pos, state.getValue(FACING));
     }
 
     @Override
-    protected BlockState updateShape(BlockState state, Direction direction, BlockState neighborState,
+    public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState,
                                      LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
         if (direction == state.getValue(FACING).getOpposite() && !canSurvive(state, level, pos)) {
             return net.minecraft.world.level.block.Blocks.AIR.defaultBlockState();
@@ -88,7 +82,7 @@ public class SkullLightHookBlock extends Block implements EntityBlock {
     }
 
     @Override
-    protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
+    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
         if (!state.is(newState.getBlock()) && level.getBlockEntity(pos) instanceof SkullLightHookBlockEntity hook) {
             hook.preRemoveSideEffects(pos, state);
         }
@@ -96,24 +90,24 @@ public class SkullLightHookBlock extends Block implements EntityBlock {
     }
 
     @Override
-    public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
+    public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
         // A creative player taking a string down doesn't get it back, as with any block.
         if (player.isCreative() && level.getBlockEntity(pos) instanceof SkullLightHookBlockEntity hook) hook.dropNothing();
-        return super.playerWillDestroy(level, pos, state, player);
+        super.playerWillDestroy(level, pos, state, player);
     }
 
     @Override
-    public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state) {
+    public ItemStack getCloneItemStack(net.minecraft.world.level.BlockGetter level, BlockPos pos, BlockState state) {
         return new ItemStack(Registration.STRING_OF_SKULL_LIGHTS.get());
     }
 
     @Override
-    protected BlockState rotate(BlockState state, Rotation rotation) {
+    public BlockState rotate(BlockState state, Rotation rotation) {
         return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
     }
 
     @Override
-    protected BlockState mirror(BlockState state, Mirror mirror) {
+    public BlockState mirror(BlockState state, Mirror mirror) {
         return state.rotate(mirror.getRotation(state.getValue(FACING)));
     }
 

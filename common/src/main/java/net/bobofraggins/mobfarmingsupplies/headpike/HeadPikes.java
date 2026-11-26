@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.headpike;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.ItemComponents;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.architectury.event.events.common.LifecycleEvent;
@@ -67,10 +68,6 @@ public final class HeadPikes extends SavedData {
     private static final String NAME = MobFarmingSuppliesCommon.MODID + "_head_pikes";
     private static final String PIKES_KEY = "pikes";
 
-    // Data fixers only touch data saved by older game versions; ours is a plain compound either way.
-    private static final SavedData.Factory<HeadPikes> FACTORY = new SavedData.Factory<>(
-            HeadPikes::new, HeadPikes::load, DataFixTypes.SAVED_DATA_COMMAND_STORAGE);
-
     /**
      * The running server's pikes. Spawn checks read it from wherever they run (new chunks fill in
      * off the server thread), so it and its maps are safe to read from any thread.
@@ -99,7 +96,7 @@ public final class HeadPikes extends SavedData {
 
     /** The server's pikes, loading them if need be. Server thread only. */
     private static HeadPikes get(MinecraftServer server) {
-        HeadPikes data = server.overworld().getDataStorage().computeIfAbsent(FACTORY, NAME);
+        HeadPikes data = server.overworld().getDataStorage().computeIfAbsent(HeadPikes::load, HeadPikes::new, NAME);
         active = data;
         return data;
     }
@@ -139,7 +136,7 @@ public final class HeadPikes extends SavedData {
     /** The mob {@code skull} is the head of, if any mob spawns as one. */
     @Nullable
     public static EntityType<?> mobOf(ItemStack skull) {
-        EntityType<?> mob = skull.get(Registration.MOB_HEAD_TYPE.get());
+        EntityType<?> mob = ItemComponents.get(skull, Registration.MOB_HEAD_TYPE.get());
         if (mob != null) return mob;
         if (skull.is(Items.SKELETON_SKULL)) return EntityType.SKELETON;
         if (skull.is(Items.WITHER_SKELETON_SKULL)) return EntityType.WITHER_SKELETON;
@@ -149,16 +146,16 @@ public final class HeadPikes extends SavedData {
         return null; // a player or dragon head, or another mod's: just decoration
     }
 
-    private static HeadPikes load(CompoundTag tag, HolderLookup.Provider registries) {
+    private static HeadPikes load(CompoundTag tag) {
         Tag pikes = tag.get(PIKES_KEY);
         if (pikes == null) return new HeadPikes();
-        return CODEC.parse(registries.createSerializationContext(NbtOps.INSTANCE), pikes)
+        return CODEC.parse(NbtOps.INSTANCE, pikes)
                 .result().orElseGet(HeadPikes::new);
     }
 
     @Override
-    public CompoundTag save(CompoundTag tag, HolderLookup.Provider registries) {
-        CODEC.encodeStart(registries.createSerializationContext(NbtOps.INSTANCE), this)
+    public CompoundTag save(CompoundTag tag) {
+        CODEC.encodeStart(NbtOps.INSTANCE, this)
                 .result().ifPresent(pikes -> tag.put(PIKES_KEY, pikes));
         return tag;
     }

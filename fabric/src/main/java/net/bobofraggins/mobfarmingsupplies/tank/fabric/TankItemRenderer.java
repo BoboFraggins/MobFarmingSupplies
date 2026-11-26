@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.tank.fabric;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.ItemComponents;
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.architectury.fluid.FluidStack;
 import dev.architectury.hooks.fluid.fabric.FluidStackHooksFabric;
@@ -40,7 +41,7 @@ public class TankItemRenderer implements SpecialModelRenderer<TankContents> {
     @Override
     @Nullable
     public TankContents extractArgument(ItemStack stack) {
-        return stack.get(Registration.TANK_CONTENTS.get());
+        return ItemComponents.get(stack, Registration.TANK_CONTENTS.get());
     }
 
     @Override

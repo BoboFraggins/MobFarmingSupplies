@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.incubator;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.GuiSprites;
 import net.bobofraggins.mobfarmingsupplies.MobFarmingSuppliesCommon;
 import net.bobofraggins.mobfarmingsupplies.shared.ui.Dialog;
 import net.bobofraggins.mobfarmingsupplies.shared.ui.PlayerInventoryPane;
@@ -25,13 +26,13 @@ import net.minecraft.world.entity.player.Inventory;
 public class IncubatorScreen extends AbstractContainerScreen<IncubatorMenu> {
 
     private static final ResourceLocation GHOST_DNA =
-            ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "textures/item/dna_sample_ghost.png");
+            new ResourceLocation(MobFarmingSuppliesCommon.MODID, "textures/item/dna_sample_ghost.png");
     private static final ResourceLocation GHOST_EGG =
-            ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "textures/item/egg_ghost.png");
+            new ResourceLocation(MobFarmingSuppliesCommon.MODID, "textures/item/egg_ghost.png");
 
     /** Vanilla's furnace: its empty arrow (in the screen texture) and the arrow that fills it (a sprite). */
-    private static final ResourceLocation FURNACE = ResourceLocation.withDefaultNamespace("textures/gui/container/furnace.png");
-    private static final ResourceLocation ARROW_FILL = ResourceLocation.withDefaultNamespace("container/furnace/burn_progress");
+    private static final ResourceLocation FURNACE = new ResourceLocation("textures/gui/container/furnace.png");
+    private static final ResourceLocation ARROW_FILL = new ResourceLocation("container/furnace/burn_progress");
     private static final int ARROW_U = 79, ARROW_V = 34, ARROW_W = 24, ARROW_H = 17;
 
     /** XP Juice's green, and a lighter stripe down the gauge's left side. */
@@ -78,7 +79,7 @@ public class IncubatorScreen extends AbstractContainerScreen<IncubatorMenu> {
             g.blit(FURNACE, arrowX, arrowY, ARROW_U, ARROW_V, ARROW_W, ARROW_H, 256, 256);
             int filled = Mth.ceil(menu.progress(row) * ARROW_W);
             if (filled > 0) {
-                g.blitSprite(ARROW_FILL, ARROW_W, 16, 0, 0, arrowX, arrowY, filled, 16);
+                GuiSprites.blitSprite(g, ARROW_FILL, ARROW_W, 16, 0, 0, arrowX, arrowY, filled, 16);
             }
         }
         drawGauge(g, x + IncubatorMenu.GAUGE_X, y + IncubatorMenu.GAUGE_Y);

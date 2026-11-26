@@ -22,6 +22,6 @@ public abstract class InventoryChangeTriggerMixin {
     @Inject(method = "trigger(Lnet/minecraft/server/level/ServerPlayer;Lnet/minecraft/world/entity/player/Inventory;Lnet/minecraft/world/item/ItemStack;)V",
             at = @At("TAIL"))
     private void mobfarmingsupplies$countHeads(ServerPlayer player, Inventory inventory, ItemStack stack, CallbackInfo ci) {
-        if (stack.is(ItemTags.SKULLS)) MFSTriggers.HEADS_COLLECTED.get().trigger(player);
+        if (stack.is(net.bobofraggins.mobfarmingsupplies.register.MFSTags.SKULLS)) MFSTriggers.HEADS_COLLECTED.get().trigger(player);
     }
 }

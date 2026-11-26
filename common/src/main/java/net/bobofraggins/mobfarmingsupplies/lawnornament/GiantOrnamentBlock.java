@@ -1,15 +1,16 @@
 package net.bobofraggins.mobfarmingsupplies.lawnornament;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.ItemComponents;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.component.DataComponents;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.DataComponents;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.component.ResolvableProfile;
+import com.mojang.authlib.GameProfile;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -36,9 +37,6 @@ import org.jetbrains.annotations.Nullable;
  */
 public class GiantOrnamentBlock extends Block implements EntityBlock {
 
-    public static final MapCodec<GiantOrnamentBlock> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            GiantOrnament.CODEC.fieldOf("ornament").forGetter(GiantOrnamentBlock::ornament),
-            propertiesCodec()).apply(i, GiantOrnamentBlock::new));
 
     /** The way the figure faces: towards whoever placed it. */
     public static final EnumProperty<Direction> FACING = BlockStateProperties.HORIZONTAL_FACING;
@@ -58,10 +56,6 @@ public class GiantOrnamentBlock extends Block implements EntityBlock {
         return ornament;
     }
 
-    @Override
-    public MapCodec<GiantOrnamentBlock> codec() {
-        return CODEC;
-    }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
@@ -74,12 +68,12 @@ public class GiantOrnamentBlock extends Block implements EntityBlock {
     }
 
     @Override
-    protected BlockState rotate(BlockState state, Rotation rotation) {
+    public BlockState rotate(BlockState state, Rotation rotation) {
         return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
     }
 
     @Override
-    protected BlockState mirror(BlockState state, Mirror mirror) {
+    public BlockState mirror(BlockState state, Mirror mirror) {
         return state.rotate(mirror.getRotation(state.getValue(FACING)));
     }
 
@@ -89,22 +83,22 @@ public class GiantOrnamentBlock extends Block implements EntityBlock {
         super.setPlacedBy(level, pos, state, placer, stack);
         if (ornament == GiantOrnament.PLAYER && !level.isClientSide() && placer instanceof Player player
                 && level.getBlockEntity(pos) instanceof GiantOrnamentBlockEntity be) {
-            be.claim(new ResolvableProfile(player.getGameProfile()));
+            be.claim(player.getGameProfile());
         }
     }
 
     /** Pick block (and Jade's name, which comes from it) carries the owner, so it reads "Giant <owner> Lawn Ornament". */
     @Override
-    public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state) {
+    public ItemStack getCloneItemStack(net.minecraft.world.level.BlockGetter level, BlockPos pos, BlockState state) {
         ItemStack stack = super.getCloneItemStack(level, pos, state);
         if (level.getBlockEntity(pos) instanceof GiantOrnamentBlockEntity be && be.owner() != null) {
-            stack.set(DataComponents.PROFILE, be.owner());
+            ItemComponents.set(stack, DataComponents.PROFILE, be.owner());
         }
         return stack;
     }
 
     @Override
-    protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         return SHAPE;
     }
 

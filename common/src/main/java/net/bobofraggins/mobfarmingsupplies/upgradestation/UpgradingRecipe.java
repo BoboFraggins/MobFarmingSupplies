@@ -1,5 +1,10 @@
 package net.bobofraggins.mobfarmingsupplies.upgradestation;
 
+import net.bobofraggins.mobfarmingsupplies.shared.recipe.IdentifiedRecipe;
+import net.minecraft.resources.ResourceLocation;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.ItemComponents;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.MFSCodecs;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.MFSStreamCodecs;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
@@ -7,9 +12,9 @@ import java.util.Optional;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.FriendlyByteBuf;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.ByteBufCodecs;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.StreamCodec;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -29,20 +34,32 @@ import net.minecraft.world.level.Level;
  * }</pre>
  * A recipe whose {@code item} is a Mob Head can name the mob with {@code "mob_head": "minecraft:spider"}.
  */
-public class UpgradingRecipe implements Recipe<UpgradingInput> {
+public class UpgradingRecipe implements Recipe<UpgradingInput>, IdentifiedRecipe {
+
+    private ResourceLocation id = new ResourceLocation("mobfarmingsupplies", "unnamed");
+
+    @Override
+    public ResourceLocation getId() {
+        return id;
+    }
+
+    @Override
+    public void setId(ResourceLocation id) {
+        this.id = id;
+    }
 
     public static final MapCodec<UpgradingRecipe> MAP_CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            Ingredient.CODEC_NONEMPTY.fieldOf("item").forGetter(UpgradingRecipe::item),
+            MFSCodecs.INGREDIENT_NONEMPTY.fieldOf("item").forGetter(UpgradingRecipe::item),
             BuiltInRegistries.ENTITY_TYPE.byNameCodec().optionalFieldOf("mob_head").forGetter(UpgradingRecipe::mobHead),
-            Ingredient.CODEC_NONEMPTY.fieldOf("input").forGetter(UpgradingRecipe::input),
-            ItemStack.STRICT_CODEC.fieldOf("result").forGetter(UpgradingRecipe::result)
+            MFSCodecs.INGREDIENT_NONEMPTY.fieldOf("input").forGetter(UpgradingRecipe::input),
+            MFSCodecs.RESULT_STACK.fieldOf("result").forGetter(UpgradingRecipe::result)
     ).apply(i, UpgradingRecipe::new));
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, UpgradingRecipe> STREAM_CODEC = StreamCodec.composite(
-            Ingredient.CONTENTS_STREAM_CODEC, UpgradingRecipe::item,
+    public static final StreamCodec<FriendlyByteBuf, UpgradingRecipe> STREAM_CODEC = StreamCodec.composite(
+            MFSStreamCodecs.INGREDIENT, UpgradingRecipe::item,
             ByteBufCodecs.optional(ByteBufCodecs.registry(Registries.ENTITY_TYPE)), UpgradingRecipe::mobHead,
-            Ingredient.CONTENTS_STREAM_CODEC, UpgradingRecipe::input,
-            ItemStack.STREAM_CODEC, UpgradingRecipe::result,
+            MFSStreamCodecs.INGREDIENT, UpgradingRecipe::input,
+            MFSStreamCodecs.ITEM_STACK, UpgradingRecipe::result,
             UpgradingRecipe::new);
 
     private final Ingredient item;
@@ -77,11 +94,11 @@ public class UpgradingRecipe implements Recipe<UpgradingInput> {
     @Override
     public boolean matches(UpgradingInput in, Level level) {
         return item.test(in.item()) && input.test(in.input())
-                && mobHead.map(mob -> mob == in.item().get(Registration.MOB_HEAD_TYPE.get())).orElse(true);
+                && mobHead.map(mob -> mob == ItemComponents.get(in.item(), Registration.MOB_HEAD_TYPE.get())).orElse(true);
     }
 
     @Override
-    public ItemStack assemble(UpgradingInput in, HolderLookup.Provider registries) {
+    public ItemStack assemble(UpgradingInput in, net.minecraft.core.RegistryAccess registries) {
         return result.copy();
     }
 
@@ -91,7 +108,7 @@ public class UpgradingRecipe implements Recipe<UpgradingInput> {
     }
 
     @Override
-    public ItemStack getResultItem(HolderLookup.Provider registries) {
+    public ItemStack getResultItem(net.minecraft.core.RegistryAccess registries) {
         return result.copy();
     }
 

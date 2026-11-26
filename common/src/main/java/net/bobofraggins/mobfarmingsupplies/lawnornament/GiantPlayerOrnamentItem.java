@@ -1,10 +1,11 @@
 package net.bobofraggins.mobfarmingsupplies.lawnornament;
 
-import net.minecraft.core.component.DataComponents;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.ItemComponents;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.component.ResolvableProfile;
+import com.mojang.authlib.GameProfile;
 import net.minecraft.world.level.block.Block;
 
 /** The Giant Player Lawn Ornament item: named after its owner once it has one. */
@@ -16,9 +17,9 @@ public class GiantPlayerOrnamentItem extends BlockItem {
 
     @Override
     public Component getName(ItemStack stack) {
-        ResolvableProfile owner = stack.get(DataComponents.PROFILE);
-        if (owner != null && owner.name().isPresent()) {
-            return Component.translatable(getDescriptionId() + ".owned", owner.name().get());
+        GameProfile owner = ItemComponents.get(stack, DataComponents.PROFILE);
+        if (owner != null && owner.getName() != null && !owner.getName().isEmpty()) {
+            return Component.translatable(getDescriptionId() + ".owned", owner.getName());
         }
         return super.getName(stack);
     }

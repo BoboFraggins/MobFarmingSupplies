@@ -2,7 +2,7 @@ package net.bobofraggins.mobfarmingsupplies.loot;
 
 import dev.architectury.platform.Platform;
 import net.bobofraggins.mobfarmingsupplies.MFSConfig;
-import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
+import net.fabricmc.fabric.api.loot.v2.LootTableEvents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -10,7 +10,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.storage.loot.LootPool;
-import net.minecraft.world.level.storage.loot.entries.NestedLootTable;
+import net.minecraft.world.level.storage.loot.entries.LootTableReference;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
@@ -30,9 +30,8 @@ import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 public final class FabricLootModifiers {
 
     public static void register() {
-        LootTableEvents.MODIFY.register((id, tableBuilder, source, registries) -> {
-            // The event hands over a ResourceKey, whose toString() isn't the plain id.
-            String tableId = id.location().toString();
+        LootTableEvents.MODIFY.register((resourceManager, lootManager, id, tableBuilder, source) -> {
+            String tableId = id.toString();
 
             float commonChance = (float) MFSConfig.getDnaSamplePackCommonChestChance();
             float rareChance = (float) MFSConfig.getDnaSamplePackRareChestChance();
@@ -106,11 +105,10 @@ public final class FabricLootModifiers {
 
     /** Adds a pool that rolls {@code mobfarmingsupplies:chests/inject/<name>} once. */
     private static void addTable(LootTable.Builder tableBuilder, String name) {
-        ResourceKey<LootTable> inject = ResourceKey.create(Registries.LOOT_TABLE,
-                ResourceLocation.fromNamespaceAndPath("mobfarmingsupplies", "chests/inject/" + name));
+        ResourceLocation inject = new ResourceLocation("mobfarmingsupplies", "chests/inject/" + name);
         tableBuilder.withPool(LootPool.lootPool()
                 .setRolls(ConstantValue.exactly(1))
-                .add(NestedLootTable.lootTableReference(inject)));
+                .add(LootTableReference.lootTableReference(inject)));
     }
 
     private static void addItem(LootTable.Builder tableBuilder, String itemId, float chance) {

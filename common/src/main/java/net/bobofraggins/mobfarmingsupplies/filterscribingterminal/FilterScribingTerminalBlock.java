@@ -1,6 +1,7 @@
 package net.bobofraggins.mobfarmingsupplies.filterscribingterminal;
 
-import com.mojang.serialization.MapCodec;
+import net.minecraft.world.InteractionHand;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.BlockInteractions;
 import dev.architectury.registry.menu.MenuRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -45,7 +46,6 @@ import net.minecraft.world.phys.shapes.VoxelShape;
  */
 public class FilterScribingTerminalBlock extends Block implements EntityBlock {
 
-    public static final MapCodec<FilterScribingTerminalBlock> CODEC = simpleCodec(FilterScribingTerminalBlock::new);
 
     public static final EnumProperty<Direction> FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
@@ -74,10 +74,6 @@ public class FilterScribingTerminalBlock extends Block implements EntityBlock {
                 .setValue(ACTIVE, false));
     }
 
-    @Override
-    public MapCodec<FilterScribingTerminalBlock> codec() {
-        return CODEC;
-    }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
@@ -93,7 +89,7 @@ public class FilterScribingTerminalBlock extends Block implements EntityBlock {
     }
 
     @Override
-    protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext ctx) {
+    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext ctx) {
         return switch (state.getValue(FACING)) {
             case SOUTH -> SHAPE_SOUTH;
             case EAST -> SHAPE_EAST;
@@ -103,9 +99,15 @@ public class FilterScribingTerminalBlock extends Block implements EntityBlock {
     }
 
     // ── Interaction ──────────────────────────────────────────────────────────────
-
     @Override
-    protected InteractionResult useWithoutItem(
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand,
+                                 BlockHitResult hit) {
+        return BlockInteractions.use(state, level, pos, player, hand, hit, null,
+                this::useWithoutItem);
+    }
+
+
+        public InteractionResult useWithoutItem(
             BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
         if (!level.isClientSide() && player instanceof ServerPlayer sp
                 && level.getBlockEntity(pos) instanceof FilterScribingTerminalBlockEntity be) {
@@ -135,7 +137,7 @@ public class FilterScribingTerminalBlock extends Block implements EntityBlock {
     }
 
     @Override
-    protected void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+    public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
         if (!state.getValue(ACTIVE)) return;
         if (hasViewers(level, pos, null)) {
             level.scheduleTick(pos, this, RECHECK_TICKS);
@@ -167,17 +169,17 @@ public class FilterScribingTerminalBlock extends Block implements EntityBlock {
     // ── Structure rotation / mirror support ──────────────────────────────────────
 
     @Override
-    protected BlockState rotate(BlockState state, Rotation rotation) {
+    public BlockState rotate(BlockState state, Rotation rotation) {
         return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
     }
 
     @Override
-    protected BlockState mirror(BlockState state, Mirror mirror) {
+    public BlockState mirror(BlockState state, Mirror mirror) {
         return state.rotate(mirror.getRotation(state.getValue(FACING)));
     }
 
     @Override
-    protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
+    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
         if (!state.is(newState.getBlock()) && level.getBlockEntity(pos) instanceof FilterScribingTerminalBlockEntity be) {
             be.preRemoveSideEffects(pos, state);
         }
@@ -186,7 +188,7 @@ public class FilterScribingTerminalBlock extends Block implements EntityBlock {
 
     /** Drawn from its block model (1.21.1's {@code BaseEntityBlock} defaults to invisible). */
     @Override
-    protected RenderShape getRenderShape(BlockState state) {
+    public RenderShape getRenderShape(BlockState state) {
         return RenderShape.MODEL;
     }
 }

@@ -27,11 +27,12 @@ public abstract class MobRefuseSpawnMixin implements RefusedSpawn {
 
     @Inject(
             method = "finalizeSpawn(Lnet/minecraft/world/level/ServerLevelAccessor;Lnet/minecraft/world/DifficultyInstance;"
-                    + "Lnet/minecraft/world/entity/MobSpawnType;Lnet/minecraft/world/entity/SpawnGroupData;)"
+                    + "Lnet/minecraft/world/entity/MobSpawnType;Lnet/minecraft/world/entity/SpawnGroupData;Lnet/minecraft/nbt/CompoundTag;)"
                     + "Lnet/minecraft/world/entity/SpawnGroupData;",
             at = @At("HEAD"))
     private void mobfarmingsupplies$askHeadPikes(ServerLevelAccessor level, DifficultyInstance difficulty,
                                                  MobSpawnType reason, SpawnGroupData groupData,
+                                                 @org.jetbrains.annotations.Nullable net.minecraft.nbt.CompoundTag spawnTag,
                                                  CallbackInfoReturnable<SpawnGroupData> cir) {
         Mob self = (Mob) (Object) this;
         if (HeadPikes.refuses(level, self, reason, self.getX(), self.getY(), self.getZ())) mobfarmingsupplies$refused = true;

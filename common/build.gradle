@@ -1,5 +1,5 @@
 architectury {
-    common('neoforge', 'fabric')
+    common('forge', 'fabric')
 }
 
 dependencies {
@@ -8,12 +8,12 @@ dependencies {
 
     modApi "dev.architectury:architectury:${architectury_version}"
 
-    // Jade optional-dependency API — NeoForge artifact used for compilation; API is cross-platform.
+    // Jade optional-dependency API — Fabric artifact used for compilation; API is cross-platform.
     // Fabric uses the +fabric build (see fabric/build.gradle).
-    modCompileOnly "maven.modrinth:jade:15.10.6+neoforge"
+    modCompileOnly "maven.modrinth:jade:11.13.3+fabric"
 
-    // JEI optional-dependency API (19.64.0.454 for NeoForge) — same cross-platform-API situation as Jade above.
-    modCompileOnly "maven.modrinth:jei:viLBV5kx"
+    // JEI optional-dependency API (15.75.0.242 for Fabric, Modrinth id 3DMUTARI) — same cross-platform-API situation as Jade above.
+    modCompileOnly "maven.modrinth:jei:3DMUTARI"
 }
 
 publishing {

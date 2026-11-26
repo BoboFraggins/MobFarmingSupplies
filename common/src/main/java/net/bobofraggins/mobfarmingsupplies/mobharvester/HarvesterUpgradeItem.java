@@ -54,7 +54,7 @@ public class HarvesterUpgradeItem extends Item {
     @SuppressWarnings("deprecation")
     @Override
     public void appendHoverText(
-            ItemStack stack, Item.TooltipContext ctx, List<Component> consumerLines, TooltipFlag flag) {
+            ItemStack stack, @org.jetbrains.annotations.Nullable net.minecraft.world.level.Level ctx, List<Component> consumerLines, TooltipFlag flag) {
         Consumer<Component> consumer = consumerLines::add;
         consumer.accept(Component.translatable(
                 "item.mobfarmingsupplies.harvester_upgrade_"

@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.bridge;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.MFSCodecs;
 import net.minecraft.nbt.Tag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.CompoundTag;
@@ -51,7 +52,7 @@ public final class BridgeChannelData extends SavedData {
         static final Codec<Entry> CODEC = RecordCodecBuilder.create(i -> i.group(
                 Codec.INT.fieldOf("channel").forGetter(Entry::channel),
                 Codec.BOOL.optionalFieldOf("and_mode", true).forGetter(Entry::andMode),
-                ItemStack.OPTIONAL_CODEC.listOf().optionalFieldOf("filters", List.of()).forGetter(Entry::filters)
+                MFSCodecs.OPTIONAL_ITEM_STACK.listOf().optionalFieldOf("filters", List.of()).forGetter(Entry::filters)
         ).apply(i, Entry::new));
     }
 
@@ -61,26 +62,22 @@ public final class BridgeChannelData extends SavedData {
     private static final String NAME = MobFarmingSuppliesCommon.MODID + "_einstein_rosen_bridges";
     private static final String CHANNELS_KEY = "channels";
 
-    // Data fixers only touch data saved by older game versions; ours is a plain compound either way.
-    private static final SavedData.Factory<BridgeChannelData> FACTORY = new SavedData.Factory<>(
-            BridgeChannelData::new, BridgeChannelData::load, DataFixTypes.SAVED_DATA_COMMAND_STORAGE);
-
     private final Map<Integer, Settings> channels = new HashMap<>();
 
     public static BridgeChannelData get(MinecraftServer server) {
-        return server.overworld().getDataStorage().computeIfAbsent(FACTORY, NAME);
+        return server.overworld().getDataStorage().computeIfAbsent(BridgeChannelData::load, BridgeChannelData::new, NAME);
     }
 
-    private static BridgeChannelData load(CompoundTag tag, HolderLookup.Provider registries) {
+    private static BridgeChannelData load(CompoundTag tag) {
         Tag channels = tag.get(CHANNELS_KEY);
         if (channels == null) return new BridgeChannelData();
-        return CODEC.parse(registries.createSerializationContext(NbtOps.INSTANCE), channels)
+        return CODEC.parse(NbtOps.INSTANCE, channels)
                 .result().orElseGet(BridgeChannelData::new);
     }
 
     @Override
-    public CompoundTag save(CompoundTag tag, HolderLookup.Provider registries) {
-        CODEC.encodeStart(registries.createSerializationContext(NbtOps.INSTANCE), this)
+    public CompoundTag save(CompoundTag tag) {
+        CODEC.encodeStart(NbtOps.INSTANCE, this)
                 .result().ifPresent(channels -> tag.put(CHANNELS_KEY, channels));
         return tag;
     }
@@ -96,7 +93,7 @@ public final class BridgeChannelData extends SavedData {
             Settings s = data.settings(e.channel());
             s.andMode = e.andMode();
             for (int i = 0; i < FILTER_SLOTS && i < e.filters().size(); i++) {
-                s.filters.getItems().set(i, e.filters().get(i));
+                s.filters.setItem(i, e.filters().get(i));
             }
         }
         return data;
@@ -106,7 +103,7 @@ public final class BridgeChannelData extends SavedData {
         List<Entry> entries = new ArrayList<>();
         channels.forEach((channel, s) -> {
             if (s.andMode && s.filters.isEmpty()) return; // all defaults - nothing worth saving
-            entries.add(new Entry(channel, s.andMode, new ArrayList<>(s.filters.getItems())));
+            entries.add(new Entry(channel, s.andMode, net.bobofraggins.mobfarmingsupplies.shared.compat.Containers.items(s.filters)));
         });
         return entries;
     }

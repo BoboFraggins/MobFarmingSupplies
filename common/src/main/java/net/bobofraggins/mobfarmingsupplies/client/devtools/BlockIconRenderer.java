@@ -106,7 +106,6 @@ public final class BlockIconRenderer {
         List<Icon> icons = new ArrayList<>();
         String only = System.getenv("MFS_RENDER_ICONS_ITEMS");
         if (only != null && !only.isBlank()) {
-            ItemParser parser = new ItemParser(mc.level.registryAccess());
             for (String entry : splitTopLevel(only)) {
                 String name = null, spec = entry;
                 int eq = entry.indexOf('='), bracket = entry.indexOf('[');
@@ -115,8 +114,9 @@ public final class BlockIconRenderer {
                     spec = entry.substring(eq + 1);
                 }
                 try {
-                    ItemParser.ItemResult parsed = parser.parse(new StringReader(spec));
-                    ItemStack stack = new ItemStack(parsed.item(), 1, parsed.components());
+                    ItemParser.ItemResult parsed = ItemParser.parseForItem(BuiltInRegistries.ITEM.asLookup(), new StringReader(spec));
+                    ItemStack stack = new ItemStack(parsed.item().value());
+                    if (parsed.nbt() != null) stack.setTag(parsed.nbt());
                     icons.add(new Icon(name != null ? name : BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath(), stack));
                 } catch (CommandSyntaxException e) {
                     LOGGER.warn("Couldn't read item {}: {}", spec, e.getMessage());
@@ -166,9 +166,9 @@ public final class BlockIconRenderer {
         Matrix4f projection = new Matrix4f().setOrtho(0f, RENDER_SIZE, RENDER_SIZE, 0f, 1000f, 21000f);
         RenderSystem.backupProjectionMatrix();
         RenderSystem.setProjectionMatrix(projection, VertexSorting.ORTHOGRAPHIC_Z);
-        Matrix4fStack modelView = RenderSystem.getModelViewStack();
-        modelView.pushMatrix();
-        modelView.identity();
+        PoseStack modelView = RenderSystem.getModelViewStack();
+        modelView.pushPose();
+        modelView.setIdentity();
         modelView.translate(0f, 0f, -11000f);
         RenderSystem.applyModelViewMatrix();
         try {
@@ -183,7 +183,7 @@ public final class BlockIconRenderer {
                     LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, model);
             buffers.endBatch();
         } finally {
-            modelView.popMatrix();
+            modelView.popPose();
             RenderSystem.applyModelViewMatrix();
             RenderSystem.restoreProjectionMatrix();
             mc.getMainRenderTarget().bindWrite(true);

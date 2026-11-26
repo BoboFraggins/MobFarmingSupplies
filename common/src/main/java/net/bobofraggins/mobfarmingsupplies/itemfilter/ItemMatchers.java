@@ -55,7 +55,7 @@ public final class ItemMatchers {
             // Miscellaneous
             "c:music_discs", "c:buckets", "c:shulker_boxes", "c:chests", "c:barrels", "c:ropes",
             "minecraft:boats", "minecraft:beds", "minecraft:banners")
-            .map(ResourceLocation::parse)
+            .map(ResourceLocation::new)
             .toList();
 
     /** All matchers applicable to {@code stack}, or an empty list if it's empty. */

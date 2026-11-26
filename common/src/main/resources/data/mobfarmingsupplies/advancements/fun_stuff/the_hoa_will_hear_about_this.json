@@ -1,0 +1,65 @@
+{
+  "parent": "mobfarmingsupplies:fun_stuff/ba_dum_tss",
+  "criteria": {
+    "lawn_ornament": {
+      "trigger": "minecraft:placed_block",
+      "conditions": {
+        "location": [
+          {
+            "condition": "minecraft:location_check",
+            "predicate": {
+              "block": {
+                "tag": "mobfarmingsupplies:giant_lawn_ornaments"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "skull_lights": {
+      "trigger": "minecraft:placed_block",
+      "conditions": {
+        "location": [
+          {
+            "condition": "minecraft:block_state_property",
+            "block": "mobfarmingsupplies:skull_light_hook"
+          }
+        ]
+      }
+    },
+    "head_pike": {
+      "trigger": "minecraft:placed_block",
+      "conditions": {
+        "location": [
+          {
+            "condition": "minecraft:block_state_property",
+            "block": "mobfarmingsupplies:head_pike"
+          }
+        ]
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "item": "mobfarmingsupplies:head_pike"
+    },
+    "title": {
+      "translate": "advancements.mobfarmingsupplies.the_hoa_will_hear_about_this.title"
+    },
+    "description": {
+      "translate": "advancements.mobfarmingsupplies.the_hoa_will_hear_about_this.description"
+    },
+    "frame": "goal"
+  },
+  "requirements": [
+    [
+      "lawn_ornament"
+    ],
+    [
+      "skull_lights"
+    ],
+    [
+      "head_pike"
+    ]
+  ]
+}

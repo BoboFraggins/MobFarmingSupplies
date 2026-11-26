@@ -135,7 +135,7 @@ public final class PresentWrapEvents {
     private static CompoundTag captureBlockEntity(Level level, BlockPos pos) {
         BlockEntity be = level.getBlockEntity(pos);
         if (be == null) return null;
-        CompoundTag beOut = be.saveCustomOnly(level.registryAccess());
+        CompoundTag beOut = be.saveWithoutMetadata();
         CompoundTag saved = beOut;
         return saved.isEmpty() ? null : saved;
     }

@@ -1,0 +1,13 @@
+{
+  "type": "mobfarmingsupplies:upgrading",
+  "item": {
+    "item": "minecraft:flint_and_steel"
+  },
+  "input": {
+    "item": "mobfarmingsupplies:blank_upgrade"
+  },
+  "result": {
+    "item": "mobfarmingsupplies:harvester_upgrade_fire_aspect",
+    "count": 1
+  }
+}

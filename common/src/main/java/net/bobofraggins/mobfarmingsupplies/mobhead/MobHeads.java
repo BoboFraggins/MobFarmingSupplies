@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.mobhead;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.ItemComponents;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -12,7 +13,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.component.ResolvableProfile;
+import com.mojang.authlib.GameProfile;
 
 /**
  * Which mobs have a head, and the head item for each: vanilla's own head items where vanilla has
@@ -51,7 +52,7 @@ public final class MobHeads {
 
     /** The entity types in {@link #MOD_HEAD_IDS} that exist in this version, in that order. */
     public static final List<EntityType<?>> MOD_HEADS = MOD_HEAD_IDS.stream()
-            .map(id -> BuiltInRegistries.ENTITY_TYPE.getOptional(ResourceLocation.withDefaultNamespace(id)))
+            .map(id -> BuiltInRegistries.ENTITY_TYPE.getOptional(new ResourceLocation(id)))
             .flatMap(Optional::stream)
             .<EntityType<?>>map(t -> t)
             .toList();
@@ -61,7 +62,7 @@ public final class MobHeads {
     /** A Mob Head item for {@code type}. */
     public static ItemStack modHead(EntityType<?> type) {
         ItemStack stack = new ItemStack(Registration.MOB_HEAD_ITEM.get());
-        stack.set(Registration.MOB_HEAD_TYPE.get(), type);
+        ItemComponents.set(stack, Registration.MOB_HEAD_TYPE.get(), type);
         return stack;
     }
 
@@ -69,7 +70,7 @@ public final class MobHeads {
     public static ItemStack headFor(LivingEntity entity) {
         if (entity instanceof Player player) {
             ItemStack head = new ItemStack(Items.PLAYER_HEAD);
-            head.set(net.minecraft.core.component.DataComponents.PROFILE, new ResolvableProfile(player.getGameProfile()));
+            ItemComponents.set(head, net.bobofraggins.mobfarmingsupplies.shared.compat.DataComponents.PROFILE, player.getGameProfile());
             return head;
         }
         if (entity.isBaby()) return ItemStack.EMPTY;

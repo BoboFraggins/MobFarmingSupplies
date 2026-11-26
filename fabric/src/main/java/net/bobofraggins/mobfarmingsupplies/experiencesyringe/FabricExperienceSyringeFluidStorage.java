@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.experiencesyringe;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.ItemComponents;
 import net.bobofraggins.mobfarmingsupplies.fluid.fabric.FabricFluidUnits;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
@@ -33,15 +34,15 @@ public final class FabricExperienceSyringeFluidStorage implements Storage<FluidV
 
     private int storedXp() {
         ItemStack stack = ctx.getItemVariant().toStack((int) ctx.getAmount());
-        return stack.getOrDefault(Registration.EXPERIENCE_SYRINGE_STORED_XP.get(), 0);
+        return ItemComponents.getOrDefault(stack, Registration.EXPERIENCE_SYRINGE_STORED_XP.get(), 0);
     }
 
     private boolean setStoredXp(int newXp, TransactionContext tx) {
         ItemStack stack = ctx.getItemVariant().toStack((int) ctx.getAmount());
         if (newXp <= 0) {
-            stack.remove(Registration.EXPERIENCE_SYRINGE_STORED_XP.get());
+            ItemComponents.remove(stack, Registration.EXPERIENCE_SYRINGE_STORED_XP.get());
         } else {
-            stack.set(Registration.EXPERIENCE_SYRINGE_STORED_XP.get(), newXp);
+            ItemComponents.set(stack, Registration.EXPERIENCE_SYRINGE_STORED_XP.get(), newXp);
         }
         return ctx.exchange(ItemVariant.of(stack), 1, tx) > 0;
     }

@@ -1,6 +1,7 @@
 package net.bobofraggins.mobfarmingsupplies.mobharvester;
 
-import com.mojang.serialization.MapCodec;
+import net.minecraft.world.InteractionHand;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.BlockInteractions;
 import dev.architectury.registry.menu.MenuRegistry;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.bobofraggins.mobfarmingsupplies.shared.TallBlock;
@@ -59,7 +60,6 @@ import java.util.List;
  */
 public class MobHarvesterBlock extends BaseEntityBlock {
 
-    public static final MapCodec<MobHarvesterBlock> CODEC = simpleCodec(MobHarvesterBlock::new);
 
     public static final BooleanProperty          POWERED = BlockStateProperties.POWERED;
     public static final EnumProperty<Direction> FACING  = BlockStateProperties.HORIZONTAL_FACING;
@@ -72,10 +72,6 @@ public class MobHarvesterBlock extends BaseEntityBlock {
                 .setValue(TallBlock.HALF, DoubleBlockHalf.LOWER));
     }
 
-    @Override
-    protected MapCodec<? extends BaseEntityBlock> codec() {
-        return CODEC;
-    }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
@@ -88,17 +84,17 @@ public class MobHarvesterBlock extends BaseEntityBlock {
     private static final VoxelShape SHAPE = Block.box(0, 0, 0, 16, 16, 16);
 
     @Override
-    protected BlockState rotate(BlockState state, Rotation rotation) {
+    public BlockState rotate(BlockState state, Rotation rotation) {
         return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
     }
 
     @Override
-    protected BlockState mirror(BlockState state, Mirror mirror) {
+    public BlockState mirror(BlockState state, Mirror mirror) {
         return state.rotate(mirror.getRotation(state.getValue(FACING)));
     }
 
     @Override
-    protected VoxelShape getShape(BlockState state, net.minecraft.world.level.BlockGetter level,
+    public VoxelShape getShape(BlockState state, net.minecraft.world.level.BlockGetter level,
                                   BlockPos pos, CollisionContext context) {
         return SHAPE;
     }
@@ -112,7 +108,7 @@ public class MobHarvesterBlock extends BaseEntityBlock {
         if (be instanceof MobHarvesterBlockEntity harvester) {
             for (ItemStack drop : drops) {
                 if (drop.getItem() instanceof BlockItem) {
-                    CompoundTag beOut = harvester.saveCustomOnly(params.getLevel().registryAccess());
+                    CompoundTag beOut = harvester.saveWithoutMetadata();
                     BlockItem.setBlockEntityData(drop, harvester.getType(), beOut);
                 }
             }
@@ -141,25 +137,25 @@ public class MobHarvesterBlock extends BaseEntityBlock {
     // ── Two blocks tall ───────────────────────────────────────────────────────────
 
     @Override
-    protected boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
+    public boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
         return TallBlock.canSurvive(state, level, pos);
     }
 
     @Override
-    protected BlockState updateShape(BlockState state, Direction direction, BlockState neighborState,
+    public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState,
                                      LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
         BlockState updated = TallBlock.updateShape(state, direction, neighborState);
         return updated != state ? updated : super.updateShape(state, direction, neighborState, level, pos, neighborPos);
     }
 
     @Override
-    public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
+    public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
         TallBlock.playerWillDestroy(level, pos, state, player);
-        return super.playerWillDestroy(level, pos, state, player);
+        super.playerWillDestroy(level, pos, state, player);
     }
 
     @Override
-    protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
+    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
         TallBlock.onRemove(state, level, pos, newState);
         super.onRemove(state, level, pos, newState, movedByPiston);
     }
@@ -168,7 +164,7 @@ public class MobHarvesterBlock extends BaseEntityBlock {
 
     /** A signal at either half powers the harvester; the lower half's state carries it. */
     @Override
-    protected void neighborChanged(
+    public void neighborChanged(
             BlockState state, Level level, BlockPos pos,
             Block sourceBlock, BlockPos neighborPos, boolean isMoving) {
         if (level.isClientSide()) return;
@@ -202,9 +198,15 @@ public class MobHarvesterBlock extends BaseEntityBlock {
     }
 
     // ── GUI ───────────────────────────────────────────────────────────────────────
-
     @Override
-    protected InteractionResult useWithoutItem(
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand,
+                                 BlockHitResult hit) {
+        return BlockInteractions.use(state, level, pos, player, hand, hit, null,
+                this::useWithoutItem);
+    }
+
+
+        public InteractionResult useWithoutItem(
             BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
         if (!level.isClientSide()) {
             BlockPos lower = TallBlock.lowerPos(state, pos);
@@ -218,7 +220,7 @@ public class MobHarvesterBlock extends BaseEntityBlock {
 
     /** Drawn from its block model (1.21.1's {@code BaseEntityBlock} defaults to invisible). */
     @Override
-    protected RenderShape getRenderShape(BlockState state) {
+    public RenderShape getRenderShape(BlockState state) {
         return RenderShape.MODEL;
     }
 }

@@ -12,19 +12,22 @@ import net.bobofraggins.mobfarmingsupplies.skulllights.SkullLightsRecipe;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeHolder;
 
 /**
  * The String of Skull Lights recipe in JEI's crafting page with every Mob Head in its skull slots.
  * The skull tag only gives JEI a Mob Head with no mob, which no real head matches (JEI tells Mob
  * Heads apart by their mob), so the recipe's + button didn't see the player's heads.
  */
-public class SkullLightsCraftingExtension implements ICraftingCategoryExtension<SkullLightsRecipe> {
+public class SkullLightsCraftingExtension implements ICraftingCategoryExtension {
+
+    private final SkullLightsRecipe recipe;
+
+    public SkullLightsCraftingExtension(SkullLightsRecipe recipe) {
+        this.recipe = recipe;
+    }
 
     @Override
-    public void setRecipe(RecipeHolder<SkullLightsRecipe> holder, IRecipeLayoutBuilder builder,
-                          ICraftingGridHelper grid, IFocusGroup focuses) {
-        SkullLightsRecipe recipe = holder.value();
+    public void setRecipe(IRecipeLayoutBuilder builder, ICraftingGridHelper grid, IFocusGroup focuses) {
         List<List<ItemStack>> inputs = new ArrayList<>();
         for (Ingredient ingredient : recipe.getIngredients()) inputs.add(stacks(ingredient));
         grid.createAndSetInputs(builder, inputs, recipe.getWidth(), recipe.getHeight());
@@ -50,12 +53,17 @@ public class SkullLightsCraftingExtension implements ICraftingCategoryExtension<
     }
 
     @Override
-    public int getWidth(RecipeHolder<SkullLightsRecipe> holder) {
-        return holder.value().getWidth();
+    public net.minecraft.resources.ResourceLocation getRegistryName() {
+        return recipe.getId();
     }
 
     @Override
-    public int getHeight(RecipeHolder<SkullLightsRecipe> holder) {
-        return holder.value().getHeight();
+    public int getWidth() {
+        return recipe.getWidth();
+    }
+
+    @Override
+    public int getHeight() {
+        return recipe.getHeight();
     }
 }

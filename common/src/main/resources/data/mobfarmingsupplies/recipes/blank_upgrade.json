@@ -1,0 +1,43 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "CCC",
+    "PSP",
+    "PWP"
+  ],
+  "key": {
+    "C": [
+      {
+        "tag": "forge:nuggets/copper"
+      },
+      {
+        "tag": "c:copper_nuggets"
+      },
+      {
+        "tag": "forge:nuggets/iron"
+      },
+      {
+        "tag": "c:iron_nuggets"
+      }
+    ],
+    "P": {
+      "tag": "c:plastics"
+    },
+    "S": {
+      "tag": "c:plates/silicon"
+    },
+    "W": [
+      {
+        "tag": "forge:dyes/white"
+      },
+      {
+        "tag": "c:white_dyes"
+      }
+    ]
+  },
+  "result": {
+    "item": "mobfarmingsupplies:blank_upgrade",
+    "count": 6
+  },
+  "category": "misc"
+}

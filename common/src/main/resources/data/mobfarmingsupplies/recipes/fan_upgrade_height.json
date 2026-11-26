@@ -1,0 +1,13 @@
+{
+  "type": "mobfarmingsupplies:upgrading",
+  "item": {
+    "item": "minecraft:ladder"
+  },
+  "input": {
+    "item": "mobfarmingsupplies:blank_upgrade"
+  },
+  "result": {
+    "item": "mobfarmingsupplies:fan_upgrade_height",
+    "count": 1
+  }
+}

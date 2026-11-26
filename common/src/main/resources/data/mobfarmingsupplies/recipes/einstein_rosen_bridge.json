@@ -1,0 +1,24 @@
+{
+  "type": "mobfarmingsupplies:bridge_pair",
+  "pattern": [
+    "OOO",
+    "HEH",
+    "OOO"
+  ],
+  "key": {
+    "O": {
+      "item": "minecraft:obsidian"
+    },
+    "H": {
+      "item": "mobfarmingsupplies:omnidirectional_hopper"
+    },
+    "E": {
+      "item": "minecraft:ender_pearl"
+    }
+  },
+  "result": {
+    "item": "mobfarmingsupplies:einstein_rosen_bridge",
+    "count": 2
+  },
+  "category": "misc"
+}

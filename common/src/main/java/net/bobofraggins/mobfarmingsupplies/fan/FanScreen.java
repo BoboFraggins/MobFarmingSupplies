@@ -32,9 +32,9 @@ import org.jetbrains.annotations.Nullable;
 public class FanScreen extends AbstractContainerScreen<FanMenu> {
 
     private static final ResourceLocation[] GHOST_UPGRADES = {
-        ResourceLocation.fromNamespaceAndPath("mobfarmingsupplies", "textures/item/fan_upgrade_width_ghost.png"),
-        ResourceLocation.fromNamespaceAndPath("mobfarmingsupplies", "textures/item/fan_upgrade_height_ghost.png"),
-        ResourceLocation.fromNamespaceAndPath("mobfarmingsupplies", "textures/item/fan_upgrade_distance_ghost.png"),
+        new ResourceLocation("mobfarmingsupplies", "textures/item/fan_upgrade_width_ghost.png"),
+        new ResourceLocation("mobfarmingsupplies", "textures/item/fan_upgrade_height_ghost.png"),
+        new ResourceLocation("mobfarmingsupplies", "textures/item/fan_upgrade_distance_ghost.png"),
     };
 
     private static final int PANE_GAP1      = 0;

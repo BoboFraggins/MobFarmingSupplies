@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "mobfarmingsupplies:head_pike",
+    "mobfarmingsupplies:upgrade_station",
+    "mobfarmingsupplies:color_workstation"
+  ]
+}

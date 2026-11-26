@@ -1,5 +1,7 @@
 package net.bobofraggins.mobfarmingsupplies.togglebutton;
 
+import net.minecraft.world.InteractionHand;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.BlockInteractions;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.bobofraggins.mobfarmingsupplies.advancement.MFSTriggers;
@@ -60,22 +62,16 @@ public class ToggleButtonBlock extends FaceAttachedHorizontalDirectionalBlock {
     private static final VoxelShape WALL_WEST_SHAPE = Block.box(11, 3, 3, 16, 13, 13);
 
     private final RegistrySupplier<SoundEvent> activationSound;
-    private final MapCodec<ToggleButtonBlock> codec;
 
     public ToggleButtonBlock(BlockBehaviour.Properties props, RegistrySupplier<SoundEvent> activationSound) {
         super(props);
         this.activationSound = activationSound;
-        this.codec = simpleCodec(p -> new ToggleButtonBlock(p, activationSound));
         registerDefaultState(stateDefinition.any()
                 .setValue(POWERED, false)
                 .setValue(FACE, AttachFace.FLOOR)
                 .setValue(FACING, Direction.NORTH));
     }
 
-    @Override
-    protected MapCodec<? extends ToggleButtonBlock> codec() {
-        return codec;
-    }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
@@ -86,7 +82,7 @@ public class ToggleButtonBlock extends FaceAttachedHorizontalDirectionalBlock {
     }
 
     @Override
-    protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext ctx) {
+    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext ctx) {
         return switch (state.getValue(FACE)) {
             case FLOOR -> FLOOR_SHAPE;
             case CEILING -> CEILING_SHAPE;
@@ -101,7 +97,7 @@ public class ToggleButtonBlock extends FaceAttachedHorizontalDirectionalBlock {
     }
 
     @Override
-    protected VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext ctx) {
+    public VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext ctx) {
         return Shapes.empty();
     }
 
@@ -112,17 +108,17 @@ public class ToggleButtonBlock extends FaceAttachedHorizontalDirectionalBlock {
     // ── Redstone output ───────────────────────────────────────────────────────────
 
     @Override
-    protected boolean isSignalSource(BlockState state) {
+    public boolean isSignalSource(BlockState state) {
         return true;
     }
 
     @Override
-    protected int getSignal(BlockState state, BlockGetter level, BlockPos pos, Direction direction) {
+    public int getSignal(BlockState state, BlockGetter level, BlockPos pos, Direction direction) {
         return state.getValue(POWERED) ? 15 : 0;
     }
 
     @Override
-    protected int getDirectSignal(BlockState state, BlockGetter level, BlockPos pos, Direction direction) {
+    public int getDirectSignal(BlockState state, BlockGetter level, BlockPos pos, Direction direction) {
         // Strong power only flows into the block this button is mounted on (matches vanilla
         // ButtonBlock/LeverBlock). `direction` points from the querying block toward this
         // button, so for the support block it equals getConnectedDirection (e.g. UP for a
@@ -131,7 +127,7 @@ public class ToggleButtonBlock extends FaceAttachedHorizontalDirectionalBlock {
     }
 
     @Override
-    protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
+    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
         // Breaking a powered button must de-power whatever it was driving.
         if (!movedByPiston && !state.is(newState.getBlock()) && state.getValue(POWERED)) {
             updateNeighbours(state, level, pos);
@@ -145,9 +141,15 @@ public class ToggleButtonBlock extends FaceAttachedHorizontalDirectionalBlock {
     }
 
     // ── Toggle ────────────────────────────────────────────────────────────────────
-
     @Override
-    protected InteractionResult useWithoutItem(
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand,
+                                 BlockHitResult hit) {
+        return BlockInteractions.use(state, level, pos, player, hand, hit, null,
+                this::useWithoutItem);
+    }
+
+
+        public InteractionResult useWithoutItem(
             BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
         if (level.isClientSide()) return InteractionResult.SUCCESS;
 

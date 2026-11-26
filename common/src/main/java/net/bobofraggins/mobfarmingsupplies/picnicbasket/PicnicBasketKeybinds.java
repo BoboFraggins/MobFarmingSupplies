@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.picnicbasket;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.MFSPackets;
 import com.mojang.blaze3d.platform.InputConstants;
 import dev.architectury.event.events.client.ClientTickEvent;
 import dev.architectury.networking.NetworkManager;
@@ -32,7 +33,7 @@ public final class PicnicBasketKeybinds {
         KeyMappingRegistry.register(OPEN_BASKET);
         ClientTickEvent.CLIENT_POST.register(mc -> {
             while (OPEN_BASKET.consumeClick()) {
-                NetworkManager.sendToServer(new OpenPicnicBasketPacket());
+                MFSPackets.sendToServer(new OpenPicnicBasketPacket());
             }
         });
     }

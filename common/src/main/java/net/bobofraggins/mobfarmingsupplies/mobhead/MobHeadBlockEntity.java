@@ -1,9 +1,12 @@
 package net.bobofraggins.mobfarmingsupplies.mobhead;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.ImplicitComponents;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.DataComponentInput;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.ItemComponents;
 import net.bobofraggins.mobfarmingsupplies.register.MFSRegistryHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.component.DataComponentMap;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.DataComponentMap;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
@@ -17,7 +20,7 @@ import net.bobofraggins.mobfarmingsupplies.shared.nbt.ValueOutput;
 import org.jetbrains.annotations.Nullable;
 
 /** A placed Mob Head: which mob's head it is (null until set from the item). */
-public class MobHeadBlockEntity extends BlockEntity {
+public class MobHeadBlockEntity extends BlockEntity implements ImplicitComponents {
 
     @Nullable private EntityType<?> mobType;
 
@@ -31,34 +34,32 @@ public class MobHeadBlockEntity extends BlockEntity {
     // ── The mob type travels on the item (Registration is shadowed in BlockEntity subclasses) ──
 
     @Override
-    protected void applyImplicitComponents(BlockEntity.DataComponentInput components) {
-        super.applyImplicitComponents(components);
+    public void applyImplicitComponents(DataComponentInput components) {
         mobType = components.get(net.bobofraggins.mobfarmingsupplies.register.Registration.MOB_HEAD_TYPE.get());
     }
 
     @Override
-    protected void collectImplicitComponents(DataComponentMap.Builder components) {
-        super.collectImplicitComponents(components);
+    public void collectImplicitComponents(DataComponentMap.Builder components) {
         if (mobType != null) components.set(net.bobofraggins.mobfarmingsupplies.register.Registration.MOB_HEAD_TYPE.get(), mobType);
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.saveAdditional(tag, registries);
-        ValueOutput output = new ValueOutput(tag, registries);
+    protected void saveAdditional(CompoundTag tag) {
+        super.saveAdditional(tag);
+        ValueOutput output = new ValueOutput(tag);
         if (mobType != null) output.store("MobType", BuiltInRegistries.ENTITY_TYPE.byNameCodec(), mobType);
     }
 
     @Override
-    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
-        ValueInput input = new ValueInput(tag, registries);
+    public void load(CompoundTag tag) {
+        super.load(tag);
+        ValueInput input = new ValueInput(tag);
         mobType = input.read("MobType", BuiltInRegistries.ENTITY_TYPE.byNameCodec()).orElse(null);
     }
 
     @Override
-    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
-        return saveWithoutMetadata(registries);
+    public CompoundTag getUpdateTag() {
+        return saveWithoutMetadata();
     }
 
     @Override

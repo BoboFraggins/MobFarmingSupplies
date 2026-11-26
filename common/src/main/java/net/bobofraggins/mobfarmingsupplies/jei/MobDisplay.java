@@ -77,7 +77,9 @@ final class MobDisplay {
         mob.yHeadRotO = mob.getYRot();
         float mobScale = mob.getScale();
         Vector3f offset = new Vector3f(0.0f, mob.getBbHeight() / 2.0f + 0.0625f * mobScale, 0.0f);
-        InventoryScreen.renderEntityInInventory(graphics, centreX, centreY, scale / mobScale, offset, pose, camera, mob);
+        // 1.20.1 takes whole-pixel positions and no offset: the offset is moved into the position.
+        InventoryScreen.renderEntityInInventory(graphics, Math.round(centreX), Math.round(centreY + offset.y * scale / mobScale),
+                Math.round(scale / mobScale), pose, camera, mob);
         mob.yBodyRot = bodyRot;
         mob.setYRot(yRot);
         mob.setXRot(xRot);

@@ -17,6 +17,10 @@ import net.minecraft.world.level.block.Block;
  */
 public final class MFSTags {
 
+    /** {@code minecraft:skulls}: every head (1.20.5+ has the tag; on 1.20.1 this mod's data adds it). */
+    public static final net.minecraft.tags.TagKey<net.minecraft.world.item.Item> SKULLS = net.minecraft.tags.TagKey.create(
+            net.minecraft.core.registries.Registries.ITEM, new net.minecraft.resources.ResourceLocation("minecraft", "skulls"));
+
     private MFSTags() {}
 
     public static final class Blocks {
@@ -27,7 +31,7 @@ public final class MFSTags {
          * so those mods leave it alone - their pick-up click is the Present's unwrap click.
          */
         public static final TagKey<Block> RELOCATION_NOT_SUPPORTED = TagKey.create(
-                Registries.BLOCK, ResourceLocation.fromNamespaceAndPath("c", "relocation_not_supported"));
+                Registries.BLOCK, new ResourceLocation("c", "relocation_not_supported"));
 
         /**
          * Blocks a Vex can't fly through. Vexes ignore block collision entirely, so these are
@@ -36,7 +40,7 @@ public final class MFSTags {
          * <p>Defaults: Wither-Proof Glass and Mob Exclusion Glass.
          */
         public static final TagKey<Block> BLOCKS_VEXES = TagKey.create(
-                Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "blocks_vexes"));
+                Registries.BLOCK, new ResourceLocation(MobFarmingSuppliesCommon.MODID, "blocks_vexes"));
 
         private Blocks() {}
     }
@@ -49,19 +53,19 @@ public final class MFSTags {
          * samples add them here.
          */
         public static final TagKey<Item> INCUBATOR_SAMPLES = TagKey.create(
-                Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "incubator_samples"));
+                Registries.ITEM, new ResourceLocation(MobFarmingSuppliesCommon.MODID, "incubator_samples"));
 
         /** What the XP Powered Incubator's input slots take: the eggs, and any other recipe inputs. */
         public static final TagKey<Item> INCUBATOR_INPUTS = TagKey.create(
-                Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "incubator_inputs"));
+                Registries.ITEM, new ResourceLocation(MobFarmingSuppliesCommon.MODID, "incubator_inputs"));
 
         /** What the Upgrade Station's input slot takes: the Blank Upgrade, and any other recipe inputs. */
         public static final TagKey<Item> UPGRADE_STATION_INPUTS = TagKey.create(
-                Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "upgrade_station_inputs"));
+                Registries.ITEM, new ResourceLocation(MobFarmingSuppliesCommon.MODID, "upgrade_station_inputs"));
 
         /** What the Essence Hopper's slot takes: its Essence Filters. */
         public static final TagKey<Item> ESSENCE_FILTERS = TagKey.create(
-                Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "essence_filters"));
+                Registries.ITEM, new ResourceLocation(MobFarmingSuppliesCommon.MODID, "essence_filters"));
 
         private Items() {}
     }
@@ -78,7 +82,7 @@ public final class MFSTags {
          */
         public static final TagKey<EntityType<?>> NO_DNA_SAMPLING = TagKey.create(
                 Registries.ENTITY_TYPE,
-                ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "no_dna_sampling"));
+                new ResourceLocation(MobFarmingSuppliesCommon.MODID, "no_dna_sampling"));
 
         /**
          * Mobs in this tag never sit down on a Toilet they walk onto (players never do anyway).
@@ -88,7 +92,7 @@ public final class MFSTags {
          */
         public static final TagKey<EntityType<?>> CANNOT_USE_TOILET = TagKey.create(
                 Registries.ENTITY_TYPE,
-                ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "cannot_use_toilet"));
+                new ResourceLocation(MobFarmingSuppliesCommon.MODID, "cannot_use_toilet"));
 
         private EntityTypes() {}
     }

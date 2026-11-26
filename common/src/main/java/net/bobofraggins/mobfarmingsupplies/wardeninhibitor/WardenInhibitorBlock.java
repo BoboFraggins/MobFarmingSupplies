@@ -1,6 +1,5 @@
 package net.bobofraggins.mobfarmingsupplies.wardeninhibitor;
 
-import com.mojang.serialization.MapCodec;
 import net.bobofraggins.mobfarmingsupplies.witherinhibitor.WitherInhibitorBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -13,16 +12,11 @@ import net.minecraft.world.level.block.state.BlockState;
  */
 public class WardenInhibitorBlock extends WitherInhibitorBlock {
 
-    public static final MapCodec<WardenInhibitorBlock> CODEC = simpleCodec(WardenInhibitorBlock::new);
 
     public WardenInhibitorBlock(Properties props) {
         super(props);
     }
 
-    @Override
-    public MapCodec<WardenInhibitorBlock> codec() {
-        return CODEC;
-    }
 
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {

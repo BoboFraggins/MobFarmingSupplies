@@ -40,7 +40,7 @@ public class SkullLightsRenderer extends StateBlockEntityRenderer<SkullLightHook
     /** How far a lit skull's tint goes from white towards the dye's colour (1 = all the way). */
     private static final float TINT_STRENGTH = 0.65f;
     private static final int FULL_BRIGHT = 0xF000F0;
-    private static final RenderType CORD = RenderType.entitySolid(ResourceLocation.withDefaultNamespace("textures/misc/white.png"));
+    private static final RenderType CORD = RenderType.entitySolid(new ResourceLocation("textures/misc/white.png"));
 
     public static class State extends BlockEntityRenderState {
         /** The cord's points, relative to the hook's block. Empty when this hook draws nothing. */
@@ -80,7 +80,7 @@ public class SkullLightsRenderer extends StateBlockEntityRenderer<SkullLightHook
         state.cord = points;
         state.cordLight = LevelRenderer.getLightColor(level, BlockPos.containing(from.lerp(to, 0.5)));
 
-        int tint = lights.lit() ? FastColor.ARGB32.lerp(TINT_STRENGTH, 0xFFFFFFFF, FastColor.ARGB32.opaque(lights.color().getTextureDiffuseColor())) : -1;
+        int tint = lights.lit() ? FastColor.ARGB32.lerp(TINT_STRENGTH, 0xFFFFFFFF, net.bobofraggins.mobfarmingsupplies.shared.compat.Colors.diffuse(lights.color())) : -1;
         for (SkullLightsCurve.Hang hang : SkullLightsCurve.hangs(from, to)) {
             float yaw = facing(hang.tangent(), away);
             int light = lights.lit() ? FULL_BRIGHT : LevelRenderer.getLightColor(level, BlockPos.containing(hang.skullCentre()));
@@ -176,8 +176,8 @@ public class SkullLightsRenderer extends StateBlockEntityRenderer<SkullLightHook
     }
 
     private static void vertex(VertexConsumer vc, PoseStack.Pose pose, Vec3 p, Vec3 n, int light) {
-        vc.addVertex(pose, (float) p.x, (float) p.y, (float) p.z).setColor(CORD_COLOR).setUv(0.5f, 0.5f)
-                .setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(pose, (float) n.x, (float) n.y, (float) n.z);
+        vc.vertex(pose.pose(), (float) p.x, (float) p.y, (float) p.z).color(CORD_COLOR).uv(0.5f, 0.5f)
+                .overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(pose.normal(), (float) n.x, (float) n.y, (float) n.z).endVertex();
     }
 
     /** The string reaches well outside the hook's block. */

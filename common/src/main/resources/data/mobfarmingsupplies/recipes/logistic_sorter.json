@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "WHW",
+    "HBH",
+    "WHW"
+  ],
+  "key": {
+    "W": {
+      "tag": "minecraft:logs"
+    },
+    "H": {
+      "item": "minecraft:hopper"
+    },
+    "B": {
+      "item": "mobfarmingsupplies:blank_filter"
+    }
+  },
+  "result": {
+    "item": "mobfarmingsupplies:logistic_sorter",
+    "count": 1
+  },
+  "category": "misc"
+}

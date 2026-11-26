@@ -1,0 +1,7 @@
+{
+  "replace": false,
+  "values": [
+    "mobfarmingsupplies:mob_head",
+    "mobfarmingsupplies:mob_wall_head"
+  ]
+}

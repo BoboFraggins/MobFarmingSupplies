@@ -1,6 +1,7 @@
 package net.bobofraggins.mobfarmingsupplies.absorptionhopper;
 
-import com.mojang.serialization.MapCodec;
+import net.minecraft.world.InteractionHand;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.BlockInteractions;
 import dev.architectury.registry.menu.MenuRegistry;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.bobofraggins.mobfarmingsupplies.shared.TransferSchedule;
@@ -35,7 +36,6 @@ import java.util.List;
  */
 public class AbsorptionHopperBlock extends BaseEntityBlock {
 
-    public static final MapCodec<AbsorptionHopperBlock> CODEC = simpleCodec(AbsorptionHopperBlock::new);
 
     // ── Push-side block state properties ────────────────────────────────────────
     // Mirror the pushSides bitmask in the block entity so the multipart model
@@ -64,10 +64,6 @@ public class AbsorptionHopperBlock extends BaseEntityBlock {
         builder.add(PUSH_UP, PUSH_DOWN, PUSH_NORTH, PUSH_SOUTH, PUSH_EAST, PUSH_WEST);
     }
 
-    @Override
-    protected MapCodec<? extends BaseEntityBlock> codec() {
-        return CODEC;
-    }
 
     // ── Drops ───────────────────────────────────────────────────────────────────
 
@@ -78,7 +74,7 @@ public class AbsorptionHopperBlock extends BaseEntityBlock {
         if (be instanceof AbsorptionHopperBlockEntity hopper) {
             for (ItemStack drop : drops) {
                 if (drop.getItem() instanceof BlockItem) {
-                    CompoundTag beOut = hopper.saveCustomOnly(params.getLevel().registryAccess());
+                    CompoundTag beOut = hopper.saveWithoutMetadata();
                     BlockItem.setBlockEntityData(drop, hopper.getType(), beOut);
                 }
             }
@@ -97,7 +93,7 @@ public class AbsorptionHopperBlock extends BaseEntityBlock {
     @Nullable
     /** A neighbour changed: try moving things again straight away (see {@link TransferSchedule}). */
     @Override
-    protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block block,
+    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block,
                                    BlockPos neighborPos, boolean movedByPiston) {
         super.neighborChanged(state, level, pos, block, neighborPos, movedByPiston);
         TransferSchedule.resetAt(level, pos);
@@ -112,9 +108,15 @@ public class AbsorptionHopperBlock extends BaseEntityBlock {
     }
 
     // ── Interaction ─────────────────────────────────────────────────────────────
-
     @Override
-    protected InteractionResult useWithoutItem(
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand,
+                                 BlockHitResult hit) {
+        return BlockInteractions.use(state, level, pos, player, hand, hit, null,
+                this::useWithoutItem);
+    }
+
+
+        public InteractionResult useWithoutItem(
             BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
         if (!level.isClientSide()) {
             if (level.getBlockEntity(pos) instanceof AbsorptionHopperBlockEntity be
@@ -127,7 +129,7 @@ public class AbsorptionHopperBlock extends BaseEntityBlock {
 
     /** Drawn from its block model (1.21.1's {@code BaseEntityBlock} defaults to invisible). */
     @Override
-    protected RenderShape getRenderShape(BlockState state) {
+    public RenderShape getRenderShape(BlockState state) {
         return RenderShape.MODEL;
     }
 }

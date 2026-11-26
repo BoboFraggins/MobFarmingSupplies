@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.incubator;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.MFSCodecs;
 import dev.architectury.fluid.FluidStack;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -26,7 +27,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -170,16 +170,16 @@ public class IncubatorBlockEntity extends TankBlockEntity {
         ItemStack input = items.getItem(FIRST_INPUT + row);
         ItemStack output = items.getItem(FIRST_OUTPUT + row);
         IncubatingInput in = new IncubatingInput(items.getItem(DNA_SLOT), input, worldPosition);
-        Optional<RecipeHolder<IncubatingRecipe>> found = input.isEmpty() || in.sample().isEmpty()
+        Optional<IncubatingRecipe> found = input.isEmpty() || in.sample().isEmpty()
                 ? Optional.empty() : recipes().getRecipeFor(in, level);
-        if (found.isEmpty() || !found.get().value().fits(in, level, output)) {
+        if (found.isEmpty() || !found.get().fits(in, level, output)) {
             boolean wasBaking = progress[row] != 0 || paid[row] != 0 || bakeTime[row] != 0;
             progress[row] = 0;
             paid[row] = 0;
             bakeTime[row] = 0;
             return wasBaking;
         }
-        IncubatingRecipe recipe = found.get().value();
+        IncubatingRecipe recipe = found.get();
         if (bakeTime[row] != recipe.time()) {
             // A different recipe from the one baking: start over (experience already drawn is spent).
             bakeTime[row] = recipe.time();
@@ -282,7 +282,7 @@ public class IncubatorBlockEntity extends TankBlockEntity {
         for (int row = 0; row < ROWS; row++) {
             ItemStack held = items.getItem(FIRST_INPUT + row);
             counts[row] = held.getCount();
-            matches[row] = held.isEmpty() || ItemStack.isSameItemSameComponents(held, stack);
+            matches[row] = held.isEmpty() || ItemStack.isSameItemSameTags(held, stack);
         }
         int[] added = new int[ROWS];
         int moved = 0;
@@ -362,21 +362,21 @@ public class IncubatorBlockEntity extends TankBlockEntity {
     // ── Saving and syncing ─────────────────────────────────────────────────────
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.saveAdditional(tag, registries);
-        ValueOutput output = new ValueOutput(tag, registries);
+    protected void saveAdditional(CompoundTag tag) {
+        super.saveAdditional(tag);
+        ValueOutput output = new ValueOutput(tag);
         List<ItemStack> stacks = new ArrayList<>(SLOTS);
         for (int i = 0; i < SLOTS; i++) stacks.add(items.getItem(i));
-        output.store(TAG_ITEMS, ItemStack.OPTIONAL_CODEC.listOf(), stacks);
+        output.store(TAG_ITEMS, MFSCodecs.OPTIONAL_ITEM_STACK.listOf(), stacks);
         output.putIntArray(TAG_PROGRESS, progress.clone());
         output.putIntArray(TAG_PAID, paid.clone());
     }
 
     @Override
-    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
-        ValueInput input = new ValueInput(tag, registries);
-        input.read(TAG_ITEMS, ItemStack.OPTIONAL_CODEC.listOf()).ifPresent(list -> {
+    public void load(CompoundTag tag) {
+        super.load(tag);
+        ValueInput input = new ValueInput(tag);
+        input.read(TAG_ITEMS, MFSCodecs.OPTIONAL_ITEM_STACK.listOf()).ifPresent(list -> {
             for (int i = 0; i < Math.min(list.size(), SLOTS); i++) items.setItem(i, list.get(i));
         });
         input.getIntArray(TAG_PROGRESS).ifPresent(saved ->
@@ -393,7 +393,7 @@ public class IncubatorBlockEntity extends TankBlockEntity {
      * or the tank; the window sends those.
      */
     @Override
-    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+    public CompoundTag getUpdateTag() {
         CompoundTag tag = new CompoundTag();
         tag.putBoolean(TAG_OPEN, open);
         tag.putInt(TAG_SHOWN, shown);

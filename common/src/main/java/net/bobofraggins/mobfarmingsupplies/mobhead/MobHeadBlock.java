@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.mobhead;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.ItemComponents;
 import com.mojang.serialization.MapCodec;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.minecraft.core.BlockPos;
@@ -28,7 +29,6 @@ import org.jetbrains.annotations.Nullable;
  */
 public class MobHeadBlock extends BaseEntityBlock {
 
-    public static final MapCodec<MobHeadBlock> CODEC = simpleCodec(MobHeadBlock::new);
     public static final IntegerProperty ROTATION = BlockStateProperties.ROTATION_16;
     private static final VoxelShape SHAPE = Block.box(4, 0, 4, 12, 8, 12);
 
@@ -36,9 +36,6 @@ public class MobHeadBlock extends BaseEntityBlock {
         super(props);
         registerDefaultState(stateDefinition.any().setValue(ROTATION, 0));
     }
-
-    @Override
-    protected MapCodec<? extends BaseEntityBlock> codec() { return CODEC; }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
@@ -51,17 +48,17 @@ public class MobHeadBlock extends BaseEntityBlock {
     }
 
     @Override
-    protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext ctx) {
+    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext ctx) {
         return SHAPE;
     }
 
     @Override
-    protected BlockState rotate(BlockState state, Rotation rotation) {
+    public BlockState rotate(BlockState state, Rotation rotation) {
         return state.setValue(ROTATION, rotation.rotate(state.getValue(ROTATION), 16));
     }
 
     @Override
-    protected BlockState mirror(BlockState state, Mirror mirror) {
+    public BlockState mirror(BlockState state, Mirror mirror) {
         return state.setValue(ROTATION, mirror.mirror(state.getValue(ROTATION), 16));
     }
 
@@ -73,21 +70,21 @@ public class MobHeadBlock extends BaseEntityBlock {
 
     /** Pick block keeps the mob type. */
     @Override
-    public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state) {
+    public ItemStack getCloneItemStack(net.minecraft.world.level.BlockGetter level, BlockPos pos, BlockState state) {
         return cloneOf(level, pos);
     }
 
-    static ItemStack cloneOf(LevelReader level, BlockPos pos) {
+    static ItemStack cloneOf(net.minecraft.world.level.BlockGetter level, BlockPos pos) {
         ItemStack stack = new ItemStack(Registration.MOB_HEAD_ITEM.get());
         if (level.getBlockEntity(pos) instanceof MobHeadBlockEntity head && head.getMobType() != null) {
-            stack.set(Registration.MOB_HEAD_TYPE.get(), head.getMobType());
+            ItemComponents.set(stack, Registration.MOB_HEAD_TYPE.get(), head.getMobType());
         }
         return stack;
     }
 
     /** Drawn from its block model (1.21.1's {@code BaseEntityBlock} defaults to invisible). */
     @Override
-    protected RenderShape getRenderShape(BlockState state) {
+    public RenderShape getRenderShape(BlockState state) {
         return RenderShape.MODEL;
     }
 }

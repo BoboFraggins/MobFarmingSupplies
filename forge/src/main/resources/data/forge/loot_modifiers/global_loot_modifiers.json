@@ -1,0 +1,23 @@
+{
+  "replace": false,
+  "entries": [
+    "mobfarmingsupplies:dna_sample_rare",
+    "mobfarmingsupplies:dna_sample_baby",
+    "mobfarmingsupplies:dna_sample_passive_rare",
+    "mobfarmingsupplies:dna_sample_wrong",
+    "mobfarmingsupplies:dna_booster_pack_aquaculture",
+    "mobfarmingsupplies:dna_booster_pack_aether_passive",
+    "mobfarmingsupplies:dna_booster_pack_aether_hostile",
+    "mobfarmingsupplies:dna_booster_pack_evilcraft",
+    "mobfarmingsupplies:red_alert_button",
+    "mobfarmingsupplies:dramatic_button",
+    "mobfarmingsupplies:rimshot_button",
+    "mobfarmingsupplies:wilhelm_button",
+    "mobfarmingsupplies:magic_hat",
+    "mobfarmingsupplies:smore",
+    "mobfarmingsupplies:inject_dungeon",
+    "mobfarmingsupplies:inject_nether_fortress",
+    "mobfarmingsupplies:inject_bastion",
+    "mobfarmingsupplies:inject_outhouse_guide"
+  ]
+}

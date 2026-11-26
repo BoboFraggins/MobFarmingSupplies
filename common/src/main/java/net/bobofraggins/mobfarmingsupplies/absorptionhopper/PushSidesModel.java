@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.absorptionhopper;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.MFSPackets;
 import dev.architectury.networking.NetworkManager;
 import net.bobofraggins.mobfarmingsupplies.network.SetPushSidesPacket;
 import net.bobofraggins.mobfarmingsupplies.shared.ui.SideGridPane;
@@ -16,7 +17,7 @@ import net.minecraft.resources.ResourceLocation;
 public final class PushSidesModel implements SideGridPane.Model {
 
     private static final ResourceLocation TEX_ON =
-            ResourceLocation.fromNamespaceAndPath("mobfarmingsupplies", "widget/push_button_on");
+            new ResourceLocation("mobfarmingsupplies", "widget/push_button_on");
 
     private final BlockPos pos;
     private int mask;
@@ -40,7 +41,7 @@ public final class PushSidesModel implements SideGridPane.Model {
     @Override
     public void cycle(Direction side) {
         mask ^= 1 << bitOf(side); // optimistic update — server will confirm
-        NetworkManager.sendToServer(new SetPushSidesPacket(pos, mask));
+        MFSPackets.sendToServer(new SetPushSidesPacket(pos, mask));
     }
 
     @Override

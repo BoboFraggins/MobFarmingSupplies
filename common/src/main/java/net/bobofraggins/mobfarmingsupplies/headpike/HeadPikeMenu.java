@@ -32,7 +32,7 @@ public class HeadPikeMenu extends AbstractContainerMenu {
 
             @Override
             public boolean canPlaceItem(int slot, ItemStack stack) {
-                return stack.is(net.minecraft.tags.ItemTags.SKULLS);
+                return stack.is(net.bobofraggins.mobfarmingsupplies.register.MFSTags.SKULLS);
             }
         });
     }

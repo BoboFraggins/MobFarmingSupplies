@@ -1,7 +1,7 @@
 package net.bobofraggins.mobfarmingsupplies.picnicbasket;
 
 import dev.architectury.event.events.common.TickEvent;
-import net.minecraft.core.component.DataComponents;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.DataComponents;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -59,7 +59,7 @@ public final class PicnicBasketFeedHandler {
         Map<ItemStack, Integer> indexByStack = new IdentityHashMap<>();
         for (int i = 0; i < PicnicBasketBlockEntity.SLOT_COUNT; i++) {
             ItemStack stored = temp.inventory.getItem(i);
-            if (!stored.isEmpty() && stored.has(DataComponents.FOOD)) {
+            if (!stored.isEmpty() && stored.getItem().getFoodProperties() != null) {
                 candidates.add(stored);
                 indexByStack.put(stored, i);
             }
@@ -71,10 +71,10 @@ public final class PicnicBasketFeedHandler {
         ItemStack stored = preferred.get(level.getRandom().nextInt(preferred.size()));
         int chosenIdx = indexByStack.get(stored);
 
-        FoodProperties food = stored.get(DataComponents.FOOD);
+        FoodProperties food = stored.getItem().getFoodProperties();
         if (food == null) return;
 
-        player.getFoodData().eat(food);
+        player.getFoodData().eat(food.getNutrition(), food.getSaturationModifier());
         level.playSound(null, player.getX(), player.getY(), player.getZ(),
                 SoundEvents.GENERIC_EAT, SoundSource.PLAYERS,
                 0.5f, level.getRandom().nextFloat() * 0.1f + 0.9f);

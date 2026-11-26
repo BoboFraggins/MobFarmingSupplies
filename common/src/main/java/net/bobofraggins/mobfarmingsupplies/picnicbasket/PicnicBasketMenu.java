@@ -4,7 +4,7 @@ import net.bobofraggins.mobfarmingsupplies.shared.menu.ExtendedMenus;
 import net.minecraft.network.FriendlyByteBuf;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.component.DataComponents;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.DataComponents;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -76,7 +76,7 @@ public class PicnicBasketMenu extends AbstractContainerMenu {
 
         @Override
         public boolean mayPlace(ItemStack stack) {
-            return stack.has(DataComponents.FOOD);
+            return stack.getItem().getFoodProperties() != null;
         }
     }
 

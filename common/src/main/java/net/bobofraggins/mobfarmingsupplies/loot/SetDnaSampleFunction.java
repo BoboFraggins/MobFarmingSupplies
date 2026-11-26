@@ -1,5 +1,8 @@
 package net.bobofraggins.mobfarmingsupplies.loot;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.LootFunctions;
+import net.minecraft.util.GsonHelper;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.ItemComponents;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -27,13 +30,14 @@ import net.minecraft.world.phys.Vec3;
  */
 public class SetDnaSampleFunction extends LootItemConditionalFunction {
 
-    public static final MapCodec<SetDnaSampleFunction> CODEC = RecordCodecBuilder.mapCodec(i ->
-            commonFields(i).and(ResourceLocation.CODEC.fieldOf("pack").forGetter(f -> f.pack))
-                    .apply(i, SetDnaSampleFunction::new));
+    public static final LootItemConditionalFunction.Serializer<SetDnaSampleFunction> SERIALIZER =
+            LootFunctions.serializer((json, conditions) -> new SetDnaSampleFunction(conditions,
+                    new ResourceLocation(GsonHelper.getAsString(json, "pack"))),
+                    (json, f) -> json.addProperty("pack", f.pack.toString()));
 
     private final ResourceLocation pack;
 
-    private SetDnaSampleFunction(List<LootItemCondition> predicates, ResourceLocation pack) {
+    private SetDnaSampleFunction(LootItemCondition[] predicates, ResourceLocation pack) {
         super(predicates);
         this.pack = pack;
     }
@@ -49,13 +53,13 @@ public class SetDnaSampleFunction extends LootItemConditionalFunction {
         if (mob == null) return stack;
         mob.setPos(Vec3.atBottomCenterOf(pos));
         packItem.onSpawnPositioned(packStack, level, mob);
-        stack.set(Registration.DNA_SAMPLE_CONTENTS.get(),
-                DnaSampleItem.createSample(mob).get(Registration.DNA_SAMPLE_CONTENTS.get()));
+        ItemComponents.set(stack, Registration.DNA_SAMPLE_CONTENTS.get(),
+                ItemComponents.get(DnaSampleItem.createSample(mob), Registration.DNA_SAMPLE_CONTENTS.get()));
         return stack;
     }
 
     @Override
-    public LootItemFunctionType<SetDnaSampleFunction> getType() {
+    public LootItemFunctionType getType() {
         return Registration.SET_DNA_SAMPLE.get();
     }
 }

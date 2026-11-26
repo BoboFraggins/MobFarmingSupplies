@@ -1,6 +1,5 @@
 package net.bobofraggins.mobfarmingsupplies.vectorplate;
 
-import com.mojang.serialization.MapCodec;
 import net.bobofraggins.mobfarmingsupplies.shared.ForcedMovement;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -30,7 +29,6 @@ import net.minecraft.world.phys.shapes.VoxelShape;
  */
 public class VectorPlateBlock extends HorizontalDirectionalBlock {
 
-    public static final MapCodec<VectorPlateBlock> CODEC = simpleCodec(VectorPlateBlock::new);
 
     /** Push distance added per tick in the facing direction (blocks/tick). */
     private static final double PUSH_SPEED = 0.5;
@@ -50,10 +48,6 @@ public class VectorPlateBlock extends HorizontalDirectionalBlock {
         registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH));
     }
 
-    @Override
-    public MapCodec<VectorPlateBlock> codec() {
-        return CODEC;
-    }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
@@ -99,7 +93,7 @@ public class VectorPlateBlock extends HorizontalDirectionalBlock {
      * a harvester or collector pile up forever and lag the world.
      */
     @Override
-    protected void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
+    public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
         if (level.isClientSide() || entity.isShiftKeyDown()) return;
 
         Direction dir = state.getValue(FACING);

@@ -1,9 +1,7 @@
 package net.bobofraggins.mobfarmingsupplies.soil;
 
-import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.particles.ColorParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
@@ -32,7 +30,6 @@ import net.minecraft.world.level.pathfinder.PathComputationType;
 public class HyperFarmlandBlock extends FarmBlock {
 
     @SuppressWarnings({"unchecked", "rawtypes"})
-    public static final MapCodec<FarmBlock> CODEC = (MapCodec) simpleCodec(HyperFarmlandBlock::new);
 
     /** How many times as fast plants grow. */
     public static final int SPEED = 16;
@@ -43,21 +40,17 @@ public class HyperFarmlandBlock extends FarmBlock {
     /** The light crops and saplings need to grow. */
     private static final int GROW_LIGHT = 9;
     /** Potion swirls, tinted yellow (1.21.1 can't tint the instant-effect star). */
-    private static final ColorParticleOption SPARKLE =
-            ColorParticleOption.create(ParticleTypes.ENTITY_EFFECT, 0xFFFFE135);
+    /** Yellow (1.20.1 takes an effect particle's colour as its speed, so they drift less). */
+    private static final int SPARKLE_COLOR = 0xFFE135;
 
     public HyperFarmlandBlock(Properties properties) {
         super(properties);
         registerDefaultState(stateDefinition.any().setValue(MOISTURE, MAX_MOISTURE));
     }
 
-    @Override
-    public MapCodec<FarmBlock> codec() {
-        return CODEC;
-    }
 
     @Override
-    protected boolean isPathfindable(BlockState state, PathComputationType type) {
+    public boolean isPathfindable(BlockState state, net.minecraft.world.level.BlockGetter level, BlockPos pos, PathComputationType type) {
         return false;
     }
 
@@ -65,7 +58,7 @@ public class HyperFarmlandBlock extends FarmBlock {
 
     /** Stays Hyper Farmland under a solid block (farmland turns to dirt). */
     @Override
-    protected boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
+    public boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
         return true;
     }
 
@@ -76,14 +69,14 @@ public class HyperFarmlandBlock extends FarmBlock {
 
     /** Farmland schedules a tick here to turn to dirt; this block's own ticks are already running. */
     @Override
-    protected BlockState updateShape(BlockState state, Direction direction, BlockState neighbor,
+    public BlockState updateShape(BlockState state, Direction direction, BlockState neighbor,
                                      LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
         return state;
     }
 
     /** Never dries out. */
     @Override
-    protected void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {}
+    public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {}
 
     /** Never trampled: only the fall damage a plain block deals. */
     @Override
@@ -92,13 +85,13 @@ public class HyperFarmlandBlock extends FarmBlock {
     }
 
     @Override
-    protected void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
+    public void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
         super.onPlace(state, level, pos, oldState, movedByPiston);
         if (!level.isClientSide() && !oldState.is(this)) level.scheduleTick(pos, this, INTERVAL);
     }
 
     @Override
-    protected void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+    public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
         level.scheduleTick(pos, this, INTERVAL);
         // A block gets randomTickSpeed / 4096 random ticks a tick; the plant already has one share.
         double extra = (SPEED - 1) * level.getGameRules().getInt(GameRules.RULE_RANDOMTICKING) * INTERVAL / 4096.0;
@@ -132,9 +125,9 @@ public class HyperFarmlandBlock extends FarmBlock {
     @Override
     public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
         if (random.nextInt(3) == 0 && lightEnoughToGrow(level, pos)) {
-            level.addParticle(SPARKLE,
+            level.addParticle(ParticleTypes.ENTITY_EFFECT,
                     pos.getX() + random.nextDouble(), pos.getY() + 1.0, pos.getZ() + random.nextDouble(),
-                    0, 0.05, 0);
+                    (SPARKLE_COLOR >> 16 & 0xFF) / 255.0, (SPARKLE_COLOR >> 8 & 0xFF) / 255.0, (SPARKLE_COLOR & 0xFF) / 255.0);
         }
     }
 }

@@ -37,7 +37,7 @@ public interface IDialogPane {
     }
 
     /** Handle a mouse scroll in pane-local coordinates. Returns true if consumed. */
-    default boolean mouseScrolled(double localX, double localY, double dx, double dy) {
+    default boolean mouseScrolled(double localX, double localY, double dy) {
         return false;
     }
 

@@ -1,6 +1,5 @@
 package net.bobofraggins.mobfarmingsupplies.register;
 
-import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -26,28 +25,18 @@ public final class MFSRegistryHelper {
     /** Returns the registered {@link BlockEntityType} for the given registry name. */
     public static BlockEntityType<?> getBEType(String key) {
         return BuiltInRegistries.BLOCK_ENTITY_TYPE.get(
-                ResourceLocation.fromNamespaceAndPath(MODID, key));
+                new ResourceLocation(MODID, key));
     }
 
     /** Returns the registered {@link Item} for the given registry name. */
     public static Item getItem(String key) {
         return BuiltInRegistries.ITEM.get(
-                ResourceLocation.fromNamespaceAndPath(MODID, key));
+                new ResourceLocation(MODID, key));
     }
 
     /** Returns the registered {@link Fluid} for the given registry name. */
     public static Fluid getFluid(String key) {
         return BuiltInRegistries.FLUID.get(
-                ResourceLocation.fromNamespaceAndPath(MODID, key));
-    }
-
-    /**
-     * Returns the registered {@link DataComponentType} for the given registry name.
-     * The caller is responsible for using the correct type parameter.
-     */
-    @SuppressWarnings("unchecked")
-    public static <T> DataComponentType<T> getDataComponentType(String key) {
-        return (DataComponentType<T>) BuiltInRegistries.DATA_COMPONENT_TYPE.get(
-                ResourceLocation.fromNamespaceAndPath(MODID, key));
+                new ResourceLocation(MODID, key));
     }
 }

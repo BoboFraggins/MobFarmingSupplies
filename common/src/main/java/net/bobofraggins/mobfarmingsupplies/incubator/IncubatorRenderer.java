@@ -28,9 +28,9 @@ import org.joml.Quaternionf;
 public class IncubatorRenderer extends StateBlockEntityRenderer<IncubatorBlockEntity, IncubatorRenderer.State> {
 
     public static final ResourceLocation LID_MODEL_ID =
-            ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "block/incubator_lid");
+            new ResourceLocation(MobFarmingSuppliesCommon.MODID, "block/incubator_lid");
     public static final ResourceLocation TEST_TUBE_MODEL_ID =
-            ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "block/incubator_test_tube");
+            new ResourceLocation(MobFarmingSuppliesCommon.MODID, "block/incubator_test_tube");
 
     /**
      * Each row's nest, in reading order as you face the incubator's front (which faces north in
@@ -38,10 +38,10 @@ public class IncubatorRenderer extends StateBlockEntityRenderer<IncubatorBlockEn
      * left, near right.
      */
     public static final List<ResourceLocation> EGG_MODEL_IDS = List.of(
-            ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "block/incubator_egg_southeast"),
-            ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "block/incubator_egg_southwest"),
-            ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "block/incubator_egg_northeast"),
-            ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "block/incubator_egg_northwest"));
+            new ResourceLocation(MobFarmingSuppliesCommon.MODID, "block/incubator_egg_southeast"),
+            new ResourceLocation(MobFarmingSuppliesCommon.MODID, "block/incubator_egg_southwest"),
+            new ResourceLocation(MobFarmingSuppliesCommon.MODID, "block/incubator_egg_northeast"),
+            new ResourceLocation(MobFarmingSuppliesCommon.MODID, "block/incubator_egg_northwest"));
 
     // The hinge, in north-facing model space: the top of the back (south) edge.
     private static final float HINGE_Y = 8f / 16f;

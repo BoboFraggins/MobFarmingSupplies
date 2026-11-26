@@ -1,9 +1,11 @@
 package net.bobofraggins.mobfarmingsupplies.fluid;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.MFSCodecs;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.MFSStreamCodecs;
 import com.mojang.serialization.MapCodec;
 import dev.architectury.fluid.FluidStack;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.FriendlyByteBuf;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.StreamCodec;
 
 import java.util.Optional;
 
@@ -32,7 +34,7 @@ public final class FluidStacks {
      * }</pre>
      */
     public static MapCodec<FluidStack> optionalFieldCodec(String fieldName) {
-        return FluidStack.CODEC.optionalFieldOf(fieldName)
+        return MFSCodecs.FLUID_STACK.optionalFieldOf(fieldName)
                 .xmap(opt -> opt.orElse(FluidStack.empty()),
                       fs  -> fs.isEmpty() ? Optional.empty() : Optional.of(fs));
     }
@@ -43,12 +45,12 @@ public final class FluidStacks {
      * <p>Wire format: {@code boolean present}, then the full {@link FluidStack#STREAM_CODEC}
      * payload only if {@code present == true}.
      */
-    public static final StreamCodec<RegistryFriendlyByteBuf, FluidStack> OPTIONAL_STREAM_CODEC =
+    public static final StreamCodec<FriendlyByteBuf, FluidStack> OPTIONAL_STREAM_CODEC =
             StreamCodec.of(
                     (buf, fs) -> {
                         buf.writeBoolean(!fs.isEmpty());
-                        if (!fs.isEmpty()) FluidStack.STREAM_CODEC.encode(buf, fs);
+                        if (!fs.isEmpty()) MFSStreamCodecs.FLUID_STACK.encode(buf, fs);
                     },
-                    buf -> buf.readBoolean() ? FluidStack.STREAM_CODEC.decode(buf) : FluidStack.empty()
+                    buf -> buf.readBoolean() ? MFSStreamCodecs.FLUID_STACK.decode(buf) : FluidStack.empty()
             );
 }

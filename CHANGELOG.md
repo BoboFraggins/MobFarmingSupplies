@@ -1,5 +1,9 @@
 # Mob Farming Supplies
 
+## 1.20.1.0
+
+* First release for Minecraft 1.20.1, on Forge
+
 ## 26.3.0.8, 26.2.0.9, 26.1.2.11, 1.21.1.3
 
 * Added Upgrade Station (used for all upgrade crafts now)

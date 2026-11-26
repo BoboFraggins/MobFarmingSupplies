@@ -29,7 +29,7 @@ public class ColorWorkstationRenderer
     /** How far up the tank sits: the model's liquid cube starts at y 15, a tank's at y 1. */
     private static final float RAISE = 14f / 16f;
     private static final ResourceLocation STILL =
-            ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "block/essence_of_color_still");
+            new ResourceLocation(MobFarmingSuppliesCommon.MODID, "block/essence_of_color_still");
 
     @SuppressWarnings("unused")
     public ColorWorkstationRenderer(BlockEntityRendererProvider.Context ctx) {}

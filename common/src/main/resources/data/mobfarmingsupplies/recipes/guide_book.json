@@ -1,0 +1,32 @@
+{
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "modonomicon"
+    }
+  ],
+  "fabric:load_conditions": [
+    {
+      "condition": "fabric:all_mods_loaded",
+      "values": [
+        "modonomicon"
+      ]
+    }
+  ],
+  "type": "mobfarmingsupplies:shapeless_nbt",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "minecraft:book"
+    },
+    {
+      "item": "mobfarmingsupplies:silicon_clump"
+    }
+  ],
+  "result": {
+    "item": "modonomicon:modonomicon",
+    "nbt": {
+      "modonomicon:book_id": "mobfarmingsupplies:guide"
+    }
+  }
+}

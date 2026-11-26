@@ -1,0 +1,18 @@
+{
+  "type": "mobfarmingsupplies:upgrading",
+  "item": [
+    {
+      "tag": "forge:gems/emerald"
+    },
+    {
+      "tag": "c:emeralds"
+    }
+  ],
+  "input": {
+    "item": "mobfarmingsupplies:blank_upgrade"
+  },
+  "result": {
+    "item": "mobfarmingsupplies:harvester_upgrade_looting",
+    "count": 1
+  }
+}

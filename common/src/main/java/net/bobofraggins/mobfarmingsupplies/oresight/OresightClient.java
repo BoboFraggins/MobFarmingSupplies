@@ -18,7 +18,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.LevelChunkSection;
-import net.minecraft.world.level.chunk.status.ChunkStatus;
+import net.minecraft.world.level.chunk.ChunkStatus;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
@@ -210,8 +210,8 @@ public final class OresightClient {
             float z0 = (float) (lines[i + 2] - camera.z);
             int axis = lines[i + 3];
             float dx = axis == 0 ? 1 : 0, dy = axis == 1 ? 1 : 0, dz = axis == 2 ? 1 : 0;
-            vc.addVertex(pose, x0, y0, z0).setColor(R, G, B, A).setNormal(dx, dy, dz);
-            vc.addVertex(pose, x0 + dx, y0 + dy, z0 + dz).setColor(R, G, B, A).setNormal(dx, dy, dz);
+            vc.vertex(pose, x0, y0, z0).color(R, G, B, A).normal(dx, dy, dz).endVertex();
+            vc.vertex(pose, x0 + dx, y0 + dy, z0 + dz).color(R, G, B, A).normal(dx, dy, dz).endVertex();
         }
         buffers.endBatch(type);
     }

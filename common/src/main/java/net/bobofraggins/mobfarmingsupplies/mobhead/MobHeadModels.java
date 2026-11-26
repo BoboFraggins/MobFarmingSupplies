@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.mobhead;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.Colors;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
@@ -49,11 +50,11 @@ public final class MobHeadModels {
     /** Vanilla heads are 8 pixels across; every Mob Head is scaled so its largest side matches. */
     private static final float HEAD_SIZE = 0.5f;
 
-    private static final ResourceLocation ENDERMAN_EYES = ResourceLocation.withDefaultNamespace("textures/entity/enderman/enderman_eyes.png");
-    private static final ResourceLocation SHEEP_WOOL = ResourceLocation.withDefaultNamespace("textures/entity/sheep/sheep_fur.png");
-    private static final ResourceLocation SLIME = ResourceLocation.withDefaultNamespace("textures/entity/slime/slime.png");
-    private static final ResourceLocation DROWNED_OUTER = ResourceLocation.withDefaultNamespace("textures/entity/zombie/drowned_outer_layer.png");
-    private static final ResourceLocation KOB_PATTERN = ResourceLocation.withDefaultNamespace("textures/entity/fish/tropical_a_pattern_1.png");
+    private static final ResourceLocation ENDERMAN_EYES = new ResourceLocation("textures/entity/enderman/enderman_eyes.png");
+    private static final ResourceLocation SHEEP_WOOL = new ResourceLocation("textures/entity/sheep/sheep_fur.png");
+    private static final ResourceLocation SLIME = new ResourceLocation("textures/entity/slime/slime.png");
+    private static final ResourceLocation DROWNED_OUTER = new ResourceLocation("textures/entity/zombie/drowned_outer_layer.png");
+    private static final ResourceLocation KOB_PATTERN = new ResourceLocation("textures/entity/fish/tropical_a_pattern_1.png");
 
     private static final int FULL_BRIGHT = 0xF000F0;
 
@@ -131,11 +132,11 @@ public final class MobHeadModels {
             int colour = tint == -1 ? layer.tint() : layer.tint() == -1 ? tint : FastColor.ARGB32.multiply(layer.tint(), tint);
             VertexConsumer buffer = buffers.getBuffer(layer.renderType());
             if (layer.cut() != null) drawCut(layer.cut(), poseStack.last(), buffer, light, colour);
-            else layer.part().render(poseStack, buffer, light, OverlayTexture.NO_OVERLAY, colour);
+            else net.bobofraggins.mobfarmingsupplies.shared.compat.ModelRendering.render(layer.part(), poseStack, buffer, light, OverlayTexture.NO_OVERLAY, colour);
         }
         if (head.mushroom() != null) {
             // Where MushroomCowMushroomLayer puts the mushroom on the head.
-            head.layers().getFirst().part().translateAndRotate(poseStack);
+            head.layers().get(0).part().translateAndRotate(poseStack);
             poseStack.translate(0f, -0.7f, -0.2f);
             poseStack.mulPose(Axis.YP.rotationDegrees(-78f));
             poseStack.scale(-1f, -1f, 1f);
@@ -168,7 +169,7 @@ public final class MobHeadModels {
             case "sheep" -> {
                 ModelPart wool = bakeHead(ModelLayers.SHEEP_FUR, "head");
                 if (wool != null) layers.add(new Layer(wool, RenderType.entityCutout(SHEEP_WOOL),
-                        living instanceof Sheep sheep ? Sheep.getColor(sheep.getColor()) : -1));
+                        living instanceof Sheep sheep ? argb(Sheep.getColorArray(sheep.getColor())) : -1));
             }
             case "drowned" -> {
                 ModelPart outer = bakeHead(ModelLayers.DROWNED_OUTER_LAYER, "head");
@@ -184,10 +185,10 @@ public final class MobHeadModels {
             }
             case "tropical_fish" -> {
                 // The one type of head stands for every pattern: a clownfish, the best known.
-                layers.set(0, new Layer(part, layers.getFirst().renderType(), DyeColor.ORANGE.getTextureDiffuseColor()));
+                layers.set(0, new Layer(part, layers.get(0).renderType(), net.bobofraggins.mobfarmingsupplies.shared.compat.Colors.diffuse(DyeColor.ORANGE)));
                 ModelPart pattern = bakeHead(ModelLayers.TROPICAL_FISH_SMALL_PATTERN, null);
                 if (pattern != null) layers.add(new Layer(pattern, RenderType.entityCutout(KOB_PATTERN),
-                        DyeColor.WHITE.getTextureDiffuseColor()));
+                        net.bobofraggins.mobfarmingsupplies.shared.compat.Colors.diffuse(DyeColor.WHITE)));
             }
             default -> {}
         }
@@ -258,7 +259,7 @@ public final class MobHeadModels {
      * face moves up to the cut to close it. A cube wholly behind it is dropped. Grows {@code min} /
      * {@code max} (block units) to what's left, not counting fins.
      *
-     * <p>1.21.1's model faces can't be reached from outside their package, so each cube is read back
+     * <p>1.20.1's model faces can't be reached from outside their package, so each cube is read back
      * by having it draw itself into a {@link FaceCollector}, and what's left is drawn by
      * {@link #drawCut}.
      */
@@ -268,7 +269,7 @@ public final class MobHeadModels {
         root.visit(new PoseStack(), (pose, path, index, cube) -> {
             if (path.endsWith("_wing")) return; // a bee's start just behind its cut, and would leave a sliver each side
             FaceCollector faces = new FaceCollector();
-            cube.compile(pose, faces, 0, 0, -1);
+            cube.compile(pose, faces, 0, 0, 1f, 1f, 1f, 1f);
             boolean crossesCut = faces.quads.stream()
                     .anyMatch(quad -> java.util.Arrays.stream(quad.vertices()).anyMatch(vertex -> vertex.z() < cut));
             if (!crossesCut) return;
@@ -311,13 +312,18 @@ public final class MobHeadModels {
         Vector3f position = new Vector3f();
         Vector3f normal = new Vector3f();
         for (CutQuad quad : quads) {
-            pose.transformNormal(quad.normal(), normal);
+            pose.normal().transform(quad.normal(), normal);
             for (CutVertex vertex : quad.vertices()) {
                 pose.pose().transformPosition(vertex.x(), vertex.y(), vertex.z(), position);
-                buffer.addVertex(position.x, position.y, position.z, colour, vertex.u(), vertex.v(),
+                buffer.vertex(position.x, position.y, position.z, Colors.red(colour), Colors.green(colour),
+                        Colors.blue(colour), Colors.alpha(colour), vertex.u(), vertex.v(),
                         OverlayTexture.NO_OVERLAY, light, normal.x, normal.y, normal.z);
             }
         }
+    }
+
+    private static int argb(float[] rgb) {
+        return 0xFF000000 | Math.round(rgb[0] * 255) << 16 | Math.round(rgb[1] * 255) << 8 | Math.round(rgb[2] * 255);
     }
 
     /** Takes down the faces a cube draws into it. */
@@ -327,8 +333,8 @@ public final class MobHeadModels {
         private int count;
 
         @Override
-        public void addVertex(float x, float y, float z, int colour, float u, float v, int overlay, int light,
-                              float normalX, float normalY, float normalZ) {
+        public void vertex(float x, float y, float z, float red, float green, float blue, float alpha, float u, float v,
+                           int overlay, int light, float normalX, float normalY, float normalZ) {
             pending[count++] = new CutVertex(x, y, z, u, v);
             if (count == pending.length) {
                 quads.add(new CutQuad(pending.clone(), new Vector3f(normalX, normalY, normalZ)));
@@ -336,12 +342,15 @@ public final class MobHeadModels {
             }
         }
 
-        @Override public VertexConsumer addVertex(float x, float y, float z) { return this; }
-        @Override public VertexConsumer setColor(int red, int green, int blue, int alpha) { return this; }
-        @Override public VertexConsumer setUv(float u, float v) { return this; }
-        @Override public VertexConsumer setUv1(int u, int v) { return this; }
-        @Override public VertexConsumer setUv2(int u, int v) { return this; }
-        @Override public VertexConsumer setNormal(float x, float y, float z) { return this; }
+        @Override public VertexConsumer vertex(double x, double y, double z) { return this; }
+        @Override public VertexConsumer color(int red, int green, int blue, int alpha) { return this; }
+        @Override public VertexConsumer uv(float u, float v) { return this; }
+        @Override public VertexConsumer overlayCoords(int u, int v) { return this; }
+        @Override public VertexConsumer uv2(int u, int v) { return this; }
+        @Override public VertexConsumer normal(float x, float y, float z) { return this; }
+        @Override public void endVertex() {}
+        @Override public void defaultColor(int red, int green, int blue, int alpha) {}
+        @Override public void unsetDefaultColor() {}
     }
 
     /**

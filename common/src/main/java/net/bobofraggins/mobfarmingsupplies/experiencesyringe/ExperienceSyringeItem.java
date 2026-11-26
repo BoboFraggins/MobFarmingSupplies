@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.experiencesyringe;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.ItemComponents;
 import java.util.List;
 import net.bobofraggins.mobfarmingsupplies.experiencepylon.PylonExperience;
 import net.minecraft.server.level.ServerPlayer;
@@ -64,14 +65,14 @@ public class ExperienceSyringeItem extends Item {
             return new InteractionResultHolder<>(InteractionResult.SUCCESS, player.getItemInHand(hand));
         }
 
-        int stored = stack.getOrDefault(Registration.EXPERIENCE_SYRINGE_STORED_XP.get(), 0);
+        int stored = ItemComponents.getOrDefault(stack, Registration.EXPERIENCE_SYRINGE_STORED_XP.get(), 0);
 
         if (player.isShiftKeyDown()) {
             // Deposit one level: the current level's progress, or at an exact level the level below.
             int toStore = Math.min(PylonExperience.pointsBelow(player, 1), CAPACITY - stored);
             if (toStore > 0) {
                 if (player instanceof ServerPlayer server) PylonExperience.addPoints(server, -toStore);
-                stack.set(Registration.EXPERIENCE_SYRINGE_STORED_XP.get(), stored + toStore);
+                ItemComponents.set(stack, Registration.EXPERIENCE_SYRINGE_STORED_XP.get(), stored + toStore);
                 playXpSound(level, player);
                 if (player instanceof ServerPlayer serverPlayer) MFSTriggers.SYRINGE_USED.get().trigger(serverPlayer, "store");
             }
@@ -80,7 +81,7 @@ public class ExperienceSyringeItem extends Item {
             int toGive = (int) Math.min(PylonExperience.pointsAbove(player, 1), stored);
             if (toGive > 0) {
                 if (player instanceof ServerPlayer server) PylonExperience.addPoints(server, toGive);
-                stack.set(Registration.EXPERIENCE_SYRINGE_STORED_XP.get(), stored - toGive);
+                ItemComponents.set(stack, Registration.EXPERIENCE_SYRINGE_STORED_XP.get(), stored - toGive);
                 playXpSound(level, player);
                 if (player instanceof ServerPlayer serverPlayer) MFSTriggers.SYRINGE_USED.get().trigger(serverPlayer, "withdraw");
             } else if (player instanceof ServerPlayer server) {
@@ -112,10 +113,10 @@ public class ExperienceSyringeItem extends Item {
     @Override
     public void appendHoverText(
             ItemStack stack,
-            Item.TooltipContext context,
+            @org.jetbrains.annotations.Nullable net.minecraft.world.level.Level context,
             List<Component> tooltipAdderLines, TooltipFlag flag) {
         Consumer<Component> tooltipAdder = tooltipAdderLines::add;
-        int stored = stack.getOrDefault(Registration.EXPERIENCE_SYRINGE_STORED_XP.get(), 0);
+        int stored = ItemComponents.getOrDefault(stack, Registration.EXPERIENCE_SYRINGE_STORED_XP.get(), 0);
         int storedMb   = xpToMb(stored);
         int capacityMb = xpToMb(CAPACITY);
         tooltipAdder.accept(
@@ -127,12 +128,12 @@ public class ExperienceSyringeItem extends Item {
 
     @Override
     public boolean isBarVisible(ItemStack stack) {
-        return stack.getOrDefault(Registration.EXPERIENCE_SYRINGE_STORED_XP.get(), 0) > 0;
+        return ItemComponents.getOrDefault(stack, Registration.EXPERIENCE_SYRINGE_STORED_XP.get(), 0) > 0;
     }
 
     @Override
     public int getBarWidth(ItemStack stack) {
-        int stored = stack.getOrDefault(Registration.EXPERIENCE_SYRINGE_STORED_XP.get(), 0);
+        int stored = ItemComponents.getOrDefault(stack, Registration.EXPERIENCE_SYRINGE_STORED_XP.get(), 0);
         return Math.round(13f * stored / CAPACITY);
     }
 

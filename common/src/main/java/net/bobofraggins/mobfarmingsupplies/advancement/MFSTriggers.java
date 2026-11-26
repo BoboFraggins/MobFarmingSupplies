@@ -22,33 +22,47 @@ import net.minecraft.world.level.Level;
  */
 public final class MFSTriggers {
 
-    public static final DeferredRegister<CriterionTrigger<?>> TRIGGERS =
-            DeferredRegister.create(MobFarmingSuppliesCommon.MODID, Registries.TRIGGER_TYPE);
+    /** 1.20.1 has no trigger registry: triggers are handed to {@code CriteriaTriggers.register}. */
+    public static final Triggers TRIGGERS = new Triggers();
 
     // Logistics
-    public static final RegistrySupplier<EventTrigger> FILTER_INSTALLED = event("filter_installed");
-    public static final RegistrySupplier<EventTrigger> BRIDGE_CROSSED_DIMENSIONS = event("bridge_crossed_dimensions");
+    public static final Supplier<EventTrigger> FILTER_INSTALLED = event("filter_installed");
+    public static final Supplier<EventTrigger> BRIDGE_CROSSED_DIMENSIONS = event("bridge_crossed_dimensions");
     // Mob Farming
     /** Variant {@code store} or {@code withdraw}. */
-    public static final RegistrySupplier<EventTrigger> SYRINGE_USED = event("syringe_used");
-    public static final RegistrySupplier<EventTrigger> CLONE_SPAWNED = event("clone_spawned");
-    public static final RegistrySupplier<HeadsCollectedTrigger> HEADS_COLLECTED =
+    public static final Supplier<EventTrigger> SYRINGE_USED = event("syringe_used");
+    public static final Supplier<EventTrigger> CLONE_SPAWNED = event("clone_spawned");
+    public static final Supplier<HeadsCollectedTrigger> HEADS_COLLECTED =
             TRIGGERS.register("heads_collected", HeadsCollectedTrigger::new);
     // Fun Stuff
     /** Variant: the button's block id. */
-    public static final RegistrySupplier<EventTrigger> BUTTON_PRESSED = event("button_pressed");
-    public static final RegistrySupplier<EventTrigger> HAT_TRICK = event("hat_trick");
-    public static final RegistrySupplier<EventTrigger> PRESENT_WRAPPED = event("present_wrapped");
+    public static final Supplier<EventTrigger> BUTTON_PRESSED = event("button_pressed");
+    public static final Supplier<EventTrigger> HAT_TRICK = event("hat_trick");
+    public static final Supplier<EventTrigger> PRESENT_WRAPPED = event("present_wrapped");
     /** Variant: the flushed item's id. */
-    public static final RegistrySupplier<EventTrigger> TOILET_FLUSHED = event("toilet_flushed");
+    public static final Supplier<EventTrigger> TOILET_FLUSHED = event("toilet_flushed");
 
     /** How far from a block event a player can be and still be credited. */
     public static final double NEARBY = 16;
 
     private MFSTriggers() {}
 
-    private static RegistrySupplier<EventTrigger> event(String name) {
+    private static Supplier<EventTrigger> event(String name) {
         return TRIGGERS.register(name, EventTrigger::new);
+    }
+
+    public static final class Triggers {
+        private Triggers() {}
+
+        <T extends CriterionTrigger<?>> Supplier<T> register(String name,
+                java.util.function.Function<net.minecraft.resources.ResourceLocation, T> factory) {
+            T trigger = net.minecraft.advancements.CriteriaTriggers.register(
+                    factory.apply(new net.minecraft.resources.ResourceLocation(MobFarmingSuppliesCommon.MODID, name)));
+            return () -> trigger;
+        }
+
+        /** Loads the triggers (registered when this class initialises). */
+        public void register() {}
     }
 
     /** Real players (never fake ones) within {@link #NEARBY} blocks of {@code pos}. */

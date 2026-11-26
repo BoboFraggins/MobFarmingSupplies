@@ -1,5 +1,8 @@
 package net.bobofraggins.mobfarmingsupplies.skulllights;
 
+import net.minecraft.network.FriendlyByteBuf;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.ItemComponents;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.MFSStreamCodecs;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
@@ -12,7 +15,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.codec.StreamCodec;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.StreamCodec;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -45,9 +48,9 @@ public class StringOfSkullLightsItem extends Item {
                 Direction.CODEC.fieldOf("facing").forGetter(Start::facing)
         ).apply(i, Start::new));
 
-        public static final StreamCodec<ByteBuf, Start> STREAM_CODEC = StreamCodec.composite(
-                GlobalPos.STREAM_CODEC, Start::pos,
-                Direction.STREAM_CODEC, Start::facing,
+        public static final StreamCodec<FriendlyByteBuf, Start> STREAM_CODEC = StreamCodec.composite(
+                MFSStreamCodecs.GLOBAL_POS, Start::pos,
+                MFSStreamCodecs.DIRECTION, Start::facing,
                 Start::new);
     }
 
@@ -68,11 +71,11 @@ public class StringOfSkullLightsItem extends Item {
         SkullLightHookBlockEntity originHook = pendingHook(level, stack, player);
         if (originHook == null) {
             // Start a string: hang its first hook here, and carry the string on from it.
-            stack.remove(Registration.SKULL_LIGHTS_START.get()); // a start that came loose
+            ItemComponents.remove(stack, Registration.SKULL_LIGHTS_START.get()); // a start that came loose
             level.setBlock(hookPos, hookFacing(facing), Block.UPDATE_ALL);
             if (player != null && level.getBlockEntity(hookPos) instanceof SkullLightHookBlockEntity hook) {
                 hook.startHanging(player.getUUID(), lightsOf(stack));
-                stack.set(Registration.SKULL_LIGHTS_START.get(), new Start(GlobalPos.of(level.dimension(), hookPos), facing));
+                ItemComponents.set(stack, Registration.SKULL_LIGHTS_START.get(), new Start(GlobalPos.of(level.dimension(), hookPos), facing));
                 tell(player, Component.translatable("item.mobfarmingsupplies.string_of_skull_lights.started"));
             }
             playSound(level, hookPos, 1.2f);
@@ -95,7 +98,7 @@ public class StringOfSkullLightsItem extends Item {
         playSound(level, hookPos, 0.9f);
         // A finished string counts as placing a block, as hanging any decoration would.
         if (player instanceof ServerPlayer serverPlayer) CriteriaTriggers.PLACED_BLOCK.trigger(serverPlayer, hookPos, stack);
-        stack.remove(Registration.SKULL_LIGHTS_START.get());
+        ItemComponents.remove(stack, Registration.SKULL_LIGHTS_START.get());
         if (player == null || !player.getAbilities().instabuild) stack.shrink(1);
         return InteractionResult.SUCCESS;
     }
@@ -107,7 +110,7 @@ public class StringOfSkullLightsItem extends Item {
     /** The hook {@code player} started hanging {@code stack} from, if it's still up and waiting. */
     @Nullable
     private static SkullLightHookBlockEntity pendingHook(Level level, ItemStack stack, @Nullable Player player) {
-        Start start = stack.get(Registration.SKULL_LIGHTS_START.get());
+        Start start = ItemComponents.get(stack, Registration.SKULL_LIGHTS_START.get());
         if (start == null || player == null || start.pos().dimension() != level.dimension()) return null;
         return level.getBlockEntity(start.pos().pos()) instanceof SkullLightHookBlockEntity hook && hook.awaits(player)
                 ? hook : null;
@@ -121,7 +124,7 @@ public class StringOfSkullLightsItem extends Item {
     /** Clears the start from the string {@code player} was hanging from the hook at {@code hookPos}. */
     static void forgetStart(Player player, Level level, BlockPos hookPos) {
         ItemStack stack = startedStack(player, level, hookPos);
-        if (stack != null) stack.remove(Registration.SKULL_LIGHTS_START.get());
+        if (stack != null) ItemComponents.remove(stack, Registration.SKULL_LIGHTS_START.get());
     }
 
     @Nullable
@@ -130,21 +133,21 @@ public class StringOfSkullLightsItem extends Item {
         Inventory inventory = player.getInventory();
         for (int i = 0; i < inventory.getContainerSize(); i++) {
             ItemStack stack = inventory.getItem(i);
-            Start start = stack.get(Registration.SKULL_LIGHTS_START.get());
+            Start start = ItemComponents.get(stack, Registration.SKULL_LIGHTS_START.get());
             if (start != null && start.pos().equals(at)) return stack;
         }
         ItemStack carried = player.containerMenu.getCarried();
-        Start start = carried.get(Registration.SKULL_LIGHTS_START.get());
+        Start start = ItemComponents.get(carried, Registration.SKULL_LIGHTS_START.get());
         return start != null && start.pos().equals(at) ? carried : null;
     }
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
-        if (!player.isShiftKeyDown() || !stack.has(Registration.SKULL_LIGHTS_START.get())) return InteractionResultHolder.pass(stack);
+        if (!player.isShiftKeyDown() || !ItemComponents.has(stack, Registration.SKULL_LIGHTS_START.get())) return InteractionResultHolder.pass(stack);
         if (!level.isClientSide()) {
             SkullLightHookBlockEntity hook = pendingHook(level, stack, player);
-            stack.remove(Registration.SKULL_LIGHTS_START.get());
+            ItemComponents.remove(stack, Registration.SKULL_LIGHTS_START.get());
             if (hook != null) level.removeBlock(hook.getBlockPos(), false);
             tell(player, Component.translatable("item.mobfarmingsupplies.string_of_skull_lights.cancelled"));
         }
@@ -157,7 +160,7 @@ public class StringOfSkullLightsItem extends Item {
     }
 
     public static SkullLights lightsOf(ItemStack stack) {
-        SkullLights lights = stack.get(Registration.SKULL_LIGHTS.get());
+        SkullLights lights = ItemComponents.get(stack, Registration.SKULL_LIGHTS.get());
         return lights != null ? lights : SkullLights.defaultLights();
     }
 
@@ -171,11 +174,11 @@ public class StringOfSkullLightsItem extends Item {
 
     @Override
     public boolean isFoil(ItemStack stack) {
-        return stack.has(Registration.SKULL_LIGHTS_START.get()) || super.isFoil(stack);
+        return ItemComponents.has(stack, Registration.SKULL_LIGHTS_START.get()) || super.isFoil(stack);
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> lines, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, @org.jetbrains.annotations.Nullable net.minecraft.world.level.Level context, List<Component> lines, TooltipFlag flag) {
         Consumer<Component> tooltip = lines::add;
         SkullLights lights = lightsOf(stack);
         for (ItemStack skull : lights.skulls()) {
@@ -185,7 +188,7 @@ public class StringOfSkullLightsItem extends Item {
                 ? Component.translatable("item.mobfarmingsupplies.string_of_skull_lights.color",
                         Component.translatable("color.minecraft." + lights.color().getName())).withStyle(ChatFormatting.GRAY)
                 : Component.translatable("item.mobfarmingsupplies.string_of_skull_lights.unlit").withStyle(ChatFormatting.GRAY));
-        if (stack.has(Registration.SKULL_LIGHTS_START.get())) {
+        if (ItemComponents.has(stack, Registration.SKULL_LIGHTS_START.get())) {
             tooltip.accept(Component.translatable("item.mobfarmingsupplies.string_of_skull_lights.hanging")
                     .withStyle(ChatFormatting.YELLOW));
         }

@@ -21,7 +21,7 @@ public class BlockBreakerBlockItem extends OrientedBlockItem {
     @SuppressWarnings("deprecation")
     @Override
     public void appendHoverText(
-            ItemStack stack, Item.TooltipContext ctx, List<Component> consumerLines, TooltipFlag flag) {
+            ItemStack stack, @org.jetbrains.annotations.Nullable net.minecraft.world.level.Level ctx, List<Component> consumerLines, TooltipFlag flag) {
         Consumer<Component> consumer = consumerLines::add;
         super.appendHoverText(stack, ctx, consumerLines, flag);
         consumer.accept(Component.translatable("item.mobfarmingsupplies.block_breaker.tooltip")

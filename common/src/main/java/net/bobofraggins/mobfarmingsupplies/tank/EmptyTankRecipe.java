@@ -1,13 +1,16 @@
 package net.bobofraggins.mobfarmingsupplies.tank;
 
+import net.minecraft.resources.ResourceLocation;
+import net.bobofraggins.mobfarmingsupplies.shared.recipe.ShapedRecipeCodecs;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.ItemComponents;
 import com.mojang.serialization.MapCodec;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.minecraft.core.NonNullList;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.FriendlyByteBuf;
+import net.bobofraggins.mobfarmingsupplies.shared.compat.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
-import net.minecraft.world.item.crafting.CraftingInput;
+import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
@@ -16,31 +19,22 @@ import net.minecraft.world.level.Level;
 /**
  * A shapeless recipe that uses up a tank, which must be empty so no fluid is lost (the Color
  * Workstation). Type {@code mobfarmingsupplies:empty_tank} in JSON, written like a shapeless
- * recipe: it reads and syncs through vanilla's shapeless codecs.
+ * recipe: it reads and syncs through vanilla's shapeless serializer.
  */
 public class EmptyTankRecipe extends ShapelessRecipe {
 
-    public static final MapCodec<EmptyTankRecipe> MAP_CODEC =
-            RecipeSerializer.SHAPELESS_RECIPE.codec().xmap(EmptyTankRecipe::from, r -> r);
+    public static final RecipeSerializer<EmptyTankRecipe> SERIALIZER =
+            ShapedRecipeCodecs.shapelessSerializer(EmptyTankRecipe::new);
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, EmptyTankRecipe> STREAM_CODEC =
-            RecipeSerializer.SHAPELESS_RECIPE.streamCodec().map(EmptyTankRecipe::from, r -> r);
-
-    public EmptyTankRecipe(String group, CraftingBookCategory category, ItemStack result,
+    public EmptyTankRecipe(ResourceLocation id, String group, CraftingBookCategory category, ItemStack result,
                            NonNullList<Ingredient> ingredients) {
-        super(group, category, result, ingredients);
-    }
-
-    private static EmptyTankRecipe from(ShapelessRecipe recipe) {
-        // getResultItem ignores its registries argument for shapeless recipes.
-        return new EmptyTankRecipe(recipe.getGroup(), recipe.category(), recipe.getResultItem(null),
-                recipe.getIngredients());
+        super(id, group, category, result, ingredients);
     }
 
     @Override
-    public boolean matches(CraftingInput input, Level level) {
-        for (ItemStack ingredient : input.items()) {
-            TankContents contents = ingredient.get(Registration.TANK_CONTENTS.get());
+    public boolean matches(CraftingContainer input, Level level) {
+        for (ItemStack ingredient : input.getItems()) {
+            TankContents contents = ItemComponents.get(ingredient, Registration.TANK_CONTENTS.get());
             if (contents != null && !contents.isEmpty()) return false;
         }
         return super.matches(input, level);

@@ -36,7 +36,8 @@ import org.slf4j.LoggerFactory;
  * "CLIENTDATA x y z" logs the client's copy of the block entity there. "MENUBUTTON id" presses
  * button {@code id} of the open menu, "QUICKMOVE slot" shift-clicks that slot of it, "USEKEY
  * down|up" holds or releases the use key (to drink), "BUTTON label" presses the open screen's
- * button whose label contains that text, and "CLOSE" closes the open screen.
+ * button whose label contains that text, "HIDEGUI on|off" hides the HUD as F1 does, and "CLOSE"
+ * closes the open screen.
  */
 public final class DevCommands {
 
@@ -148,7 +149,7 @@ public final class DevCommands {
             String[] p = line.substring(11).strip().split("\\s+");
             BlockPos at = new BlockPos(Integer.parseInt(p[0]), Integer.parseInt(p[1]), Integer.parseInt(p[2]));
             var be = mc.level.getBlockEntity(at);
-            LOGGER.info("CLIENTDATA {} -> {}", at, be == null ? "none" : be.saveWithoutMetadata(mc.level.registryAccess()));
+            LOGGER.info("CLIENTDATA {} -> {}", at, be == null ? "none" : be.saveWithoutMetadata());
             return;
         }
         if (line.startsWith("USEON ")) {
@@ -156,7 +157,7 @@ public final class DevCommands {
             String[] p = line.substring(6).strip().split("\\s+");
             BlockPos target = new BlockPos(Integer.parseInt(p[0]), Integer.parseInt(p[1]), Integer.parseInt(p[2]));
             server.execute(() -> {
-                var player = server.getPlayerList().getPlayers().getFirst();
+                var player = server.getPlayerList().getPlayers().get(0);
                 BlockHitResult hit = new BlockHitResult(Vec3.atCenterOf(target).add(0, 0.5, 0), Direction.UP, target, false);
                 InteractionResult result = player.getMainHandItem().useOn(new UseOnContext(player, InteractionHand.MAIN_HAND, hit));
                 LOGGER.info("USEON {} -> {}", target, result);
@@ -175,24 +176,41 @@ public final class DevCommands {
         if (line.equals("CRAFTTEST")) {
             // Matches the first inventory row's... the 3x3 of inventory slots 9-11, 18-20, 27-29 against the recipes.
             server.execute(() -> {
-                var player = server.getPlayerList().getPlayers().getFirst();
+                var player = server.getPlayerList().getPlayers().get(0);
                 java.util.List<ItemStack> grid = new java.util.ArrayList<>();
                 for (int row = 0; row < 3; row++) for (int col = 0; col < 3; col++) {
                     grid.add(player.getInventory().getItem(9 + row * 9 + col));
                 }
-                var input = net.minecraft.world.item.crafting.CraftingInput.of(3, 3, grid);
+                var input = new net.minecraft.world.inventory.TransientCraftingContainer(
+                        new net.minecraft.world.inventory.AbstractContainerMenu(null, -1) {
+                            @Override
+                            public ItemStack quickMoveStack(net.minecraft.world.entity.player.Player p, int i) {
+                                return ItemStack.EMPTY;
+                            }
+
+                            @Override
+                            public boolean stillValid(net.minecraft.world.entity.player.Player p) {
+                                return true;
+                            }
+                        }, 3, 3);
+                for (int i = 0; i < 9; i++) input.setItem(i, grid.get(i));
                 var match = server.getRecipeManager().getRecipeFor(
                         net.minecraft.world.item.crafting.RecipeType.CRAFTING, input, player.level());
-                LOGGER.info("CRAFTTEST {} -> {}", grid, match.map(h -> h.id() + " = "
-                        + h.value().assemble(input, server.registryAccess()) + " "
-                        + h.value().assemble(input, server.registryAccess()).getComponents()).orElse("no match"));
+                LOGGER.info("CRAFTTEST {} -> {}", grid, match.map(h -> h.getId() + " = "
+                        + h.assemble(input, server.registryAccess()) + " "
+                        + h.assemble(input, server.registryAccess()).getTag()).orElse("no match"));
             });
             return;
         }
         if (line.startsWith("XPBAR ")) {
             // Sets the player's experience bar fraction directly (to recreate float drift).
             float bar = Float.parseFloat(line.substring(6).strip());
-            server.execute(() -> server.getPlayerList().getPlayers().getFirst().experienceProgress = bar);
+            server.execute(() -> server.getPlayerList().getPlayers().get(0).experienceProgress = bar);
+            return;
+        }
+        if (line.startsWith("HIDEGUI ")) {
+            // Hides the HUD and chat, as F1 does ("HIDEGUI on|off"), for clean screenshots.
+            mc.options.hideGui = line.substring(8).strip().equals("on");
             return;
         }
         if (line.equals("CLOSE")) {
@@ -237,7 +255,7 @@ public final class DevCommands {
         String command = line;
         LOGGER.info("> {}", command);
         server.execute(() -> {
-            var player = server.getPlayerList().getPlayers().getFirst();
+            var player = server.getPlayerList().getPlayers().get(0);
             // The server's own source, acting as the player: the player may not be allowed commands.
             server.getCommands().performPrefixedCommand(server.createCommandSourceStack()
                     .withEntity(player).withPosition(player.position()).withLevel(player.serverLevel()), command);

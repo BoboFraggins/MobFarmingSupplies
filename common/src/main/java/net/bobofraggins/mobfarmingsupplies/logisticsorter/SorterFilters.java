@@ -1,5 +1,6 @@
 package net.bobofraggins.mobfarmingsupplies.logisticsorter;
 
+import net.bobofraggins.mobfarmingsupplies.shared.compat.ItemComponents;
 import net.bobofraggins.mobfarmingsupplies.itemfilter.ItemFilterData;
 import net.bobofraggins.mobfarmingsupplies.register.Registration;
 import net.minecraft.world.Container;
@@ -16,7 +17,7 @@ public final class SorterFilters {
     private SorterFilters() {}
 
     public static boolean isFilter(ItemStack stack) {
-        return stack.is(Registration.ITEM_FILTER.get()) && stack.has(Registration.ITEM_FILTER_DATA.get());
+        return stack.is(Registration.ITEM_FILTER.get()) && ItemComponents.has(stack, Registration.ITEM_FILTER_DATA.get());
     }
 
     public static boolean hasAnyFilter(Container filters) {
@@ -37,7 +38,7 @@ public final class SorterFilters {
             ItemStack f = filters.getItem(i);
             if (!isFilter(f)) continue;
             any = true;
-            ItemFilterData data = f.get(Registration.ITEM_FILTER_DATA.get());
+            ItemFilterData data = ItemComponents.get(f, Registration.ITEM_FILTER_DATA.get());
             boolean pass = data.test(item, registries);
             if (and && !pass) return false;
             if (!and && pass) return true;

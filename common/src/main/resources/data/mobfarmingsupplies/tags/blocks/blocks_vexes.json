@@ -1,0 +1,7 @@
+{
+  "replace": false,
+  "values": [
+    "mobfarmingsupplies:wither_proof_glass",
+    "mobfarmingsupplies:mob_exclusion_glass"
+  ]
+}

@@ -26,8 +26,8 @@ final class ToiletSeatHeights {
 
     /** A seated player's vehicle attachment height: the reference every sitting humanoid is matched to. */
     private static final double HUMANOID_HIP_HEIGHT = 0.6;
-    /** Vehicle attachments at least this tall belong to humanoids that sit with bent legs. */
-    private static final double SITTING_POSE_THRESHOLD = 0.5;
+    /** Riding offsets at least this deep belong to humanoids that sit with bent legs (a player's is 0.35). */
+    private static final double SITTING_POSE_THRESHOLD = 0.3;
 
     /** Extra drop, in blocks, for mobs that look better nestled into the bowl than perched on its rim. */
     private static final Map<EntityType<?>, Double> INTO_BOWL = Map.of(
@@ -41,7 +41,8 @@ final class ToiletSeatHeights {
 
     /** Offset of {@code rider}'s feet from the seat's position, in blocks (negative = below). */
     static double feetOffset(Entity rider, ToiletSeatEntity seat) {
-        double attachment = rider.getVehicleAttachmentPoint(seat).y;
+        // 1.20.1 has riding offsets (negative, below the seat) where 1.20.5+ has attachment heights.
+        double attachment = -rider.getMyRidingOffset();
         double offset = attachment >= SITTING_POSE_THRESHOLD ? -HUMANOID_HIP_HEIGHT : 0.0;
         return offset + INTO_BOWL.getOrDefault(rider.getType(), 0.0);
     }

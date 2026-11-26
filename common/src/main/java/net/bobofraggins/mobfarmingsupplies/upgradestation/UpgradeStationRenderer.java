@@ -24,7 +24,7 @@ import org.joml.Quaternionf;
 public class UpgradeStationRenderer extends StateBlockEntityRenderer<UpgradeStationBlockEntity, UpgradeStationRenderer.State> {
 
     public static final ResourceLocation LID_MODEL_ID =
-            ResourceLocation.fromNamespaceAndPath(MobFarmingSuppliesCommon.MODID, "block/upgrade_station_lid");
+            new ResourceLocation(MobFarmingSuppliesCommon.MODID, "block/upgrade_station_lid");
 
     // The hinge, in north-facing model space: the top of the back (south) edge.
     private static final float HINGE_Y = 13f / 16f;

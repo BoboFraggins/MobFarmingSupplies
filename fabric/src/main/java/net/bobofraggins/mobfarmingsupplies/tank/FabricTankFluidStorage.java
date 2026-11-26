@@ -63,7 +63,7 @@ public final class FabricTankFluidStorage
         FluidStack incoming = fromFabric(resource, 1);
         if (!be.canHold(incoming)) return 0;
         if (!be.storedFluid.isEmpty()
-                && (!be.storedFluid.isFluidEqual(incoming) || !be.storedFluid.isComponentEqual(incoming))) {
+                && (!be.storedFluid.isFluidEqual(incoming) || !be.storedFluid.isTagEqual(incoming))) {
             return 0;
         }
         long space = Math.max(0, be.getCapacity() - be.amount);
@@ -80,7 +80,7 @@ public final class FabricTankFluidStorage
     public long extract(FluidVariant resource, long maxAmount, TransactionContext transaction) {
         if (resource.isBlank() || maxAmount <= 0 || be.storedFluid.isEmpty()) return 0;
         FluidStack req = fromFabric(resource, 1);
-        if (!be.storedFluid.isFluidEqual(req) || !be.storedFluid.isComponentEqual(req)) return 0;
+        if (!be.storedFluid.isFluidEqual(req) || !be.storedFluid.isTagEqual(req)) return 0;
         long toExtract = Math.min(FabricFluidUnits.toMb(maxAmount), be.amount);
         if (toExtract <= 0) return 0;
 
@@ -101,11 +101,11 @@ public final class FabricTankFluidStorage
     // ── Conversion helpers (package-accessible for TankBlockEntityPlatformImpl) ─
 
     public static FluidStack fromFabric(FluidVariant variant, long amount) {
-        return FluidStack.create(variant.getFluid(), amount, variant.getComponents());
+        return FluidStack.create(variant.getFluid(), amount, variant.getNbt());
     }
 
     public static FluidVariant toFabric(FluidStack archFluid) {
-        return FluidVariant.of(archFluid.getFluid(), archFluid.getPatch());
+        return FluidVariant.of(archFluid.getFluid(), archFluid.getTag());
     }
 
     // ── Inner view ──────────────────────────────────────────────────────────────
