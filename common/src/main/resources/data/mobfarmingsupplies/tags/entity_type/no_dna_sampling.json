@@ -1,9 +1,0 @@
-{
-  "replace": false,
-  "values": [
-    "minecraft:wither",
-    "minecraft:ender_dragon",
-    "minecraft:armor_stand",
-    "#mob_grinding_utils:no_swab"
-  ]
-}
